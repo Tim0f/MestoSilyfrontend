@@ -7,10 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        "customaccent": '#F5C78B',
-        "customaccent": '#F5C78B',
-        "customaccent": '#F5C78B',
-        "customaccent": '#F5C78B',
+        "customyellow": '#F5C78B',
+        "customgrey": '#464042',
+        "customwhite": '#F5C78B',
+        "customblack": '#2D282A',
         primary: {
           1: '#F5C78B',
           2: '#FEFAF3',
