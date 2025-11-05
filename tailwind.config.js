@@ -9,7 +9,7 @@ export default {
       colors: {
         "customyellow": '#F5C78B',
         "customgrey": '#464042',
-        "customwhite": '#F5C78B',
+        "customwhite": '#FEFAF3',
         "customblack": '#2D282A',
         primary: {
           1: '#F5C78B',
@@ -45,9 +45,9 @@ export default {
         'p' : ['UnboundedRegular', 'sans-serif'],
     },
     fontSize:{
-      'h1': ['3rem'], 
-        'h2' : ['3rem'], 
-        'p' :  ['3rem'], 
+      'h1': ['4rem'], 
+      'h2' : ['2rem'], 
+      'p' :  ['1rem'], 
     }
   },
   plugins: [],

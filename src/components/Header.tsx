@@ -12,20 +12,20 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-customgrey backdrop-blur-sm text-white fixed top-0 left-0 right-0 z-50">
+    <header className="bg-customgrey backdrop-blur-sm text-customwhite fixed top-0 left-0 right-0 z-50 font-p text-p">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">          
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="hover:text-primary-400 transition font-light">
+            <Link to="/" className="hover:text-primary-400 transition">
               Главная
             </Link>
-            <Link to="/sections" className="hover:text-primary-400 transition font-light">
+            <Link to="/sections" className="hover:text-primary-400 transition">
               Секции
             </Link>
-            <Link to="/schedule" className="hover:text-primary-400 transition font-light">
+            <Link to="/schedule" className="hover:text-primary-400 transition">
               Расписание
             </Link>
-            <Link to="/chats" className="hover:text-primary-400 transition font-light">
+            <Link to="/chats" className="hover:text-primary-400 transition">
               Чат
             </Link>
           </nav>
