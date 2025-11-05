@@ -12,6 +12,7 @@ import womenIcon from '../assets/svg/women.svg'
 import Logo from '../assets/svg/Logo1.svg?react'
 import LogoSvg from '../assets/svg/Rectangle_9.svg?react'
 import Stick from '../assets/img/sticker.webp'
+import Stick2 from '../assets/img/sticker1.webp'
 
 interface NewsItem {
   id: number
@@ -42,43 +43,43 @@ export default function HomePage() {
       id: 1,
       name: 'Иван Иванович Иванов',
       position: 'генеральный директор',
-      avatar: 'ИИ'
+      Image: Stick2
     },
     {
       id: 2,
       name: 'Анна Петровна Сидорова',
       position: 'руководитель секций',
-      avatar: 'АС'
+      Image: Stick2
     },
     {
       id: 3,
       name: 'Михаил Сергеевич Козлов',
       position: 'тренер по фехтованию',
-      avatar: 'МК'
+      Image: Stick2
     },
     {
       id: 4,
       name: 'Елена Владимировна Морозова',
       position: 'художественный руководитель',
-      avatar: 'ЕМ'
+      Image: Stick2
     },
     {
       id: 5,
       name: 'Дмитрий Александрович Волков',
       position: 'координатор мероприятий',
-      avatar: 'ДВ'
+      Image: Stick2
     },
     {
       id: 6,
       name: 'Ольга Николаевна Белова',
       position: 'специалист по работе с детьми',
-      avatar: 'ОБ'
+      Image: Stick2
     },
     {
       id: 7,
       name: 'Алексей Игоревич Соколов',
       position: 'технический директор',
-      avatar: 'АС'
+      Image: Stick2
     }
   ]
   const partners = [
@@ -439,8 +440,11 @@ export default function HomePage() {
                <div className="w-64 h-64 bg-dark-800 border border-primary-500/50 rounded-full overflow-hidden relative">
                  <div className="absolute inset-0 bg-gradient-to-br from-primary-800/20 to-transparent"></div>
                  <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="w-48 h-48 bg-gradient-to-br from-primary-700 to-primary-500 rounded-full flex items-center justify-center text-white text-4xl font-light border border-primary-400/50">
-                     {teamMembers[(currentTeamIndex - 1 + teamMembers.length) % teamMembers.length].avatar}
+                   <div className="">
+                   <img 
+              src={teamMembers.Image}
+            />
+                     {teamMembers[(currentTeamIndex - 1 + teamMembers.length) % teamMembers.length].Image}
                    </div>
                  </div>
                </div>
@@ -462,12 +466,15 @@ export default function HomePage() {
                       idx === currentTeamIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                     }`}
                     aria-hidden={idx !== currentTeamIndex}
+                    
                   >
-                    <div className="w-64 h-64 bg-gradient-to-br from-primary-700 to-primary-500 rounded-full flex items-center justify-center text-white text-6xl font-light border-2 border-primary-400">
-                      {member.avatar}
-                    </div>
+                    <img 
+              src={member.Image} 
+              
+            />
                   </div>
                 ))}
+            
               </div>
 
               {/* Информация о команде: плавная смена имени и должности */}
@@ -481,6 +488,7 @@ export default function HomePage() {
                       }`}
                       aria-hidden={idx !== currentTeamIndex}
                     >
+                      
                       <p className="text-gray-400 font-p text-sm mb-2">{member.position}</p>
                       <h3 className="text-2xl font-h2 text-white">{member.name}</h3>
                     </div>
@@ -506,9 +514,7 @@ export default function HomePage() {
                <div className="w-64 h-64 bg-[#2D282A] border border-primary-500/50 rounded-full overflow-hidden relative">
                  <div className="absolute inset-0 bg-gradient-to-br from-primary-800/20 to-transparent"></div>
                  <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="w-48 h-48 bg-gradient-to-br from-primary-700 to-primary-500 rounded-full flex items-center justify-center text-white text-4xl font-light border border-primary-400/50">
-                     {teamMembers[(currentTeamIndex + 1) % teamMembers.length].avatar}
-                   </div>
+              
                  </div>
                </div>
                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
