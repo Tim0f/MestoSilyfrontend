@@ -11,6 +11,7 @@ import masksIcon from '../assets/svg/masks.svg'
 import womenIcon from '../assets/svg/women.svg'
 import Logo from '../assets/svg/Logo1.svg?react'
 import LogoSvg from '../assets/svg/Rectangle_9.svg?react'
+import Stick from '../assets/img/sticker.webp'
 
 interface NewsItem {
   id: number
@@ -32,6 +33,7 @@ export default function HomePage() {
   const [sections, setSections] = useState<Section[]>([])
   const [activeTileId, setActiveTileId] = useState<string>('fencing')
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0)
+  const [currentPartnerIndex, setCurrentPartnerIndex] = useState(0)
   const [newsRevealed, setNewsRevealed] = useState(false)
   const [currentNewsPage, setCurrentNewsPage] = useState(0)
 
@@ -79,7 +81,44 @@ export default function HomePage() {
       avatar: 'АС'
     }
   ]
-
+  const partners = [
+    {
+      id: 1,
+      name: 'Школа Летово',
+      Image: Stick,
+      url: 'Saga'
+    },
+    {
+      id: 2,
+      name: 'Школа Осеннево',
+      Image: Stick,
+      url: 'Saga'
+    },
+    {
+      id: 3,
+      name: 'Школа Зимнево',
+      Image: Stick,
+      url: 'Saga'
+    },
+    {
+      id: 4,
+      name: 'Школа Весеннего',
+      Image: Stick,
+      url: 'Saga'
+    },
+    {
+      id: 5,
+      name: 'Школа межсезонного',
+      Image: Stick,
+      url: 'Saga'
+    },
+    {
+      id: 6,
+      name: 'Школа Внесезонного',
+      Image: Stick,
+      url: 'Saga'
+    }
+  ]
   const showcaseSections = [
     {
       id: 'fencing',
@@ -169,13 +208,13 @@ export default function HomePage() {
         <div className="relative z-10 container mx-auto px-4 text-center pt-16 flex flex-col items-center justify-center">
         
           <Logo className='text-primary-1 w-400'  ></Logo>
-          <p className="text-16 md:text-2xl mb-8 text-gray-200 font-light max-w-2xl mx-auto">
+          <p className="text-16 md:text-2xl mb-8 text-gray-200 font-p max-w-2xl mx-auto">
             Место комфорта и развития<br />
             Секции и мероприятия для всех
           </p>
           <Link to="/sections" className="relative inline-block">
   <LogoSvg width={233} height={81} className="text-primary-1 z-10 "  />
-  <span className="absolute inset-0 flex items-center justify-center z-20 text-black font-light text-lg">
+  <span className="absolute inset-0 flex items-center justify-center z-20 text-black font-p text-lg">
     записаться
   </span>
 </Link>
@@ -200,31 +239,31 @@ export default function HomePage() {
               {/* Статистика */}
               <div className="flex justify-between gap-8">
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2">
+                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2 font-h1">
                     5
                   </div>
-                  <p className="text-gray-400 font-light">событий в месяц</p>
+                  <p className="text-gray-400 font-p">событий в месяц</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2">
+                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2 font-h1">
                     12
                   </div>
-                  <p className="text-gray-400 font-light">направлений</p>
+                  <p className="text-gray-400 font-p">направлений</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2">
+                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2 font-h1">
                     1
                   </div>
-                  <p className="text-gray-400 font-light">уютная площадка</p>
+                  <p className="text-gray-400 font-p">уютная площадка</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2">
+                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2 font-h1">
                     26
                   </div>
-                  <p className="text-gray-400 font-light">наставников</p>
+                  <p className="text-gray-400 font-p">наставников</p>
                 </div>
               </div>
             </div>
@@ -245,10 +284,10 @@ export default function HomePage() {
       <section className="py-20 bg-customblack">
         <div className="px-10 ">
           <div className="flex justify-between items-center mb-12">
-            <h2 className="text-4xl font-light text-primary-300">Секции</h2>
+            <h2 className="text-4xl font-light text-primary-300 font-h1">Секции</h2>
             <Link
               to="/sections"
-              className="text-primary-400 hover:text-primary-300 font-light flex items-center gap-2"
+              className="text-primary-400 hover:text-primary-300 font-p flex items-center gap-2"
             >
               подробнее <ArrowRight size={20} />
             </Link>
@@ -284,7 +323,7 @@ export default function HomePage() {
                   </div>
                   {/* Правая колонка с текстом */}
                   <div className="flex-1 p-6 flex flex-col">
-                    <h3 className="text-2xl md:text-3xl font-bold text-primary-200 drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
+                    <h3 className="text-2xl md:text-3xl font-h2 text-primary-200 drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
                       {tile.title}
                     </h3>
 
@@ -293,21 +332,21 @@ export default function HomePage() {
                       <div className="mt-auto">
                         {index === 0 && (
                         <>
-                          <p className="text-gray-300/90 font-light max-w-md mb-6">
+                          <p className="text-gray-300/90 font-p max-w-md mb-6">
                             {tile.description}
                           </p>
                           <div className="flex items-center gap-4 mb-6">
                             <div className="w-12 h-12 rounded-full bg-primary-700/60 border border-primary-400/30" />
                             <div>
-                              <div className="text-primary-200 font-medium">Учитель:</div>
-                              <div className="text-gray-300 font-light">{tile.teacher}</div>
+                              <div className="text-primary-200 font-p">Учитель:</div>
+                              <div className="text-gray-300 font-p">{tile.teacher}</div>
                             </div>
                           </div>
                           <div className="flex items-center justify-between">
-                            <div className="text-2xl text-primary-300 font-semibold">{tile.price}</div>
+                            <div className="text-2xl text-primary-300 font-h2">{tile.price}</div>
                             <Link
                               to="/sections"
-                              className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-light transition"
+                              className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-p transition"
                             >
                               записаться
                             </Link>
@@ -327,9 +366,8 @@ export default function HomePage() {
       {/* Новости */}
       <section className="py-20 bg-[#2D282A]">
         <div className="px-10">
-          <div className="text-center mb-12">
-            <h2 className="text-5xl md:text-6xl font-bold text-primary-300 mb-8" style={{
-              fontFamily: 'Georgia, serif',
+          <div className="text-center mb-12 ">
+            <h2 className="text-5xl md:text-6xl font-h1 text-primary-300 mb-8" style={{
               letterSpacing: '0.05em'
             }}>
               НОВОСТИ
@@ -346,8 +384,8 @@ export default function HomePage() {
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
                   <div className="p-8">
-                    <h3 className="text-3xl font-bold text-white mb-6">{newsItem.title}</h3>
-                    <p className="text-white font-light leading-relaxed mb-6 whitespace-pre-line">
+                    <h3 className="text-3xl font-h2 text-white mb-6">{newsItem.title}</h3>
+                    <p className="text-white font-p leading-relaxed mb-6 whitespace-pre-line">
                       {newsItem.content}
                     </p>
                     <img
@@ -388,8 +426,7 @@ export default function HomePage() {
        {/* Команда */}
        <section className="py-20 bg-[#2D282A]">
          <div className="container mx-auto px-4">
-           <h2 className="text-5xl md:text-6xl font-bold text-center mb-16 text-primary-300" style={{
-             fontFamily: 'Georgia, serif',
+           <h2 className="text-5xl md:text-6xl text-center mb-16 text-primary-300 font-h1" style={{
              letterSpacing: '0.05em'
            }}>
              КОМАНДА
@@ -444,8 +481,8 @@ export default function HomePage() {
                       }`}
                       aria-hidden={idx !== currentTeamIndex}
                     >
-                      <p className="text-gray-400 font-light text-sm mb-2">{member.position}</p>
-                      <h3 className="text-2xl font-bold text-white">{member.name}</h3>
+                      <p className="text-gray-400 font-p text-sm mb-2">{member.position}</p>
+                      <h3 className="text-2xl font-h2 text-white">{member.name}</h3>
                     </div>
                   ))}
                 </div>
@@ -497,48 +534,41 @@ export default function HomePage() {
 
       {/* Партнеры */}
       <section className="py-20 bg-[#2D282A]">
-        <div className="container mx-auto px-4">
-          <h2 className="text-5xl md:text-6xl font-bold text-center mb-16 text-primary-300" style={{
-            fontFamily: 'Georgia, serif',
+        <div className="container mx-auto px-4 ">
+          <h2 className="text-5xl md:text-6xl font-h1 text-center mb-16 text-primary-300 " style={{
             letterSpacing: '0.05em'
           }}>
             ПАРТНЕРЫ
           </h2>
           
-          <div className="flex justify-center items-center gap-8 mb-8">
-            {/* СМЕШАРИКИ */}
-            <div className="flex flex-col items-center group">
-              <div className="w-32 h-32 border-2 border-primary-400 rounded-full flex items-center justify-center bg-dark-900/50 hover:bg-dark-900/80 transition-all duration-300 group-hover:scale-105">
-                <div className="text-center">
-                  <div className="text-primary-300 font-bold text-lg mb-1" style={{ fontFamily: 'Georgia, serif' }}>
-                    СМЕШАРИКИ
-                  </div>
-                  <div className="w-20 h-1 border-t border-b border-primary-400 mx-auto"></div>
-                </div>
-              </div>
-              <p className="text-white font-light text-sm mt-4">Saga</p>
-            </div>
-
-            {/* ШКОЛА ЛЕТОВО */}
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex flex-col items-center group">
-                <div className="w-32 h-32 border-2 border-primary-400 rounded-full flex items-center justify-center bg-dark-900/50 hover:bg-dark-900/80 transition-all duration-300 group-hover:scale-105">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center mb-2">
-                      <div className="w-6 h-6 bg-white rounded-sm mr-2 flex items-center justify-center">
-                        <div className="w-3 h-3 bg-dark-800 rounded-sm"></div>
-                      </div>
-                    </div>
-                    <div className="text-white font-light text-sm leading-tight">
-                      <div>ШКОЛА</div>
-                      <div>ЛЕТОВО</div>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-white font-light text-sm mt-4">Saga</p>
-              </div>
-            ))}
+          <div className="flex justify-center items-center gap-8 mb-12">
+  {partners.map((partner, index) => {
+    
+    return (
+      <div 
+        key={partner.id}
+        className={`relative transition-all duration-500 cursor-pointer`}
+        onClick={() => setCurrentPartnerIndex(index)}
+      >
+        <div className="w-64 h-64 bg-dark-800 border border-primary-500/50 rounded-full overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-800/20 to-transparent"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <img 
+              src={partner.Image} 
+              alt={partner.name}
+              className="w-48 h-48 rounded-full object-cover border border-primary-400/50"
+            />
           </div>
+        </div>
+        <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 text-center">
+          <h3 className="text-lg font-bold text-gray-400">{partner.name}</h3>
+          
+        
+        </div>
+      </div>
+    );
+  })}
+</div>
         </div>
       </section>
     </div>
