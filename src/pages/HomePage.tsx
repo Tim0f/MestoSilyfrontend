@@ -154,7 +154,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="bg-[#2D282A] min-h-screen ">
+    <div className="bg-customblack min-h-screen">
       {/* Hero Section */}
       <section 
         className="relative min-h-screen flex items-center justify-center text-white overflow-hidden"
@@ -165,7 +165,7 @@ export default function HomePage() {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        <div className="absolute inset-0 bg-[#2D282A]" style={{ backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div>
+        <div className="absolute inset-0 bg-customblack" style={{ backgroundImage: `url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div>
         <div className="relative z-10 container mx-auto px-4 text-center pt-16 flex flex-col items-center justify-center">
         
           <Logo className='text-primary-1 w-400'  ></Logo>
@@ -188,14 +188,11 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Левая часть - текст и статистика */}
             <div>
-              <h2 className="text-5xl md:text-6xl font-bold mb-8 text-primary-300" style={{
-                fontFamily: 'Georgia, serif',
-                letterSpacing: '0.05em'
-              }}>
+              <h2 className="mb-8 text-h1 font-h1 text-customyellow ">
                 О НАС
               </h2>
               
-              <p className="text-xl text-gray-300 font-light mb-12 leading-relaxed">
+              <p className="text-customwhite font-p text-p mb-12 leading-relaxed">
                 «Место Силы» — это сообщество единомышленников, где каждый найдет занятие по душе. 
                 Мы создаем пространство для творчества, спорта и общения.
               </p>
@@ -203,36 +200,28 @@ export default function HomePage() {
               {/* Статистика */}
               <div className="flex justify-between gap-8">
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2" style={{
-                    fontFamily: 'Georgia, serif'
-                  }}>
+                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2">
                     5
                   </div>
                   <p className="text-gray-400 font-light">событий в месяц</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2" style={{
-                    fontFamily: 'Georgia, serif'
-                  }}>
+                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2">
                     12
                   </div>
                   <p className="text-gray-400 font-light">направлений</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2" style={{
-                    fontFamily: 'Georgia, serif'
-                  }}>
+                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2">
                     1
                   </div>
                   <p className="text-gray-400 font-light">уютная площадка</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2" style={{
-                    fontFamily: 'Georgia, serif'
-                  }}>
+                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2">
                     26
                   </div>
                   <p className="text-gray-400 font-light">наставников</p>
@@ -253,7 +242,7 @@ export default function HomePage() {
       </section>
 
       {/* Секции (плашки с выдвижением) */}
-      <section className="py-20 bg-[#2D282A]">
+      <section className="py-20 bg-customblack">
         <div className="px-10 ">
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-4xl font-light text-primary-300">Секции</h2>
