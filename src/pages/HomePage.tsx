@@ -154,7 +154,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="bg-[#2D282A] min-h-screen">
+    <div className="bg-[#2D282A] min-h-screen ">
       {/* Hero Section */}
       <section 
         className="relative min-h-screen flex items-center justify-center text-white overflow-hidden"
