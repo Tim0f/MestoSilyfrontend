@@ -241,9 +241,9 @@ export default function HomePage() {
             </div>
 
             {/* Правая часть - изображение */}
-            <div className="relative">
-              <img 
-                src={aboutImage} 
+            <div className="relative bg-hero-pattern stroke-customyellow" >
+              <img
+                src={aboutImage}
                 alt="Наша команда" 
                 className="w-full h-auto object-cover "
               />
