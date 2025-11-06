@@ -13,6 +13,7 @@ import Logo from '../assets/svg/Logo1.svg?react'
 import LogoSvg from '../assets/svg/Rectangle_9.svg?react'
 import Stick from '../assets/img/sticker.webp'
 import Stick2 from '../assets/img/sticker1.webp'
+import TeamSlider from '../components/TeamSlider'
 
 interface NewsItem {
   id: number
@@ -38,50 +39,7 @@ export default function HomePage() {
   const [newsRevealed, setNewsRevealed] = useState(false)
   const [currentNewsPage, setCurrentNewsPage] = useState(0)
 
-  const teamMembers = [
-    {
-      id: 1,
-      name: 'Иван Иванович Иванов',
-      position: 'генеральный директор',
-      Image: Stick2
-    },
-    {
-      id: 2,
-      name: 'Анна Петровна Сидорова',
-      position: 'руководитель секций',
-      Image: Stick2
-    },
-    {
-      id: 3,
-      name: 'Михаил Сергеевич Козлов',
-      position: 'тренер по фехтованию',
-      Image: Stick2
-    },
-    {
-      id: 4,
-      name: 'Елена Владимировна Морозова',
-      position: 'художественный руководитель',
-      Image: Stick2
-    },
-    {
-      id: 5,
-      name: 'Дмитрий Александрович Волков',
-      position: 'координатор мероприятий',
-      Image: Stick2
-    },
-    {
-      id: 6,
-      name: 'Ольга Николаевна Белова',
-      position: 'специалист по работе с детьми',
-      Image: Stick2
-    },
-    {
-      id: 7,
-      name: 'Алексей Игоревич Соколов',
-      position: 'технический директор',
-      Image: Stick2
-    }
-  ]
+ 
   const partners = [
     {
       id: 1,
@@ -148,13 +106,13 @@ export default function HomePage() {
   }, [])
 
   // Автоматическое переключение команды каждые 10 секунд
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTeamIndex((prev: number) => (prev + 1) % teamMembers.length)
-    }, 10000)
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentTeamIndex((prev: number) => (prev + 1) % teamMembers.length)
+  //   }, 10000)
 
-    return () => clearInterval(interval)
-  }, [teamMembers.length])
+  //   return () => clearInterval(interval)
+  // }, [teamMembers.length])
 
   const fetchNews = async () => {
     try {
@@ -432,109 +390,9 @@ export default function HomePage() {
            }}>
              КОМАНДА
            </h2>
-           
-           {/* Три карточки команды */}
-           <div className="flex justify-center items-center gap-8 mb-12">
-             {/* Левая карточка (предыдущий) */}
-             <div className={`relative transition-all duration-500 ${currentTeamIndex === 0 ? 'opacity-30 scale-90' : 'opacity-50 scale-95'}`}>
-               <div className="w-64 h-64 bg-dark-800 border border-primary-500/50 rounded-full overflow-hidden relative">
-                 <div className="absolute inset-0 bg-gradient-to-br from-primary-800/20 to-transparent"></div>
-                 <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="">
-                   <img 
-              src={teamMembers.Image}
-            />
-                     {teamMembers[(currentTeamIndex - 1 + teamMembers.length) % teamMembers.length].Image}
-                   </div>
-                 </div>
-               </div>
-               <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
-                 <p className="text-gray-500 font-light text-sm mb-1">{(teamMembers[(currentTeamIndex - 1 + teamMembers.length) % teamMembers.length].position)}</p>
-                 <h3 className="text-lg font-bold text-gray-400">{(teamMembers[(currentTeamIndex - 1 + teamMembers.length) % teamMembers.length].name)}</h3>
-               </div>
-             </div>
+          <TeamSlider></TeamSlider>
 
-            {/* Центральная карточка (активная) */}
-            <div className="relative">
-              <div className="w-80 h-80 bg-dark-800 border-2 border-primary-500 rounded-full overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-800/20 to-transparent"></div>
-                {/* Плавная смена аватара через наложенные слои */}
-                {teamMembers.map((member, idx) => (
-                  <div
-                    key={idx}
-                    className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ease-in-out ${
-                      idx === currentTeamIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                    }`}
-                    aria-hidden={idx !== currentTeamIndex}
-                    
-                  >
-                    <img 
-              src={member.Image} 
-              
-            />
-                  </div>
-                ))}
-            
-              </div>
 
-              {/* Информация о команде: плавная смена имени и должности */}
-              <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 text-center w-[22rem]">
-                <div className="relative h-16 mb-4">
-                  {teamMembers.map((member, idx) => (
-                    <div
-                      key={idx}
-                      className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                        idx === currentTeamIndex ? 'opacity-100' : 'opacity-0'
-                      }`}
-                      aria-hidden={idx !== currentTeamIndex}
-                    >
-                      
-                      <p className="text-gray-400 font-p text-sm mb-2">{member.position}</p>
-                      <h3 className="text-2xl font-h2 text-white">{member.name}</h3>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Аудио плеер */}
-                <div className="bg-[#2D282A] border border-white/20 rounded-lg p-3 w-64 mx-auto">
-                  <div className="flex items-center gap-3">
-                    <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-200 transition">
-                      <Play size={12} className="text-black ml-0.5" />
-                    </button>
-                    <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
-                      <div className="h-full bg-white rounded-full" style={{width: '30%'}}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-             {/* Правая карточка (следующий) */}
-             <div className={`relative transition-all duration-500 ${currentTeamIndex === teamMembers.length - 1 ? 'opacity-30 scale-90' : 'opacity-50 scale-95'}`}>
-               <div className="w-64 h-64 bg-[#2D282A] border border-primary-500/50 rounded-full overflow-hidden relative">
-                 <div className="absolute inset-0 bg-gradient-to-br from-primary-800/20 to-transparent"></div>
-                 <div className="absolute inset-0 flex items-center justify-center">
-              
-                 </div>
-               </div>
-               <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
-                 <p className="text-gray-500 font-light text-sm mb-1">{(teamMembers[(currentTeamIndex + 1) % teamMembers.length].position)}</p>
-                 <h3 className="text-lg font-bold text-gray-400">{(teamMembers[(currentTeamIndex + 1) % teamMembers.length].name)}</h3>
-               </div>
-             </div>
-           </div>
-           
-           {/* Пагинация */}
-           <div className="flex justify-center gap-2">
-             {teamMembers.map((_, index) => (
-               <div
-                 key={index}
-                 className={`w-3 h-3 rounded-full border border-white/30 transition-all duration-300 ${
-                   index === currentTeamIndex ? 'bg-white scale-110' : 'bg-transparent'
-                 }`}
-               ></div>
-             ))}
-           </div>
          </div>
        </section>
 
