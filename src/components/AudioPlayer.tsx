@@ -179,15 +179,33 @@ export default function AudioPlayer({ src, className, onPlayChange }: AudioPlaye
 }
 
 function Bars({ levels, progress, isPlaying }: { levels: number[] | null; progress: number; isPlaying: boolean }) {
-  // Если анализ не успел — покажем приятные placeholder-уровни
+  // Если анализ не успел — покажем placeholder-уровни
   const fallback = useMemo(() => {
-    const n = 60;
-    const arr = Array.from({ length: n }, (_, i) => 0.3 + 0.7 * Math.abs(Math.sin(i * 0.2)));
+    const n = 64;
+    const arr = Array.from({ length: n }, (_, i) => 0.3 + 0.7 * Math.abs(Math.sin(i * 0.25)));
     return arr;
   }, []);
-  const data = levels && levels.length > 0 ? levels : fallback;
+  // Переупаковываем в ровно 64 столбика
+  const data = useMemo(() => {
+    const source = levels && levels.length > 0 ? levels : fallback;
+    const targetCount = 64;
+    if (source.length === targetCount) return source;
+    const out = new Array<number>(targetCount).fill(0);
+    for (let i = 0; i < targetCount; i++) {
+      const start = Math.floor((i / targetCount) * source.length);
+      const end = Math.floor(((i + 1) / targetCount) * source.length);
+      let sum = 0;
+      let cnt = 0;
+      for (let j = start; j < Math.max(end, start + 1); j++) {
+        sum += source[Math.min(j, source.length - 1)];
+        cnt++;
+      }
+      out[i] = sum / (cnt || 1);
+    }
+    return out;
+  }, [levels, fallback]);
   const gap = 4;
-  const barWidth = 3;
+  const barWidth = 30;
   const viewHeight = 100;
   const totalWidth = data.length * barWidth + (data.length - 1) * gap;
   const clipWidth = Math.min(Math.max(progress, 0), 1) * totalWidth;

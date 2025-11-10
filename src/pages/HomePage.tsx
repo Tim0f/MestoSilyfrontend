@@ -344,7 +344,7 @@ export default function HomePage() {
       <section className="py-20 bg-[#2D282A]">
         <div className="px-10">
           <div className="text-center mb-12 ">
-            <h2 className="text-5xl md:text-6xl font-h1 text-primary-300 mb-8" style={{
+            <h2 className="text-h1 font-h1 text-customyellow mb-8" style={{
               letterSpacing: '0.05em'
             }}>
               НОВОСТИ
@@ -361,8 +361,8 @@ export default function HomePage() {
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
                   <div className="p-8">
-                    <h3 className="text-3xl font-h2 text-white mb-6">{newsItem.title}</h3>
-                    <p className="text-white font-p leading-relaxed mb-6 whitespace-pre-line">
+                    <h3 className="text-h2 font-h2 text-customwhite mb-6">{newsItem.title}</h3>
+                    <p className="text-customwhite font-p text-p leading-relaxed mb-6 whitespace-pre-line">
                       {newsItem.content}
                     </p>
                     <img
@@ -403,7 +403,7 @@ export default function HomePage() {
        {/* Команда */}
        <section className="py-20 bg-[#2D282A]">
          <div className="container mx-auto px-4">
-           <h2 className="text-5xl md:text-6xl text-center mb-16 text-primary-300 font-h1" style={{
+           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16 " style={{
              letterSpacing: '0.05em'
            }}>
              КОМАНДА
@@ -417,7 +417,7 @@ export default function HomePage() {
       {/* Партнеры */}
       <section className="py-20 bg-[#2D282A]">
         <div className="container mx-auto px-4 ">
-          <h2 className="text-5xl md:text-6xl font-h1 text-center mb-16 text-primary-300 " style={{
+          <h2 className="text-h1 font-h1 text-customyellow text-center mb-16 " style={{
             letterSpacing: '0.05em'
           }}>
             ПАРТНЕРЫ
@@ -443,7 +443,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="absolute -bottom-20 left-1/2 transform -translate-x-1/2 text-center">
-          <h3 className="text-lg font-bold text-gray-400">{partner.name}</h3>
+          <h3 className="text-h2 font-h2 text-customwhite">{partner.name}</h3>
           
         
         </div>
