@@ -88,10 +88,26 @@ export default function HomePage() {
       price: '1000₽/час',
       image: swordIcon,
     },
-    { id: 'archery', title: 'Лучная стрельба', image: arrowIcon },
-    { id: 'dragon', title: 'Фэнтези клуб', image: dragonIcon },
-    { id: 'theatre', title: 'Театр', image: masksIcon },
-    { id: 'dance', title: 'Пластика и танец', image: womenIcon },
+    { id: 'archery', title: 'Лучная стрельба', description:
+      'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+    teacher: 'Иван Иванович Иванов',
+    price: '1000₽/час',
+    image: arrowIcon },
+    { id: 'dragon', title: 'Фэнтези клуб', description:
+      'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+    teacher: 'Иван Иванович Иванов',
+    price: '1000₽/час',
+    image: dragonIcon },
+    { id: 'theatre', title: 'Театр', description:
+      'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+    teacher: 'Иван Иванович Иванов',
+    price: '1000₽/час',
+    image: masksIcon },
+    { id: 'dance', title: 'Пластика и танец', description:
+      'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+    teacher: 'Иван Иванович Иванов',
+    price: '1000₽/час',
+    image: womenIcon },
   ]
 
   useEffect(() => {
@@ -167,13 +183,13 @@ export default function HomePage() {
         <div className="relative z-10 container mx-auto px-4 text-center pt-16 flex flex-col items-center justify-center">
         
           <Logo className='text-primary-1 w-400'  ></Logo>
-          <p className="text-16 md:text-2xl mb-8 text-gray-200 font-p max-w-2xl mx-auto">
+          <p className="text-p mb-8 text-customwhite font-p max-w-2xl mx-auto">
             Место комфорта и развития<br />
             Секции и мероприятия для всех
           </p>
           <Link to="/sections" className="relative inline-block">
-  <LogoSvg width={233} height={81} className="text-primary-1 z-10 "  />
-  <span className="absolute inset-0 flex items-center justify-center z-20 text-black font-p text-lg">
+  <LogoSvg width={233} height={81} className="text-customyellow z-10 "  />
+  <span className="absolute inset-0 flex items-center justify-center z-20 text-customblack font-p text-p">
     записаться
   </span>
 </Link>
@@ -198,31 +214,31 @@ export default function HomePage() {
               {/* Статистика */}
               <div className="flex justify-between gap-8">
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2 font-h1">
+                  <div className="flex justify-center items-center text-h1 font-h1 text-customyellow mb-2 font-h1">
                     5
                   </div>
-                  <p className="text-gray-400 font-p">событий в месяц</p>
+                  <p className="text-customyellow font-p text-p">событий в месяц</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2 font-h1">
+                  <div className="flex justify-center items-center text-h1 font-h1 text-customyellow mb-2 font-h1">
                     12
                   </div>
-                  <p className="text-gray-400 font-p">направлений</p>
+                  <p className="text-customyellow font-p text-p">направлений</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2 font-h1">
+                  <div className="flex justify-center items-center text-h1 font-h1 text-customyellow mb-2 font-h1">
                     1
                   </div>
-                  <p className="text-gray-400 font-p">уютная площадка</p>
+                  <p className="text-customyellow font-p text-p">уютная площадка</p>
                 </div>
 
                 <div>
-                  <div className="flex justify-center items-center text-6xl md:text-7xl font-bold text-primary-400 mb-2 font-h1">
+                  <div className="flex justify-center items-center text-h1 font-h1 text-customyellow mb-2 font-h1">
                     26
                   </div>
-                  <p className="text-gray-400 font-p">наставников</p>
+                  <p className="text-customyellow font-p text-p">наставников</p>
                 </div>
               </div>
             </div>
@@ -243,7 +259,7 @@ export default function HomePage() {
       <section className="py-20 bg-customblack">
         <div className="px-10 ">
           <div className="flex justify-between items-center mb-12">
-            <h2 className="text-4xl font-light text-primary-300 font-h1">Секции</h2>
+            <h2 className="text-h1 font-h1 text-customyellow">Секции</h2>
             <Link
               to="/sections"
               className="text-primary-400 hover:text-primary-300 font-p flex items-center gap-2"
@@ -272,46 +288,48 @@ export default function HomePage() {
                 {/* Контент плитки (открытая форма с иконкой слева) */}
                 <div className="h-full w-full flex">
                   {/* Левая колонка с SVG фиксированного размера */}
-                  <div className="flex items-center justify-center px-6">
+                  <div className="w-[220px] flex-none flex items-center justify-center px-6">
                     <img
                       src={tile.image}
                       alt={tile.title}
-                      className={`w-[175px] h-[522px] object-contain opacity-90 select-none pointer-events-none 
-                      ${isActive ? '' : (index === 0 && activeTileId === 'fencing' && tile.id === 'fencing' ? '' : 'grayscale')}`}
+                      className="w-[175px] h-[522px] object-contain opacity-90 select-none pointer-events-none"
+                      style={{
+                        filter: 'brightness(0) saturate(100%) invert(83%) sepia(21%) saturate(588%) hue-rotate(338deg) brightness(99%) contrast(93%)'
+                      }}
                     />
                   </div>
                   {/* Правая колонка с текстом */}
                   <div className="flex-1 p-6 flex flex-col">
-                    <h3 className="text-2xl md:text-3xl font-h2 text-primary-200 drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
-                      {tile.title}
-                    </h3>
-
-                    {/* Детали показываем только у активной плашки (или первой по умолчанию) */}
+                    {/* Весь контент видим только у активной плашки (или первой по умолчанию) */}
                     {(isActive || (index === 0 && activeTileId === 'fencing' && tile.id === 'fencing')) && (
-                      <div className="mt-auto">
-                        {index === 0 && (
-                        <>
-                          <p className="text-gray-300/90 font-p max-w-md mb-6">
-                            {tile.description}
-                          </p>
-                          <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 rounded-full bg-primary-700/60 border border-primary-400/30" />
-                            <div>
-                              <div className="text-primary-200 font-p">Учитель:</div>
-                              <div className="text-gray-300 font-p">{tile.teacher}</div>
+                      <div className="flex flex-col h-full">
+                        <h3 className="text-h2 font-h2 text-customyellow drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
+                          {tile.title}
+                        </h3>
+                       
+                            <p className="text-customwhite font-p max-w-md mb-6 mt-4">
+                              {tile.description}
+                            </p>
+                            <div className="flex items-center gap-4 mb-6">
+                              <div className="w-12 h-12 rounded-full bg-customyellow/60 border border-customyellow/30" />
+                              <div>
+                                <div className="text-customyellow font-p">Учитель:</div>
+                                <div className="text-customwhite font-p">{tile.teacher}</div>
+                              </div>
                             </div>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="text-2xl text-primary-300 font-h2">{tile.price}</div>
-                            <Link
-                              to="/sections"
-                              className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-p transition"
-                            >
-                              записаться
-                            </Link>
-                          </div>
-                        </>
-                        )}
+                        
+                        {/* Нижняя зона: цена (если есть) и кнопка у дна карточки */}
+                        <div className="mt-auto">
+                          {tile.price && (
+                            <div className="text-h2 font-h2 text-customwhite mb-4">{tile.price}</div>
+                          )}
+                          <Link
+                            to="/sections"
+                            className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-p transition"
+                          >
+                            записаться
+                          </Link>
+                        </div>
                       </div>
                     )}
                   </div>
