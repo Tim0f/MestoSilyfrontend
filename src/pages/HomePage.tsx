@@ -30,6 +30,16 @@ interface Section {
   ageGroup: string
 }
 
+type ShowcaseSection = {
+  id: string
+  title: string
+  description: string
+  teacher: string
+  price: string
+  image: string
+  color?: string
+}
+
 export default function HomePage() {
   const [news, setNews] = useState<NewsItem[]>([])
   const [sections, setSections] = useState<Section[]>([])
@@ -78,7 +88,7 @@ export default function HomePage() {
       url: 'Saga'
     }
   ]
-  const showcaseSections = [
+  const showcaseSections: ShowcaseSection[] = [
     {
       id: 'fencing',
       title: 'Актерское фехтование',
@@ -87,27 +97,32 @@ export default function HomePage() {
       teacher: 'Иван Иванович Иванов',
       price: '1000₽/час',
       image: swordIcon,
+      color: '#F5C78B',
     },
     { id: 'archery', title: 'Лучная стрельба', description:
       'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
     teacher: 'Иван Иванович Иванов',
     price: '1000₽/час',
-    image: arrowIcon },
+    image: arrowIcon,
+    color: '#F5C78B' },
     { id: 'dragon', title: 'Фэнтези клуб', description:
       'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
     teacher: 'Иван Иванович Иванов',
     price: '1000₽/час',
-    image: dragonIcon },
+    image: dragonIcon,
+    color: '#F5C78B' },
     { id: 'theatre', title: 'Театр', description:
       'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
     teacher: 'Иван Иванович Иванов',
     price: '1000₽/час',
-    image: masksIcon },
+    image: masksIcon,
+    color: '#F5C78B' },
     { id: 'dance', title: 'Пластика и танец', description:
       'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
     teacher: 'Иван Иванович Иванов',
     price: '1000₽/час',
-    image: womenIcon },
+    image: womenIcon,
+    color: '#F5C78B' },
   ]
 
   useEffect(() => {
@@ -289,12 +304,17 @@ export default function HomePage() {
                 <div className="h-full w-full flex">
                   {/* Левая колонка с SVG фиксированного размера */}
                   <div className="w-[220px] flex-none flex items-center justify-center px-6">
-                    <img
-                      src={tile.image}
-                      alt={tile.title}
-                      className="w-[175px] h-[522px] object-contain opacity-90 select-none pointer-events-none"
+                    <div
+                      aria-hidden
+                      className="w-[175px] h-[522px] select-none pointer-events-none"
                       style={{
-                        filter: 'brightness(0) saturate(100%) invert(83%) sepia(21%) saturate(588%) hue-rotate(338deg) brightness(99%) contrast(93%)'
+                        WebkitMaskImage: `url(${tile.image})`,
+                        maskImage: `url(${tile.image})`,
+                        WebkitMaskSize: 'contain',
+                        maskSize: 'contain',
+                        WebkitMaskRepeat: 'no-repeat',
+                        maskRepeat: 'no-repeat',
+                        backgroundColor: '#F5C78B',
                       }}
                     />
                   </div>
