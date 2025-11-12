@@ -1,121 +1,129 @@
-import { useState, useEffect } from 'react';
-import TeamCard from './TeamCard';
-import Stick1 from '../assets/img/sticker1.webp'; // пример для локального файла
-import Test from '../assets/test.mp3';
+import { useState, useEffect, useRef } from 'react'
+import TeamCard from './TeamCard'
+import Stick1 from '../assets/img/sticker1.webp'
+import Test from '../assets/test.mp3'
 
 const teamMembers = [
-  {
-    id: 1,
-    name: 'Иван Иванович Иванов',
-    position: 'генеральный директор',
-    Image: Stick1,
-    audiosrc:  Test
-  },
-  {
-    id: 2,
-    name: 'Анна Петровна Сидорова',
-    position: 'руководитель секций',
-    Image: Stick1,
-    audiosrc:  Test
-  },
-  {
-    id: 3,
-    name: 'Михаил Сергеевич Козлов',
-    position: 'тренер по фехтованию',
-    Image: Stick1,
-    audiosrc:  Test
-  },
-  {
-    id: 4,
-    name: 'Елена Владимировна Морозова',
-    position: 'художественный руководитель',
-    Image: Stick1,
-    audiosrc:  Test
-  },
-  {
-    id: 5,
-    name: 'Дмитрий Александрович Волков',
-    position: 'координатор мероприятий',
-    Image: Stick1,
-    audiosrc:  Test
-  },
-  {
-    id: 6,
-    name: 'Ольга Николаевна Белова',
-    position: 'специалист по работе с детьми',
-    Image: Stick1,
-    audiosrc:  Test
-  },
-  {
-    id: 7,
-    name: 'Алексей Игоревич Соколов',
-    position: 'технический директор',
-    Image: Stick1,
-    audiosrc:  Test
-  }
-];
+  { id: 1, name: 'Иван Иванович Иванов', position: 'генеральный директор', Image: Stick1, audiosrc: Test },
+  { id: 2, name: 'Анна Петровна Сидорова', position: 'руководитель секций', Image: Stick1, audiosrc: Test },
+  { id: 3, name: 'Михаил Сергеевич Козлов', position: 'тренер по фехтованию', Image: Stick1, audiosrc: Test },
+  { id: 4, name: 'Елена Владимировна Морозова', position: 'художественный руководитель', Image: Stick1, audiosrc: Test },
+  { id: 5, name: 'Дмитрий Александрович Волков', position: 'координатор мероприятий', Image: Stick1, audiosrc: Test },
+  { id: 6, name: 'Ольга Николаевна Белова', position: 'специалист по работе с детьми', Image: Stick1, audiosrc: Test },
+  { id: 7, name: 'Алексей Игоревич Соколов', position: 'технический директор', Image: Stick1, audiosrc: Test }
+]
 
-export default function TeamSlider({ interval = 3000 }) {
-  const [centerIndex, setCenterIndex] = useState(0);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+export default function TeamSlider({ interval = 6000 }) {
+  const [centerIndex, setCenterIndex] = useState(0)
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Обновляем useEffect, чтобы таймер сбрасывался при изменении centerIndex
-  // Это важно, чтобы при клике на пагинацию слайдер не перескакивал сразу
+  // Управление автоматическим переключением
   useEffect(() => {
-    if (isAudioPlaying) return; // блокируем авто-переключение, если играет аудио
-    const timer = setInterval(() => {
-      setCenterIndex((prev) => (prev + 1) % teamMembers.length);
-    }, interval);
-    return () => clearInterval(timer);
-  }, [interval, centerIndex, isAudioPlaying]); // Добавляем флаг проигрывания
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
 
-  const getIndices = () => {
-    const totalMembers = teamMembers.length;
-    const left = (centerIndex - 1 + totalMembers) % totalMembers;
-    const right = (centerIndex + 1) % totalMembers;
-    // Возвращаем индексы в порядке: [слева, в центре, справа]
-    return [left, centerIndex, right];
-  };
+    if (isAudioPlaying) {
+      // если играет аудио — ждём сигнал окончания
+      return
+    }
 
-  const handleDotClick = (index: number) => {
-    setCenterIndex(index);
-  };
+    // медленнее, если аудио не играет
+    timeoutRef.current = setTimeout(() => {
+      setCenterIndex(prev => (prev + 1) % teamMembers.length)
+    }, interval)
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [centerIndex, isAudioPlaying, interval])
+
+  // вызывается из TeamCard, когда звук остановлен
+  const handleAudioState = (playing: boolean) => {
+    setIsAudioPlaying(playing)
+    if (!playing) {
+      // после окончания аудио ждём 5 секунд перед переключением
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(() => {
+        setCenterIndex(prev => (prev + 1) % teamMembers.length)
+      }, 5000)
+    }
+  }
+
+  const handleDotClick = (index: number) => setCenterIndex(index)
+
+  const getPositionStyle = (index: number) => {
+    const total = teamMembers.length
+    const offset = (index - centerIndex + total) % total
+
+    let transform = ''
+    let opacity = 1
+    let filter = 'none'
+    let zIndex = 1
+
+    if (offset === 0) {
+      transform = 'translateX(0) scale(1)'
+      opacity = 1
+      filter = 'blur(0px)'
+      zIndex = 10
+    } else if (offset === 1 || offset === -total + 1) {
+      transform = 'translateX(350px) scale(0.8)'
+      opacity = 0.5
+      filter = 'blur(5px)'
+      zIndex = 5
+    } else if (offset === total - 1 || offset === -1) {
+      transform = 'translateX(-350px) scale(0.8)'
+      opacity = 0.5
+      filter = 'blur(5px)'
+      zIndex = 5
+    } else {
+      transform = 'translateX(0) scale(0.6)'
+      opacity = 0
+      filter = 'blur(10px)'
+      zIndex = 0
+    }
+
+    return { transform, opacity, filter, zIndex }
+  }
 
   return (
-    <div>
-    <div className="flex flex-col items-center w-full"> {/* Добавляем flex-col для размещения элементов по вертикали */}
-      <div className="flex justify-center items-center gap-6 w-full">
-        {getIndices().map((index, i) => (
+    <div className="relative flex flex-col items-center w-full overflow-hidden mt-20">
+      {/* Слайдер карточек */}
+      <div className="relative flex justify-center items-center w-full h-[700px]">
+        {teamMembers.map((member, index) => (
           <div
-            key={teamMembers[index].id}
-            className={`transition-[transform,opacity,filter] duration-700 ease-in-out ${
-              // Центральная карточка всегда находится по индексу 1 в массиве, возвращаемом getIndices()
-              i === 1
-                ? 'scale-100 opacity-100 blur-0 z-10'
-                : 'scale-75 opacity-40 blur-[5px] pointer-events-none z-0'
-            }`}
-            style={{ willChange: 'transform, opacity, filter' }}
+            key={member.id}
+            className="absolute transition-all duration-700 ease-[cubic-bezier(0.45,0,0.55,1)]"
+            style={{
+              ...getPositionStyle(index),
+              willChange: 'transform, opacity, filter',
+            }}
           >
             <TeamCard
-              Image={teamMembers[index].Image}
-              name={teamMembers[index].name}
-              position={teamMembers[index].position}
-              audiosrc={teamMembers[index].audiosrc}
-              onPlayChange={setIsAudioPlaying}
+              Image={member.Image}
+              name={member.name}
+              position={member.position}
+              audiosrc={member.audiosrc}
+              onPlayChange={handleAudioState}
             />
           </div>
         ))}
       </div>
 
-      <div className="flex justify-center mt-6"> {/* Отступ сверху */}
+      {/* Пагинация */}
+      <div className="flex justify-center mt-10 gap-3">
         {teamMembers.map((_, idx) => (
           <button
             key={idx}
-            className={`w-3 h-3 rounded-full mx-1 cursor-pointer transition-colors duration-300
-              ${idx === centerIndex ? 'bg-blue-600 scale-125' : 'bg-gray-400'}`} 
-            onClick={() => handleDotClick(idx)} aria-label={`Go to slide ${idx + 1}`}
+            onClick={() => handleDotClick(idx)}
+            aria-label={`Перейти к ${idx + 1}-й карточке`}
+            className={`w-4 h-4 rounded-full border-2 border-[#F5C78B] transition-all duration-300 ${
+              idx === centerIndex
+                ? 'bg-[#F5C78B] scale-125 shadow-[0_0_10px_#F5C78B]'
+                : 'bg-transparent hover:bg-[#F5C78B]/40'
+            }`}
           />
         ))}
       </div>
     </div>
-</div>)}
+  )
+}

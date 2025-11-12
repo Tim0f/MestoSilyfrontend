@@ -245,51 +245,59 @@ export default function SchedulePage() {
         )}
       </div>
 
-      {/* 🔥 Блок событий (новый) */}
-      <div className="absolute left-0 right-0 top-[1189px] bg-[#1F1B1C] flex flex-col items-center py-[60px]">
-        {events.map(event => (
-          <div
-            key={event.id}
-            onClick={() => toggleEvent(event)}
-            className={`w-[90%] max-w-[1800px] cursor-pointer transition-all ${
-              selectedEvent?.id === event.id ? 'bg-[#2D282A] p-[40px] rounded-[8px]' : 'bg-[#2D282A]'
-            }`}
-          >
-            {/* Свернутый вид */}
-            {selectedEvent?.id !== event.id && (
-              <div className="h-[285px] bg-cover bg-center flex items-center justify-between px-[80px]" style={{ backgroundImage: `url(${event.imageUrl})` }}>
-                <h3 className="text-[96px] font-bold text-[#F5C78B] font-['Zero_Cool']">
-                  {new Date(event.startTime).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}{' '}
-                  {formatTime(event.startTime)}–{formatTime(event.endTime)}
-                </h3>
-                <span className="text-[32px] text-[#F4C884]">{event.title}</span>
-              </div>
-            )}
-
-            {/* Развёрнутый вид */}
-            {selectedEvent?.id === event.id && (
-              <div className="flex gap-[40px] items-center">
-                <img src={event.imageUrl} alt={event.title} className="w-[600px] h-[400px] object-cover rounded-[8px]" />
-                <div className="flex flex-col gap-[16px] max-w-[800px]">
-                  <h3 className="text-[64px] font-['Zero_Cool'] text-[#F5C78B]">{event.title}</h3>
-                  <p className="text-[20px] text-white">{event.description}</p>
-                  <p className="text-[24px] text-[#F4C884] font-bold">
-                    {new Date(event.startTime).toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', weekday: 'long' })} {' '}
-                    {formatTime(event.startTime)}–{formatTime(event.endTime)}
-                  </p>
-                  <div className="mt-[16px] flex gap-[16px] items-center">
-                    <span className="text-[32px] font-bold text-white">
-                      Стоимость: {event.price ? `${event.price}₽` : 'Бесплатно'}
-                    </span>
-                    <button className="bg-[#F4C884] text-black font-bold px-[40px] py-[16px] rounded-[5px] border-2 border-[#2D282A] hover:bg-[#F4C884]/80 transition">
-                      записаться
-                    </button>
+            {/* 🔥 Блок событий (новый) */}
+            <div className="absolute left-0 right-0 top-[1189px] bg-[#1F1B1C] flex flex-col items-center py-[60px]">
+        {events.length > 0 && (
+          <>
+            <div className="relative w-full flex flex-col items-center">
+              {/* Отображаем выбранное событие */}
+              {events.map(event => (
+                selectedEvent?.id === event.id ? (
+                  <div
+                    key={event.id}
+                    className="w-[90%] max-w-[1800px] transition-all bg-[#2D282A] p-[40px] rounded-[8px]"
+                  >
+                    <div className="flex gap-[40px] items-center">
+                      <img src={event.imageUrl} alt={event.title} className="w-[600px] h-[400px] object-cover rounded-[8px]" />
+                      <div className="flex flex-col gap-[16px] max-w-[800px]">
+                        <h3 className="text-[64px] font-['Zero_Cool'] text-[#F5C78B]">{event.title}</h3>
+                        <p className="text-[20px] text-white">{event.description}</p>
+                        <p className="text-[24px] text-[#F4C884] font-bold">
+                          {new Date(event.startTime).toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', weekday: 'long' })} {' '}
+                          {formatTime(event.startTime)}–{formatTime(event.endTime)}
+                        </p>
+                        <div className="mt-[16px] flex gap-[16px] items-center">
+                          <span className="text-[32px] font-bold text-white">
+                            Стоимость: {event.price ? `${event.price}₽` : 'Бесплатно'}
+                          </span>
+                          <button className="bg-[#F4C884] text-black font-bold px-[40px] py-[16px] rounded-[5px] border-2 border-[#2D282A] hover:bg-[#F4C884]/80 transition">
+                            записаться
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : null
+              ))}
+
+              {/* Навигационные точки */}
+              <div className="flex justify-center gap-[16px] mt-[40px]">
+                {events.map((_, index) => {
+                  const isActive = selectedEvent ? events.indexOf(selectedEvent) === index : index === 0
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedEvent(events[index])}
+                      className={`w-[50px] h-[50px] rounded-full border-4 border-[#F5C78B] transition-all ${
+                        isActive ? 'bg-[#F5C78B] scale-110' : 'bg-transparent hover:bg-[#F5C78B]/30'
+                      }`}
+                    />
+                  )
+                })}
               </div>
-            )}
-          </div>
-        ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
