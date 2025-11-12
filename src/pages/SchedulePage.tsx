@@ -10,17 +10,25 @@ interface Session {
   endTime: string
   capacity: number
   currentEnrollment: number
-  section: {
-    name: string
-  }
-  teacher: {
-    name: string
-  }
+  section: { name: string }
+  teacher: { name: string }
   location?: string
+}
+
+interface Event {
+  id: number
+  title: string
+  description: string
+  imageUrl: string
+  startTime: string
+  endTime: string
+  price?: number
 }
 
 export default function SchedulePage() {
   const [sessions, setSessions] = useState<Session[]>([])
+  const [events, setEvents] = useState<Event[]>([])
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [enrolledSessions, setEnrolledSessions] = useState<number[]>([])
   const [subscriptionCount, setSubscriptionCount] = useState(5)
@@ -28,6 +36,7 @@ export default function SchedulePage() {
 
   useEffect(() => {
     fetchSessions()
+    fetchEvents()
     if (isAuthenticated) fetchUserEnrollments()
   }, [selectedDate, isAuthenticated])
 
@@ -38,6 +47,15 @@ export default function SchedulePage() {
       setSessions(res.data)
     } catch (err) {
       console.error('Ошибка загрузки расписания:', err)
+    }
+  }
+
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get('/api/events')
+      setEvents(res.data)
+    } catch (err) {
+      console.error('Ошибка загрузки событий:', err)
     }
   }
 
@@ -81,10 +99,8 @@ export default function SchedulePage() {
   }
 
   const weekDates = getWeekDates()
-
   const formatDate = (d: Date) =>
     d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'numeric' })
-
   const formatTime = (t: string) =>
     new Date(t).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
 
@@ -101,12 +117,19 @@ export default function SchedulePage() {
   }
 
   const handleSelectDate = (d: Date) => setSelectedDate(d)
-
   const weekRange = `${formatDate(weekDates[0])} - ${formatDate(weekDates[6])}`
 
-  const filteredSessions = sessions.filter(s =>
-    new Date(s.startTime).toDateString() === selectedDate.toDateString()
+  const filteredSessions = sessions.filter(
+    s => new Date(s.startTime).toDateString() === selectedDate.toDateString()
   )
+
+  const toggleEvent = (event: Event) => {
+    if (selectedEvent?.id === event.id) {
+      setSelectedEvent(null)
+    } else {
+      setSelectedEvent(event)
+    }
+  }
 
   return (
     <div className="relative w-[1920px] min-h-[2180px] bg-[#2D282A] text-white font-['Unbounded']">
@@ -114,6 +137,7 @@ export default function SchedulePage() {
       <h1 className="text-center mt-[176px] text-[96px] font-bold text-[#F5C78B] font-['Zero_Cool'] tracking-[8px]">
         РАСПИСАНИЕ
       </h1>
+
 
       {/* Кол-во бесплатных посещений */}
       <div className="absolute left-[40px] top-[314px] flex items-center gap-[24px]">
@@ -195,6 +219,7 @@ export default function SchedulePage() {
                         }`}
                       >
                         <img src="path_to_person_icon.png" alt="teacher" className="w-[16px] h-[16px]" />
+
                       </div>
                       <span className="text-[16px]">{session.teacher.name}</span>
                     </div>
@@ -218,6 +243,53 @@ export default function SchedulePage() {
             )
           })
         )}
+      </div>
+
+      {/* 🔥 Блок событий (новый) */}
+      <div className="absolute left-0 right-0 top-[1189px] bg-[#1F1B1C] flex flex-col items-center py-[60px]">
+        {events.map(event => (
+          <div
+            key={event.id}
+            onClick={() => toggleEvent(event)}
+            className={`w-[90%] max-w-[1800px] cursor-pointer transition-all ${
+              selectedEvent?.id === event.id ? 'bg-[#2D282A] p-[40px] rounded-[8px]' : 'bg-[#2D282A]'
+            }`}
+          >
+            {/* Свернутый вид */}
+            {selectedEvent?.id !== event.id && (
+              <div className="h-[285px] bg-cover bg-center flex items-center justify-between px-[80px]" style={{ backgroundImage: `url(${event.imageUrl})` }}>
+                <h3 className="text-[96px] font-bold text-[#F5C78B] font-['Zero_Cool']">
+                  {new Date(event.startTime).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' })}{' '}
+                  {formatTime(event.startTime)}–{formatTime(event.endTime)}
+                </h3>
+                <span className="text-[32px] text-[#F4C884]">{event.title}</span>
+              </div>
+            )}
+
+            {/* Развёрнутый вид */}
+            {selectedEvent?.id === event.id && (
+              <div className="flex gap-[40px] items-center">
+                <img src={event.imageUrl} alt={event.title} className="w-[600px] h-[400px] object-cover rounded-[8px]" />
+                <div className="flex flex-col gap-[16px] max-w-[800px]">
+                  <h3 className="text-[64px] font-['Zero_Cool'] text-[#F5C78B]">{event.title}</h3>
+                  <p className="text-[20px] text-white">{event.description}</p>
+                  <p className="text-[24px] text-[#F4C884] font-bold">
+                    {new Date(event.startTime).toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', weekday: 'long' })} {' '}
+                    {formatTime(event.startTime)}–{formatTime(event.endTime)}
+                  </p>
+                  <div className="mt-[16px] flex gap-[16px] items-center">
+                    <span className="text-[32px] font-bold text-white">
+                      Стоимость: {event.price ? `${event.price}₽` : 'Бесплатно'}
+                    </span>
+                    <button className="bg-[#F4C884] text-black font-bold px-[40px] py-[16px] rounded-[5px] border-2 border-[#2D282A] hover:bg-[#F4C884]/80 transition">
+                      записаться
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   )
