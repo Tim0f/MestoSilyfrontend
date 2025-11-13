@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import TeamCard from './TeamCard'
-import Stick1 from '../assets/img/sticker1.webp'
-import Test from '../assets/test.mp3'
+import Stick1 from '../../assets/img/sticker1.webp'
+import Test from '../../assets/test.mp3'
 
 const teamMembers = [
   { id: 1, name: 'Иван Иванович Иванов', position: 'генеральный директор', Image: Stick1, audiosrc: Test },
@@ -87,7 +87,6 @@ export default function TeamSlider({ interval = 6000 }) {
 
   return (
     <div className="relative flex flex-col items-center w-full overflow-hidden mt-20">
-      {/* Слайдер карточек */}
       <div className="relative flex justify-center items-center w-full h-[700px]">
         {teamMembers.map((member, index) => (
           <div
