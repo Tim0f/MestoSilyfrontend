@@ -1,4 +1,4 @@
-import texturedSquare from '../../assets/svg/texturedSquare.svg'
+import texturedSquare from '../../assets/svg/texturedBorder.svg'
 import { Link } from 'react-router-dom'
 
 export type ShowcaseSection = {

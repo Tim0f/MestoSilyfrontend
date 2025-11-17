@@ -1,4 +1,4 @@
-import texturedSquare from '../../assets/svg/texturedSquare.svg'
+import texturedSquare from '../../assets/svg/texturedBorder.svg'
 
 type NewsCardProps = {
   title: string
