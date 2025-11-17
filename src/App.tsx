@@ -9,7 +9,9 @@ import ProfilePage from './pages/ProfilePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import SectionsPage from './pages/SectionsPage'
+import AdminDashboardPage from './pages/AdminDashboardPage'
 import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -24,6 +26,14 @@ function App() {
             <Route path="chats" element={<ChatsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="sections" element={<SectionsPage />} />
+            <Route
+              path="admin"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboardPage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
