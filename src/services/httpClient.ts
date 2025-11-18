@@ -13,7 +13,7 @@ export interface RequestOptions<TBody = unknown> {
 }
 
 export interface HttpClientOptions {
-  baseUrl: 'http://localhost:3000';
+  baseUrl: string;
   /**
    * Возвращает JWT токен. Может быть синхронной или асинхронной функцией.
    * Если вернёт undefined/null/пустую строку, заголовок Authorization не добавляется.
@@ -42,8 +42,12 @@ export class HttpClient {
   private readonly baseUrl: string;
 
   constructor(private readonly options: HttpClientOptions) {
-    this.fetchFn = options.fetchFn ?? globalThis.fetch;
-    if (!this.fetchFn) {
+    // Привязываем fetch к глобальному объекту window, чтобы не терять контекст
+    if (options.fetchFn) {
+      this.fetchFn = options.fetchFn.bind(globalThis);
+    } else if (globalThis.fetch) {
+      this.fetchFn = globalThis.fetch.bind(globalThis);
+    } else {
       throw new Error('Глобальный fetch недоступен. Передайте fetchFn в HttpClientOptions.');
     }
 
@@ -88,7 +92,6 @@ export class HttpClient {
               url.searchParams.append(key, String(item));
             }
           });
-
           return;
         }
 
@@ -137,7 +140,7 @@ export class HttpClient {
     if (body !== undefined && body !== null) {
       if (this.isFormData(body)) {
         payload = body as FormData;
-        // Для FormData заголовок Content-Type выставляется автоматически
+        // Content-Type для FormData устанавливается автоматически
       } else if (
         typeof body === 'object' &&
         !this.isArrayBufferLike(body) &&
@@ -161,7 +164,7 @@ export class HttpClient {
       let errorPayload: unknown;
       try {
         errorPayload = await response.clone().json();
-      } catch (error) {
+      } catch {
         try {
           errorPayload = await response.clone().text();
         } catch {
@@ -218,4 +221,3 @@ export class HttpClient {
     });
   }
 }
-
