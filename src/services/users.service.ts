@@ -1,6 +1,21 @@
-import type { UpdateUserDto } from '@/users/dto/update-user.dto';
-import type { CreateAdminDto } from '@/users/dto/create-admin.dto';
 import { HttpClient } from './httpClient';
+
+export interface UpdateUserDto {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  dateOfBirth?: string;
+  isActive?: boolean;
+  role?: 'USER' | 'ADMIN' | 'ROOT';
+}
+
+export interface CreateAdminDto {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+}
 
 export class UsersFrontendService {
   constructor(private readonly http: HttpClient) {}
@@ -37,4 +52,3 @@ export class UsersFrontendService {
     return this.http.delete<T>(`/users/admins/${adminId}`);
   }
 }
-

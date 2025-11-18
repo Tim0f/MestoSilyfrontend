@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   User,
   Calendar,
@@ -9,86 +9,86 @@ import {
   Trophy,
   Clock,
   Gift,
-} from 'lucide-react'
+} from 'lucide-react';
 
 interface Achievement {
-  id: number
-  title: string
-  description: string
-  imageUrl?: string
-  type: string
-  sectionId?: number
+  id: number;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  type: string;
+  sectionId?: number;
 }
 
 interface TodaySession {
-  id: number
-  startTime: string
-  endTime: string
+  id: number;
+  startTime: string;
+  endTime: string;
   section: {
-    name: string
-  }
+    name: string;
+  };
 }
 
 export default function ProfilePage() {
-  const { user, isAuthenticated } = useAuth()
-  const navigate = useNavigate()
-  const [achievements, setAchievements] = useState<Achievement[]>([])
-  const [todaySessions, setTodaySessions] = useState<TodaySession[]>([])
-  const [transferAmount, setTransferAmount] = useState('')
-  const [recipientEmail, setRecipientEmail] = useState('')
-  const [showTransferForm, setShowTransferForm] = useState(false)
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [todaySessions, setTodaySessions] = useState<TodaySession[]>([]);
+  const [transferAmount, setTransferAmount] = useState('');
+  const [recipientEmail, setRecipientEmail] = useState('');
+  const [showTransferForm, setShowTransferForm] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/login')
-      return
+      navigate('/login');
+      return;
     }
-    fetchAchievements()
-    fetchTodaySessions()
-  }, [isAuthenticated, navigate])
+    fetchAchievements();
+    fetchTodaySessions();
+  }, [isAuthenticated, navigate]);
 
   const fetchAchievements = async () => {
     try {
-      const response = await axios.get('/api/users/me/achievements')
-      setAchievements(response.data)
+      const response = await axios.get('/api/users/me/achievements');
+      setAchievements(response.data);
     } catch (error) {
-      console.error('Ошибка загрузки достижений:', error)
+      console.error('Ошибка загрузки достижений:', error);
     }
-  }
+  };
 
   const fetchTodaySessions = async () => {
     try {
-      const today = new Date().toISOString().split('T')[0]
-      const response = await axios.get(`/api/users/me/sessions?date=${today}`)
-      setTodaySessions(response.data)
+      const today = new Date().toISOString().split('T')[0];
+      const response = await axios.get(`/api/users/me/sessions?date=${today}`);
+      setTodaySessions(response.data);
     } catch (error) {
-      console.error('Ошибка загрузки расписания:', error)
+      console.error('Ошибка загрузки расписания:', error);
     }
-  }
+  };
 
   const handleTransfer = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       await axios.post('/api/grains/transfer', {
         recipientEmail,
-        amount: parseInt(transferAmount),
-      })
-      alert('Зёрна успешно переведены!')
-      setTransferAmount('')
-      setRecipientEmail('')
-      setShowTransferForm(false)
-      window.location.reload()
+        amount: parseInt(transferAmount, 10),
+      });
+      alert('Зёрна успешно переведены!');
+      setTransferAmount('');
+      setRecipientEmail('');
+      setShowTransferForm(false);
+      window.location.reload();
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Ошибка при переводе')
+      alert(error.response?.data?.message || 'Ошибка при переводе');
     }
-  }
+  };
 
   if (!user) {
-    return null
+    return null;
   }
 
-  const generalAchievements = achievements.filter((a) => a.type === 'GENERAL')
-  const sectionAchievements = achievements.filter((a) => a.type === 'SECTION')
+  const generalAchievements = achievements.filter((a) => a.type === 'GENERAL');
+  const sectionAchievements = achievements.filter((a) => a.type === 'SECTION');
 
   return (
     <div className="bg-gray-50 min-h-screen py-12">
@@ -104,15 +104,15 @@ export default function ProfilePage() {
                 {user.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
-                    alt={user.name}
+                    alt={user.firstName || 'User avatar'}
                     className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-orange-500"
                   />
                 ) : (
                   <div className="w-32 h-32 rounded-full mx-auto mb-4 bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-5xl font-bold">
-                    {user.name.charAt(0).toUpperCase()}
+                    {user.firstName ? user.firstName.charAt(0).toUpperCase() : '?'}
                   </div>
                 )}
-                <h2 className="text-2xl font-bold">{user.name}</h2>
+                <h2 className="text-2xl font-bold">{user.firstName || 'Anonymous'}</h2>
                 <p className="text-gray-600">{user.email}</p>
               </div>
 
@@ -122,17 +122,16 @@ export default function ProfilePage() {
                   <span>
                     {new Date(user.dateOfBirth).toLocaleDateString('ru-RU')}
                   </span>
-                  {new Date(user.dateOfBirth).getMonth() ===
-                    new Date().getMonth() &&
-                    new Date(user.dateOfBirth).getDate() === new Date().getDate() && (
-                      <Gift size={18} className="text-orange-600 ml-2" />
-                    )}
+                  {new Date(user.dateOfBirth).getMonth() === new Date().getMonth() &&
+                   new Date(user.dateOfBirth).getDate() === new Date().getDate() && (
+                    <Gift size={18} className="text-orange-600 ml-2" />
+                  )}
                 </div>
               )}
 
               <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg p-4 text-center">
                 <div className="text-sm opacity-90 mb-1">Баланс зёрен</div>
-                <div className="text-4xl font-bold">🌾 {user.grainBalance}</div>
+                <div className="text-4xl font-bold">🌾 {user.grainBalance ?? 0}</div>
               </div>
             </div>
 
@@ -168,8 +167,8 @@ export default function ProfilePage() {
                     <input
                       type="number"
                       required
-                      min="1"
-                      max={user.grainBalance}
+                      min={1}
+                      max={user.grainBalance ?? 0}
                       value={transferAmount}
                       onChange={(e) => setTransferAmount(e.target.value)}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
@@ -253,9 +252,7 @@ export default function ProfilePage() {
                           )}
                           <div>
                             <h5 className="font-bold">{achievement.title}</h5>
-                            <p className="text-sm text-gray-700">
-                              {achievement.description}
-                            </p>
+                            <p className="text-sm text-gray-700">{achievement.description}</p>
                           </div>
                         </div>
                       ))}
@@ -265,9 +262,7 @@ export default function ProfilePage() {
 
                 {sectionAchievements.length > 0 && (
                   <div>
-                    <h4 className="text-xl font-semibold mb-3">
-                      Достижения по секциям
-                    </h4>
+                    <h4 className="text-xl font-semibold mb-3">Достижения по секциям</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {sectionAchievements.map((achievement) => (
                         <div
@@ -287,9 +282,7 @@ export default function ProfilePage() {
                           )}
                           <div>
                             <h5 className="font-bold">{achievement.title}</h5>
-                            <p className="text-sm text-gray-700">
-                              {achievement.description}
-                            </p>
+                            <p className="text-sm text-gray-700">{achievement.description}</p>
                           </div>
                         </div>
                       ))}
@@ -302,6 +295,5 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
