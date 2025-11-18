@@ -33,6 +33,8 @@ const EMPTY_COLLECTIONS: DashboardCollections = {
   sessions: [],
 }
 
+const allowedRoles = ['admin', 'ROOT'];
+
 const LIST_CANDIDATE_KEYS = ['items', 'data', 'results', 'rows', 'list']
 
 function normalizeList(payload: unknown): EntityRecord[] {
@@ -214,7 +216,7 @@ export default function AdminDashboardPage() {
     return <Loading />
   }
 
-  if (user && user.role !== 'admin') {
+  if (user && !allowedRoles.includes(user.role)) {
     return (
       <div className="min-h-[70vh] bg-[#0f0f10] text-white flex items-center justify-center px-6">
         <div className="max-w-lg text-center space-y-4">

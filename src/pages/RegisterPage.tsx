@@ -1,39 +1,57 @@
-import { useState, FormEvent } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { UserPlus } from 'lucide-react'
+import { useState, FormEvent } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { UserPlus } from 'lucide-react';
 
 export default function RegisterPage() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
-  const navigate = useNavigate()
-  const { register } = useAuth()
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { register } = useAuth();
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
+    setError('');
 
     if (password !== confirmPassword) {
-      setError('Пароли не совпадают')
-      return
+      setError('Пароли не совпадают');
+      return;
     }
 
     if (password.length < 6) {
-      setError('Пароль должен быть не менее 6 символов')
-      return
+      setError('Пароль должен быть не менее 6 символов');
+      return;
+    }
+
+    if (!dateOfBirth) {
+      setError('Укажите дату рождения');
+      return;
+    }
+
+    if (!phone) {
+      setError('Укажите номер телефона');
+      return;
+    }
+
+    if (!firstName || !lastName) {
+      setError('Укажите имя и фамилию');
+      return;
     }
 
     try {
-      await register(email, password, name)
-      // После успешной регистрации переходим на страницу входа
-      navigate('/login', { state: { message: 'Регистрация успешна! Войдите в аккаунт.' } })
+      await register(email, password, firstName, lastName, phone, dateOfBirth);
+      // After registration, redirect to login page with success message
+      navigate('/login', { state: { message: 'Регистрация успешна! Войдите в аккаунт.' } });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Ошибка регистрации. Попробуйте снова.')
+      setError(err.response?.data?.message || 'Ошибка регистрации. Попробуйте снова.');
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-dark-900 flex items-center justify-center px-4 py-20">
@@ -55,17 +73,62 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-light text-gray-400 mb-2">
+              <label htmlFor="firstName" className="block text-sm font-light text-gray-400 mb-2">
                 Имя
               </label>
               <input
-                id="name"
+                id="firstName"
                 type="text"
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                 placeholder="Ваше имя"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="lastName" className="block text-sm font-light text-gray-400 mb-2">
+                Фамилия
+              </label>
+              <input
+                id="lastName"
+                type="text"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                placeholder="Ваша фамилия"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-light text-gray-400 mb-2">
+                Телефон
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                placeholder="+79001234567"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="dateOfBirth" className="block text-sm font-light text-gray-400 mb-2">
+                Дата рождения
+              </label>
+              <input
+                id="dateOfBirth"
+                type="date"
+                required
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                placeholder="2010-01-01"
               />
             </div>
 
@@ -133,6 +196,5 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
