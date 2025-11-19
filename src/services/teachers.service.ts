@@ -1,6 +1,24 @@
-import type { CreateTeacherDto } from '@/teachers/dto/create-teacher.dto';
-import type { UpdateTeacherDto } from '@/teachers/dto/update-teacher.dto';
 import { HttpClient } from './httpClient';
+
+export interface CreateTeacherDto {
+  firstName: string;
+  lastName: string;
+  middleName?: string;
+  phone?: string;
+  role?: string;
+  photoUrl?: string;
+  audioUrl?: string;
+}
+
+export interface UpdateTeacherDto {
+  firstName?: string;
+  lastName?: string;
+  middleName?: string;
+  phone?: string;
+  role?: string;
+  photoUrl?: string;
+  audioUrl?: string;
+}
 
 export class TeachersFrontendService {
   constructor(private readonly http: HttpClient) {}

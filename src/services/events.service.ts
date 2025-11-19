@@ -1,7 +1,35 @@
-import type { CreateEventDto } from '@/events/dto/create-event.dto';
-import type { UpdateEventDto } from '@/events/dto/update-event.dto';
 import { HttpClient } from './httpClient';
 import { ensureFormData, type UploadInput } from './fileUpload';
+
+export interface CreateEventDto {
+  name: string;
+  title: string;
+  description: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  price: number;
+  maxParticipants: number;
+  textColor: string;
+  imageUrl: string;
+  bannerUrl: string;
+  createdBy: string;
+}
+
+export interface UpdateEventDto {
+  name?: string;
+  title?: string;
+  description?: string;
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+  price?: number;
+  maxParticipants?: number;
+  textColor?: string;
+  imageUrl?: string;
+  bannerUrl?: string;
+  createdBy?: string;
+}
 
 export class EventsFrontendService {
   constructor(private readonly http: HttpClient) {}

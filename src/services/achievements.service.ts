@@ -1,6 +1,22 @@
-import type { CreateAchievementDto } from '@/achievements/dto/create-achievement.dto';
-import type { UpdateAchievementDto } from '@/achievements/dto/update-achievement.dto';
 import { HttpClient } from './httpClient';
+
+export interface CreateAchievementDto {
+  name: string;
+  description: string;
+  iconUrl: string;
+  rewardGrains: number;
+  sectionId: string;
+  isActive: boolean;
+}
+
+export interface UpdateAchievementDto {
+  name?: string;
+  description?: string;
+  iconUrl?: string;
+  rewardGrains?: number;
+  sectionId?: string;
+  isActive?: boolean;
+}
 
 export interface GrantAchievementPayload {
   achievementId: string;
