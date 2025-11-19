@@ -1,7 +1,26 @@
-import type { CreateLessonDto } from '@/lessons/dto/create-lesson.dto';
-import type { UpdateLessonDto } from '@/lessons/dto/update-lesson.dto';
 import { HttpClient } from './httpClient';
 import { ensureFormData, type UploadInput } from './fileUpload';
+
+
+export interface CreateLessonDto {
+  sectionId: string;
+  teacherId: string;
+  dayOfWeek: number;
+  startsAt: string;
+  endsAt: string;
+  location: string;
+  capacity: number;
+}
+
+export interface UpdateLessonDto {
+  sectionId?: string;
+  teacherId?: string;
+  dayOfWeek?: number;
+  startsAt?: string;
+  endsAt?: string;
+  location?: string;
+  capacity?: number;
+}
 
 export class LessonsFrontendService {
   constructor(private readonly http: HttpClient) {}

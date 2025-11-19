@@ -1,7 +1,22 @@
-import type { CreateNewsDto } from '@/news/dto/create-news.dto';
-import type { UpdateNewsDto } from '@/news/dto/update-news.dto';
 import { HttpClient } from './httpClient';
 import { ensureFormData, type UploadInput } from './fileUpload';
+
+export interface CreateNewsDto {
+  title: string;
+  content: string;
+  images: string[];
+  publishedAt: string;
+  createdBy: string;
+}
+
+export interface UpdateNewsDto {
+  title?: string;
+  content?: string;
+  images?: string[];
+  publishedAt?: string;
+  createdBy?: string;
+  imageUrl?: string;
+}
 
 export class NewsFrontendService {
   constructor(private readonly http: HttpClient) {}

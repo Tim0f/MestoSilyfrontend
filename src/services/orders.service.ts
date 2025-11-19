@@ -1,5 +1,11 @@
-import type { CreateOrderDto } from '@/orders/dto/create-order.dto';
 import { HttpClient } from './httpClient';
+
+export interface CreateOrderDto {
+  items: {
+    productId: string;
+    quantity: number;
+  }[];
+}
 
 export class OrdersFrontendService {
   constructor(private readonly http: HttpClient) {}

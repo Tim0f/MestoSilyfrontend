@@ -1,7 +1,30 @@
-import type { CreateSectionDto } from '@/sections/dto/create-section.dto';
-import type { UpdateSectionDto } from '@/sections/dto/update-section.dto';
-import type { EnrollDto } from '@/sections/dto/enroll.dto';
 import { HttpClient } from './httpClient';
+
+export interface CreateSectionDto {
+  name: string;
+  description: string;
+  imageUrl: string;
+  iconUrl: string;
+  ageMin: number;
+  ageMax: number;
+  maxParticipants: number;
+  isActive: boolean;
+}
+
+export interface UpdateSectionDto {
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  iconUrl?: string;
+  ageMin?: number;
+  ageMax?: number;
+  maxParticipants?: number;
+  isActive?: boolean;
+}
+
+export interface EnrollDto {
+  sessionId: string;
+}
 
 export class SectionsFrontendService {
   constructor(private readonly http: HttpClient) {}

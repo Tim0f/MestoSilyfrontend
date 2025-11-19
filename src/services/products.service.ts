@@ -1,6 +1,21 @@
-import type { CreateProductDto } from '@/products/dto/create-product.dto';
-import type { UpdateProductDto } from '@/products/dto/update-product.dto';
 import { HttpClient } from './httpClient';
+
+export interface CreateProductDto {
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  isActive: boolean;
+}
+
+export interface UpdateProductDto {
+  name?: string;
+  description?: string;
+  price?: number;
+  imageUrl?: string;
+  isActive?: boolean;
+}
+
 
 export class ProductsFrontendService {
   constructor(private readonly http: HttpClient) {}

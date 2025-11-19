@@ -1,7 +1,18 @@
-import type { CreatePartnerDto } from '@/partners/dto/create-partner.dto';
-import type { UpdatePartnerDto } from '@/partners/dto/update-partner.dto';
 import { HttpClient } from './httpClient';
 import { ensureFormData, type UploadInput } from './fileUpload';
+
+export interface CreatePartnerDto {
+  name: string;
+  imageUrl: string;
+  link: string;
+}
+
+export interface UpdatePartnerDto {
+  name?: string;
+  imageUrl?: string;
+  link?: string;
+}
+
 
 export class PartnersFrontendService {
   constructor(private readonly http: HttpClient) {}

@@ -1,7 +1,24 @@
-import type { AddGrainsDto } from '@/grains/dto/add-grains.dto';
-import type { DeductGrainsDto } from '@/grains/dto/deduct-grains.dto';
-import type { TransferGrainsDto } from '@/grains/dto/transfer-grains.dto';
 import { HttpClient } from './httpClient';
+
+export interface AddGrainsDto {
+  userId: string;
+  amount: number;
+  reason: string;
+}
+
+export interface DeductGrainsDto {
+  userId: string;
+  amount: number;
+  reason: string;
+}
+
+export interface TransferGrainsDto {
+  toUserId: string;
+  toUserEmail: string;
+  amount: number;
+  message: string;
+}
+
 
 export class GrainsFrontendService {
   constructor(private readonly http: HttpClient) {}
