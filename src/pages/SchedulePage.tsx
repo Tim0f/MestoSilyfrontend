@@ -132,9 +132,9 @@ export default function SchedulePage() {
   }
 
   return (
-    <div className="relative w-[1920px] min-h-[2180px] bg-[#2D282A] text-white font-['Unbounded']">
+    <div className="relative w-[1920px] min-h-[2180px] bg-[#464042] text-white font-['Unbounded']">
       {/* Заголовок */}
-      <h1 className="text-center mt-[176px] text-[96px] font-bold text-[#F5C78B] font-['Zero_Cool'] tracking-[8px]">
+      <h1 className="text-center mt-[176px] text-[96px] font-h1 text-[#F5C78B] font-['Zero_Cool'] tracking-[8px]">
         РАСПИСАНИЕ
       </h1>
 
@@ -143,7 +143,7 @@ export default function SchedulePage() {
       <div className="absolute left-[40px] top-[314px] flex items-center gap-[24px]">
         <span className="text-[20px]">Кол-во бесплатных посещений:</span>
         <div className="w-[70px] h-[69px] bg-[#F5C78B] flex justify-center items-center rounded-[5px] border-2 border-[#F4C884]">
-          <span className="text-[20px] text-black font-bold">{subscriptionCount}</span>
+          <span className="text-[20px] text-black font-h1">{subscriptionCount}</span>
         </div>
       </div>
 
@@ -161,7 +161,7 @@ export default function SchedulePage() {
                   isActive ? 'bg-[#F5C78B] text-black' : 'text-white hover:bg-[#F4C884]/20'
                 }`}
               >
-                <span className="text-[24px] font-bold">
+                <span className="text-[24px] font-h1">
                   {date.getDate()}
                 </span>
                 <span className="text-[16px] uppercase">{dayName}</span>
@@ -199,14 +199,14 @@ export default function SchedulePage() {
                 <div className="ml-[140px] flex flex-col justify-between h-full py-[20px]">
                   <div>
                     <span
-                      className={`text-[96px] font-bold font-['Zero_Cool'] leading-[110px] ${
+                      className={`text-[96px] font-h1 font-['Zero_Cool'] leading-[110px] ${
                         isEnrolled ? 'text-black' : 'text-[#F5C78B]'
                       }`}
                     >
                       {formatTime(session.startTime)}
                     </span>
                     <div className="mt-[24px]">
-                      <h3 className="text-[32px] font-bold">{session.section.name}</h3>
+                      <h3 className="text-[32px] font-h1">{session.section.name}</h3>
                       <p className="text-[16px] mt-[14px] max-w-[300px]">
                         Место: {session.location || 'зал №1'} <br />
                         Участников: {session.currentEnrollment}/{session.capacity}
@@ -228,13 +228,13 @@ export default function SchedulePage() {
                     {!isEnrolled ? (
                       <button
                         onClick={() => handleEnroll(session.id)}
-                        className="relative w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-[#2D282A] text-[20px] text-black font-bold hover:bg-[#F4C884]/80 transition"
+                        className="relative w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-[#2D282A] text-[20px] text-black font-h1 hover:bg-[#F4C884]/80 transition"
                       >
                         записаться
                       </button>
                     ) : (
                       <div className="relative w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-black flex items-center justify-center">
-                        <span className="text-[20px] font-bold">записан(а)</span>
+                        <span className="text-[20px] font-h1">записан(а)</span>
                       </div>
                     )}
                   </div>
@@ -262,15 +262,15 @@ export default function SchedulePage() {
                       <div className="flex flex-col gap-[16px] max-w-[800px]">
                         <h3 className="text-[64px] font-['Zero_Cool'] text-[#F5C78B]">{event.title}</h3>
                         <p className="text-[20px] text-white">{event.description}</p>
-                        <p className="text-[24px] text-[#F4C884] font-bold">
+                        <p className="text-[24px] text-[#F4C884] font-h1">
                           {new Date(event.startTime).toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', weekday: 'long' })} {' '}
                           {formatTime(event.startTime)}–{formatTime(event.endTime)}
                         </p>
                         <div className="mt-[16px] flex gap-[16px] items-center">
-                          <span className="text-[32px] font-bold text-white">
+                          <span className="text-[32px] font-h1 text-white">
                             Стоимость: {event.price ? `${event.price}₽` : 'Бесплатно'}
                           </span>
-                          <button className="bg-[#F4C884] text-black font-bold px-[40px] py-[16px] rounded-[5px] border-2 border-[#2D282A] hover:bg-[#F4C884]/80 transition">
+                          <button className="bg-[#F4C884] text-black font-h1 px-[40px] py-[16px] rounded-[5px] border-2 border-[#2D282A] hover:bg-[#F4C884]/80 transition">
                             записаться
                           </button>
                         </div>

@@ -1,50 +1,45 @@
-import { MapPin, Phone, Mail } from 'lucide-react'
+import { Send } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="bg-dark-900 text-gray-300 mt-12 border-t border-primary-900/30">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="text-xl font-light text-primary-400 mb-4">О месте</h3>
-            <p className="text-gray-400 font-light">
-              Место силы - пространство для комфорта и развития.
-              Секции и мероприятия для всех.
-            </p>
-          </div>
-          
-          <div>
-            <h3 className="text-xl font-light text-primary-400 mb-4">Контакты</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-gray-400">
-                <Phone size={18} />
-                <span className="font-light">+7 (495) 123-45-67</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-400">
-                <Mail size={18} />
-                <span className="font-light">info@mestosily.ru</span>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="text-xl font-light text-primary-400 mb-4">Наша площадка</h3>
-            <div className="flex items-start gap-2 text-gray-400">
-              <MapPin size={18} className="mt-1 flex-shrink-0" />
-              <div className="font-light">
-                <p>г. Москва</p>
-                <p>Природная территория</p>
-                <p>Экопарк "Место силы"</p>
-              </div>
-            </div>
-          </div>
+    <footer className="w-full bg-[#353037] text-[#F4C884] px-10 py-16">
+      <div className="max-w-[1600px] mx-auto flex justify-between items-start">
+
+        {/* Левый блок */}
+        <div className="flex flex-col">
+          <h2 className="text-4xl font-h2 mb-3">
+            Где мы находимся:
+          </h2>
+          <p className="text-xl mb-6">г.Москва Партийный переулок, 1к10</p>
+
+          <iframe
+  src="https://yandex.ru/map-widget/v1/?ll=37.632925%2C55.719176&z=17&pt=37.632925,55.719176"
+  width="650"
+  height="500"
+  frameBorder="0"
+  className="rounded-lg"
+></iframe>
+
         </div>
-        
-        <div className="border-t border-primary-900/30 mt-8 pt-6 text-center text-gray-500">
-          <p className="font-light">&copy; {new Date().getFullYear()} Место силы. Все права защищены.</p>
+
+        {/* Правый блок */}
+        <div className="flex flex-col items-end text-right gap-6">
+
+          <div className="flex items-center gap-6">
+            <Send className="w-10 h-10 text-[#F4C884] rotate-[-15deg] cursor-pointer" />
+          </div>
+
+          <div className="flex flex-col gap-1 text-[#F4C884] text-xl">
+            <a href="mailto:mestosily@gmail.com" className="hover:opacity-70">
+              mestosily@gmail.com
+            </a>
+            <a href="tel:+79269887798" className="hover:opacity-70">
+              +7 926 988 77 98
+            </a>
+          </div>
+
         </div>
       </div>
     </footer>
   )
 }
-

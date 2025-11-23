@@ -10,7 +10,7 @@ export default function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
     <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 flex items-start gap-4">
       <AlertCircle className="text-red-600 flex-shrink-0" size={24} />
       <div className="flex-1">
-        <h3 className="text-red-900 font-semibold mb-1">Произошла ошибка</h3>
+        <h3 className="text-red-900 font-h2 mb-1">Произошла ошибка</h3>
         <p className="text-red-700">{message}</p>
         {onRetry && (
           <button

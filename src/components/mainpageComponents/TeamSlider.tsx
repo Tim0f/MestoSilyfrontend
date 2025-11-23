@@ -86,7 +86,7 @@ export default function TeamSlider({ interval = 6000 }) {
   }
 
   return (
-    <div className="relative flex flex-col items-center w-full overflow-hidden mt-20">
+    <div className="relative flex flex-col items-center w-full  mt-20">
       <div className="relative flex justify-center items-center w-full h-[700px]">
         {teamMembers.map((member, index) => (
           <div

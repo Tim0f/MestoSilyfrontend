@@ -7,10 +7,10 @@ export default function BazarPage() {
     ];
   
     return (
-      <div className="w-full min-h-screen bg-[#1f1b1c] text-white p-6">
+      <div className="w-full min-h-screen bg-[#2D282A] text-white p-6">
         {/* Заголовок */}
         <div className="text-center mb-10 mt-10">
-          <h1 className="text-5xl font-bold mb-2 tracking-wider">БАЗАР</h1>
+          <h1 className="text-5xl font-h1 mb-2 tracking-wider">БАЗАР</h1>
           <p className="text-primary-300 text-lg max-w-xl mx-auto opacity-80">
             При покупке вам придёт чек на почту, который нужно показать там, где можно материализовать покупку
           </p>
@@ -24,17 +24,17 @@ export default function BazarPage() {
               className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
             >
               {/* Цена */}
-              <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-bold px-3 py-1 rounded-md shadow">
+              <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow">
                 {item.price} 🌾
               </div>
   
               {/* Плейсхолдер изображения */}
               <div className="w-full h-40 bg-gray-300/30 rounded-lg mb-4"></div>
   
-              <h2 className="text-xl font-bold mb-1">{item.title}</h2>
+              <h2 className="text-xl font-h1 mb-1">{item.title}</h2>
               <p className="text-sm text-primary-300 mb-4">{item.desc}</p>
   
-              <button className="w-full bg-[#f6c98f] text-black font-bold py-2 rounded-md mt-auto hover:brightness-90">
+              <button className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90">
                 купить
               </button>
             </div>

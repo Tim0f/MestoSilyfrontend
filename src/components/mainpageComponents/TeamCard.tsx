@@ -29,7 +29,7 @@ export default function TeamCard({ Image, name, position, audiosrc, onPlayChange
       </div>
 
       <div className="text-p font-p text-center">{position}</div>
-      <div className="font-bold text-h2 font-h2 text-center">{name}</div>
+      <div className="font-h1 text-h2 font-h2 text-center">{name}</div>
       <AudioPlayer src={audiosrc} onPlayChange={onPlayChange} />
     </div>
   )

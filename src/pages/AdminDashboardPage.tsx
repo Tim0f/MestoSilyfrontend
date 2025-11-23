@@ -221,7 +221,7 @@ export default function AdminDashboardPage() {
       <div className="min-h-[70vh] bg-[#0f0f10] text-white flex items-center justify-center px-6">
         <div className="max-w-lg text-center space-y-4">
           <ShieldCheck className="mx-auto text-yellow-400" size={48} />
-          <h1 className="text-3xl font-semibold">Доступ ограничен</h1>
+          <h1 className="text-3xl font-h2">Доступ ограничен</h1>
           <p className="text-base text-gray-300">
             Эта страница доступна только администраторам. Обратитесь к ответственному сотруднику, чтобы получить
             соответствующие права.
@@ -247,7 +247,7 @@ export default function AdminDashboardPage() {
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-yellow-500">Админпанель</p>
-            <h1 className="text-4xl md:text-5xl font-semibold mt-2">Обзор Места Силы</h1>
+            <h1 className="text-4xl md:text-5xl font-h2 mt-2">Обзор Места Силы</h1>
             <p className="text-gray-300 mt-3 max-w-2xl">
               Управляйте разделами, событиями, заказами и пользователями через единый интерфейс, построенный на серверах
               `@services`.
@@ -261,7 +261,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
               onClick={loadDashboard}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-400 px-5 py-3 text-sm font-semibold text-yellow-300 transition hover:bg-yellow-400 hover:text-black"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-400 px-5 py-3 text-sm font-h2 text-yellow-300 transition hover:bg-yellow-400 hover:text-black"
             >
               <RefreshCw size={18} />
               Обновить данные
@@ -269,7 +269,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={handleDownloadSessionTemplate}
               disabled={downloadingTemplate}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-500 px-5 py-3 text-sm font-semibold text-black transition hover:bg-yellow-400 disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-500 px-5 py-3 text-sm font-h2 text-black transition hover:bg-yellow-400 disabled:opacity-60"
             >
               <Download size={18} />
               {downloadingTemplate ? 'Загрузка...' : 'Шаблон занятий'}
@@ -294,7 +294,7 @@ export default function AdminDashboardPage() {
                 <span className="text-xs uppercase tracking-[0.2em] text-gray-500">Live</span>
               </div>
               <p className="text-sm text-gray-400">{description}</p>
-              <p className="text-4xl font-semibold mt-2">{new Intl.NumberFormat('ru-RU').format(value)}</p>
+              <p className="text-4xl font-h2 mt-2">{new Intl.NumberFormat('ru-RU').format(value)}</p>
               <p className="text-xs text-gray-500 mt-2">Источник: соответствующий сервис API</p>
             </div>
           ))}
@@ -303,7 +303,7 @@ export default function AdminDashboardPage() {
         <section className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold flex items-center gap-2">
+              <h2 className="text-2xl font-h2 flex items-center gap-2">
                 <Newspaper size={22} />
                 Свежие новости
               </h2>
@@ -324,7 +324,7 @@ export default function AdminDashboardPage() {
 
           <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold flex items-center gap-2">
+              <h2 className="text-2xl font-h2 flex items-center gap-2">
                 <CreditCard size={22} />
                 Ожидающие чеки
               </h2>
@@ -337,7 +337,7 @@ export default function AdminDashboardPage() {
                     <p className="font-medium">{getEntityTitle(receipt)}</p>
                     <p className="text-sm text-gray-400">{getEntityMeta(receipt)}</p>
                   </div>
-                  <button className="text-sm font-semibold text-yellow-400 hover:text-yellow-300 transition">
+                  <button className="text-sm font-h2 text-yellow-400 hover:text-yellow-300 transition">
                     Отметить
                   </button>
                 </div>
@@ -351,7 +351,7 @@ export default function AdminDashboardPage() {
 
         <section className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-6">
-            <h2 className="text-2xl font-semibold flex items-center gap-2">
+            <h2 className="text-2xl font-h2 flex items-center gap-2">
               <Layers3 size={22} />
               Активные секции и уроки
             </h2>
@@ -372,7 +372,7 @@ export default function AdminDashboardPage() {
 
         <section className="grid gap-6 lg:grid-cols-3">
           <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-            <h3 className="text-xl font-semibold mb-4">Партнеры</h3>
+            <h3 className="text-xl font-h2 mb-4">Партнеры</h3>
             <p className="text-sm text-gray-500 mb-4 uppercase tracking-[0.3em]">partners service</p>
             <div className="space-y-3">
               {collections.partners.slice(0, 5).map((partner, index) => (
@@ -386,7 +386,7 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-            <h3 className="text-xl font-semibold mb-4">Достижения</h3>
+            <h3 className="text-xl font-h2 mb-4">Достижения</h3>
             <p className="text-sm text-gray-500 mb-4 uppercase tracking-[0.3em]">achievements service</p>
             <div className="space-y-3">
               {collections.achievements.slice(0, 5).map((achievement, index) => (
@@ -400,7 +400,7 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-            <h3 className="text-xl font-semibold mb-4">События и чаты</h3>
+            <h3 className="text-xl font-h2 mb-4">События и чаты</h3>
             <p className="text-sm text-gray-500 mb-4 uppercase tracking-[0.3em]">events & chat services</p>
             <div className="space-y-3">
               {collections.events.slice(0, 4).map((event, index) => (
