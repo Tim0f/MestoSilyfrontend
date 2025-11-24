@@ -1,6 +1,10 @@
-import React from 'react';
-import GrainsManager from '../components/grains/GrainsManager';
+import  GrainManager  from "../components/grains/GrainManager";
 
 export default function GrainsPage() {
-  return <GrainsManager />;
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">Управление зернами</h1>
+      <GrainManager />
+    </div>
+  );
 }

@@ -1,326 +1,149 @@
-// AdminDashboardPage.tsx — упрощённая версия
-// Только переходы на страницы управления сущностями
-
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { ShieldCheck, Users, Layers, Calendar, CreditCard, Star, Image, Gift, Newspaper, Layers3, ShoppingBag, Swords } from "lucide-react";
 
 export default function AdminDashboardPage() {
-  const services = useFrontendServices()
-  const { user } = useAuth()
-  const [collections, setCollections] = useState<DashboardCollections>(EMPTY_COLLECTIONS)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null)
-  const [downloadingTemplate, setDownloadingTemplate] = useState(false)
+  const { user } = useAuth();
 
-  const loadDashboard = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-
-    try {
-      const [
-        users,
-        sections,
-        lessons,
-        events,
-        chats,
-        partners,
-        news,
-        pendingReceipts,
-        achievements,
-        sessions,
-      ] = await Promise.all([
-        services.users.findAll<unknown>(),
-        services.sections.findAll<unknown>(),
-        services.lessons.findAll<unknown>(),
-        services.events.findAll<unknown>(),
-        services.chat.findMyChats<unknown>(),
-        services.partners.findAll<unknown>(),
-        services.news.findAll<unknown>({ limit: 6 }),
-        services.orders.getPendingReceipts<unknown>(),
-        services.achievements.findAll<unknown>(),
-        services.sessions.findAll<unknown>(),
-      ])
-
-      setCollections({
-        users: normalizeList(users),
-        sections: normalizeList(sections),
-        lessons: normalizeList(lessons),
-        events: normalizeList(events),
-        chats: normalizeList(chats),
-        partners: normalizeList(partners),
-        news: normalizeList(news),
-        pendingReceipts: normalizeList(pendingReceipts),
-        achievements: normalizeList(achievements),
-        sessions: normalizeList(sessions),
-      })
-      setLastUpdated(new Date().toISOString())
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось загрузить данные админпанели')
-    } finally {
-      setLoading(false)
-    }
-  }, [services])
-
-  useEffect(() => {
-    loadDashboard()
-  }, [loadDashboard])
-
-  const handleDownloadSessionTemplate = async () => {
-    setDownloadingTemplate(true)
-    try {
-      const buffer = await services.sessions.downloadTemplate()
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = 'sessions-template.xlsx'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(url)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Не удалось скачать шаблон занятий')
-    } finally {
-      setDownloadingTemplate(false)
-    }
-  }
-
-  const stats = useMemo(
-    () => [
-      {
-        title: 'Пользователи',
-        value: collections.users.length,
-        description: 'Активные учетные записи',
-        icon: Users,
-      },
-      {
-        title: 'Секции',
-        value: collections.sections.length,
-        description: 'Доступные направления',
-        icon: Layers3,
-      },
-      {
-        title: 'Запланированные занятия',
-        value: collections.sessions.length || collections.lessons.length,
-        description: 'Сессии и уроки',
-        icon: CalendarClock,
-      },
-      {
-        title: 'Ожидают выдачи',
-        value: collections.pendingReceipts.length,
-        description: 'Чеки и заказы',
-        icon: CreditCard,
-      },
-      {
-        title: 'Активные чаты',
-        value: collections.chats.length,
-        description: 'Диалоги сотрудников и клиентов',
-        icon: ShieldCheck,
-      },
-    ],
-    [collections],
-  )
-
-  if (loading) {
-    return <Loading />
-  }
-
-  if (user && !allowedRoles.includes(user.role)) {
+  if (!user || (user.role !== "ADMIN" && user.role !== "ROOT")) {
     return (
       <div className="min-h-[70vh] bg-[#0f0f10] text-white flex items-center justify-center px-6">
         <div className="max-w-lg text-center space-y-4">
           <ShieldCheck className="mx-auto text-yellow-400" size={48} />
           <h1 className="text-3xl font-h2">Доступ ограничен</h1>
-          <p className="text-base text-gray-300">
-            Эта страница доступна только администраторам. Обратитесь к ответственному сотруднику, чтобы получить
-            соответствующие права.
-          </p>
+          <p className="text-base text-gray-300">Эта страница доступна только администраторам.</p>
         </div>
       </div>
-    )
+    );
   }
 
-  if (error && !collections.users.length) {
-    return (
-      <div className="min-h-[70vh] bg-[#0f0f10] text-white px-6 py-10">
-        <div className="max-w-4xl mx-auto">
-          <ErrorMessage message={error} onRetry={loadDashboard} />
-        </div>
-      </div>
-    )
-  }
+  const sections = [
+    {
+      title: "Пользователи",
+      icon: Users,
+      link: "users",
+      description: "Управление аккаунтами",
+    },
+    {
+      title: "Секции",
+      icon: Layers3,
+      link: "sections",
+      description: "Направления, возраст, расписание",
+    },
+    {
+      title: "Занятия (Lessons)",
+      icon: Calendar,
+      link: "lessons",
+      description: "Поурочные занятия",
+    },
+    {
+      title: "Сессии (Sessions)",
+      icon: Calendar,
+      link: "sessions",
+      description: "Календарь занятий",
+    },
+    {
+      title: "События",
+      icon: Swords,
+      link: "events",
+      description: "Встречи, праздники, мероприятия",
+    },
+    {
+      title: "Новости",
+      icon: Newspaper,
+      link: "news",
+      description: "Информационные посты",
+    },
+    {
+      title: "Партнеры",
+      icon: Image,
+      link: "partners",
+      description: "Бренды и компании",
+    },
+    {
+      title: "Достижения",
+      icon: Star,
+      link: "achievements",
+      description: "Ачивки и награды",
+    },
+    {
+      title: "Товары",
+      icon: ShoppingBag,
+      link: "products",
+      description: "Продажа товаров",
+    },
+    {
+      title: "Очки (Grains)",
+      icon: Gift,
+      link: "grains",
+      description: "Начисления и переводы",
+    },
+    {
+      title: "Записи на секции",
+      icon: Layers,
+      link: "enrollments",
+      description: "Записи детей на секции",
+    },
+    {
+      title: "Оплаты и чеки",
+      icon: CreditCard,
+      link: "payments",
+      description: "Управление платежами",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-[#080808] text-white px-4 py-10">
       <div className="max-w-7xl mx-auto space-y-10">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-yellow-500">Админпанель</p>
-            <h1 className="text-4xl md:text-5xl font-h2 mt-2">Обзор Места Силы</h1>
-            <p className="text-gray-300 mt-3 max-w-2xl">
-              Управляйте разделами, событиями, заказами и пользователями через единый интерфейс, построенный на серверах
-              `@services`.
-            </p>
-            {lastUpdated && (
-              <p className="text-sm text-gray-400 mt-2">
-                Обновлено: {new Intl.DateTimeFormat('ru-RU', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(lastUpdated))}
-              </p>
-            )}
-          </div>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              onClick={loadDashboard}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-400 px-5 py-3 text-sm font-h2 text-yellow-300 transition hover:bg-yellow-400 hover:text-black"
-            >
-              <RefreshCw size={18} />
-              Обновить данные
-            </button>
-            <button
-              onClick={handleDownloadSessionTemplate}
-              disabled={downloadingTemplate}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-500 px-5 py-3 text-sm font-h2 text-black transition hover:bg-yellow-400 disabled:opacity-60"
-            >
-              <Download size={18} />
-              {downloadingTemplate ? 'Загрузка...' : 'Шаблон занятий'}
-            </button>
-          </div>
+        <div>
+          <p className="text-xs uppercase tracking-[0.3em] text-yellow-500">Админпанель</p>
+          <h1 className="text-4xl md:text-5xl font-h2 mt-2">Управление Местом Силы</h1>
+          <p className="text-gray-300 mt-3 max-w-2xl">
+            Выберите раздел для управления системой.
+          </p>
         </div>
 
-        {error && (
-          <div className="bg-red-950/40 border border-red-900/40 rounded-2xl p-4 flex items-center gap-3 text-sm text-red-200">
-            <AlertCircle size={18} />
-            <span>{error}</span>
-          </div>
-        )}
+        {/* Быстрые кнопки */}
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
+          <Link
+            to="/sessions/import"
+            className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
+          >
+            📥 Импорт расписания
+          </Link>
 
-        <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
-          {stats.map(({ title, value, description, icon: Icon }) => (
-            <div key={title} className="rounded-2xl bg-gradient-to-br from-[#161616] to-[#0c0c0c] border border-white/5 p-6 shadow-2xl shadow-black/40">
-              <div className="flex items-center justify-between mb-6">
+          <Link
+            to="/enrollments"
+            className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
+          >
+            📘 Записи на секции
+          </Link>
+
+          <Link
+            to="/payments"
+            className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
+          >
+            💳 Оплаты и чеки
+          </Link>
+        </div>
+
+        {/* Основная сетка */}
+        <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {sections.map(({ title, icon: Icon, link, description }) => (
+            <Link
+              to={link}
+              key={title}
+              className="rounded-2xl bg-gradient-to-br from-[#161616] to-[#0c0c0c] border border-white/5 p-6 hover:border-yellow-500/40 transition shadow-xl"
+            >
+              <div className="flex items-center justify-between mb-4">
                 <div className="p-3 rounded-xl bg-yellow-500/10 text-yellow-400">
-                  <Icon size={22} />
+                  <Icon size={24} />
                 </div>
-                <span className="text-xs uppercase tracking-[0.2em] text-gray-500">Live</span>
               </div>
-              <p className="text-sm text-gray-400">{description}</p>
-              <p className="text-4xl font-h2 mt-2">{new Intl.NumberFormat('ru-RU').format(value)}</p>
-              <p className="text-xs text-gray-500 mt-2">Источник: соответствующий сервис API</p>
-            </div>
+              <p className="text-xl font-semibold">{title}</p>
+              <p className="text-sm mt-1 text-gray-400">{description}</p>
+            </Link>
           ))}
-        </section>
-
-        <section className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-h2 flex items-center gap-2">
-                <Newspaper size={22} />
-                Свежие новости
-              </h2>
-              <span className="text-xs text-gray-500 uppercase tracking-[0.3em]">news service</span>
-            </div>
-            <div className="space-y-4">
-              {(collections.news.length ? collections.news : collections.events).slice(0, 5).map((item, index) => (
-                <div key={`${getEntityTitle(item)}-${index}`} className="rounded-xl border border-white/5 bg-white/5 p-4">
-                  <p className="text-lg font-medium">{getEntityTitle(item)}</p>
-                  <p className="text-sm text-gray-400 mt-1">{getEntityMeta(item)}</p>
-                </div>
-              ))}
-              {!collections.news.length && !collections.events.length && (
-                <p className="text-sm text-gray-500">Новостей пока нет</p>
-              )}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-h2 flex items-center gap-2">
-                <CreditCard size={22} />
-                Ожидающие чеки
-              </h2>
-              <span className="text-xs text-gray-500 uppercase tracking-[0.3em]">orders service</span>
-            </div>
-            <div className="space-y-3">
-              {collections.pendingReceipts.slice(0, 5).map((receipt, index) => (
-                <div key={`${getEntityTitle(receipt)}-${index}`} className="flex items-center justify-between rounded-xl border border-white/5 bg-white/5 p-4">
-                  <div>
-                    <p className="font-medium">{getEntityTitle(receipt)}</p>
-                    <p className="text-sm text-gray-400">{getEntityMeta(receipt)}</p>
-                  </div>
-                  <button className="text-sm font-h2 text-yellow-400 hover:text-yellow-300 transition">
-                    Отметить
-                  </button>
-                </div>
-              ))}
-              {!collections.pendingReceipts.length && (
-                <p className="text-sm text-gray-500">Нет чеков, ожидающих подтверждения</p>
-              )}
-            </div>
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-6">
-            <h2 className="text-2xl font-h2 flex items-center gap-2">
-              <Layers3 size={22} />
-              Активные секции и уроки
-            </h2>
-            <span className="text-xs text-gray-500 uppercase tracking-[0.3em]">sections & lessons services</span>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {(collections.sections.length ? collections.sections : collections.lessons).slice(0, 6).map((section, index) => (
-              <div key={`${getEntityTitle(section)}-${index}`} className="rounded-xl border border-white/5 bg-white/5 p-4">
-                <p className="text-lg font-medium">{getEntityTitle(section)}</p>
-                <p className="text-sm text-gray-400">{getEntityMeta(section)}</p>
-              </div>
-            ))}
-            {!collections.sections.length && !collections.lessons.length && (
-              <p className="text-sm text-gray-500">Секции пока не созданы</p>
-            )}
-          </div>
-        </section>
-
-        <section className="grid gap-6 lg:grid-cols-3">
-          <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-            <h3 className="text-xl font-h2 mb-4">Партнеры</h3>
-            <p className="text-sm text-gray-500 mb-4 uppercase tracking-[0.3em]">partners service</p>
-            <div className="space-y-3">
-              {collections.partners.slice(0, 5).map((partner, index) => (
-                <div key={`${getEntityTitle(partner)}-${index}`} className="rounded-xl border border-white/5 bg-white/5 p-4">
-                  <p className="font-medium">{getEntityTitle(partner)}</p>
-                  <p className="text-sm text-gray-400">{getEntityMeta(partner)}</p>
-                </div>
-              ))}
-              {!collections.partners.length && <p className="text-sm text-gray-500">Партнеров пока нет</p>}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-            <h3 className="text-xl font-h2 mb-4">Достижения</h3>
-            <p className="text-sm text-gray-500 mb-4 uppercase tracking-[0.3em]">achievements service</p>
-            <div className="space-y-3">
-              {collections.achievements.slice(0, 5).map((achievement, index) => (
-                <div key={`${getEntityTitle(achievement)}-${index}`} className="rounded-xl border border-white/5 bg-white/5 p-4">
-                  <p className="font-medium">{getEntityTitle(achievement)}</p>
-                  <p className="text-sm text-gray-400">{getEntityMeta(achievement)}</p>
-                </div>
-              ))}
-              {!collections.achievements.length && <p className="text-sm text-gray-500">Достижения пока не добавлены</p>}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-white/5 bg-[#0f0f10] p-6">
-            <h3 className="text-xl font-h2 mb-4">События и чаты</h3>
-            <p className="text-sm text-gray-500 mb-4 uppercase tracking-[0.3em]">events & chat services</p>
-            <div className="space-y-3">
-              {collections.events.slice(0, 4).map((event, index) => (
-                <div key={`${getEntityTitle(event)}-${index}`} className="rounded-xl border border-white/5 bg-white/5 p-4">
-                  <p className="font-medium">{getEntityTitle(event)}</p>
-                  <p className="text-sm text-gray-400">{getEntityMeta(event)}</p>
-                </div>
-              ))}
-              {!collections.events.length && <p className="text-sm text-gray-500">Мероприятия пока не запланированы</p>}
-            </div>
-          </div>
         </section>
       </div>
     </div>

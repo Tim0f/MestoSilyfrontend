@@ -11,6 +11,7 @@ import RegisterPage from './pages/RegisterPage'
 import SectionsPage from './pages/SectionsPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import AdminNewsPage from './pages/news'
+import GrainsPage from './pages/grains'
 import ProductsPage from './pages/products'
 import PartnersPage from './pages/partners'
 import TeachersPage from './pages/teachers'
@@ -29,6 +30,8 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+
+          {/* Публичный Layout */}
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="shop" element={<ShopPage />} />
@@ -37,94 +40,34 @@ function App() {
             <Route path="chats" element={<ChatsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="sections" element={<SectionsPage />} />
-            <Route path="bazar" element={<BazarPage />}/>
-            <Route
-              path="admin"
-              element={
-                <ProtectedRoute>
-                  <AdminLayout/>
-                </ProtectedRoute>
-              }
-            />
-  <Route
-              path="admin/users"
-              element={
-                <ProtectedRoute>
-                  <AdminUsersPage/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="admin/sections"
-              element={
-                <ProtectedRoute>
-                  <AdminSectionsPage/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="admin/lessons"
-              element={
-                <ProtectedRoute>
-                  <AdminLessonsPage/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="admin/events"
-              element={
-                <ProtectedRoute>
-                  <AdminEventsPage/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="admin/achievements"
-              element={
-                <ProtectedRoute>
-                  <AchievementsPage/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="admin/partners"
-              element={
-                <ProtectedRoute>
-                  <PartnersPage/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="admin/products"
-              element={
-                <ProtectedRoute>
-                  <ProductsPage/>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="admin/news"
-              element={
-                <ProtectedRoute>
-                  <AdminNewsPage/>
-                </ProtectedRoute>
-              }
-            />
-
-<Route
-              path="admin/teachers"
-              element={
-                <ProtectedRoute>
-                  <TeachersPage/>
-                </ProtectedRoute>
-              }
-            />
-
-
+            <Route path="bazar" element={<BazarPage />} />
           </Route>
-          
+
+          {/* Админский Layout */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboardPage />} />
+            <Route path="users" element={<AdminUsersPage />} />
+            <Route path="sections" element={<AdminSectionsPage />} />
+            <Route path="lessons" element={<AdminLessonsPage />} />
+            <Route path="events" element={<AdminEventsPage />} />
+            <Route path="achievements" element={<AchievementsPage />} />
+            <Route path="grains" element={<GrainsPage />} />
+            <Route path="partners" element={<PartnersPage />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="news" element={<AdminNewsPage />} />
+            <Route path="teachers" element={<TeachersPage />} />
+          </Route>
+
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
         </Routes>
       </Router>
     </AuthProvider>
@@ -132,4 +75,3 @@ function App() {
 }
 
 export default App
-
