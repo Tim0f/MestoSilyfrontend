@@ -67,14 +67,14 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12">
+    <div className="bg-[#2D282A] min-h-screen py-12">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold">Магазин</h1>
+          <h1 className="text-4xl font-h1">Магазин</h1>
           {isAuthenticated && user && (
             <div className="bg-white px-6 py-3 rounded-lg shadow-md">
               <span className="text-gray-600">Ваш баланс: </span>
-              <span className="text-2xl font-bold text-orange-600">🌾 {user.grainBalance}</span>
+              <span className="text-2xl font-h1 text-orange-600">🌾 {user.grainBalance}</span>
             </div>
           )}
         </div>
@@ -95,11 +95,11 @@ export default function ShopPage() {
               )}
               
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                <h3 className="text-xl font-h1 mb-2">{product.name}</h3>
                 <p className="text-gray-600 mb-4 h-12 overflow-hidden">{product.description}</p>
                 
                 <div className="flex items-center justify-between mb-4">
-                  <div className="text-2xl font-bold text-orange-600">
+                  <div className="text-2xl font-h1 text-orange-600">
                     🌾 {product.price}
                   </div>
                   <div className="text-sm text-gray-500">
@@ -110,7 +110,7 @@ export default function ShopPage() {
                 {purchaseSuccess === product.id ? (
                   <button
                     disabled
-                    className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2"
+                    className="w-full bg-green-500 text-white py-3 rounded-lg font-h2 flex items-center justify-center gap-2"
                   >
                     <Check size={20} />
                     Куплено!
@@ -119,7 +119,7 @@ export default function ShopPage() {
                   <button
                     onClick={() => handlePurchase(product.id, product.price)}
                     disabled={product.stock === 0}
-                    className={`w-full py-3 rounded-lg font-semibold transition ${
+                    className={`w-full py-3 rounded-lg font-h2 transition ${
                       product.stock === 0
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700'

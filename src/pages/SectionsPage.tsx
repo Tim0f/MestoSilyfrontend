@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import axios from 'axios'
 import { motion, AnimatePresence } from 'framer-motion'
+import TeamSlider from '../components/mainpageComponents/TeamSlider'
 
-import SideStickers from '../components/Galary'
-
-// 🗡️ SVG иконки
 import Sword from '../assets/svg/sword.svg'
 import Arrow from '../assets/svg/arrow.svg'
 import Dragon from '../assets/svg/dragon.svg'
 import Masks from '../assets/svg/masks.svg'
 import Women from '../assets/svg/women.svg'
 
+// фотки
+const placeholderImage = "/mnt/data/0463fcb1-b272-4160-9c0e-34fc0980b9a5.png"
 
-// Тип секции
 interface Section {
   id: number | string
   name: string
@@ -23,48 +21,12 @@ interface Section {
   price?: string
 }
 
-// 🔸 Заглушки (fallback)
 const showcaseSections: Section[] = [
-  {
-    id: 'fencing',
-    name: 'Фехтование',
-    description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
-    teacher: 'Иван Иванович Иванов',
-    price: '1000₽/час',
-    image: Sword,
-  },
-  {
-    id: 'archery',
-    name: 'Лучная стрельба',
-    description: 'Постигните искусство меткого выстрела и концентрации внимания.',
-    teacher: 'Иван Иванович Иванов',
-    price: '1000₽/час',
-    image: Arrow,
-  },
-  {
-    id: 'dragon',
-    name: 'Фэнтези клуб',
-    description: 'Погрузитесь в мир приключений и волшебства, создавая свои легенды.',
-    teacher: 'Иван Иванович Иванов',
-    price: '1000₽/час',
-    image: Dragon,
-  },
-  {
-    id: 'theatre',
-    name: 'Театр',
-    description: 'Раскройте актёрское мастерство, эмоции и харизму на сцене.',
-    teacher: 'Иван Иванович Иванов',
-    price: '1000₽/час',
-    image: Masks,
-  },
-  {
-    id: 'dance',
-    name: 'Пластика и танец',
-    description: 'Развивайте тело и душу через движение, ритм и пластичность.',
-    teacher: 'Иван Иванович Иванов',
-    price: '1000₽/час',
-    image: Women,
-  },
+  { id: 'fencing', name: 'Фехтование', description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: Sword },
+  { id: 'archery', name: 'Лучная стрельба', description: 'Постигните искусство меткого выстрела и концентрации внимания.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: Arrow },
+  { id: 'dragon', name: 'Фэнтези клуб', description: 'Погрузитесь в мир приключений и волшебства, создавая свои легенды.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: Dragon },
+  { id: 'theatre', name: 'Театр', description: 'Раскройте актёрское мастерство, эмоции и харизму на сцене.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: Masks },
+  { id: 'dance', name: 'Пластика и танец', description: 'Развивайте тело и душу через движение, ритм и пластичность.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: Women },
 ]
 
 export default function SectionsPage() {
@@ -94,12 +56,12 @@ export default function SectionsPage() {
 
   const prevSection = () => {
     setDirection(-1)
-    setCurrentIndex((prev) => (prev === 0 ? sections.length - 1 : prev - 1))
+    setCurrentIndex(prev => prev === 0 ? sections.length - 1 : prev - 1)
   }
 
   const nextSection = () => {
     setDirection(1)
-    setCurrentIndex((prev) => (prev + 1) % sections.length)
+    setCurrentIndex(prev => (prev + 1) % sections.length)
   }
 
   if (loading) {
@@ -113,21 +75,45 @@ export default function SectionsPage() {
   const current = sections[currentIndex]
 
   const variants = {
-    enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 80 : -80 }),
-    center: { opacity: 1, x: 0 },
-    exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -80 : 80 }),
+    enter: (dir: number) => ({ opacity: 0, y: dir > 0 ? 40 : -40 }),
+    center: { opacity: 1, y: 0 },
+    exit: (dir: number) => ({ opacity: 0, y: dir > 0 ? -40 : 40 }),
   }
 
   return (
-    <div className="relative w-full min-h-screen bg-[#2b2422] text-[#F5C78B] flex flex-col items-center py-20 overflow-hidden">
-      <h1 className="text-5xl font-bold mb-16 tracking-wide uppercase">Секции</h1>
+    <div className="relative w-full min-h-screen bg-[#2D282A] text-[#F5C78B] flex flex-col items-center py-24 overflow-hidden">
 
-      <div className="relative flex items-center justify-center w-full max-w-6xl px-8">
-        {/* ✅ Боковые плашки теперь отдельным компонентом */}
-        <SideStickers />
+      <h1 className="text-6xl font-extrah1 mb-20 tracking-wide uppercase">
+        Секции
+      </h1>
 
-        {/* Центральный контент */}
-        <div className="flex flex-col items-center text-center max-w-xl z-10">
+      <div className="relative flex items-center justify-center w-full max-w-7xl px-8">
+
+        <div className="relative w-[360px] h-[430px] mr-16">
+          <div className="absolute inset-0 border border-[#F5C78B] rounded-xl border-dashed"></div>
+          <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
+            {[1,2,3,4].map(i => (
+              <img key={i} src={placeholderImage} className="w-full h-full object-cover rounded-lg" />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center text-center max-w-lg">
+          <div className="flex items-center justify-center gap-10 mb-10">
+
+            <button
+              onClick={prevSection}
+              className="w-6 h-6 border-t-2 border-l-2 border-[#F5C78B] rotate-[-45deg] hover:opacity-80 transition"
+            />
+
+            <img src={current.image} alt={current.name} className="w-[120px] h-[120px] mb-8 object-contain" />
+
+            <button
+              onClick={nextSection}
+              className="w-6 h-6 border-t-2 border-r-2 border-[#F5C78B] rotate-[45deg] hover:opacity-80 transition"
+            />
+          </div>
+
           <AnimatePresence custom={direction} mode="popLayout">
             <motion.div
               key={current.id}
@@ -136,46 +122,42 @@ export default function SectionsPage() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
-              className="flex flex-col items-center"
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center text-center"
             >
-              <img
-                src={current.image}
-                alt={current.name}
-                className="w-[120px] h-[120px] mb-8 object-contain"
-              />
-              <h2 className="text-3xl font-bold mb-4 uppercase">{current.name}</h2>
-              <p className="text-[#E5D0B5] mb-4 leading-relaxed">{current.description}</p>
-              {current.teacher && (
-                <p className="text-[#CDBB99] mb-2 text-lg">
-                  Преподаватель: {current.teacher}
-                </p>
-              )}
-              {current.price && (
-                <p className="text-[#F5C78B] mb-6 font-semibold">
-                  Стоимость: {current.price}
-                </p>
-              )}
+              <h2 className="text-3xl font-black mb-3 uppercase tracking-wide">{current.name}</h2>
+              <p className="text-[#E5D0B5] mb-5 leading-relaxed max-w-md">{current.description}</p>
+
+              <div className="bg-[#F5C78B] text-[#2b2422] px-8 py-3 rounded-lg text-lg font-h2 inline-block">
+                {current.price}
+              </div>
+
+              <button className="mt-6 px-10 py-3 bg-[#F5C78B] text-[#2b2422] rounded-lg font-h2 hover:bg-[#eab97c] transition">
+                записаться
+              </button>
+
             </motion.div>
           </AnimatePresence>
+        </div>
 
-          {/* Стрелки */}
-          <div className="flex gap-6 items-center justify-center mt-6">
-            <button
-              onClick={prevSection}
-              className="p-3 rounded-full border-2 border-[#F5C78B] hover:bg-[#F5C78B]/20 transition"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              onClick={nextSection}
-              className="p-3 rounded-full border-2 border-[#F5C78B] hover:bg-[#F5C78B]/20 transition"
-            >
-              <ChevronRight size={24} />
-            </button>
+        <div className="relative w-[360px] h-[430px] ml-16">
+          <div className="absolute inset-0 border border-[#F5C78B] rounded-xl border-dashed"></div>
+
+          <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
+            {[1,2,3,4].map(i => (
+              <img key={i} src={placeholderImage} className="w-full h-full object-cover rounded-lg" />
+            ))}
           </div>
         </div>
       </div>
+
+      {/* 🔥🔥🔥 ВСТАВЛЯЕМ Команду */}
+      <h2 className="text-6xl font-h1 mt-32 mb-10 tracking-wide uppercase">
+        Преподаватели
+      </h2>
+
+      <TeamSlider />
+
     </div>
   )
 }

@@ -22,6 +22,7 @@ import AdminEventsPage from './pages/AdminEventsPage'
 import AdminLayout from './layouts/AdminLayout'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import BazarPage from './pages/BazarPage'
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="chats" element={<ChatsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="sections" element={<SectionsPage />} />
+            <Route path="bazar" element={<BazarPage />}/>
             <Route
               path="admin"
               element={

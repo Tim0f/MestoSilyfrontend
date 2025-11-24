@@ -24,7 +24,7 @@ export default function Badge({ children, variant = 'primary', size = 'md' }: Ba
   return (
     <span
       className={`
-        inline-block rounded-full font-semibold border
+        inline-block rounded-full font-h2 border
         ${variants[variant]}
         ${sizes[size]}
       `}

@@ -24,7 +24,7 @@ export default function Button({
   fullWidth = false,
   className = '',
 }: ButtonProps) {
-  const baseStyles = 'font-semibold rounded-lg transition transform active:scale-95 flex items-center justify-center gap-2'
+  const baseStyles = 'font-h2 rounded-lg transition transform active:scale-95 flex items-center justify-center gap-2'
   
   const variants = {
     primary: 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700',

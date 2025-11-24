@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { User, LogOut } from 'lucide-react';
+import Logo2 from "../assets/svg/Logo2.svg"
 
 export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -31,11 +32,15 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-primary-800/50 px-4 py-2 rounded-full">
-              <span className="text-2xl">🌾</span>
-              <span className="font-semibold text-primary-300">100</span>
-            </div>
-
+          <Link to="/bazar" className="hover:text-primary-400 transition">
+            <span className="font-h2 text-primary-300">100       <img
+              src={Logo2}
+              className='w-[20px]'
+    />
+            </span>
+      
+          </Link>
+            
             {!isAuthenticated ? (
               <Link
                 to="/login"

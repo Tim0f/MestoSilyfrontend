@@ -1,298 +1,172 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import {
-  User,
-  Calendar,
-  ArrowRightLeft,
-  Trophy,
-  Clock,
-  Gift,
-} from 'lucide-react';
-
-interface Achievement {
-  id: number;
-  title: string;
-  description: string;
-  imageUrl?: string;
-  type: string;
-  sectionId?: number;
-}
-
-interface TodaySession {
-  id: number;
-  startTime: string;
-  endTime: string;
-  section: {
-    name: string;
-  };
-}
+// Full updated ProfilePage component with adjusted sizes
+import { useEffect, useState } from "react";
+import Logo2 from "../assets/svg/Logo2.svg";
+import Vector from "../assets/svg/Vector.svg";
 
 export default function ProfilePage() {
-  const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [todaySessions, setTodaySessions] = useState<TodaySession[]>([]);
-  const [transferAmount, setTransferAmount] = useState('');
-  const [recipientEmail, setRecipientEmail] = useState('');
-  const [showTransferForm, setShowTransferForm] = useState(false);
+  const [achievements, setAchievements] = useState([]);
+
+  const fallback = [
+    {
+      name: "Первое занятие",
+      description: "Посетил первое занятие",
+      iconUrl: Vector,
+      rewardGrains: 50,
+      sectionId: "section-1",
+      isActive: true,
+    },
+    {
+      name: "Второе занятие",
+      description: "Вернулся ещё раз",
+      iconUrl: Vector,
+      rewardGrains: 70,
+      sectionId: "section-1",
+      isActive: false,
+    },
+  ];
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-      return;
-    }
-    fetchAchievements();
-    fetchTodaySessions();
-  }, [isAuthenticated, navigate]);
-
-  const fetchAchievements = async () => {
-    try {
-      const response = await axios.get('/api/users/me/achievements');
-      setAchievements(response.data);
-    } catch (error) {
-      console.error('Ошибка загрузки достижений:', error);
-    }
-  };
-
-  const fetchTodaySessions = async () => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const response = await axios.get(`/api/users/me/sessions?date=${today}`);
-      setTodaySessions(response.data);
-    } catch (error) {
-      console.error('Ошибка загрузки расписания:', error);
-    }
-  };
-
-  const handleTransfer = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await axios.post('/api/grains/transfer', {
-        recipientEmail,
-        amount: parseInt(transferAmount, 10),
-      });
-      alert('Зёрна успешно переведены!');
-      setTransferAmount('');
-      setRecipientEmail('');
-      setShowTransferForm(false);
-      window.location.reload();
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Ошибка при переводе');
-    }
-  };
-
-  if (!user) {
-    return null;
-  }
-
-  const generalAchievements = achievements.filter((a) => a.type === 'GENERAL');
-  const sectionAchievements = achievements.filter((a) => a.type === 'SECTION');
+    fetch("/api/achievements")
+      .then((res) => res.json())
+      .then((data) => setAchievements(data))
+      .catch(() => setAchievements(fallback));
+  }, []);
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12">
-      <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold mb-8">Профиль</h1>
+    <div className="text-white bg-[#2D282A] min-h-screen p-6 space-y-6">
+      {/* === WRAPPER: 3 cards === */}
+      <div className="flex gap-6 w-full">
+        {/* === PROFILE CARD === */}
+        <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 flex items-center gap-6 relative overflow-hidden"
+             style={{ width: "629px", height: "448px" }}>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Левая колонка - основная информация */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Карточка пользователя */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <div className="text-center mb-6">
-                {user.avatarUrl ? (
-                  <img
-                    src={user.avatarUrl}
-                    alt={user.firstName || 'User avatar'}
-                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 border-orange-500"
-                  />
-                ) : (
-                  <div className="w-32 h-32 rounded-full mx-auto mb-4 bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-5xl font-bold">
-                    {user.firstName ? user.firstName.charAt(0).toUpperCase() : '?'}
-                  </div>
-                )}
-                <h2 className="text-2xl font-bold">{user.firstName || 'Anonymous'}</h2>
-                <p className="text-gray-600">{user.email}</p>
-              </div>
+          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl pointer-events-none opacity-20" />
 
-              {user.dateOfBirth && (
-                <div className="flex items-center gap-2 text-gray-700 mb-4 justify-center">
-                  <Calendar size={18} />
-                  <span>
-                    {new Date(user.dateOfBirth).toLocaleDateString('ru-RU')}
-                  </span>
-                  {new Date(user.dateOfBirth).getMonth() === new Date().getMonth() &&
-                   new Date(user.dateOfBirth).getDate() === new Date().getDate() && (
-                    <Gift size={18} className="text-orange-600 ml-2" />
-                  )}
-                </div>
-              )}
+          <img
+            src="/mnt/data/d9c29b55-e1c2-41ee-a900-275a2ac7bd88.png"
+            className="w-24 h-24 rounded-xl object-cover"
+          />
 
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg p-4 text-center">
-                <div className="text-sm opacity-90 mb-1">Баланс зёрен</div>
-                <div className="text-4xl font-bold">🌾 {user.grainBalance ?? 0}</div>
-              </div>
-            </div>
-
-            {/* Перевод зёрен */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <button
-                onClick={() => setShowTransferForm(!showTransferForm)}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition"
-              >
-                <ArrowRightLeft size={20} />
-                Перевести зёрна
-              </button>
-
-              {showTransferForm && (
-                <form onSubmit={handleTransfer} className="mt-4 space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email получателя
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={recipientEmail}
-                      onChange={(e) => setRecipientEmail(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                      placeholder="user@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Количество
-                    </label>
-                    <input
-                      type="number"
-                      required
-                      min={1}
-                      max={user.grainBalance ?? 0}
-                      value={transferAmount}
-                      onChange={(e) => setTransferAmount(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none"
-                      placeholder="0"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition"
-                  >
-                    Отправить
-                  </button>
-                </form>
-              )}
-            </div>
+          <div className="flex flex-col gap-1 text-sm">
+            <h1 className="text-xl font-h2">TestUser</h1>
+            <p className="text-primary-300">polly@gmail.com</p>
+            <p className="text-primary-300">01.2025.07</p>
           </div>
 
-          {/* Правая колонка - расписание и достижения */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Расписание на сегодня */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <Clock size={24} className="text-orange-600" />
-                Расписание на сегодня
-              </h3>
+          <button className="absolute top-4 right-4 text-xs bg-[#F6C98F] text-black px-3 py-1 rounded-lg font-h2 hover:brightness-90">
+            изменить
+          </button>
+        </div>
 
-              {todaySessions.length === 0 ? (
-                <p className="text-gray-600">Сегодня занятий нет</p>
-              ) : (
-                <div className="space-y-3">
-                  {todaySessions.map((session) => (
-                    <div
-                      key={session.id}
-                      className="bg-orange-50 border-2 border-orange-200 rounded-lg p-4"
-                    >
-                      <div className="font-bold text-lg">{session.section.name}</div>
-                      <div className="text-gray-700">
-                        {new Date(session.startTime).toLocaleTimeString('ru-RU', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}{' '}
-                        -{' '}
-                        {new Date(session.endTime).toLocaleTimeString('ru-RU', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+        {/* === TODAY CARD === */}
+        <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 relative"
+             style={{ width: "715px", height: "448px" }}>
+
+          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
+
+          <h2 className="text-lg font-h2 mb-4">Расписание на сегодня</h2>
+
+          <div className="w-full flex flex-col gap-6 overflow-y-auto pr-2 text-sm">
+            {/* CARD 1 */}
+            <div className="relative bg-[#2D282A] rounded-2xl p-6 border border-[#403B36] flex justify-between items-start">
+              <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
+
+              <div>
+                <h3 className="font-h2 text-xl leading-tight mb-4">
+                  Актерское <br /> Фехтование
+                </h3>
+                <p className="text-[#E8E1DC] font-p text-base leading-snug max-w-[360px]">
+                  Откройте для себя искусство владения клинком.
+                  От базовых стоек до изящных атак.
+                </p>
+              </div>
+
+              <div className="text-right font-h2 text-xl">
+                <p>01.02</p>
+                <p className="text-xl mt-2">18:00</p>
+              </div>
             </div>
 
-            {/* Достижения */}
-            {(generalAchievements.length > 0 || sectionAchievements.length > 0) && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                  <Trophy size={24} className="text-orange-600" />
-                  Достижения
+            {/* CARD 2 */}
+            <div className="relative bg-[#2D282A] rounded-2xl p-6 border border-[#403B36] flex justify-between items-start">
+              <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
+
+              <div>
+                <h3 className="font-h2 text-xl leading-tight mb-4">
+                  Актерское <br /> Фехтование
                 </h3>
-
-                {generalAchievements.length > 0 && (
-                  <div className="mb-6">
-                    <h4 className="text-xl font-semibold mb-3">Общие достижения</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {generalAchievements.map((achievement) => (
-                        <div
-                          key={achievement.id}
-                          className="bg-gradient-to-br from-yellow-100 to-yellow-200 border-2 border-yellow-400 rounded-lg p-4 flex items-start gap-3"
-                        >
-                          {achievement.imageUrl ? (
-                            <img
-                              src={achievement.imageUrl}
-                              alt={achievement.title}
-                              className="w-16 h-16 object-cover rounded-lg"
-                            />
-                          ) : (
-                            <div className="w-16 h-16 bg-yellow-400 rounded-lg flex items-center justify-center text-3xl">
-                              🏆
-                            </div>
-                          )}
-                          <div>
-                            <h5 className="font-bold">{achievement.title}</h5>
-                            <p className="text-sm text-gray-700">{achievement.description}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {sectionAchievements.length > 0 && (
-                  <div>
-                    <h4 className="text-xl font-semibold mb-3">Достижения по секциям</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {sectionAchievements.map((achievement) => (
-                        <div
-                          key={achievement.id}
-                          className="bg-gradient-to-br from-orange-100 to-orange-200 border-2 border-orange-400 rounded-lg p-4 flex items-start gap-3"
-                        >
-                          {achievement.imageUrl ? (
-                            <img
-                              src={achievement.imageUrl}
-                              alt={achievement.title}
-                              className="w-16 h-16 object-cover rounded-lg"
-                            />
-                          ) : (
-                            <div className="w-16 h-16 bg-orange-400 rounded-lg flex items-center justify-center text-3xl">
-                              🏀
-                            </div>
-                          )}
-                          <div>
-                            <h5 className="font-bold">{achievement.title}</h5>
-                            <p className="text-sm text-gray-700">{achievement.description}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <p className="text-[#E8E1DC] font-p text-base leading-snug max-w-[360px]">
+                  Откройте для себя искусство владения клинком.
+                  От базовых стоек до изящных атак.
+                </p>
               </div>
-            )}
+
+              <div className="text-right font-h2 text-xl">
+                <p>01.02</p>
+                <p className="text-xl mt-2">18:00</p>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* === BALANCE === */}
+        <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 relative flex flex-col justify-between"
+             style={{ width: "442px", height: "448px" }}>
+
+          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
+
+          <div>
+            <h2 className="text-lg font-h1">Ваш баланс</h2>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-yellow-400 text-3xl font-h1">40</p>
+              <img src={Logo2} className="w-6 h-6" />
+            </div>
+          </div>
+
+          <button className="bg-[#F6C98F] text-black font-h2 px-6 py-2 rounded-xl shadow hover:brightness-90 text-sm">
+            перевести
+          </button>
+        </div>
+      </div>
+
+      {/* === ACHIEVEMENTS HEADER === */}
+      <h2 className="text-2xl font-h1 mt-8">ДОСТИЖЕНИЯ</h2>
+
+      <div className="flex gap-6 text-base font-h1">
+        <button className="text-[#F6C98F]">Общие</button>
+        <button className="text-white/40 hover:text-white">Секции</button>
+      </div>
+
+      {/* === ACHIEVEMENTS LIST === */}
+      <div className="space-y-4 text-sm">
+        {achievements.map((item, i) => (
+          <div
+            key={i}
+            className="relative bg-[#2D282A] border border-[#403B36] rounded-xl p-4 flex items-center justify-between"
+          >
+            <div className="absolute inset-0 border border-[#8E6F4C] rounded-xl opacity-20" />
+
+            <div className="flex items-center gap-4">
+              <img src={item.iconUrl} className="w-10 h-10 object-contain" />
+
+              <div>
+                <h3 className="font-h1 text-base">{item.name}</h3>
+                <p className="text-primary-300 text-xs">{item.description}</p>
+                <p className="text-yellow-400 font-h1 mt-1 text-sm">+{item.rewardGrains}</p>
+              </div>
+            </div>
+
+            {item.isActive ? (
+              <button className="bg-[#F6C98F] text-black font-h1 px-4 py-2 rounded-md hover:brightness-90 text-xs">
+                получить
+              </button>
+            ) : (
+              <button className="bg-gray-600 text-white/40 font-h1 px-4 py-2 rounded-md cursor-not-allowed text-xs">
+                получено
+              </button>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

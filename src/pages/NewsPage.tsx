@@ -39,9 +39,9 @@ export default function NewsPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12">
+    <div className="bg-[#2D282A] min-h-screen py-12">
       <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold mb-8">Новости</h1>
+        <h1 className="text-4xl font-h1 mb-8">Новости</h1>
 
         {news.length === 0 ? (
           <div className="bg-white rounded-xl shadow-lg p-12 text-center">
@@ -82,7 +82,7 @@ export default function NewsPage() {
                       </span>
                     </div>
 
-                    <h2 className="text-3xl font-bold mb-4 text-gray-900">
+                    <h2 className="text-3xl font-h1 mb-4 text-gray-900">
                       {item.title}
                     </h2>
 

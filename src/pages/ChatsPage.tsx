@@ -1,12 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { Send, MoreVertical, X } from 'lucide-react'
-
-// Двухпанельный чат, стилизованный под макет (Tailwind)
-// Предположения об API:
-// GET  /api/chats                -> [{ id, name, lastMessage, avatar, unread }]
-// GET  /api/chat/:chatId/messages -> [{ id, chatId, content, userId, userName, createdAt }]
-// POST /api/chat                 -> { chatId, content, userId?, userName? }
+import texturedBorder from '../assets/svg/texturedBorder.svg'
 
 type ChatListItem = {
   id: number | string
@@ -30,7 +25,7 @@ function useGuestName() {
   const [name, setName] = useState<string | null>(() => {
     try {
       return localStorage.getItem(key)
-    } catch (e) {
+    } catch {
       return null
     }
   })
@@ -40,7 +35,7 @@ function useGuestName() {
       const generated = `Гость#${Math.floor(1000 + Math.random() * 9000)}`
       try {
         localStorage.setItem(key, generated)
-      } catch (e) {}
+      } catch {}
       setName(generated)
     }
   }, [name])
@@ -48,7 +43,7 @@ function useGuestName() {
   return { name }
 }
 
-export default function ChatsLayout() {
+export default function ChatsPage() {
   const [chats, setChats] = useState<ChatListItem[]>([])
   const [selectedChatId, setSelectedChatId] = useState<number | string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
@@ -59,13 +54,12 @@ export default function ChatsLayout() {
 
   const { name: guestName } = useGuestName()
 
-  // Загрузка списка чатов
   const fetchChats = async () => {
     setLoadingChats(true)
     try {
       const res = await axios.get('/api/chats')
       setChats(res.data)
-      if (!selectedChatId && res.data && res.data.length > 0) {
+      if (!selectedChatId && res.data?.length > 0) {
         setSelectedChatId(res.data[0].id)
       }
     } catch (e) {
@@ -75,7 +69,6 @@ export default function ChatsLayout() {
     }
   }
 
-  // Загрузка сообщений выбранного чата
   const fetchMessages = async (chatId?: number | string | null) => {
     if (!chatId) return
     setLoadingMessages(true)
@@ -91,15 +84,15 @@ export default function ChatsLayout() {
 
   useEffect(() => {
     fetchChats()
-    const interval = setInterval(fetchChats, 30_000) // обновлять список раз в 30сек
-    return () => clearInterval(interval)
+    const i = setInterval(fetchChats, 30000)
+    return () => clearInterval(i)
   }, [])
 
   useEffect(() => {
     if (selectedChatId) {
       fetchMessages(selectedChatId)
-      const interval = setInterval(() => fetchMessages(selectedChatId), 3000)
-      return () => clearInterval(interval)
+      const i = setInterval(() => fetchMessages(selectedChatId), 3000)
+      return () => clearInterval(i)
     }
   }, [selectedChatId])
 
@@ -119,14 +112,12 @@ export default function ChatsLayout() {
         userName: guestName,
       })
       setNewMessage('')
-      // Быстро подгрузим сообщения
       fetchMessages(selectedChatId)
     } catch (e) {
       console.error('send error', e)
     }
   }
 
-  // Вспомогательная отрисовка аватара
   const Avatar: React.FC<{ src?: string; size?: number }> = ({ src, size = 44 }) => (
     <div
       className="flex items-center justify-center rounded-full flex-shrink-0"
@@ -135,36 +126,81 @@ export default function ChatsLayout() {
       {src ? (
         <img src={src} alt="avatar" className="w-full h-full object-cover rounded-full" />
       ) : (
-        <div className="text-xs font-semibold text-white">{guestName ? guestName.charAt(0) : 'Г'}</div>
+        <div className="text-xs font-h2 text-white">{guestName ? guestName.charAt(0) : 'Г'}</div>
       )}
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-[#3A3333] text-white">
-      <div className="container mx-auto py-8 px-4">
+    <div className="min-h-screen bg-[#2D282A] text-white flex items-center justify-center py-10 px-4">
+
+      {/* ОБОЛОЧКА С РВАНОЙ РАМКОЙ */}
+      <div className="relative w-full max-w-[1400px]">
+
+        {/* РАМКА ПО ВСЕМ СТОРОНАМ */}
+        <div
+          className="
+            pointer-events-none
+            absolute inset-0 z-50
+
+            before:content-['']
+            before:absolute before:top-0 before:left-0
+            before:w-full before:h-4
+            before:bg-[var(--tw-url)]
+            before:bg-repeat-x before:bg-top
+
+            after:content-['']
+            after:absolute after:bottom-0 after:left-0
+            after:w-full after:h-4
+            after:bg-[var(--tw-url)]
+            after:bg-repeat-x after:bg-bottom
+          "
+          style={{ ['--tw-url' as any]: `url(${texturedBorder})` }}
+        />
+
+        {/* ДОБАВЛЯЕМ ЛЕВУЮ И ПРАВУЮ БОКОВУЮ РАМКУ */}
+        <div
+          className="
+            pointer-events-none
+            absolute inset-0 z-50
+
+            before:content-['']
+            before:absolute before:top-0 before:left-0
+            before:h-full before:w-4
+            before:bg-[var(--tw-url)]
+            before:bg-repeat-y before:bg-left
+
+            after:content-['']
+            after:absolute after:top-0 after:right-0
+            after:h-full after:w-4
+            after:bg-[var(--tw-url)]
+            after:bg-repeat-y after:bg-right
+          "
+          style={{ ['--tw-url' as any]: `url(${texturedBorder})` }}
+        />
+
+        {/* ВНУТРЕННИЙ ИНТЕРФЕЙС ЧАТА */}
         <div className="bg-transparent rounded-xl overflow-hidden shadow-lg" style={{ height: '78vh' }}>
           <div className="flex h-full">
+
             {/* ЛЕВАЯ ПАНЕЛЬ */}
-            <div className="w-1/3 bg-[#3A3333] border-r-0 relative flex flex-col">
+            <div className="w-1/3 bg-[#3A3333] flex flex-col">
+
               <div className="px-6 py-6 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <button className="p-2 rounded-md hover:bg-white/5">
                     <X size={20} />
                   </button>
-                  <h2 className="text-4xl font-extrabold tracking-wide">ЧАТЫ</h2>
+                  <h2 className="text-4xl font-h1 tracking-wide">ЧАТЫ</h2>
                 </div>
+
                 <div className="flex items-center gap-4">
-                  <div className="text-sm font-semibold text-[#E0B26F]">40</div>
-                  <div>
-                    <Avatar size={36} />
-                  </div>
+                  <div className="text-sm font-h2 text-[#E0B26F]">40</div>
+                  <Avatar size={36} />
                 </div>
               </div>
 
-              <div className="px-4">
-                <div className="border-t border-b border-[#E0B26F]/20"></div>
-              </div>
+              <div className="border-t border-b border-[#E0B26F]/20 mx-4" />
 
               <div className="overflow-y-auto px-4 py-4 space-y-4 flex-1">
                 {loadingChats ? (
@@ -185,16 +221,14 @@ export default function ChatsLayout() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <div>
-                            <div className="font-bold text-lg">{c.name}</div>
+                            <div className="font-h1 text-lg">{c.name}</div>
                             <div className="text-sm text-white/70 mt-1">{c.lastMessage || '—'}</div>
                           </div>
-                          <div className="ml-4">
-                            {typeof c.unread === 'number' && c.unread > 0 && (
-                              <div className="w-8 h-8 rounded-full bg-[#E0B26F] flex items-center justify-center text-sm font-semibold text-[#3A3333]">
-                                {c.unread > 99 ? '99+' : c.unread}
-                              </div>
-                            )}
-                          </div>
+                          {c.unread ? (
+                            <div className="ml-4 w-8 h-8 rounded-full bg-[#E0B26F] flex items-center justify-center text-sm font-h2 text-[#3A3333]">
+                              {c.unread > 99 ? '99+' : c.unread}
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     </button>
@@ -202,44 +236,34 @@ export default function ChatsLayout() {
                 )}
               </div>
 
-              {/* Нижняя часть левой панели (необязательная) */}
-              <div className="px-6 py-4 border-t border-[#E0B26F]/20">
-                <div className="text-sm text-white/70">Версия интерфейса</div>
-              </div>
-            </div>
-
-            {/* РАЗДЕЛИТЕЛЬ "РВАНАЯ" ЛИНИЯ */}
-            <div className="w-3 flex items-stretch justify-center">
-              <div className="h-full flex items-center">
-                {/* можно заменить на svg для более точного эффекта */}
-                <svg width="6" height="100%" viewBox="0 0 6 200" preserveAspectRatio="none" className="h-full">
-                  <path d="M3 0 C2 30 4 60 3 90 C2 120 4 150 3 180" stroke="#E0B26F" strokeWidth="2" fill="none" strokeLinecap="round" />
-                </svg>
+              <div className="px-6 py-4 border-t border-[#E0B26F]/20 text-sm text-white/70">
+                Версия интерфейса
               </div>
             </div>
 
             {/* ПРАВАЯ ПАНЕЛЬ */}
-            <div className="flex-1 flex flex-col bg-[#2f2929] rounded-r-xl relative">
-              {/* ХЕАДЕР ЧАТА */}
+            <div className="flex-1 flex flex-col bg-[#2f2929] relative">
+
+              {/* ХЕДЕР */}
               <div className="px-6 py-4 flex items-center justify-between border-b border-[#E0B26F]/20">
                 <div className="flex items-center gap-4">
-                  <Avatar size={56} src={chats.find((c) => c.id === selectedChatId)?.avatar} />
+                  <Avatar
+                    size={56}
+                    src={chats.find((c) => c.id === selectedChatId)?.avatar}
+                  />
                   <div>
-                    <div className="font-bold text-2xl">
+                    <div className="font-h2 text-2xl">
                       {chats.find((c) => c.id === selectedChatId)?.name || 'Выберите чат'}
                     </div>
                     <div className="text-sm text-white/70">последнее сообщение</div>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-4">
-                  <button className="p-2 rounded-md hover:bg-white/5">
-                    <MoreVertical size={20} />
-                  </button>
-                </div>
+                <button className="p-2 rounded-md hover:bg-white/5">
+                  <MoreVertical size={20} />
+                </button>
               </div>
 
-              {/* ОБЛАСТЬ СООБЩЕНИЙ */}
+              {/* СООБЩЕНИЯ */}
               <div className="flex-1 overflow-y-auto px-8 py-8">
                 {loadingMessages ? (
                   <div className="text-sm text-gray-300">Загрузка сообщений...</div>
@@ -250,25 +274,33 @@ export default function ChatsLayout() {
                     {messages.map((m) => {
                       const isOwn = m.userName === guestName
                       return (
-                        <div key={m.id} className={`flex items-end ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                          {!isOwn && <Avatar src={undefined} size={44} />}
+                        <div
+                          key={m.id}
+                          className={`flex items-end ${isOwn ? 'justify-end' : 'justify-start'}`}
+                        >
+                          {!isOwn && <Avatar size={44} />}
 
                           <div className={`max-w-[60%] ${isOwn ? 'ml-4' : 'mr-4'}`}>
-                            {/* Имя (если не своё) */}
                             {!isOwn && (
-                              <div className="text-xs font-semibold text-[#E0B26F] mb-2">{m.userName || 'Администратор'}</div>
+                              <div className="text-xs font-h2 text-[#E0B26F] mb-2">
+                                {m.userName || 'Администратор'}
+                              </div>
                             )}
 
                             <div
-                              className={`p-4 rounded-2xl leading-relaxed break-words ${
+                              className={`p-4 rounded-2xl break-words leading-relaxed ${
                                 isOwn
-                                  ? 'bg-gradient-to-r from-[#E0B26F] to-[#D8A85A] text-[#3A3333]' // свои
+                                  ? 'bg-gradient-to-r from-[#E0B26F] to-[#D8A85A] text-[#3A3333]'
                                   : 'bg-[#F7C985] text-[#3A3333]'
                               }`}
-                              style={{ borderRadius: '24px' }}
                             >
                               <div className="text-sm">{m.content}</div>
-                              <div className="text-xs mt-2 text-white/60 text-right">{new Date(m.createdAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</div>
+                              <div className="text-xs mt-2 text-white/60 text-right">
+                                {new Date(m.createdAt).toLocaleTimeString('ru-RU', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                })}
+                              </div>
                             </div>
                           </div>
 
@@ -283,16 +315,13 @@ export default function ChatsLayout() {
 
               {/* ПОЛЕ ВВОДА */}
               <div className="px-8 py-6 border-t border-[#E0B26F]/20 bg-[#2f2929]">
-                <form onSubmit={(e) => handleSend(e)} className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <input
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Напишите сообщение..."
-                      className="w-full bg-[#3a3434] placeholder-white/40 text-white rounded-full px-6 py-4 outline-none border border-transparent focus:border-[#E0B26F]/40"
-                    />
-                  </div>
-
+                <form onSubmit={handleSend} className="flex items-center gap-4">
+                  <input
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Напишите сообщение..."
+                    className="flex-1 bg-[#3a3434] placeholder-white/40 text-white rounded-full px-6 py-4 outline-none border border-transparent focus:border-[#E0B26F]/40"
+                  />
                   <button
                     type="submit"
                     className="rounded-full p-3 bg-[#E0B26F] hover:brightness-90 flex items-center justify-center"
@@ -302,6 +331,7 @@ export default function ChatsLayout() {
                   </button>
                 </form>
               </div>
+
             </div>
           </div>
         </div>

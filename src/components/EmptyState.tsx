@@ -14,12 +14,12 @@ export default function EmptyState({ icon: Icon, title, description, action }: E
   return (
     <div className="text-center py-12">
       <Icon size={64} className="mx-auto text-gray-400 mb-4" />
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
+      <h3 className="text-xl font-h2 text-gray-900 mb-2">{title}</h3>
       {description && <p className="text-gray-600 mb-6">{description}</p>}
       {action && (
         <button
           onClick={action.onClick}
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition"
+          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-h2 hover:from-orange-600 hover:to-orange-700 transition"
         >
           {action.label}
         </button>
