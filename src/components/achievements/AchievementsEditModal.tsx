@@ -1,0 +1,151 @@
+import React, { useState } from 'react';
+import { HttpClient } from '../../services/httpClient';
+import {
+  AchievementsFrontendService,
+  type UpdateAchievementDto,
+} from '../../services/achievements.service';
+
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  achievement: {
+    id: string;
+    name: string;
+    description: string;
+    iconUrl: string;
+    rewardGrains: number;
+    sectionId: string;
+    isActive: boolean;
+  };
+  sections: { id: string; name: string }[];
+}
+
+const client = new HttpClient({
+  baseUrl:
+    (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
+    (import.meta.env.VITE_API_URL as string | undefined) ??
+    'http://localhost:3000/api',
+  getToken: () => localStorage.getItem('token') ?? undefined,
+});
+
+const achievementsService = new AchievementsFrontendService(client);
+
+export default function AchievementEditModal({
+  isOpen,
+  onClose,
+  achievement,
+  sections,
+}: Props) {
+  const [form, setForm] = useState<UpdateAchievementDto>({
+    name: achievement.name,
+    description: achievement.description,
+    iconUrl: achievement.iconUrl,
+    rewardGrains: achievement.rewardGrains,
+    sectionId: achievement.sectionId,
+    isActive: achievement.isActive,
+  });
+
+  const update = (k: keyof UpdateAchievementDto, v: any) =>
+    setForm((prev) => ({ ...prev, [k]: v }));
+
+  const save = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    await achievementsService.update(achievement.id, form);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+      <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-lg text-white">
+        <h2 className="text-xl font-bold mb-4">Редактировать ачивку</h2>
+
+        <form onSubmit={save} className="space-y-4">
+          <div>
+            <label className="block mb-1 text-gray-300">Название</label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => update('name', e.target.value)}
+              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-gray-300">Описание</label>
+            <textarea
+              value={form.description}
+              onChange={(e) => update('description', e.target.value)}
+              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-gray-300">URL иконки</label>
+            <input
+              type="text"
+              value={form.iconUrl}
+              onChange={(e) => update('iconUrl', e.target.value)}
+              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-gray-300">Награда (зерна)</label>
+            <input
+              type="number"
+              value={form.rewardGrains}
+              onChange={(e) => update('rewardGrains', Number(e.target.value))}
+              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-gray-300">Раздел</label>
+            <select
+              value={form.sectionId}
+              onChange={(e) => update('sectionId', e.target.value)}
+              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+            >
+              {sections.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={form.isActive}
+                onChange={(e) => update('isActive', e.target.checked)}
+              />
+              Активна
+            </label>
+          </div>
+
+          <div className="flex justify-end gap-3 mt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+            >
+              Отмена
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+            >
+              Сохранить
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
