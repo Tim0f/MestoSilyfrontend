@@ -23,4 +23,3 @@ export class SessionsFrontendService {
     return this.http.get<T>(`/sessions/${sessionId}`, { authenticate: false });
   }
 }
-

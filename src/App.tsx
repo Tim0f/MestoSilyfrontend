@@ -16,6 +16,7 @@ import ProductsPage from './pages/products'
 import PartnersPage from './pages/partners'
 import TeachersPage from './pages/teachers'
 import AchievementsPage from './pages/achievements'
+import ChatManagementPage from './pages/ChatManager'
 import AdminSectionsPage from './pages/AdminSectionPage'
 import AdminUsersPage from './pages/AdminUsersPage'
 import AdminLessonsPage from './pages/AdminLessonPage'
@@ -63,6 +64,7 @@ function App() {
             <Route path="products" element={<ProductsPage />} />
             <Route path="news" element={<AdminNewsPage />} />
             <Route path="teachers" element={<TeachersPage />} />
+            <Route path="chats" element={<ChatManagementPage />} />
           </Route>
 
           <Route path="/login" element={<LoginPage />} />

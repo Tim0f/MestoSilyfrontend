@@ -94,11 +94,11 @@ export default function AchievementCreateModal({
 
           <div>
             <label className="block mb-1 text-gray-300">Раздел</label>
-            <select
-              value={form.sectionId}
-              onChange={(e) => update('sectionId', e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
-            >
+<select
+  value={form.sectionId ?? ''}
+  onChange={(e) => update('sectionId', e.target.value)}
+  className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+>
               <option value="">Выберите раздел</option>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>

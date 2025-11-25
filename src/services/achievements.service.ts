@@ -5,8 +5,10 @@ export interface CreateAchievementDto {
   description: string;
   iconUrl: string;
   rewardGrains: number;
-  sectionId: string;
+  sectionId?: string | null;
   isActive: boolean;
+  code?: string | null;
+  qrCode?: string | null;
 }
 
 export interface UpdateAchievementDto {
@@ -14,8 +16,10 @@ export interface UpdateAchievementDto {
   description?: string;
   iconUrl?: string;
   rewardGrains?: number;
-  sectionId?: string;
+  sectionId?: string | null;
   isActive?: boolean;
+  code?: string | null;
+  qrCode?: string | null;
 }
 
 export interface GrantAchievementPayload {
@@ -50,7 +54,17 @@ export class AchievementsFrontendService {
   }
 
   grant<T = unknown>(payload: GrantAchievementPayload) {
+    // backend expects achievementId & userId (adminId taken from token)
     return this.http.post<T>('/achievements/grant', payload);
   }
-}
 
+  // New: redeem by code (backend: redeemByCode)
+  redeemByCode<T = unknown>(payload: { code: string }) {
+    return this.http.post<T>('/achievements/redeem/code', payload);
+  }
+
+  // New: redeem by qr
+  redeemByQr<T = unknown>(payload: { qrCode: string }) {
+    return this.http.post<T>('/achievements/redeem/qr', payload);
+  }
+}
