@@ -20,6 +20,7 @@ export default function AdminLayout() {
     { name: 'Заказы', path: '/admin/orders' },
     { name: 'Зерна', path: '/admin/grains' },
     { name: 'Сессии', path: '/admin/sessions' },
+    { name: 'Чаты', path: '/admin/chats' },
   ];
 
   return (

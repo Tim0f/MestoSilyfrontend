@@ -5,15 +5,18 @@ export interface CreateEventDto {
   name: string;
   title: string;
   description: string;
-  date: string;
-  startTime: string;
-  endTime: string;
+  date: string; // ISO date (server expects Date in DB)
+  startTime: string; // "HH:MM"
+  endTime: string;   // "HH:MM"
   price: number;
-  maxParticipants: number;
-  textColor: string;
-  imageUrl: string;
-  bannerUrl: string;
-  createdBy: string;
+  maxParticipants?: number;
+  textColor?: string;
+  imageUrl?: string;
+  bannerUrl?: string;
+  // createdBy is set by backend from token, keep optional
+  createdBy?: string;
+  isActive?: boolean;
+  publishedAt?: string | null;
 }
 
 export interface UpdateEventDto {
@@ -29,6 +32,8 @@ export interface UpdateEventDto {
   imageUrl?: string;
   bannerUrl?: string;
   createdBy?: string;
+  isActive?: boolean;
+  publishedAt?: string | null;
 }
 
 export class EventsFrontendService {
@@ -65,5 +70,17 @@ export class EventsFrontendService {
   uploadBanner<T = unknown>(id: string, file: UploadInput) {
     return this.http.patch<T>(`/events/${id}/banner`, ensureFormData(file));
   }
-}
 
+  // Register/cancel/registrations for events (backend has relevant methods)
+  registerForEvent<T = unknown>(eventId: string) {
+    return this.http.post<T>(`/events/${eventId}/register`, {});
+  }
+
+  cancelRegistration<T = unknown>(eventId: string) {
+    return this.http.post<T>(`/events/${eventId}/cancel`, {});
+  }
+
+  getMyRegistrations<T = unknown>() {
+    return this.http.get<T>('/events/registrations/my');
+  }
+}
