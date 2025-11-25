@@ -7,7 +7,7 @@ export type ShowcaseSection = {
   description: string
   teacher: string
   price?: string
-  image: string
+  iconUrl: string
   color?: string
 }
 
@@ -48,13 +48,13 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
             aria-hidden
             className="w-[180px] h-[500px] select-none pointer-events-none"
             style={{
-              WebkitMaskImage: `url(${tile.image})`,
-              maskImage: `url(${tile.image})`,
+              WebkitMaskImage: `url(${tile.iconUrl})`,
+              maskImage: `url(${tile.iconUrl})`,
               WebkitMaskSize: 'contain',
               maskSize: 'contain',
-              WebkitMaskRepeat: 'no-repeat',
-              maskRepeat: 'no-repeat',
-              backgroundColor: '#F5C78B',
+  WebkitMaskRepeat: 'no-repeat',
+  maskRepeat: 'no-repeat',
+  backgroundColor: '#F5C78B',
             }}
           />
         </div>
