@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-import axios from 'axios'
 
+// ==== Типы ====
 interface Session {
   id: number
   sectionId: number
@@ -31,64 +31,102 @@ export default function SchedulePage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [enrolledSessions, setEnrolledSessions] = useState<number[]>([])
-  const [subscriptionCount, setSubscriptionCount] = useState(5)
-  const { user, isAuthenticated } = useAuth()
+  const [subscriptionCount] = useState(5)
+  const { isAuthenticated } = useAuth()
 
+  // ==== Заглушки для занятий ====
+  const mockSessions: Session[] = [
+    {
+      id: 1,
+      sectionId: 10,
+      teacherId: 5,
+      startTime: '2025-01-01T10:00:00',
+      endTime: '2025-01-01T11:00:00',
+      capacity: 10,
+      currentEnrollment: 3,
+      section: { name: 'Йога' },
+      teacher: { name: 'Екатерина' },
+      location: 'Зал №1'
+    },
+    {
+      id: 2,
+      sectionId: 11,
+      teacherId: 7,
+      startTime: '2025-01-01T14:00:00',
+      endTime: '2025-01-01T15:00:00',
+      capacity: 12,
+      currentEnrollment: 8,
+      section: { name: 'Стретчинг' },
+      teacher: { name: 'Анна' },
+      location: 'Зал №2'
+    },
+    {
+      id: 3,
+      sectionId: 12,
+      teacherId: 8,
+      startTime: '2025-01-01T18:00:00',
+      endTime: '2025-01-01T19:30:00',
+      capacity: 15,
+      currentEnrollment: 12,
+      section: { name: 'Пилатес' },
+      teacher: { name: 'Мария' },
+      location: 'Зал №1'
+    }
+  ]
+
+  // ==== Заглушки для событий ====
+  const mockEvents: Event[] = [
+    {
+      id: 1,
+      title: 'Мастер-класс по растяжке',
+      description: 'Углублённая тренировка для всех уровней подготовки.',
+      imageUrl: '/images/event1.jpg',
+      startTime: '2025-01-01T18:00:00',
+      endTime: '2025-01-01T20:00:00',
+      price: 500
+    },
+    {
+      id: 2,
+      title: 'Йога на природе',
+      description: 'Расслабляющая практика на свежем воздухе.',
+      imageUrl: '/images/event2.jpg',
+      startTime: '2025-01-01T09:00:00',
+      endTime: '2025-01-01T10:30:00'
+    }
+  ]
+
+  const mockUserEnrollments = [1]
+
+  // ==== Заглушки вместо API ====
   useEffect(() => {
-    fetchSessions()
-    fetchEvents()
-    if (isAuthenticated) fetchUserEnrollments()
+    setSessions(mockSessions)
+    setEvents(mockEvents)
+    if (isAuthenticated) setEnrolledSessions(mockUserEnrollments)
   }, [selectedDate, isAuthenticated])
 
-  const fetchSessions = async () => {
-    try {
-      const dateStr = selectedDate.toISOString().split('T')[0]
-      const res = await axios.get(`/api/sessions?date=${dateStr}`)
-      setSessions(res.data)
-    } catch (err) {
-      console.error('Ошибка загрузки расписания:', err)
-    }
-  }
-
-  const fetchEvents = async () => {
-    try {
-      const res = await axios.get('/api/events')
-      setEvents(res.data)
-    } catch (err) {
-      console.error('Ошибка загрузки событий:', err)
-    }
-  }
-
-  const fetchUserEnrollments = async () => {
-    try {
-      const res = await axios.get('/api/users/me/enrollments')
-      setEnrolledSessions(res.data.map((e: any) => e.sessionId))
-    } catch (err) {
-      console.error('Ошибка загрузки записей:', err)
-    }
-  }
-
-  const handleEnroll = async (sessionId: number) => {
+  const handleEnroll = (sessionId: number) => {
     if (!isAuthenticated) {
       alert('Пожалуйста, войдите в систему')
       return
     }
-    try {
-      await axios.post(`/api/sessions/${sessionId}/enroll`)
-      alert('Вы успешно записались!')
-      fetchSessions()
-      fetchUserEnrollments()
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Ошибка при записи')
-    }
+    alert('Заглушка: записываем на занятие')
+    setEnrolledSessions(prev => [...prev, sessionId])
   }
 
-  // генерация недельных дат
+  // ==== Форматирование ====
+  const formatDate = (d: Date) =>
+    d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'numeric' })
+
+  const formatTime = (t: string) =>
+    new Date(t).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+
+  // ==== Генерация дней недели ====
   const getWeekDates = () => {
     const dates = []
     const current = new Date(selectedDate)
     const day = current.getDay()
     const diffToMonday = day === 0 ? -6 : 1 - day
+
     current.setDate(current.getDate() + diffToMonday)
     for (let i = 0; i < 7; i++) {
       const d = new Date(current)
@@ -99,10 +137,6 @@ export default function SchedulePage() {
   }
 
   const weekDates = getWeekDates()
-  const formatDate = (d: Date) =>
-    d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'numeric' })
-  const formatTime = (t: string) =>
-    new Date(t).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
 
   const handlePrevWeek = () => {
     const newDate = new Date(selectedDate)
@@ -117,29 +151,18 @@ export default function SchedulePage() {
   }
 
   const handleSelectDate = (d: Date) => setSelectedDate(d)
-  const weekRange = `${formatDate(weekDates[0])} - ${formatDate(weekDates[6])}`
 
-  const filteredSessions = sessions.filter(
-    s => new Date(s.startTime).toDateString() === selectedDate.toDateString()
-  )
+  // 🔥 БЕЗ ФИЛЬТРАЦИИ ПО ДАТЕ
+  const filteredSessions = sessions
 
-  const toggleEvent = (event: Event) => {
-    if (selectedEvent?.id === event.id) {
-      setSelectedEvent(null)
-    } else {
-      setSelectedEvent(event)
-    }
-  }
-
+  // ==== JSX ====
   return (
     <div className="relative w-[1920px] min-h-[2180px] bg-[#464042] text-white font-['Unbounded']">
-      {/* Заголовок */}
-      <h1 className="text-center mt-[176px] text-[96px] font-h1 text-[#F5C78B] font-['Zero_Cool'] tracking-[8px]">
+      <h1 className="text-center mt-[176px] text-[96px] font-['Zero_Cool'] text-[#F5C78B]">
         РАСПИСАНИЕ
       </h1>
 
-
-      {/* Кол-во бесплатных посещений */}
+      {/* Количество бесплатных посещений */}
       <div className="absolute left-[40px] top-[314px] flex items-center gap-[24px]">
         <span className="text-[20px]">Кол-во бесплатных посещений:</span>
         <div className="w-[70px] h-[69px] bg-[#F5C78B] flex justify-center items-center rounded-[5px] border-2 border-[#F4C884]">
@@ -153,6 +176,7 @@ export default function SchedulePage() {
           {weekDates.map((date, i) => {
             const isActive = date.toDateString() === selectedDate.toDateString()
             const dayName = date.toLocaleDateString('ru-RU', { weekday: 'short' })
+
             return (
               <button
                 key={i}
@@ -161,9 +185,7 @@ export default function SchedulePage() {
                   isActive ? 'bg-[#F5C78B] text-black' : 'text-white hover:bg-[#F4C884]/20'
                 }`}
               >
-                <span className="text-[24px] font-h1">
-                  {date.getDate()}
-                </span>
+                <span className="text-[24px] font-h1">{date.getDate()}</span>
                 <span className="text-[16px] uppercase">{dayName}</span>
               </button>
             )
@@ -172,86 +194,83 @@ export default function SchedulePage() {
 
         <div className="flex items-center gap-[16px] ml-[40px]">
           <button onClick={handlePrevWeek} className="text-[24px] text-[#F4C884]">&lt;</button>
-          <span className="text-[20px] text-[#F4C884]">{weekRange}</span>
+          <span className="text-[20px] text-[#F4C884]">
+            {formatDate(weekDates[0])} - {formatDate(weekDates[6])}
+          </span>
           <button onClick={handleNextWeek} className="text-[24px] text-[#F4C884]">&gt;</button>
         </div>
       </div>
 
       {/* Список занятий */}
       <div className="absolute left-1/2 transform -translate-x-1/2 top-[457px] flex flex-wrap justify-center gap-[30px] w-[90%]">
-        {filteredSessions.length === 0 ? (
-          <p className="text-[#F4C884] text-[24px] mt-[80px]">На этот день нет занятий</p>
-        ) : (
-          filteredSessions.map(session => {
-            const isEnrolled = enrolledSessions.includes(session.id)
-            return (
-              <div
-                key={session.id}
-                className={`w-[597px] h-[604px] rounded-[5px] border-2 border-[#F4C884] p-[40px] relative ${
-                  isEnrolled ? 'bg-[#F5C78B] text-black' : 'bg-[#2D282A] text-white'
-                }`}
-              >
-                <div
-                  className={`absolute left-[40px] top-[40px] bottom-[40px] w-[2px] ${
-                    isEnrolled ? 'bg-black' : 'bg-[#F5C78B]'
-                  }`}
-                ></div>
-                <div className="ml-[140px] flex flex-col justify-between h-full py-[20px]">
-                  <div>
-                    <span
-                      className={`text-[96px] font-h1 font-['Zero_Cool'] leading-[110px] ${
-                        isEnrolled ? 'text-black' : 'text-[#F5C78B]'
-                      }`}
-                    >
-                      {formatTime(session.startTime)}
-                    </span>
-                    <div className="mt-[24px]">
-                      <h3 className="text-[32px] font-h1">{session.section.name}</h3>
-                      <p className="text-[16px] mt-[14px] max-w-[300px]">
-                        Место: {session.location || 'зал №1'} <br />
-                        Участников: {session.currentEnrollment}/{session.capacity}
-                      </p>
-                    </div>
-                    <div className="mt-[24px] flex items-center gap-[8px]">
-                      <div
-                        className={`w-[32px] h-[32px] rounded-full flex items-center justify-center ${
-                          isEnrolled ? 'bg-black' : 'bg-[#F4C884]'
-                        }`}
-                      >
-                        <img src="path_to_person_icon.png" alt="teacher" className="w-[16px] h-[16px]" />
+        {filteredSessions.map(session => {
+          const isEnrolled = enrolledSessions.includes(session.id)
 
-                      </div>
-                      <span className="text-[16px]">{session.teacher.name}</span>
-                    </div>
-                  </div>
+          return (
+            <div
+              key={session.id}
+              className={`w-[597px] h-[604px] rounded-[5px] border-2 border-[#F4C884] p-[40px] relative ${
+                isEnrolled ? 'bg-[#F5C78B] text-black' : 'bg-[#2D282A] text-white'
+              }`}
+            >
+              <div
+                className={`absolute left-[40px] top-[40px] bottom-[40px] w-[2px] ${
+                  isEnrolled ? 'bg-black' : 'bg-[#F5C78B]'
+                }`}
+              ></div>
+
+              <div className="ml-[140px] flex flex-col justify-between h-full py-[20px]">
+                <div>
+                  <span
+                    className={`text-[96px] font-['Zero_Cool'] leading-[110px] ${
+                      isEnrolled ? 'text-black' : 'text-[#F5C78B]'
+                    }`}
+                  >
+                    {formatTime(session.startTime)}
+                  </span>
+
                   <div className="mt-[24px]">
-                    {!isEnrolled ? (
-                      <button
-                        onClick={() => handleEnroll(session.id)}
-                        className="relative w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-[#2D282A] text-[20px] text-black font-h1 hover:bg-[#F4C884]/80 transition"
-                      >
-                        записаться
-                      </button>
-                    ) : (
-                      <div className="relative w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-black flex items-center justify-center">
-                        <span className="text-[20px] font-h1">записан(а)</span>
-                      </div>
-                    )}
+                    <h3 className="text-[32px] font-h1">{session.section.name}</h3>
+                    <p className="text-[16px] mt-[14px] max-w-[300px]">
+                      Место: {session.location} <br />
+                      Участников: {session.currentEnrollment}/{session.capacity}
+                    </p>
+                  </div>
+
+                  <div className="mt-[24px] flex items-center gap-[8px]">
+                    <div className="w-[32px] h-[32px] rounded-full flex items-center justify-center bg-[#F4C884]">
+                      <img src="path_to_person_icon.png" alt="teacher" className="w-[16px] h-[16px]" />
+                    </div>
+                    <span className="text-[16px]">{session.teacher.name}</span>
                   </div>
                 </div>
+
+                <div className="mt-[24px]">
+                  {!isEnrolled ? (
+                    <button
+                      onClick={() => handleEnroll(session.id)}
+                      className="w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-[#2D282A] text-[20px] text-black font-h1 hover:bg-[#F4C884]/80 transition"
+                    >
+                      записаться
+                    </button>
+                  ) : (
+                    <div className="w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-black flex items-center justify-center">
+                      <span className="text-[20px] font-h1">записан(а)</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            )
-          })
-        )}
+            </div>
+          )
+        })}
       </div>
 
-            {/* 🔥 Блок событий (новый) */}
-            <div className="absolute left-0 right-0 top-[1189px] bg-[#1F1B1C] flex flex-col items-center py-[60px]">
+      {/* События */}
+      <div className="absolute left-0 right-0 top-[1189px] bg-[#1F1B1C] flex flex-col items-center py-[60px]">
         {events.length > 0 && (
           <>
             <div className="relative w-full flex flex-col items-center">
-              {/* Отображаем выбранное событие */}
-              {events.map(event => (
+              {events.map(event =>
                 selectedEvent?.id === event.id ? (
                   <div
                     key={event.id}
@@ -263,7 +282,6 @@ export default function SchedulePage() {
                         <h3 className="text-[64px] font-['Zero_Cool'] text-[#F5C78B]">{event.title}</h3>
                         <p className="text-[20px] text-white">{event.description}</p>
                         <p className="text-[24px] text-[#F4C884] font-h1">
-                          {new Date(event.startTime).toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', weekday: 'long' })} {' '}
                           {formatTime(event.startTime)}–{formatTime(event.endTime)}
                         </p>
                         <div className="mt-[16px] flex gap-[16px] items-center">
@@ -278,9 +296,8 @@ export default function SchedulePage() {
                     </div>
                   </div>
                 ) : null
-              ))}
+              )}
 
-              {/* Навигационные точки */}
               <div className="flex justify-center gap-[16px] mt-[40px]">
                 {events.map((_, index) => {
                   const isActive = selectedEvent ? events.indexOf(selectedEvent) === index : index === 0

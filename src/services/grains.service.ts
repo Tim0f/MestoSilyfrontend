@@ -1,24 +1,24 @@
+// src/services/grains.service.ts
 import { HttpClient } from './httpClient';
 
 export interface AddGrainsDto {
   userId: string;
   amount: number;
-  reason: string;
+  reason?: string;
 }
 
 export interface DeductGrainsDto {
   userId: string;
   amount: number;
-  reason: string;
+  reason?: string;
 }
 
 export interface TransferGrainsDto {
-  toUserId: string;
-  toUserEmail: string;
+  toUserId?: string;
+  toUserEmail?: string;
   amount: number;
-  message: string;
+  message?: string;
 }
-
 
 export class GrainsFrontendService {
   constructor(private readonly http: HttpClient) {}
@@ -47,4 +47,3 @@ export class GrainsFrontendService {
     return this.http.get<T>(`/grains/transfers/${userId}`);
   }
 }
-
