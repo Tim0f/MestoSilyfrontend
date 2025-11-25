@@ -35,7 +35,16 @@ export default function Header() {
           <Link to="/bazar" className="hover:text-primary-400 transition">
             <span className="font-h2 text-primary-300">100       <img
               src={Logo2}
-              className='w-[20px]'
+              className='w-[20px] select-none'
+              style={{
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                fill: '#FFD700', // Кастомный желтый для самого SVG
+                height: '10px',
+                width: '10px'
+              }}
     />
             </span>
       
