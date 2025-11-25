@@ -17,17 +17,17 @@ interface Section {
   id: number | string
   name: string
   description: string
-  image: string
+  iconUrl: string
   teacher?: string
   price?: string
 }
 
 const showcaseSections: Section[] = [
-  { id: 'fencing', name: 'Фехтование', description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: swordImage },
-  { id: 'archery', name: 'Лучная стрельба', description: 'Постигните искусство меткого выстрела и концентрации внимания.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: arrowImage },
-  { id: 'dragon', name: 'Фэнтези клуб', description: 'Погрузитесь в мир приключений и волшебства.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: dragonImage },
-  { id: 'theatre', name: 'Театр', description: 'Раскройте актёрское мастерство, эмоции и харизму.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: masksImage },
-  { id: 'dance', name: 'Пластика и танец', description: 'Развивайте тело и душу через движение.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', image: womenImage },
+  { id: 'fencing', name: 'Фехтование', description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: swordImage },
+  { id: 'archery', name: 'Лучная стрельба', description: 'Постигните искусство меткого выстрела и концентрации внимания.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: arrowImage },
+  { id: 'dragon', name: 'Фэнтези клуб', description: 'Погрузитесь в мир приключений и волшебства.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: dragonImage },
+  { id: 'theatre', name: 'Театр', description: 'Раскройте актёрское мастерство, эмоции и харизму.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: masksImage },
+  { id: 'dance', name: 'Пластика и танец', description: 'Развивайте тело и душу через движение.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: womenImage },
 ]
 
 export default function SectionsPage() {
@@ -111,8 +111,8 @@ export default function SectionsPage() {
               aria-hidden 
               className="w-[125px] h-[125px] object-cover"
               style={{
-                WebkitMaskImage: `url(${current.image})`,
-                maskImage: `url(${current.image})`,
+                WebkitMaskImage: `url(${current.iconUrl})`,
+                maskImage: `url(${current.iconUrl})`,
                 WebkitMaskSize: 'contain', 
                 maskSize: 'contain', 
                 WebkitMaskRepeat: 'no-repeat', 
