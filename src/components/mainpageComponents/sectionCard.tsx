@@ -26,26 +26,27 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
       onMouseEnter={onActivate}
       onFocus={onActivate}
       tabIndex={0}
-      className={`relative flex-shrink-0 h-[570px] transition-all duration-500 ease-out
-        bg-[radial-gradient(ellipse_at_center,rgba(200,152,96,0.08),rgba(0,0,0,0))]
-        border border-primary-900/40 rounded-2xl overflow-hidden group outline-none
+      className={`relative flex-shrink-0 h-[550px]' transition-all duration-500 ease-out
+        overflow-hidden group
         ${expanded ? 'w-[570px]' : 'w-[287px]'}`}
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-20"
+        className=" absolute inset-0 z-20"
         style={{
           backgroundImage: `url(${texturedSquare})`,
-          backgroundSize: '100% 100%',
+          backgroundSize: 'cover',
+          height:'530px',
+          width: '550px',
           backgroundRepeat: 'no-repeat',
         }}
       />
 
       <div className="relative z-30 h-full w-full flex">
-        <div className="w-[220px] flex-none flex items-center justify-center px-6">
+        <div className="w-[200px] flex-none flex items-center justify-center px-6">
           <div
             aria-hidden
-            className="w-[175px] h-[522px] select-none pointer-events-none"
+            className="w-[180px] h-[500px] select-none pointer-events-none"
             style={{
               WebkitMaskImage: `url(${tile.image})`,
               maskImage: `url(${tile.image})`,
@@ -60,11 +61,11 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
 
         <div className="flex-1 p-6 flex flex-col">
           {expanded && (
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col w-[300px] h-[530px]]">
               <h3 className="text-h2 font-h2 text-customyellow drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
                 {tile.title}
               </h3>
-              <p className="text-customwhite font-p max-w-md mb-6 mt-4">{tile.description}</p>
+              <p className="text-customwhite w-[300px] font-p max-w-md mb-6 mt-4">{tile.description}</p>
 
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 rounded-full bg-customyellow/60 border border-customyellow/30" />

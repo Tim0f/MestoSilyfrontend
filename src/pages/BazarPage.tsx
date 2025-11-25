@@ -1,3 +1,5 @@
+import Logo2 from "../assets/svg/Logo2.svg"
+
 export default function BazarPage() {
     const items = [
       { id: 1, price: 2, title: "Час Чил зоны", desc: "В этот вторник в 18:30 состоится Hard Tournament" },
@@ -10,7 +12,7 @@ export default function BazarPage() {
       <div className="w-full min-h-screen bg-[#2D282A] text-white p-6">
         {/* Заголовок */}
         <div className="text-center mb-10 mt-10">
-          <h1 className="text-5xl font-h1 mb-2 tracking-wider">БАЗАР</h1>
+          <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">БАЗАР</h1>
           <p className="text-primary-300 text-lg max-w-xl mx-auto opacity-80">
             При покупке вам придёт чек на почту, который нужно показать там, где можно материализовать покупку
           </p>
@@ -24,8 +26,21 @@ export default function BazarPage() {
               className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
             >
               {/* Цена */}
-              <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow">
-                {item.price} 🌾
+              <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
+                {item.price} 
+                <img
+              src={Logo2}
+              className='w-[20px] fill-black text-black'
+              style={{
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                color:'black',
+                height: '10px',
+                width: '10px'
+              }}
+    />
               </div>
   
               {/* Плейсхолдер изображения */}

@@ -22,7 +22,7 @@ export default function SectionSlider({ sections, activeId, onChangeActive, defa
         </div>
 
         <div
-          className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide"
+          className="flex overflow-x-auto h-[550px] scrollbar-hide"
           onMouseLeave={() => onChangeActive(defaultActiveId)}
         >
           {sections.map((tile) => (

@@ -118,7 +118,7 @@ export default function ProfilePage() {
           <div>
             <h2 className="text-lg font-h1">Ваш баланс</h2>
             <div className="flex items-center gap-2 mt-1">
-              <p className="text-yellow-400 text-3xl font-h1">40</p>
+              <p className="text-customyellow text-3xl font-h1">40</p>
               <img src={Logo2} className="w-6 h-6" />
             </div>
           </div>
