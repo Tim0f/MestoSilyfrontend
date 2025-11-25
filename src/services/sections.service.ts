@@ -10,6 +10,7 @@ export interface CreateSectionDto {
   ageMax: number;
   maxParticipants: number;
   isActive: boolean;
+  galleryDriveUrl: string;
 }
 
 export interface UpdateSectionDto {
@@ -21,6 +22,7 @@ export interface UpdateSectionDto {
   ageMax?: number;
   maxParticipants?: number;
   isActive?: boolean;
+  galleryDriveUrl?: string;
 }
 
 export interface EnrollDto {
