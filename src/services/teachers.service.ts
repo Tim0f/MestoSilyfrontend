@@ -1,5 +1,16 @@
 import { HttpClient } from './httpClient';
 
+export interface TeacherDto {
+  id: string;
+  firstName: string;
+  lastName: string;
+  middleName?: string;
+  phone?: string;
+  role?: string;
+  photoUrl?: string;
+  audioUrl?: string;
+}
+
 export interface CreateTeacherDto {
   firstName: string;
   lastName: string;
@@ -27,11 +38,11 @@ export class TeachersFrontendService {
     return this.http.post<T>('/teachers', payload);
   }
 
-  findAll<T = unknown>() {
+  findAll<T = TeacherDto[]>() {
     return this.http.get<T>('/teachers', { authenticate: false });
   }
 
-  findOne<T = unknown>(teacherId: string) {
+  findOne<T = TeacherDto>(teacherId: string) {
     return this.http.get<T>(`/teachers/${teacherId}`, { authenticate: false });
   }
 
@@ -43,4 +54,3 @@ export class TeachersFrontendService {
     return this.http.delete<T>(`/teachers/${teacherId}`);
   }
 }
-

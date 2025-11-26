@@ -1,5 +1,4 @@
 import { HttpClient } from './httpClient';
-import { ensureFormData, type UploadInput } from './fileUpload';
 
 export interface CreateSectionDto {
   name: string;
@@ -11,6 +10,9 @@ export interface CreateSectionDto {
   maxParticipants: number;
   isActive: boolean;
   galleryDriveUrl: string;
+
+  /** список учителей для секции */
+  teacherIds?: string[];
 }
 
 export interface UpdateSectionDto {
@@ -23,6 +25,9 @@ export interface UpdateSectionDto {
   maxParticipants?: number;
   isActive?: boolean;
   galleryDriveUrl?: string;
+
+  /** список учителей */
+  teacherIds?: string[];
 }
 
 export interface EnrollDto {
@@ -52,27 +57,28 @@ export class SectionsFrontendService {
     return this.http.delete<T>(`/sections/${sectionId}`);
   }
 
+  /** Запись в секцию */
   enroll<T = unknown>(payload: { sectionId: string; lessonId?: string }) {
-    // backend enrolls user based on token, so we send sectionId + optional lessonId
     return this.http.post<T>('/enrollments', payload);
   }
 
-  // Section images management (backend: addSectionImage, getSectionImages, updateSectionImagePosition, deleteSectionImage)
+  /** Добавление изображения в галерею секции */
   addImage<T = unknown>(sectionId: string, imageUrl: string, position: number) {
     return this.http.post<T>(`/sections/${sectionId}/images`, { imageUrl, position });
   }
 
+  /** Получить список изображений галереи */
   getImages<T = unknown>(sectionId: string) {
     return this.http.get<T>(`/sections/${sectionId}/images`);
   }
 
+  /** Обновить позицию изображения */
   updateImagePosition<T = unknown>(imageId: string, position: number) {
     return this.http.patch<T>(`/sections/images/${imageId}`, { position });
   }
 
+  /** Удалить изображение */
   deleteImage<T = unknown>(imageId: string) {
     return this.http.delete<T>(`/sections/images/${imageId}`);
   }
-
-  // If you want an endpoint to upload file and then pass imageUrl — use UploadFrontendService.image
 }

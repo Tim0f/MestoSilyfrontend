@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { HttpClient } from '../../services/httpClient';
+import React, { useEffect, useState } from "react";
+import BaseModal from "../ui/BaseModal";
+import { HttpClient } from "../../services/httpClient";
+import { SectionsFrontendService } from "../../services/sections.service";
+import { UploadFrontendService } from "../../services/upload.service";
 import {
-  SectionsFrontendService,
-  type CreateSectionDto,
-} from '../../services/sections.service';
-import { UploadFrontendService } from '../../services/upload.service';
+  TeachersFrontendService,
+  type TeacherDto,
+} from "../../services/teachers.service";
 
 interface Props {
   isOpen: boolean;
@@ -15,194 +17,155 @@ const client = new HttpClient({
   baseUrl:
     (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
     (import.meta.env.VITE_API_URL as string | undefined) ??
-    'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
+    "http://localhost:3000/api",
+  getToken: () => localStorage.getItem("token") ?? undefined,
 });
 
 const sectionsService = new SectionsFrontendService(client);
 const uploadService = new UploadFrontendService(client);
+const teachersService = new TeachersFrontendService(client);
 
 export default function SectionCreateModal({ isOpen, onClose }: Props) {
-  const [form, setForm] = useState<CreateSectionDto>({
-    name: '',
-    description: '',
-    imageUrl: '',
-    iconUrl: '',
+  const [teachers, setTeachers] = useState<TeacherDto[]>([]);
+
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    imageUrl: "",
+    iconUrl: "",
+    galleryDriveUrl: "",
     ageMin: 0,
     ageMax: 0,
     maxParticipants: 0,
     isActive: true,
-    galleryDriveUrl: '',
+    teacherIds: [] as string[],
   });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [iconFile, setIconFile] = useState<File | null>(null);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    teachersService.findAll().then(setTeachers);
+  }, []);
 
-  if (!isOpen) return null;
-
-  const handleChange = (key: keyof CreateSectionDto, value: any) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  const handleChange = (k: string, v: any) => {
+    setForm((p) => ({ ...p, [k]: v }));
   };
 
-  const upload = async (file: File | null) => {
-    if (!file) return '';
-    const res = await uploadService.image<{ url: string }>(file);
-    return res.url;
+  const toggleTeacher = (id: string) => {
+    setForm((p) => ({
+      ...p,
+      teacherIds: p.teacherIds.includes(id)
+        ? p.teacherIds.filter((t) => t !== id)
+        : [...p.teacherIds, id],
+    }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const uploadIfNeeded = async (file: File | null): Promise<string | undefined> => {
+    if (!file) return undefined;
+    const uploaded = await uploadService.image(file);
+    return (uploaded as any).url;
+  };
+
+  const create = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
 
-    try {
-      // Загрузка картинок
-      const uploadedImageUrl = await upload(imageFile);
-      const uploadedIconUrl = await upload(iconFile);
+    const imageUrl = await uploadIfNeeded(imageFile);
+    const iconUrl = await uploadIfNeeded(iconFile);
 
-      const dto: CreateSectionDto = {
-        ...form,
-        imageUrl: uploadedImageUrl,
-        iconUrl: uploadedIconUrl,
-      };
+    await sectionsService.create({
+      ...form,
+      imageUrl: imageUrl ?? form.imageUrl,
+      iconUrl: iconUrl ?? form.iconUrl,
+    });
 
-      await sectionsService.create(dto);
-      onClose();
-    } catch (err: any) {
-      setError(err?.details?.message ?? err.message ?? 'Ошибка создания секции');
-    } finally {
-      setLoading(false);
-    }
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[#111] border border-white/10 p-8 rounded-xl w-full max-w-xl text-white">
-        <h2 className="text-2xl font-bold mb-6">Создать секцию</h2>
+    <BaseModal isOpen={isOpen} onClose={onClose} title="Создать секцию">
+      <form onSubmit={create} className="space-y-4 text-white">
+        
+        <div>
+          <label className="block mb-1">Название</label>
+          <input
+            className="w-full bg-[#222] rounded px-3 py-2"
+            value={form.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            required
+          />
+        </div>
 
-        {error && <p className="text-red-400 mb-4">{error}</p>}
+        <div>
+          <label className="block mb-1">Описание</label>
+          <textarea
+            className="w-full bg-[#222] rounded px-3 py-2"
+            value={form.description}
+            rows={3}
+            onChange={(e) => handleChange("description", e.target.value)}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block mb-1 text-gray-300">Название</label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 rounded bg-[#222]"
-              value={form.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              required
-            />
+        {/* IMAGE UPLOAD */}
+        <div>
+          <label className="block mb-1">Фото секции</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1">Иконка секции</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setIconFile(e.target.files?.[0] ?? null)}
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1">Ссылка на галерею Google Drive</label>
+          <input
+            className="w-full bg-[#222] rounded px-3 py-2"
+            value={form.galleryDriveUrl}
+            onChange={(e) => handleChange("galleryDriveUrl", e.target.value)}
+          />
+        </div>
+
+        {/* TEACHERS SELECT */}
+        <div>
+          <label className="block mb-2">Учителя</label>
+          <div className="grid grid-cols-2 gap-3">
+            {teachers.map((t) => (
+              <button
+                type="button"
+                key={t.id}
+                onClick={() => toggleTeacher(t.id)}
+                className={`flex items-center gap-3 p-2 rounded border 
+                ${form.teacherIds.includes(t.id)
+                    ? "border-yellow-500 bg-yellow-500/20"
+                    : "border-white/10 bg-[#222]"
+                }`}
+              >
+                <img
+                  src={t.photoUrl}
+                  className="w-12 h-12 rounded object-cover"
+                />
+                <span>{t.lastName} {t.firstName}</span>
+              </button>
+            ))}
           </div>
+        </div>
 
-          <div>
-            <label className="block mb-1 text-gray-300">Описание</label>
-            <textarea
-              className="w-full px-3 py-2 rounded bg-[#222] h-24"
-              value={form.description}
-              onChange={(e) => handleChange('description', e.target.value)}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-1 text-gray-300">Возраст (мин)</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 rounded bg-[#222]"
-                value={form.ageMin}
-                onChange={(e) => handleChange('ageMin', Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <label className="block mb-1 text-gray-300">Возраст (макс)</label>
-              <input
-                type="number"
-                className="w-full px-3 py-2 rounded bg-[#222]"
-                value={form.ageMax}
-                onChange={(e) => handleChange('ageMax', Number(e.target.value))}
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block mb-1 text-gray-300">Максимум участников</label>
-            <input
-              type="number"
-              className="w-full px-3 py-2 rounded bg-[#222]"
-              value={form.maxParticipants}
-              onChange={(e) =>
-                handleChange('maxParticipants', Number(e.target.value))
-              }
-            />
-          </div>
-
-          {/* Загрузка главного изображения */}
-          <div>
-            <label className="block mb-1 text-gray-300">
-              Главное изображение
-            </label>
-            <input
-              type="file"
-              className="text-gray-300"
-              accept="image/*"
-              onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-            />
-          </div>
-
-          {/* Загрузка иконки */}
-          <div>
-            <label className="block mb-1 text-gray-300">Иконка</label>
-            <input
-              type="file"
-              className="text-gray-300"
-              accept="image/*"
-              onChange={(e) => setIconFile(e.target.files?.[0] ?? null)}
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-gray-300">
-              Ссылка на галерею (Google Drive)
-            </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 rounded bg-[#222]"
-              value={form.galleryDriveUrl}
-              onChange={(e) => handleChange('galleryDriveUrl', e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={form.isActive}
-              onChange={(e) => handleChange('isActive', e.target.checked)}
-            />
-            <label className="text-gray-300">Активна</label>
-          </div>
-
-          <div className="flex justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
-            >
-              Отмена
-            </button>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold hover:bg-yellow-400 disabled:opacity-60"
-            >
-              {loading ? 'Создание...' : 'Создать'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <button
+          type="submit"
+          className="w-full px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+        >
+          Создать
+        </button>
+      </form>
+    </BaseModal>
   );
 }

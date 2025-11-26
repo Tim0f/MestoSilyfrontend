@@ -1,341 +1,318 @@
-import React, { useEffect, useRef, useState } from 'react'
-import axios from 'axios'
-import { Send, MoreVertical, X } from 'lucide-react'
-import texturedBorder from '../assets/svg/texturedBorder.svg'
+// src/pages/ChatsPage.tsx
+import React, { useEffect, useRef, useState } from "react";
+import { Send, MoreVertical } from "lucide-react";
+import texturedBorder from "../assets/svg/texturedBorder.svg";
+import axios from "axios";
+import {
+  ChatSocketService,
+  ChatMessage,
+  ChatAck
+} from "../services/chatSocket.service";
 
-type ChatListItem = {
-  id: number | string
-  name: string
-  lastMessage?: string
-  avatar?: string
-  unread?: number
-}
-
-type Message = {
-  id: number | string
-  chatId: number | string
-  content: string
-  userId?: number | null
-  userName?: string
-  createdAt: string
-}
-
-function useGuestName() {
-  const key = 'guest_name_v1'
-  const [name, setName] = useState<string | null>(() => {
-    try {
-      return localStorage.getItem(key)
-    } catch {
-      return null
-    }
-  })
-
-  useEffect(() => {
-    if (!name) {
-      const generated = `Гость#${Math.floor(1000 + Math.random() * 9000)}`
-      try {
-        localStorage.setItem(key, generated)
-      } catch {}
-      setName(generated)
-    }
-  }, [name])
-
-  return { name }
-}
+type ChatItem = {
+  id: string;
+  type: string;
+  section?: { name: string; imageUrl?: string };
+  event?: { name: string; imageUrl?: string };
+  _count?: { messages: number };
+};
 
 export default function ChatsPage() {
-  const [chats, setChats] = useState<ChatListItem[]>([])
-  const [selectedChatId, setSelectedChatId] = useState<number | string | null>(null)
-  const [messages, setMessages] = useState<Message[]>([])
-  const [newMessage, setNewMessage] = useState('')
-  const messagesEndRef = useRef<HTMLDivElement | null>(null)
-  const [loadingChats, setLoadingChats] = useState(false)
-  const [loadingMessages, setLoadingMessages] = useState(false)
+  const token = localStorage.getItem("token") || "";
 
-  const { name: guestName } = useGuestName()
+  const baseUrl =
+    (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
+    "http://localhost:3000/api";
 
-  const fetchChats = async () => {
-    setLoadingChats(true)
+  const socket = useRef<ChatSocketService | null>(null);
+
+  const [chats, setChats] = useState<ChatItem[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  /** ----- LOAD CHATS (REST) ----- */
+  const loadChats = async () => {
     try {
-      const res = await axios.get('/api/chats')
-      setChats(res.data)
-      if (!selectedChatId && res.data?.length > 0) {
-        setSelectedChatId(res.data[0].id)
+      const res = await axios.get(`${baseUrl}/chat`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const list: ChatItem[] = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data?.data)
+        ? res.data.data
+        : [];
+
+      setChats(list);
+
+      if (!selectedChatId && list.length > 0) {
+        setSelectedChatId(list[0].id);
       }
     } catch (e) {
-      console.error('fetchChats error', e)
-    } finally {
-      setLoadingChats(false)
+      console.error("loadChats error:", e);
     }
-  }
+  };
 
-  const fetchMessages = async (chatId?: number | string | null) => {
-    if (!chatId) return
-    setLoadingMessages(true)
+  /** ----- LOAD MESSAGES (REST fallback) ----- */
+  const loadMessages = async (chatId: string) => {
     try {
-      const res = await axios.get(`/api/chat/${chatId}/messages`)
-      setMessages(res.data)
+      const res = await axios.get(`${baseUrl}/chat/${chatId}/messages`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setMessages(res.data || []);
     } catch (e) {
-      console.error('fetchMessages error', e)
-    } finally {
-      setLoadingMessages(false)
+      console.error("loadMessages error:", e);
     }
-  }
+  };
 
+  /** ----- INIT SOCKET ONCE ----- */
   useEffect(() => {
-    fetchChats()
-    const i = setInterval(fetchChats, 30000)
-    return () => clearInterval(i)
-  }, [])
+    if (!token) return;
 
+    const socketBase = baseUrl.replace(/\/api$/, ""); // правильный ws URL
+    socket.current = new ChatSocketService(socketBase, token);
+    socket.current.connect();
+
+    socket.current.onConnect(() => console.log("WS connected"));
+    socket.current.onDisconnect(() => console.log("WS disconnected"));
+
+    socket.current.onNewMessage(msg => {
+      if (msg.chatId === selectedChatId) {
+        setMessages(prev => [...prev, msg]);
+        scrollToBottom();
+      }
+    });
+
+    return () => socket.current?.disconnect();
+  }, [token]);
+
+  /** ----- JOIN CHAT WHEN SELECTED ----- */
   useEffect(() => {
-    if (selectedChatId) {
-      fetchMessages(selectedChatId)
-      const i = setInterval(() => fetchMessages(selectedChatId), 3000)
-      return () => clearInterval(i)
+    if (!selectedChatId || !socket.current) return;
+
+    const join = async () => {
+      const ack: ChatAck = await socket.current!.joinChat(selectedChatId);
+
+      if (ack.error) {
+        console.warn("joinChat error:", ack.error);
+        await loadMessages(selectedChatId);
+        return;
+      }
+
+      if (ack.success) {
+        setMessages(ack.messages ?? []);
+        scrollToBottom();
+        return;
+      }
+
+      await loadMessages(selectedChatId);
+    };
+
+    join();
+  }, [selectedChatId]);
+
+  /** ----- AUTO SCROLL ----- */
+  const scrollToBottom = () => {
+    setTimeout(
+      () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }),
+      30
+    );
+  };
+
+  /** ----- SEND MESSAGE ----- */
+  const sendMessage = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+
+    if (!selectedChatId) return;
+
+    const text = newMessage.trim();
+    if (!text) return;
+
+    setNewMessage("");
+
+    if (socket.current) {
+      const ack = await socket.current.sendMessage(selectedChatId, text);
+
+if (ack.error) {
+  console.warn("sendMessage error:", ack.error);
+  await loadMessages(selectedChatId);
+  return;
+}
+
+if (ack.message !== undefined) {
+  const msg: ChatMessage = ack.message;
+  setMessages(prev => [...prev, msg]);
+  scrollToBottom();
+  return;
+}
+
     }
-  }, [selectedChatId])
 
+    // fallback
+    await loadMessages(selectedChatId);
+  };
+
+  /** ----- AUTO REFRESH CHATS ----- */
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    loadChats();
+    const interval = setInterval(loadChats, 20000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const handleSend = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault()
-    const text = newMessage.trim()
-    if (!text || !selectedChatId) return
-
-    try {
-      await axios.post('/api/chat', {
-        chatId: selectedChatId,
-        content: text,
-        userName: guestName,
-      })
-      setNewMessage('')
-      fetchMessages(selectedChatId)
-    } catch (e) {
-      console.error('send error', e)
-    }
-  }
-
-  const Avatar: React.FC<{ src?: string; size?: number }> = ({ src, size = 44 }) => (
+  /** ----- AVATAR COMPONENT ----- */
+  const Avatar = ({
+    src,
+    size = 44
+  }: {
+    src?: string;
+    size?: number;
+  }) => (
     <div
-      className="flex items-center justify-center rounded-full flex-shrink-0"
-      style={{ width: size, height: size, background: '#E0B26F' }}
+      className="flex items-center justify-center rounded-full bg-[#E0B26F]"
+      style={{ width: size, height: size }}
     >
       {src ? (
-        <img src={src} alt="avatar" className="w-full h-full object-cover rounded-full" />
+        <img
+          src={src}
+          className="w-full h-full object-cover rounded-full"
+          alt=""
+        />
       ) : (
-        <div className="text-xs font-h2 text-white">{guestName ? guestName.charAt(0) : 'Г'}</div>
+        <span className="text-white font-bold">?</span>
       )}
     </div>
-  )
+  );
+
+  const getChatName = (c?: ChatItem) =>
+    c?.section?.name || c?.event?.name || "Без названия";
+
+  const getChatAvatar = (c?: ChatItem) =>
+    c?.section?.imageUrl || c?.event?.imageUrl || undefined;
 
   return (
     <div className="min-h-screen bg-[#2D282A] text-white flex items-center justify-center py-10 px-4">
-
-      {/* ОБОЛОЧКА С РВАНОЙ РАМКОЙ */}
       <div className="relative w-full max-w-[1400px]">
-
-        {/* РАМКА ПО ВСЕМ СТОРОНАМ */}
         <div
-          className="
-            pointer-events-none
-            absolute inset-0 z-50
-
-            before:content-['']
-            before:absolute before:top-0 before:left-0
-            before:w-full before:h-4
-            before:bg-[var(--tw-url)]
-            before:bg-repeat-x before:bg-top
-
-            after:content-['']
-            after:absolute after:bottom-0 after:left-0
-            after:w-full after:h-4
-            after:bg-[var(--tw-url)]
-            after:bg-repeat-x after:bg-bottom
-          "
-          style={{ ['--tw-url' as any]: `url(${texturedBorder})` }}
+          className="pointer-events-none absolute inset-0 z-50
+            before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-4 before:bg-[var(--tw-url)] before:bg-repeat-x before:bg-top
+            after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-4 after:bg-[var(--tw-url)] after:bg-repeat-x after:bg-bottom"
+          style={{ ["--tw-url" as any]: `url(${texturedBorder})` }}
         />
 
-        {/* ДОБАВЛЯЕМ ЛЕВУЮ И ПРАВУЮ БОКОВУЮ РАМКУ */}
         <div
-          className="
-            pointer-events-none
-            absolute inset-0 z-50
-
-            before:content-['']
-            before:absolute before:top-0 before:left-0
-            before:h-full before:w-4
-            before:bg-[var(--tw-url)]
-            before:bg-repeat-y before:bg-left
-
-            after:content-['']
-            after:absolute after:top-0 after:right-0
-            after:h-full after:w-4
-            after:bg-[var(--tw-url)]
-            after:bg-repeat-y after:bg-right
-          "
-          style={{ ['--tw-url' as any]: `url(${texturedBorder})` }}
-        />
-
-        {/* ВНУТРЕННИЙ ИНТЕРФЕЙС ЧАТА */}
-        <div className="bg-transparent rounded-xl overflow-hidden shadow-lg" style={{ height: '78vh' }}>
+          className="bg-transparent rounded-xl overflow-hidden shadow-lg"
+          style={{ height: "78vh" }}
+        >
           <div className="flex h-full">
-
-            {/* ЛЕВАЯ ПАНЕЛЬ */}
+            {/* LEFT PANEL */}
             <div className="w-1/3 bg-[#3A3333] flex flex-col">
-
-              <div className="px-6 py-6 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <button className="p-2 rounded-md hover:bg-white/5">
-                    <X size={20} />
-                  </button>
-                  <h2 className="text-4xl font-h1 tracking-wide">ЧАТЫ</h2>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="text-sm font-h2 text-[#E0B26F]">40</div>
-                  <Avatar size={36} />
-                </div>
+              <div className="px-6 py-6">
+                <h2 className="text-4xl font-bold">ЧАТЫ</h2>
               </div>
 
               <div className="border-t border-b border-[#E0B26F]/20 mx-4" />
 
-              <div className="overflow-y-auto px-4 py-4 space-y-4 flex-1">
-                {loadingChats ? (
-                  <div className="text-sm text-gray-300">Загрузка чатов...</div>
+              <div className="overflow-y-auto px-4 py-4 space-y-3 flex-1">
+                {chats.length === 0 ? (
+                  <div className="text-white/50 text-center">Чатов нет</div>
                 ) : (
-                  chats.map((c) => (
+                  chats.map(c => (
                     <button
                       key={c.id}
                       onClick={() => setSelectedChatId(c.id)}
-                      className={`w-full flex items-center gap-4 p-4 rounded-md transition-all text-left ${
-                        selectedChatId === c.id ? 'bg-[#352e2e]' : 'bg-transparent'
+                      className={`w-full flex items-center gap-4 p-4 rounded-md ${
+                        selectedChatId === c.id
+                          ? "bg-[#352e2e]"
+                          : "bg-transparent"
                       }`}
                     >
-                      <div className="w-16 flex items-center justify-between">
-                        <Avatar src={c.avatar} size={64} />
-                      </div>
-
+                      <Avatar src={getChatAvatar(c)} size={56} />
                       <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-h1 text-lg">{c.name}</div>
-                            <div className="text-sm text-white/70 mt-1">{c.lastMessage || '—'}</div>
-                          </div>
-                          {c.unread ? (
-                            <div className="ml-4 w-8 h-8 rounded-full bg-[#E0B26F] flex items-center justify-center text-sm font-h2 text-[#3A3333]">
-                              {c.unread > 99 ? '99+' : c.unread}
-                            </div>
-                          ) : null}
+                        <div className="font-bold text-lg">
+                          {getChatName(c)}
+                        </div>
+                        <div className="text-sm text-white/70">
+                          Сообщений: {c._count?.messages ?? 0}
                         </div>
                       </div>
                     </button>
                   ))
                 )}
               </div>
-
-              <div className="px-6 py-4 border-t border-[#E0B26F]/20 text-sm text-white/70">
-                Версия интерфейса
-              </div>
             </div>
 
-            {/* ПРАВАЯ ПАНЕЛЬ */}
-            <div className="flex-1 flex flex-col bg-[#2f2929] relative">
-
-              {/* ХЕДЕР */}
+            {/* RIGHT PANEL */}
+            <div className="flex-1 flex flex-col bg-[#2f2929]">
               <div className="px-6 py-4 flex items-center justify-between border-b border-[#E0B26F]/20">
                 <div className="flex items-center gap-4">
                   <Avatar
                     size={56}
-                    src={chats.find((c) => c.id === selectedChatId)?.avatar}
+                    src={getChatAvatar(
+                      chats.find(c => c.id === selectedChatId)
+                    )}
                   />
-                  <div>
-                    <div className="font-h2 text-2xl">
-                      {chats.find((c) => c.id === selectedChatId)?.name || 'Выберите чат'}
-                    </div>
-                    <div className="text-sm text-white/70">последнее сообщение</div>
+                  <div className="text-2xl font-bold">
+                    {getChatName(chats.find(c => c.id === selectedChatId))}
                   </div>
                 </div>
-                <button className="p-2 rounded-md hover:bg-white/5">
-                  <MoreVertical size={20} />
-                </button>
+                <MoreVertical size={20} />
               </div>
 
-              {/* СООБЩЕНИЯ */}
               <div className="flex-1 overflow-y-auto px-8 py-8">
-                {loadingMessages ? (
-                  <div className="text-sm text-gray-300">Загрузка сообщений...</div>
-                ) : messages.length === 0 ? (
-                  <div className="text-center text-white/60 mt-12">Нет сообщений</div>
+                {messages.length === 0 ? (
+                  <div className="text-center text-white/60 mt-10">
+                    Нет сообщений
+                  </div>
                 ) : (
                   <div className="space-y-6">
-                    {messages.map((m) => {
-                      const isOwn = m.userName === guestName
-                      return (
-                        <div
-                          key={m.id}
-                          className={`flex items-end ${isOwn ? 'justify-end' : 'justify-start'}`}
-                        >
-                          {!isOwn && <Avatar size={44} />}
-
-                          <div className={`max-w-[60%] ${isOwn ? 'ml-4' : 'mr-4'}`}>
-                            {!isOwn && (
-                              <div className="text-xs font-h2 text-[#E0B26F] mb-2">
-                                {m.userName || 'Администратор'}
-                              </div>
-                            )}
-
-                            <div
-                              className={`p-4 rounded-2xl break-words leading-relaxed ${
-                                isOwn
-                                  ? 'bg-gradient-to-r from-[#E0B26F] to-[#D8A85A] text-[#3A3333]'
-                                  : 'bg-[#F7C985] text-[#3A3333]'
-                              }`}
-                            >
-                              <div className="text-sm">{m.content}</div>
-                              <div className="text-xs mt-2 text-white/60 text-right">
-                                {new Date(m.createdAt).toLocaleTimeString('ru-RU', {
-                                  hour: '2-digit',
-                                  minute: '2-digit',
-                                })}
-                              </div>
+                    {messages.map(m => (
+                      <div key={m.id} className="flex justify-start items-end">
+                        <Avatar size={44} />
+                        <div className="ml-4 max-w-[60%]">
+                          <div className="text-xs text-[#E0B26F] mb-1">
+                            {m.author?.firstName ?? "Пользователь"}
+                          </div>
+                          <div className="p-4 rounded-2xl bg-[#F7C985] text-[#3A3333] break-words">
+                            {m.content}
+                            <div className="text-right text-xs text-white/60 mt-2">
+                              {new Date(m.createdAt).toLocaleTimeString(
+                                "ru-RU",
+                                { hour: "2-digit", minute: "2-digit" }
+                              )}
                             </div>
                           </div>
-
-                          {isOwn && <Avatar size={44} />}
                         </div>
-                      )
-                    })}
+                      </div>
+                    ))}
                     <div ref={messagesEndRef} />
                   </div>
                 )}
               </div>
 
-              {/* ПОЛЕ ВВОДА */}
-              <div className="px-8 py-6 border-t border-[#E0B26F]/20 bg-[#2f2929]">
-                <form onSubmit={handleSend} className="flex items-center gap-4">
+              <div className="px-8 py-6 border-t border-[#E0B26F]/20">
+                <form onSubmit={sendMessage} className="flex items-center gap-4">
                   <input
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={e => setNewMessage(e.target.value)}
                     placeholder="Напишите сообщение..."
-                    className="flex-1 bg-[#3a3434] placeholder-white/40 text-white rounded-full px-6 py-4 outline-none border border-transparent focus:border-[#E0B26F]/40"
+                    className="flex-1 bg-[#3a3434] text-white rounded-full px-6 py-4 outline-none placeholder-white/40"
                   />
                   <button
                     type="submit"
-                    className="rounded-full p-3 bg-[#E0B26F] hover:brightness-90 flex items-center justify-center"
-                    aria-label="Отправить"
+                    className="p-3 rounded-full bg-[#E0B26F]"
                   >
                     <Send size={20} />
                   </button>
                 </form>
               </div>
-
             </div>
+            {/* END RIGHT PANEL */}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

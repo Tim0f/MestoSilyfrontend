@@ -1,3 +1,4 @@
+// src/services/chat.service.ts
 import { HttpClient } from './httpClient';
 
 export type ChatType = 'SUPPORT' | 'SECTION' | 'EVENT';
@@ -27,39 +28,35 @@ export class ChatFrontendService {
     return this.http.get<T>(`/chat/${chatId}`);
   }
 
-  /** Сообщения чата */
+  /** Сообщения чата (REST) */
   getMessages<T = unknown>(chatId: string, limit?: number, offset?: number) {
     return this.http.get<T>(`/chat/${chatId}/messages`, {
       query: { limit, offset },
     });
   }
 
-  /** ➕ Создать чат (только Admin/Root) */
+  /** Создать чат (только админы) */
   createChat<T = unknown>(payload: CreateChatDto) {
     return this.http.post<T>('/chat', payload);
   }
 
-  /** ✏️ Обновить чат */
+  /** Обновить чат (только админы) */
   updateChat<T = unknown>(chatId: string, payload: UpdateChatDto) {
     return this.http.patch<T>(`/chat/${chatId}`, payload);
   }
 
-  /** ➕ Добавить участника */
   addParticipant<T = unknown>(chatId: string, userId: string) {
     return this.http.post<T>(`/chat/${chatId}/participants`, { userId });
   }
 
-  /** ❌ Удалить участника */
   removeParticipant<T = unknown>(chatId: string, userId: string) {
     return this.http.delete<T>(`/chat/${chatId}/participants/${userId}`);
   }
 
-  /** 🔕 Отключить уведомления */
   mute<T = unknown>(chatId: string) {
     return this.http.patch<T>(`/chat/${chatId}/mute`);
   }
 
-  /** 🔔 Включить уведомления */
   unmute<T = unknown>(chatId: string) {
     return this.http.patch<T>(`/chat/${chatId}/unmute`);
   }

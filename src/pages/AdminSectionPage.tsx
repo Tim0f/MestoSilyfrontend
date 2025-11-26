@@ -1,5 +1,4 @@
 // AdminSectionsPage.tsx
-// Страница секций с модалками для создания и редактирования
 
 import React, { useState } from 'react';
 import SectionsList from '../components/sections/SectionList';
@@ -34,6 +33,7 @@ export default function AdminSectionsPage() {
       {editId && (
         <SectionEditModal
           id={editId}
+          isOpen={true}
           onClose={() => setEditId(null)}
         />
       )}
