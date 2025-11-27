@@ -37,12 +37,6 @@ export default function AdminDashboardPage() {
       description: "Поурочные занятия",
     },
     {
-      title: "Сессии (Sessions)",
-      icon: Calendar,
-      link: "sessions",
-      description: "Календарь занятий",
-    },
-    {
       title: "События",
       icon: Swords,
       link: "events",
@@ -106,21 +100,21 @@ export default function AdminDashboardPage() {
         {/* Быстрые кнопки */}
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
           <Link
-            to="/sessions/import"
+            to="sessions/import"
             className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
           >
             📥 Импорт расписания
           </Link>
 
           <Link
-            to="/enrollments"
+            to="enrollments"
             className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
           >
             📘 Записи на секции
           </Link>
 
           <Link
-            to="/payments"
+            to="payments"
             className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
           >
             💳 Оплаты и чеки

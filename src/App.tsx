@@ -22,9 +22,11 @@ import AdminUsersPage from './pages/AdminUsersPage'
 import AdminLessonsPage from './pages/AdminLessonPage'
 import AdminEventsPage from './pages/AdminEventsPage'
 import AdminLayout from './layouts/AdminLayout'
+import AdminEnrollmentsPage from './pages/AdminEnrollmentsPage'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import BazarPage from './pages/BazarPage'
+import AdminOrdersPage from './pages/AdminOrdersPage'
 
 function App() {
   return (
@@ -65,6 +67,9 @@ function App() {
             <Route path="news" element={<AdminNewsPage />} />
             <Route path="teachers" element={<TeachersPage />} />
             <Route path="chats" element={<ChatManagementPage />} />
+            <Route path="orders" element={<AdminOrdersPage />} />
+            <Route path="enrollments" element={<AdminEnrollmentsPage />} />
+
           </Route>
 
           <Route path="/login" element={<LoginPage />} />
