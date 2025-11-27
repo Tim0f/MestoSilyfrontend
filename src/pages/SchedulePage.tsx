@@ -157,26 +157,28 @@ export default function SchedulePage() {
 
   // ==== JSX ====
   return (
-    <div className="relative w-[1920px] min-h-[2180px] bg-[#464042] text-white font-['Unbounded']">
-      <h1 className="text-center mt-[176px] text-[96px] font-['Zero_Cool'] text-[#F5C78B]">
+    <div className="w-full min-h-screen bg-[#2D282A] text-white font-['Unbounded'] flex flex-col items-center pb-[200px]">
+  
+      {/* ===== Заголовок ===== */}
+      <h1 className="mt-[120px] text-[96px] font-['Zero_Cool'] text-[#F5C78B] text-center">
         РАСПИСАНИЕ
       </h1>
-
-      {/* Количество бесплатных посещений */}
-      <div className="absolute left-[40px] top-[314px] flex items-center gap-[24px]">
+  
+      {/* ===== Количество бесплатных посещений ===== */}
+      <div className="mt-[40px] flex items-center gap-[24px]">
         <span className="text-[20px]">Кол-во бесплатных посещений:</span>
         <div className="w-[70px] h-[69px] bg-[#F5C78B] flex justify-center items-center rounded-[5px] border-2 border-[#F4C884]">
           <span className="text-[20px] text-black font-h1">{subscriptionCount}</span>
         </div>
       </div>
-
-      {/* Навигация по неделе */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 top-[320px] flex items-center gap-[24px]">
+  
+      {/* ===== Навигация по неделе ===== */}
+      <div className="mt-[40px] flex flex-col items-center gap-[24px]">
         <div className="flex gap-[8px]">
           {weekDates.map((date, i) => {
             const isActive = date.toDateString() === selectedDate.toDateString()
             const dayName = date.toLocaleDateString('ru-RU', { weekday: 'short' })
-
+  
             return (
               <button
                 key={i}
@@ -191,8 +193,8 @@ export default function SchedulePage() {
             )
           })}
         </div>
-
-        <div className="flex items-center gap-[16px] ml-[40px]">
+  
+        <div className="flex items-center gap-[16px]">
           <button onClick={handlePrevWeek} className="text-[24px] text-[#F4C884]">&lt;</button>
           <span className="text-[20px] text-[#F4C884]">
             {formatDate(weekDates[0])} - {formatDate(weekDates[6])}
@@ -200,51 +202,47 @@ export default function SchedulePage() {
           <button onClick={handleNextWeek} className="text-[24px] text-[#F4C884]">&gt;</button>
         </div>
       </div>
-
-      {/* Список занятий */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 top-[457px] flex flex-wrap justify-center gap-[30px] w-[90%]">
+  
+      {/* ===== Карточки занятий ===== */}
+      <div className="mt-[60px] w-full max-w-[1600px] flex flex-wrap justify-center gap-[40px]">
         {filteredSessions.map(session => {
           const isEnrolled = enrolledSessions.includes(session.id)
-
+  
           return (
             <div
               key={session.id}
-              className={`w-[597px] h-[604px] rounded-[5px] border-2 border-[#F4C884] p-[40px] relative ${
+              className={`w-[520px] h-[560px] rounded-[5px] border-2 border-[#F4C884] p-[40px] relative ${
                 isEnrolled ? 'bg-[#F5C78B] text-black' : 'bg-[#2D282A] text-white'
               }`}
             >
-              <div
-                className={`absolute left-[40px] top-[40px] bottom-[40px] w-[2px] ${
-                  isEnrolled ? 'bg-black' : 'bg-[#F5C78B]'
-                }`}
-              ></div>
-
-              <div className="ml-[140px] flex flex-col justify-between h-full py-[20px]">
+              <div className={`absolute left-[40px] top-[40px] bottom-[40px] w-[2px] ${
+                isEnrolled ? 'bg-black' : 'bg-[#F5C78B]'
+              }`} />
+  
+              <div className="ml-[80px] flex flex-col justify-between h-full py-[20px]">
                 <div>
-                  <span
-                    className={`text-[96px] font-['Zero_Cool'] leading-[110px] ${
-                      isEnrolled ? 'text-black' : 'text-[#F5C78B]'
-                    }`}
-                  >
+                  <span className={`text-[72px] font-['Zero_Cool'] leading-[80px] ${
+                    isEnrolled ? 'text-black' : 'text-[#F5C78B]'
+                  }`}>
                     {formatTime(session.startTime)}
                   </span>
-
-                  <div className="mt-[24px]">
-                    <h3 className="text-[32px] font-h1">{session.section.name}</h3>
-                    <p className="text-[16px] mt-[14px] max-w-[300px]">
+  
+                  <div className="mt-[20px]">
+                    <h3 className="text-[28px] font-h1">{session.section.name}</h3>
+                    <p className="text-[16px] mt-[10px] max-w-[300px]">
                       Место: {session.location} <br />
                       Участников: {session.currentEnrollment}/{session.capacity}
                     </p>
                   </div>
-
-                  <div className="mt-[24px] flex items-center gap-[8px]">
+  
+                  <div className="mt-[20px] flex items-center gap-[8px]">
                     <div className="w-[32px] h-[32px] rounded-full flex items-center justify-center bg-[#F4C884]">
                       <img src="path_to_person_icon.png" alt="teacher" className="w-[16px] h-[16px]" />
                     </div>
                     <span className="text-[16px]">{session.teacher.name}</span>
                   </div>
                 </div>
-
+  
                 <div className="mt-[24px]">
                   {!isEnrolled ? (
                     <button
@@ -264,56 +262,55 @@ export default function SchedulePage() {
           )
         })}
       </div>
-
-      {/* События */}
-      <div className="absolute left-0 right-0 top-[1189px] bg-[#1F1B1C] flex flex-col items-center py-[60px]">
+  
+      {/* ===== События ===== */}
+      <div className="mt-[120px] w-full bg-customblack flex flex-col items-center py-[60px]">
         {events.length > 0 && (
-          <>
-            <div className="relative w-full flex flex-col items-center">
-              {events.map(event =>
-                selectedEvent?.id === event.id ? (
-                  <div
-                    key={event.id}
-                    className="w-[90%] max-w-[1800px] transition-all bg-[#2D282A] p-[40px] rounded-[8px]"
-                  >
-                    <div className="flex gap-[40px] items-center">
-                      <img src={event.imageUrl} alt={event.title} className="w-[600px] h-[400px] object-cover rounded-[8px]" />
-                      <div className="flex flex-col gap-[16px] max-w-[800px]">
-                        <h3 className="text-[64px] font-['Zero_Cool'] text-[#F5C78B]">{event.title}</h3>
-                        <p className="text-[20px] text-white">{event.description}</p>
-                        <p className="text-[24px] text-[#F4C884] font-h1">
-                          {formatTime(event.startTime)}–{formatTime(event.endTime)}
-                        </p>
-                        <div className="mt-[16px] flex gap-[16px] items-center">
-                          <span className="text-[32px] font-h1 text-white">
-                            Стоимость: {event.price ? `${event.price}₽` : 'Бесплатно'}
-                          </span>
-                          <button className="bg-[#F4C884] text-black font-h1 px-[40px] py-[16px] rounded-[5px] border-2 border-[#2D282A] hover:bg-[#F4C884]/80 transition">
-                            записаться
-                          </button>
-                        </div>
+          <div className="w-full max-w-[1600px] flex flex-col items-center">
+            {events.map(event =>
+              selectedEvent?.id === event.id ? (
+                <div key={event.id} className="w-full transition-all bg-[#2D282A] p-[40px] rounded-[8px]">
+                  <div className="flex gap-[40px] items-center justify-center">
+                    <img
+                      src={event.imageUrl}
+                      alt={event.title}
+                      className="w-full h-[400px] object-cover rounded-[8px]"
+                    />
+                    <div className="flex flex-col gap-[16px] max-w-[800px]">
+                      <h3 className="text-[64px] font-['Zero_Cool'] text-[#F5C78B]">{event.title}</h3>
+                      <p className="text-[20px] text-white">{event.description}</p>
+                      <p className="text-[24px] text-[#F4C884] font-h1">
+                        {formatTime(event.startTime)}–{formatTime(event.endTime)}
+                      </p>
+                      <div className="mt-[16px] flex gap-[16px] items-center">
+                        <span className="text-[32px] font-h1 text-white">
+                          Стоимость: {event.price ? `${event.price}₽` : 'Бесплатно'}
+                        </span>
+                        <button className="bg-[#F4C884] text-black font-h1 px-[40px] py-[16px] rounded-[5px] border-2 border-[#2D282A] hover:bg-[#F4C884]/80 transition">
+                          записаться
+                        </button>
                       </div>
                     </div>
                   </div>
-                ) : null
-              )}
-
-              <div className="flex justify-center gap-[16px] mt-[40px]">
-                {events.map((_, index) => {
-                  const isActive = selectedEvent ? events.indexOf(selectedEvent) === index : index === 0
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => setSelectedEvent(events[index])}
-                      className={`w-[50px] h-[50px] rounded-full border-4 border-[#F5C78B] transition-all ${
-                        isActive ? 'bg-[#F5C78B] scale-110' : 'bg-transparent hover:bg-[#F5C78B]/30'
-                      }`}
-                    />
-                  )
-                })}
-              </div>
+                </div>
+              ) : null
+            )}
+  
+            <div className="flex justify-center gap-[16px] mt-[40px]">
+              {events.map((_, index) => {
+                const isActive = selectedEvent ? events.indexOf(selectedEvent) === index : index === 0
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedEvent(events[index])}
+                    className={`w-[40px] h-[40px] rounded-full border-4 border-[#F5C78B] transition-all ${
+                      isActive ? 'bg-[#F5C78B] scale-110' : 'bg-transparent hover:bg-[#F5C78B]/30'
+                    }`}
+                  />
+                )
+              })}
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
