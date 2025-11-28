@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import Parkur from '../assets/svg/parkur.svg'
+import Border from '../assets/svg/texturedBorder.svg'
+import Event1 from '../assets/img/Mask_group.png'
+import Event2 from '../assets/img/Mask_group2.png'
+import btnFrame from "../assets/svg/Rectangle_9.svg";
+
 
 // ==== Типы ====
 interface Session {
@@ -13,7 +19,10 @@ interface Session {
   section: { name: string }
   teacher: { name: string }
   location?: string
+  iconUrl: string
+
 }
+
 
 interface Event {
   id: number
@@ -46,7 +55,8 @@ export default function SchedulePage() {
       currentEnrollment: 3,
       section: { name: 'Йога' },
       teacher: { name: 'Екатерина' },
-      location: 'Зал №1'
+      location: 'Зал №1',
+      iconUrl: Parkur,
     },
     {
       id: 2,
@@ -58,7 +68,8 @@ export default function SchedulePage() {
       currentEnrollment: 8,
       section: { name: 'Стретчинг' },
       teacher: { name: 'Анна' },
-      location: 'Зал №2'
+      location: 'Зал №2',
+      iconUrl: Parkur,
     },
     {
       id: 3,
@@ -70,7 +81,8 @@ export default function SchedulePage() {
       currentEnrollment: 12,
       section: { name: 'Пилатес' },
       teacher: { name: 'Мария' },
-      location: 'Зал №1'
+      location: 'Зал №1',
+      iconUrl: Parkur,
     }
   ]
 
@@ -80,16 +92,17 @@ export default function SchedulePage() {
       id: 1,
       title: 'Мастер-класс по растяжке',
       description: 'Углублённая тренировка для всех уровней подготовки.',
-      imageUrl: '/images/event1.jpg',
+      imageUrl: Event1,
       startTime: '2025-01-01T18:00:00',
       endTime: '2025-01-01T20:00:00',
-      price: 500
+      price: 500,
+
     },
     {
       id: 2,
       title: 'Йога на природе',
       description: 'Расслабляющая практика на свежем воздухе.',
-      imageUrl: '/images/event2.jpg',
+      imageUrl: Event2,
       startTime: '2025-01-01T09:00:00',
       endTime: '2025-01-01T10:30:00'
     }
@@ -158,12 +171,12 @@ export default function SchedulePage() {
   // ==== JSX ====
   return (
     <div className="w-full min-h-screen bg-[#2D282A] text-white font-['Unbounded'] flex flex-col items-center pb-[200px]">
-  
+
       {/* ===== Заголовок ===== */}
       <h1 className="mt-[120px] text-[96px] font-['Zero_Cool'] text-[#F5C78B] text-center">
         РАСПИСАНИЕ
       </h1>
-  
+
       {/* ===== Количество бесплатных посещений ===== */}
       <div className="mt-[40px] flex items-center gap-[24px]">
         <span className="text-[20px]">Кол-во бесплатных посещений:</span>
@@ -171,21 +184,20 @@ export default function SchedulePage() {
           <span className="text-[20px] text-black font-h1">{subscriptionCount}</span>
         </div>
       </div>
-  
+
       {/* ===== Навигация по неделе ===== */}
       <div className="mt-[40px] flex flex-col items-center gap-[24px]">
         <div className="flex gap-[8px]">
           {weekDates.map((date, i) => {
             const isActive = date.toDateString() === selectedDate.toDateString()
             const dayName = date.toLocaleDateString('ru-RU', { weekday: 'short' })
-  
+
             return (
               <button
                 key={i}
                 onClick={() => handleSelectDate(date)}
-                className={`w-[98px] h-[85px] flex flex-col justify-center items-center rounded-[5px] border-2 border-[#F4C884] transition-all ${
-                  isActive ? 'bg-[#F5C78B] text-black' : 'text-white hover:bg-[#F4C884]/20'
-                }`}
+                className={`w-[98px] h-[85px] flex flex-col justify-center items-center rounded-[5px] border-2 border-[#F4C884] transition-all ${isActive ? 'bg-[#F5C78B] text-black' : 'text-white hover:bg-[#F4C884]/20'
+                  }`}
               >
                 <span className="text-[24px] font-h1">{date.getDate()}</span>
                 <span className="text-[16px] uppercase">{dayName}</span>
@@ -193,7 +205,7 @@ export default function SchedulePage() {
             )
           })}
         </div>
-  
+
         <div className="flex items-center gap-[16px]">
           <button onClick={handlePrevWeek} className="text-[24px] text-[#F4C884]">&lt;</button>
           <span className="text-[20px] text-[#F4C884]">
@@ -202,117 +214,213 @@ export default function SchedulePage() {
           <button onClick={handleNextWeek} className="text-[24px] text-[#F4C884]">&gt;</button>
         </div>
       </div>
-  
+
       {/* ===== Карточки занятий ===== */}
-      <div className="mt-[60px] w-full max-w-[1600px] flex flex-wrap justify-center gap-[40px]">
+      <div aria-hidden className="mt-[60px] w-full h-full max-w-[1600px] flex justify-center gap-[40px]">
         {filteredSessions.map(session => {
           const isEnrolled = enrolledSessions.includes(session.id)
-  
+
           return (
             <div
-              key={session.id}
-              className={`w-[520px] h-[560px] rounded-[5px] border-2 border-[#F4C884] p-[40px] relative ${
-                isEnrolled ? 'bg-[#F5C78B] text-black' : 'bg-[#2D282A] text-white'
-              }`}
-            >
-              <div className={`absolute left-[40px] top-[40px] bottom-[40px] w-[2px] ${
-                isEnrolled ? 'bg-black' : 'bg-[#F5C78B]'
-              }`} />
-  
-              <div className="ml-[80px] flex flex-col justify-between h-full py-[20px]">
-                <div>
-                  <span className={`text-[72px] font-['Zero_Cool'] leading-[80px] ${
-                    isEnrolled ? 'text-black' : 'text-[#F5C78B]'
-                  }`}>
-                    {formatTime(session.startTime)}
-                  </span>
-  
-                  <div className="mt-[20px]">
-                    <h3 className="text-[28px] font-h1">{session.section.name}</h3>
-                    <p className="text-[16px] mt-[10px] max-w-[300px]">
-                      Место: {session.location} <br />
-                      Участников: {session.currentEnrollment}/{session.capacity}
-                    </p>
-                  </div>
-  
-                  <div className="mt-[20px] flex items-center gap-[8px]">
-                    <div className="w-[32px] h-[32px] rounded-full flex items-center justify-center bg-[#F4C884]">
-                      <img src="path_to_person_icon.png" alt="teacher" className="w-[16px] h-[16px]" />
-                    </div>
-                    <span className="text-[16px]">{session.teacher.name}</span>
-                  </div>
-                </div>
-  
-                <div className="mt-[24px]">
-                  {!isEnrolled ? (
-                    <button
-                      onClick={() => handleEnroll(session.id)}
-                      className="w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-[#2D282A] text-[20px] text-black font-h1 hover:bg-[#F4C884]/80 transition"
-                    >
-                      записаться
-                    </button>
-                  ) : (
-                    <div className="w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-black flex items-center justify-center">
-                      <span className="text-[20px] font-h1">записан(а)</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )
-        })}
+  key={session.id}
+  className={`w-[520px] h-[560px]  p-[40px] relative 
+    ${isEnrolled ? 'bg-[#F5C78B] text-black' : 'bg-[#2D282A] text-white'}`}
+    style={{
+      backgroundImage: `url(${Border})`,
+      backgroundSize: "100% 100%",
+      backgroundRepeat: "no-repeat",
+
+    }}
+>
+  <div className="flex w-full h-full">
+
+    {/* 50% — SVG иконка */}
+    <div className="w-1/2 flex items-center justify-center">
+      <div
+        aria-hidden
+        className="w-[220px] h-[480px] select-none pointer-events-none"
+        style={{
+          WebkitMaskImage: `url(${session.iconUrl})`,
+    maskImage: `url(${session.iconUrl})`,
+
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+          backgroundColor: isEnrolled ? '#2D282A' : '#F5C78B',
+        }}
+      />
+    </div>
+
+    {/* 50% — текст */}
+    <div className="w-1/2 flex flex-col ">
+
+      {/* Время / Название / Описание */}
+      <div>
+        <span
+          className={`text-[72px] font-['Zero_Cool'] leading-[80px] ${
+            isEnrolled ? 'text-black' : 'text-[#F5C78B]'
+          }`}
+        >
+          {formatTime(session.startTime)}
+        </span>
+
+        <h3 className="text-[28px] font-h1 text-customyellow drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
+          {session.section.name}
+        </h3>
+
+        <p className="text-[16px] mt-[10px] max-w-[300px] text-customwhite font-p">
+          Место: {session.location} <br />
+          Участников: {session.currentEnrollment}/{session.capacity}
+        </p>
       </div>
-  
-      {/* ===== События ===== */}
-      <div className="mt-[120px] w-full bg-customblack flex flex-col items-center py-[60px]">
-        {events.length > 0 && (
-          <div className="w-full max-w-[1600px] flex flex-col items-center">
-            {events.map(event =>
-              selectedEvent?.id === event.id ? (
-                <div key={event.id} className="w-full transition-all bg-[#2D282A] p-[40px] rounded-[8px]">
-                  <div className="flex gap-[40px] items-center justify-center">
-                    <img
-                      src={event.imageUrl}
-                      alt={event.title}
-                      className="w-full h-[400px] object-cover rounded-[8px]"
-                    />
-                    <div className="flex flex-col gap-[16px] max-w-[800px]">
-                      <h3 className="text-[64px] font-['Zero_Cool'] text-[#F5C78B]">{event.title}</h3>
-                      <p className="text-[20px] text-white">{event.description}</p>
-                      <p className="text-[24px] text-[#F4C884] font-h1">
-                        {formatTime(event.startTime)}–{formatTime(event.endTime)}
-                      </p>
-                      <div className="mt-[16px] flex gap-[16px] items-center">
-                        <span className="text-[32px] font-h1 text-white">
-                          Стоимость: {event.price ? `${event.price}₽` : 'Бесплатно'}
-                        </span>
-                        <button className="bg-[#F4C884] text-black font-h1 px-[40px] py-[16px] rounded-[5px] border-2 border-[#2D282A] hover:bg-[#F4C884]/80 transition">
-                          записаться
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null
-            )}
-  
-            <div className="flex justify-center gap-[16px] mt-[40px]">
-              {events.map((_, index) => {
-                const isActive = selectedEvent ? events.indexOf(selectedEvent) === index : index === 0
-                return (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedEvent(events[index])}
-                    className={`w-[40px] h-[40px] rounded-full border-4 border-[#F5C78B] transition-all ${
-                      isActive ? 'bg-[#F5C78B] scale-110' : 'bg-transparent hover:bg-[#F5C78B]/30'
-                    }`}
-                  />
-                )
-              })}
-            </div>
+
+      {/* Учитель */}
+      <div className="mt-[20px] flex items-center gap-[12px]">
+        <div>
+          <div className="text-customyellow font-p">Учитель:</div>
+          <div className="text-customwhite font-p">{session.teacher.name}</div>
+        </div>
+      </div>
+
+      {/* Кнопка */}
+      <div className=" pt-[20px]">
+        {!isEnrolled ? (
+          <button
+            onClick={() => handleEnroll(session.id)}
+            className="w-[213px] h-[73px] bg-[#F4C884] mx-auto rounded-[5px] border-2 border-[#2D282A] text-[20px] text-black font-h1 hover:bg-[#F4C884]/80 transition"
+          >
+            записаться
+          </button>
+        ) : (
+          <div className="w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-black flex items-center justify-center">
+            <span className="text-[20px] font-h1">записан(а)</span>
           </div>
         )}
       </div>
     </div>
+  </div>
+</div>
+
+          )
+        })}
+      </div>
+
+{/* ===== Событие ===== */}
+<div className="w-full flex flex-col items-center mt-[80px]">
+
+  {events.length > 0 && (
+    <div
+      className="w-full relative flex flex-col items-center overflow-hidden"
+      style={{
+        backgroundImage: `url(${(selectedEvent || events[0]).imageUrl})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* затемнение поверх общего фона */}
+      <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
+
+      {/* =====================================================
+          🔥 СТАТИЧНЫЙ ЗАГОЛОВОЧНЫЙ БЛОК (НЕ ДВИГАЕТСЯ)
+      ====================================================== */}
+      <div className="w-full h-[320px] flex flex-col items-center justify-center text-center relative z-10">
+
+        <h2 className="text-[42px] font-['Zero_Cool'] text-[#F5C78B]">
+          {(selectedEvent || events[0]).title}
+        </h2>
+
+        <p className="text-[62px] font-h1 text-[#F5C78B] mt-[10px]">
+          {formatDate(new Date((selectedEvent || events[0]).startTime))}{" "}
+          {formatTime((selectedEvent || events[0]).startTime)}–
+          {formatTime((selectedEvent || events[0]).endTime)}
+        </p>
+
+        {!selectedEvent && (
+          <div
+            className="text-[#F5C78B] text-[46px] mt-[10px] cursor-pointer animate-bounce"
+            onClick={() => setSelectedEvent(events[0])}
+          >
+            ▼
+          </div>
+        )}
+      </div>
+
+      {/* =====================================================
+           🔥 АКТИВНЫЙ БЛОК ПОД ЗАГОЛОВКОМ
+           ФОН НЕ ДУБЛИРУЕТСЯ (ОН УЖЕ НА РОДИТЕЛЕ)
+      ====================================================== */}
+      {selectedEvent && (
+  <div className="w-full relative z-10  py-[80px]">
+
+    <div className="max-w-[1400px] mx-auto flex">
+
+      {/* ==== Левая часть — картинка ==== */}
+      <div className="w-5/12 pr-[40px] flex items-start justify-end">
+        
+      </div>
+
+      {/* ==== Правая часть — текст строго от центра ==== */}
+      <div className="w-1/2 pl-[40px] flex flex-col text-white">
+
+
+        <p className="text-[20px] leading-[28px] mb-[20px] whitespace-pre-line">
+          {selectedEvent.description}
+        </p>
+
+
+        <p className="text-[32px] font-bold text-[#F5C78B] mb-[30px]">
+          Стоимость: {selectedEvent.price ? `${selectedEvent.price} руб` : "Бесплатно"}
+        </p>
+
+        <button
+  className="relative text-black text-[20px] font-bold w-fit h-fit flex items-center justify-center"
+  style={{
+    WebkitMaskImage: `url(${btnFrame})`,
+    maskImage: `url(${btnFrame})`,
+    WebkitMaskSize: "100% 100%",
+    maskSize: "100% 100%",
+    backgroundColor: "#F5C78B",  // ← цвет кнопки
+    padding: "18px 48px",
+  }}
+>
+  записаться
+</button>
+
+
+        <div
+          onClick={() => setSelectedEvent(null)}
+          className="text-[#F5C78B] text-[46px] mt-[40px] cursor-pointer hover:opacity-80"
+        >
+          ▲
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+      {/* ===== Навигационные точки ===== */}
+      {!selectedEvent && (
+        <div className="flex justify-center gap-[14px] mt-[35px] relative z-10">
+          {events.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setSelectedEvent(events[idx])}
+              className={`w-[16px] h-[16px] rounded-full border-2 border-[#F5C78B] ${
+                idx === 0 ? "bg-[#F5C78B]" : "bg-transparent"
+              }`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )}
+</div>
+
+</div>
   )
 }
