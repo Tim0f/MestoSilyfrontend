@@ -40,7 +40,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
     ageMax: 0,
     maxParticipants: 0,
     isActive: true,
-    teacherIds: [] as string[],
+    // teacherIds: [] as string[],
   });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -66,7 +66,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
       ageMax: data.ageMax,
       maxParticipants: data.maxParticipants,
       isActive: data.isActive,
-      teacherIds: data.teachers?.map((t: any) => t.id) ?? [],
+      // teacherIds: data.teachers?.map((t: any) => t.id) ?? [],
     });
 
     setLoading(false);
@@ -76,14 +76,14 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
     setForm((p) => ({ ...p, [k]: v }));
   };
 
-  const toggleTeacher = (id: string) => {
-    setForm((p) => ({
-      ...p,
-      teacherIds: p.teacherIds.includes(id)
-        ? p.teacherIds.filter((t) => t !== id)
-        : [...p.teacherIds, id],
-    }));
-  };
+  // const toggleTeacher = (id: string) => {
+  //   setForm((p) => ({
+  //     ...p,
+  //     teacherIds: p.teacherIds.includes(id)
+  //       ? p.teacherIds.filter((t) => t !== id)
+  //       : [...p.teacherIds, id],
+  //   }));
+  // };
 
   const uploadIfNeeded = async (file: File | null): Promise<string | undefined> => {
     if (!file) return undefined;
@@ -151,7 +151,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
         </div>
 
         <div>
-          <label className="block mb-2">Учителя</label>
+          {/* <label className="block mb-2">Учителя</label>
           <div className="grid grid-cols-2 gap-3">
             {teachers.map((t) => (
               <button
@@ -171,7 +171,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
                 <span>{t.lastName} {t.firstName}</span>
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
 
         <button

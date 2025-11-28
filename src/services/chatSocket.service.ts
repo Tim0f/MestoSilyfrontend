@@ -6,9 +6,12 @@ export interface ChatMessage {
   chatId: string;
   content: string;
   authorId?: string | null;
-  author?: { id?: string; firstName?: string; lastName?: string } | null;
+  author?: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+  } | null;
   createdAt: string;
-  editedAt?: string | null;
 }
 
 export interface ChatAck {
@@ -24,20 +27,24 @@ export class ChatSocketService {
   constructor(private baseUrl: string, private token: string) {}
 
   connect() {
-    if (this.socket && this.socket.connected) return;
+    if (this.socket?.connected) return;
 
-    // ❗ ВАЖНО: namespace /chat находится НЕ в /api
-    const server = this.baseUrl.replace(/\/api$/, "");
+    console.log("🔌 Connecting to WS:", this.baseUrl + "/chat");
 
-    this.socket = io(server + "/chat", {
+    // ← КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ
+    this.socket = io(this.baseUrl + "/chat", {
+      path: "/socket.io",
+      transports: ["websocket"],
       auth: { token: this.token },
-      transports: ["websocket"]
     });
-  }
 
-  disconnect() {
-    this.socket?.disconnect();
-    this.socket = null;
+    this.socket.on("connect", () => {
+      console.log("WS connected to /chat");
+    });
+
+    this.socket.on("connect_error", (err) => {
+      console.error("❌ WS connect error:", err);
+    });
   }
 
   onConnect(cb: () => void) {
@@ -48,41 +55,32 @@ export class ChatSocketService {
     this.socket?.on("disconnect", cb);
   }
 
-  joinChat(chatId: string): Promise<ChatAck> {
-    return new Promise(resolve => {
-      this.socket?.emit("joinChat", { chatId }, (ack: ChatAck) => resolve(ack));
-    });
+  disconnect() {
+    this.socket?.disconnect();
+    this.socket = null;
   }
 
-  leaveChat(chatId: string) {
-    this.socket?.emit("leaveChat", { chatId });
+  joinChat(chatId: string): Promise<ChatAck> {
+    return new Promise((resolve) => {
+      this.socket?.emit("joinChat", { chatId }, resolve);
+    });
   }
 
   sendMessage(chatId: string, content: string): Promise<ChatAck> {
-    return new Promise(resolve => {
-      this.socket?.emit("sendMessage", { chatId, content }, (ack: ChatAck) =>
-        resolve(ack)
-      );
+    return new Promise((resolve) => {
+      this.socket?.emit("sendMessage", { chatId, content }, resolve);
     });
-  }
-
-  onNewMessage(cb: (msg: ChatMessage) => void) {
-    this.socket?.on("newMessage", cb);
-  }
-
-  onMessageEdited(cb: (msg: ChatMessage) => void) {
-    this.socket?.on("messageEdited", cb);
-  }
-
-  onMessageDeleted(cb: (data: { messageId: string }) => void) {
-    this.socket?.on("messageDeleted", cb);
   }
 
   sendTyping(chatId: string, isTyping: boolean) {
     this.socket?.emit("typing", { chatId, isTyping });
   }
 
-  onUserTyping(cb: (data: { userId?: string; isTyping: boolean }) => void) {
+  onNewMessage(cb: (msg: ChatMessage) => void) {
+    this.socket?.on("newMessage", cb);
+  }
+
+  onUserTyping(cb: (data: { userId: string; isTyping: boolean }) => void) {
     this.socket?.on("userTyping", cb);
   }
 }
