@@ -10,7 +10,7 @@ interface User {
   dateOfBirth?: string;
   role: string;
   avatarUrl?: string;
-  grainBalance: number;
+  totalGrains: number;
 }
 
 interface AuthContextType {
@@ -22,7 +22,7 @@ interface AuthContextType {
     firstName: string,
     lastName: string,
     phone: string,
-    dateOfBirth: string
+    dateOfBirth: string,
   ) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
@@ -52,13 +52,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const login = async (email: string, password: string) => {
-    const response = await axios.post('/api/auth/login', { email, password });
-    const { token, user: userData } = response.data;
-    localStorage.setItem('token', token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    setUser(userData);
-  };
+const login = async (email: string, password: string) => {
+  const response = await axios.post('/api/auth/login', { email, password });
+  const { token } = response.data;
+
+  localStorage.setItem('token', token);
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+  // Загружаем актуальные данные пользователя
+  await fetchUser();
+};
+
 
   const register = async (
     email: string,

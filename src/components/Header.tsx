@@ -32,8 +32,23 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-4">
-          <Link to="/bazar" className="hover:text-primary-400 transition">
-            <span className="font-h2 text-primary-300">100       <img
+          
+            
+            {!isAuthenticated ? (
+              <Link
+                to="/login"
+                className="px-4 py-2 border border-primary-900 rounded-lg hover:bg-primary-600 hover:text-white transition"
+              >
+                Вход
+              </Link>
+            ) : (
+              <>
+              <Link to="/bazar" className="hover:text-primary-400 transition">
+            <span className="font-h2 text-primary-300"> { user && (
+  <span className="text-primary-300">
+ {user.totalGrains} 
+  </span>
+)}       <img
               src={Logo2}
               className='w-[20px] select-none'
               style={{
@@ -49,21 +64,13 @@ export default function Header() {
             </span>
       
           </Link>
-            
-            {!isAuthenticated ? (
-              <Link
-                to="/login"
-                className="px-4 py-2 border border-primary-900 rounded-lg hover:bg-primary-600 hover:text-white transition"
-              >
-                Вход
-              </Link>
-            ) : (
-              <>
                 <Link
                   to="/profile"
                   className="w-10 h-10 rounded-full bg-primary-700 flex items-center justify-center hover:bg-primary-600 transition"
+                  
                   aria-label="Профиль"
                 >
+                  <img src={user?.avatarUrl} />
                   <User size={20} />
                 </Link>
                 <button

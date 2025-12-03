@@ -1,9 +1,27 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { ShieldCheck, Users, Layers, Calendar, CreditCard, Star, Image, Gift, Newspaper, Layers3, ShoppingBag, Swords } from "lucide-react";
+import { useState } from "react";
+
+import AdminAchievementsModal from "../components/achievements/AdminAchievementsModal";
+
+import {
+  ShieldCheck,
+  Users,
+  Layers3,
+  Calendar,
+  CreditCard,
+  Star,
+  Image,
+  Gift,
+  Newspaper,
+  ShoppingBag,
+  Swords,
+} from "lucide-react";
 
 export default function AdminDashboardPage() {
   const { user } = useAuth();
+
+  const [achievementsOpen, setAchievementsOpen] = useState(false);
 
   if (!user || (user.role !== "ADMIN" && user.role !== "ROOT")) {
     return (
@@ -11,7 +29,9 @@ export default function AdminDashboardPage() {
         <div className="max-w-lg text-center space-y-4">
           <ShieldCheck className="mx-auto text-yellow-400" size={48} />
           <h1 className="text-3xl font-h2">Доступ ограничен</h1>
-          <p className="text-base text-gray-300">Эта страница доступна только администраторам.</p>
+          <p className="text-base text-gray-300">
+            Эта страница доступна только администраторам.
+          </p>
         </div>
       </div>
     );
@@ -73,12 +93,6 @@ export default function AdminDashboardPage() {
       description: "Начисления и переводы",
     },
     {
-      title: "Записи на секции",
-      icon: Layers,
-      link: "enrollments",
-      description: "Записи детей на секции",
-    },
-    {
       title: "Оплаты и чеки",
       icon: CreditCard,
       link: "payments",
@@ -89,22 +103,30 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-[#080808] text-white px-4 py-10">
       <div className="max-w-7xl mx-auto space-y-10">
+
+        {/* HEADER */}
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-yellow-500">Админпанель</p>
-          <h1 className="text-4xl md:text-5xl font-h2 mt-2">Управление Местом Силы</h1>
+          <p className="text-xs uppercase tracking-[0.3em] text-yellow-500">
+            Админпанель
+          </p>
+          <h1 className="text-4xl md:text-5xl font-h2 mt-2">
+            Управление Местом Силы
+          </h1>
           <p className="text-gray-300 mt-3 max-w-2xl">
             Выберите раздел для управления системой.
           </p>
         </div>
 
-        {/* Быстрые кнопки */}
+        {/* QUICK ACTIONS */}
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-          <Link
-            to="sessions/import"
+
+          {/* Ачивки — кнопка открывает модалку */}
+          <button
+            onClick={() => setAchievementsOpen(true)}
             className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
           >
-            📥 Импорт расписания
-          </Link>
+            🏆 Ачивки
+          </button>
 
           <Link
             to="enrollments"
@@ -121,7 +143,7 @@ export default function AdminDashboardPage() {
           </Link>
         </div>
 
-        {/* Основная сетка */}
+        {/* MAIN GRID */}
         <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {sections.map(({ title, icon: Icon, link, description }) => (
             <Link
@@ -140,6 +162,12 @@ export default function AdminDashboardPage() {
           ))}
         </section>
       </div>
+
+      {/* ACHIEVEMENTS MODAL */}
+      <AdminAchievementsModal
+        isOpen={achievementsOpen}
+        onClose={() => setAchievementsOpen(false)}
+      />
     </div>
   );
 }
