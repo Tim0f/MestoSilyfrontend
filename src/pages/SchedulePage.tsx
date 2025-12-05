@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import Parkur from '../assets/svg/parkur.svg'
-import Border from '../assets/svg/texturedBorder.svg'
-import Border2 from '../assets/svg/Rectangle_13.svg'
-import Border3 from '../assets/svg/numb.svg'
+import Border from '../assets/svg/texturedBorder.svg?react'
+import Border2 from '../components/border2'
+import Border3 from '../assets/svg/numb.svg?react'
 import Event1 from '../assets/img/Mask_group.png'
 import Event2 from '../assets/img/Mask_group2.png'
 import btnFrame from "../assets/svg/Rectangle_9.svg";
@@ -186,11 +186,12 @@ export default function SchedulePage() {
 
   {/* Рваный квадрат числа */}
   <div className="
-    w-[95px] h-[85px] flex justify-center items-center
+    w-[95px] h-[85px] flex justify-center items-center fill-customyellow
   "
   style={{
     backgroundImage: `url(${Border3})`,
     backgroundSize: '95px 85px',
+    backgroundColor:'customyellow',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
   }}
@@ -219,27 +220,25 @@ export default function SchedulePage() {
           className={`
             w-[95px] h-[85px] flex flex-col justify-center items-center relative
             transition-all
-            ${isActive
-              ? ' text-black'
-              : 'text-white '}
+
           `
         }
-        style={{
-          backgroundImage: `url(${Border2})`,
-          backgroundSize: '95px 85px',
-          
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-        }}
         >
-
-          {/* Число */}
-          <span className="text-[26px] font-h1 leading-none">
+          <Border2 className={`
+    ${isActive ? "fill-customblack" : "fill-customyellow"}
+    stroke-customyellow
+  `}>
+{/* Число */}
+          <span className="text-[26px] font-h1 text-black leading-none">
             {date.getDate()}
           </span>
 
           {/* День недели */}
           <span className="text-[15px] mt-[3px] uppercase">{dayName}</span>
+          </Border2>
+          
+
+          
         </button>
       )
     })}
