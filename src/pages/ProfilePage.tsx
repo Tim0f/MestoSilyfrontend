@@ -7,6 +7,7 @@ import { HttpClient } from "../services/httpClient";
 import { UsersFrontendService } from "../services/users.service";
 import { AchievementsFrontendService } from "../services/achievements.service";
 import { LessonsFrontendService } from "../services/lessons.service";
+import { SectionsFrontendService } from "../services/sections.service";
 
 interface Achievement {
   name: string;
@@ -34,42 +35,23 @@ interface ScheduleItem {
   time: string;
 }
 
+interface Section {
+  id: string;
+  name: string;
+}
+
 export default function ProfilePage() {
   const [userData, setUserData] = useState<User | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const [activeTab, setActiveTab] = useState<"general" | "sections">("general");
   const [activeSection, setActiveSection] = useState<string>("general");
-
-  // Словарь для отображения названий секций
-  const sectionsDict: Record<string, string> = {
-    fencing: "фехтование",
-    "stage-fencing": "актерское фехтование",
-    shooting: "стрельба",
-    dnd: "D&D",
-  };
-
-  const fallbackUser: User = {
-    firstName: "TestUser",
-    lastName: "",
-    email: "example@mail.com",
-    dateOfBirth: "2024-01-01",
-    avatarUrl: "/no-avatar.png",
-    totalGrains: 40,
-  };
-
-  const fallbackAchievements: Achievement[] = [
-    { name: "Первое занятие", description: "Посетил первое занятие", iconUrl: Vector, rewardGrains: 50, sectionId: "fencing", isActive: true },
-    { name: "Вернулся", description: "Пришел снова", iconUrl: Vector, rewardGrains: 70, sectionId: "stage-fencing", isActive: false },
-    { name: "Одобрение наставника", description: "Учитель доволен", iconUrl: Vector, rewardGrains: 50, sectionId: "shooting", isActive: true },
-    { name: "Герой подземелий", description: "Первый raid пройден", iconUrl: Vector, rewardGrains: 50, sectionId: "dnd", isActive: true },
-  ];
-
-  const fallbackSchedule: ScheduleItem[] = [
-    { id: 1, title: "Актерское Фехтование", description: "Откройте для себя искусство владения клинком.", date: "01.02", time: "18:00" },
-  ];
+  
+  const [modalOpen, setModalOpen] = useState(false);
+  const [achievementCode, setAchievementCode] = useState("");
 
   const client = new HttpClient({
     baseUrl:
@@ -82,9 +64,9 @@ export default function ProfilePage() {
   const usersService = new UsersFrontendService(client);
   const achievementsService = new AchievementsFrontendService(client);
   const lessonsService = new LessonsFrontendService(client);
+  const sectionsService = new SectionsFrontendService(client);
 
   useEffect(() => {
-    // Данные пользователя
     usersService.getMyProfile<User>()
       .then((data) => {
         setUserData({
@@ -96,23 +78,21 @@ export default function ProfilePage() {
           dateOfBirth: new Date(data.dateOfBirth).toISOString().slice(0, 10),
         });
       })
-      .catch(() => setUserData(fallbackUser));
+      .catch(() => console.warn("Ошибка загрузки профиля"));
 
-    // Ачивки
     achievementsService.findAll<Achievement[]>()
-      .then((data) => setAchievements(Array.isArray(data) ? data : fallbackAchievements))
-      .catch(() => setAchievements(fallbackAchievements));
+      .then((data) => setAchievements(Array.isArray(data) ? data : []))
+      .catch(() => console.warn("Ошибка загрузки ачивок"));
 
-    // Расписание на сегодня
     lessonsService.findAll<ScheduleItem[]>()
-      .then((data) => setSchedule(Array.isArray(data) ? data : fallbackSchedule))
-      .catch(() => setSchedule(fallbackSchedule));
+      .then((data) => setSchedule(Array.isArray(data) ? data : []))
+      .catch(() => console.warn("Ошибка загрузки расписания"));
+
+    sectionsService.findAll<Section[]>()
+      .then((data) => setSections(Array.isArray(data) ? data : []))
+      .catch(() => console.warn("Ошибка загрузки секций"));
   }, []);
 
-  // ====== Список секций на основе ачивок ======
-  const uniqueSections = Array.from(new Set(achievements.map(a => a.sectionId)));
-
-  // ====== фильтрация ачивок ======
   const filteredAchievements =
     activeSection === "general"
       ? achievements
@@ -120,9 +100,16 @@ export default function ProfilePage() {
 
   if (!userData) return null;
 
+  const handleSubmitCode = () => {
+    console.log("Получить достижение с кодом:", achievementCode);
+    setAchievementCode("");
+    setModalOpen(false);
+    // Здесь можно вызвать API для получения достижения по коду
+  };
+
   return (
     <div className="text-white bg-[#2D282A] min-h-screen p-6 space-y-6">
-      {/* ===== PROFILE / SCHEDULE / BALANCE BLOCKS ===== */}
+      {/* PROFILE / SCHEDULE / BALANCE BLOCKS */}
       <div className="flex gap-6 w-full">
         <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 flex items-center gap-6 relative overflow-hidden" style={{ width: "629px", height: "448px" }}>
           <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl pointer-events-none opacity-20" />
@@ -132,7 +119,6 @@ export default function ProfilePage() {
             <p className="text-primary-300">Дата рождения: {userData.dateOfBirth}</p>
             <p className="text-primary-300">{userData.email}</p>
           </div>
-          <button className="absolute top-4 right-4 text-xs bg-[#F6C98F] text-black px-3 py-1 rounded-lg font-h2 hover:brightness-90">изменить</button>
         </div>
 
         <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 relative" style={{ width: "715px", height: "448px" }}>
@@ -158,21 +144,27 @@ export default function ProfilePage() {
         <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 relative flex flex-col justify-between" style={{ width: "442px", height: "448px" }}>
           <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
           <div>
-            <h2 className="text-lg font-h1">Ваш баланс</h2>
             <div className="flex items-center gap-2 mt-1">
-              <p className="text-customyellow text-3xl font-h1">{userData.totalGrains}</p>
+              <p className="text-customyellow text-[170px] font-h1">{userData.totalGrains}</p>
               <img src={Logo2} className="w-6 h-6" />
             </div>
           </div>
-          <button className="bg-[#F6C98F] text-black font-h2 px-6 py-2 rounded-xl shadow hover:brightness-90 text-sm">перевести</button>
         </div>
       </div>
 
-      {/* ====== ACHIEVEMENTS FILTER ====== */}
+      {/* ACHIEVEMENTS FILTER */}
       <div className="flex items-center justify-center flex-col">
         <h2 className="text-[52px] font-h1 text-[#F6C98F] mt-8 tracking-wide">ДОСТИЖЕНИЯ</h2>
 
-        <div className="flex flex-row gap-6 mt-6 relative">
+        <div className="flex flex-row gap-4 mt-6 relative items-center">
+          {/* Новая кнопка "Получить достижение" */}
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-[#F6C98F] text-black font-h2 px-6 py-2 rounded-xl hover:brightness-90"
+          >
+            Получить достижение
+          </button>
+
           <button onClick={() => { setActiveTab("general"); setActiveSection("general"); }} className="relative">
             <LogoSvg width={233} height={81} className={`z-10 ${activeTab === "general" ? "fill-customyellow" : "opacity-60 hover:opacity-100 fill-customyellow"}`} />
             <span className={`absolute inset-0 flex items-center justify-center z-20 font-h1 text-2xl ${activeTab === "general" ? "text-customblack" : "text-[#F6C98F]"}`}>Общие</span>
@@ -187,10 +179,10 @@ export default function ProfilePage() {
 
             {openDropdown && (
               <div className="absolute left-0 top-[100%] mt-2 w-[233px] bg-[#2D282A] border border-[#F6C98F] rounded-xl p-6 space-y-5 z-20">
-                {uniqueSections.map((secId) => (
-                  <div key={secId} className="flex items-center gap-4 cursor-pointer" onClick={() => { setActiveSection(secId); setOpenDropdown(false); }}>
-                    <div className={`w-7 h-7 rounded-full border-2 border-[#F6C98F] ${activeSection === secId ? "bg-[#F6C98F]" : ""}`}></div>
-                    <p className="font-h1 text-2xl">{sectionsDict[secId]}</p>
+                {sections.map((sec) => (
+                  <div key={sec.id} className="flex items-center gap-4 cursor-pointer" onClick={() => { setActiveSection(sec.id); setOpenDropdown(false); }}>
+                    <div className={`w-7 h-7 rounded-full border-2 border-[#F6C98F] ${activeSection === sec.id ? "bg-[#F6C98F]" : ""}`}></div>
+                    <p className="font-h1 text-2xl">{sec.name}</p>
                   </div>
                 ))}
               </div>
@@ -199,9 +191,9 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ====== ACHIEVEMENTS LIST ====== */}
+      {/* ACHIEVEMENTS LIST */}
       <div className="mt-12 flex flex-col gap-6 w-full max-w-4xl mx-auto">
-        {filteredAchievements.map((a: Achievement, i: number) => (
+        {filteredAchievements.map((a, i) => (
           <div key={i} className="flex items-center justify-between bg-[#2D282A] border border-[#403B36] rounded-2xl px-6 py-4 relative">
             <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
             <div className="flex items-center gap-4">
@@ -225,6 +217,29 @@ export default function ProfilePage() {
           </div>
         ))}
       </div>
+
+      {/* МОДАЛЬНОЕ ОКНО */}
+      {modalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-[#2D282A] p-6 rounded-xl w-96 relative">
+            <button className="absolute top-2 right-2 text-[#F6C98F] font-bold" onClick={() => setModalOpen(false)}>×</button>
+            <h2 className="text-2xl font-h1 mb-4 text-[#F6C98F]">Введите код достижения</h2>
+            <input
+              type="text"
+              value={achievementCode}
+              onChange={(e) => setAchievementCode(e.target.value)}
+              placeholder="Введите код"
+              className="w-full p-2 rounded-lg text-black mb-4"
+            />
+            <button
+              onClick={handleSubmitCode}
+              className="bg-[#F6C98F] text-black px-6 py-2 rounded-xl hover:brightness-90"
+            >
+              Получить
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
