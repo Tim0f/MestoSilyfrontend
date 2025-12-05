@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HttpClient } from '../services/httpClient';
 import { ChatFrontendService } from '../services/chat.service';
 import { SectionsFrontendService } from '../services/sections.service';
@@ -32,7 +32,7 @@ export default function ChatsManager() {
   const [addUserChat, setAddUserChat] = useState<any | null>(null);
 
   const loadAll = async () => {
-    const chats = await chatService.findMyChats<any[]>();
+    const chats = await chatService.findAll<any[]>();
     const secs = await sectionsService.findAll<any[]>();
     const evs = await eventsService.findAll<any[]>();
 

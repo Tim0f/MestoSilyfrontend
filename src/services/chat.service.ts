@@ -23,6 +23,10 @@ export class ChatFrontendService {
     return this.http.get<T>('/chat');
   }
 
+    findAll<T = unknown>() {
+    return this.http.get<T>('/chat/all');
+  }
+
   /** Получить чат по ID */
   findOne<T = unknown>(chatId: string) {
     return this.http.get<T>(`/chat/${chatId}`);
