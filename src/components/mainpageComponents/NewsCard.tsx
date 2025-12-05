@@ -15,13 +15,12 @@ export default function NewsCard({
   content,
   imageSrc,
   imageAlt,
-  bgColorClass,
   transitionDelay,
   isRevealed,
 }: NewsCardProps) {
   return (
     <div
-      className={`relative ${bgColorClass} border border-primary-500/50 rounded-2xl overflow-hidden group transition-all duration-700 ease-out transform hover:-translate-y-1 hover:border-primary-400/70 ${
+      className={`relative  rounded-2xl overflow-hidden group transition-all duration-700 ease-out transform hover:-translate-y-1 ${
         isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}
       style={{ transitionDelay: `${transitionDelay}ms` }}

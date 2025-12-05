@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import Parkur from '../assets/svg/parkur.svg'
 import Border from '../assets/svg/texturedBorder.svg'
+import Border2 from '../assets/svg/Rectangle_13.svg'
+import Border3 from '../assets/svg/numb.svg'
 import Event1 from '../assets/img/Mask_group.png'
 import Event2 from '../assets/img/Mask_group2.png'
 import btnFrame from "../assets/svg/Rectangle_9.svg";
@@ -173,49 +175,93 @@ export default function SchedulePage() {
     <div className="w-full min-h-screen bg-[#2D282A] text-white font-['Unbounded'] flex flex-col items-center pb-[200px]">
 
       {/* ===== Заголовок ===== */}
-      <h1 className="mt-[120px] text-[96px] font-['Zero_Cool'] text-[#F5C78B] text-center">
+      <h1 className="mt-[120px] text-[96px] font-h1 text-[#F5C78B] text-center">
         РАСПИСАНИЕ
       </h1>
+      <div className="flex items-center gap-[40px]">
 
-      {/* ===== Количество бесплатных посещений ===== */}
-      <div className="mt-[40px] flex items-center gap-[24px]">
-        <span className="text-[20px]">Кол-во бесплатных посещений:</span>
-        <div className="w-[70px] h-[69px] bg-[#F5C78B] flex justify-center items-center rounded-[5px] border-2 border-[#F4C884]">
-          <span className="text-[20px] text-black font-h1">{subscriptionCount}</span>
-        </div>
-      </div>
+{/* ===== Количество бесплатных посещений ===== */}
+<div className="flex items-center gap-[20px]">
+  <span className="text-[24px] text-white">Кол-во бесплатных посещений:</span>
 
-      {/* ===== Навигация по неделе ===== */}
-      <div className="mt-[40px] flex flex-col items-center gap-[24px]">
-        <div className="flex gap-[8px]">
-          {weekDates.map((date, i) => {
-            const isActive = date.toDateString() === selectedDate.toDateString()
-            const dayName = date.toLocaleDateString('ru-RU', { weekday: 'short' })
+  {/* Рваный квадрат числа */}
+  <div className="
+    w-[95px] h-[85px] flex justify-center items-center
+  "
+  style={{
+    backgroundImage: `url(${Border3})`,
+    backgroundSize: '95px 85px',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+  }}
+  >
+    <span className="text-[28px] text-black font-h1 leading-none">
+      {subscriptionCount}
+    </span>
+  </div>
+</div>
 
-            return (
-              <button
-                key={i}
-                onClick={() => handleSelectDate(date)}
-                className={`w-[98px] h-[85px] flex flex-col justify-center items-center rounded-[5px] border-2 border-[#F4C884] transition-all ${isActive ? 'bg-[#F5C78B] text-black' : 'text-white hover:bg-[#F4C884]/20'
-                  }`}
-              >
-                <span className="text-[24px] font-h1">{date.getDate()}</span>
-                <span className="text-[16px] uppercase">{dayName}</span>
-              </button>
-            )
-          })}
-        </div>
 
-        <div className="flex items-center gap-[16px]">
-          <button onClick={handlePrevWeek} className="text-[24px] text-[#F4C884]">&lt;</button>
-          <span className="text-[20px] text-[#F4C884]">
-            {formatDate(weekDates[0])} - {formatDate(weekDates[6])}
+{/* ===== Навигация по неделе ===== */}
+<div className="flex items-center gap-[28px]">
+
+  {/* Дни недели */}
+  <div className="flex gap-[18px]">
+
+    {weekDates.map((date, i) => {
+      const isActive = date.toDateString() === selectedDate.toDateString()
+      const dayName = date.toLocaleDateString('ru-RU', { weekday: 'short' })
+
+      return (
+        <button
+          key={i}
+          onClick={() => handleSelectDate(date)}
+          className={`
+            w-[95px] h-[85px] flex flex-col justify-center items-center relative
+            transition-all
+            ${isActive
+              ? ' text-black'
+              : 'text-white '}
+          `
+        }
+        style={{
+          backgroundImage: `url(${Border2})`,
+          backgroundSize: '95px 85px',
+          
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center',
+        }}
+        >
+
+          {/* Число */}
+          <span className="text-[26px] font-h1 leading-none">
+            {date.getDate()}
           </span>
-          <button onClick={handleNextWeek} className="text-[24px] text-[#F4C884]">&gt;</button>
-        </div>
-      </div>
 
-      {/* ===== Карточки занятий ===== */}
+          {/* День недели */}
+          <span className="text-[15px] mt-[3px] uppercase">{dayName}</span>
+        </button>
+      )
+    })}
+
+  </div>
+
+
+  {/* Навигация стрелками */}
+  <div className="flex items-center gap-[16px] text-[#F4C884]">
+    <button onClick={handlePrevWeek} className="text-[30px]">&lt;</button>
+
+    <span className="text-[20px]">
+      {formatDate(weekDates[0])} - {formatDate(weekDates[6])}
+    </span>
+
+    <button onClick={handleNextWeek} className="text-[30px]">&gt;</button>
+  </div>
+
+</div>
+
+</div>
+{/* ===== Карточки занятий ===== */}
       <div aria-hidden className="mt-[60px] w-full h-full max-w-[1600px] flex justify-center gap-[40px]">
         {filteredSessions.map(session => {
           const isEnrolled = enrolledSessions.includes(session.id)
