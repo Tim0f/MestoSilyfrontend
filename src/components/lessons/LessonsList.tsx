@@ -2,32 +2,34 @@
 // Список уроков с поддержкой редактирования и удаления
 
 import React, { useEffect, useState } from 'react';
-import { HttpClient } from '../../services/httpClient';
+import { Client } from '../../services/httpClient';
 import { LessonsFrontendService } from '../../services/lessons.service';
 
 interface LessonItem {
   id: string;
-  sectionId: string;
-  teacherId: string;
   dayOfWeek: number;
   startsAt: string;
   endsAt: string;
   location: string;
   capacity: number;
+
+  section: {
+    id: string;
+    name: string;
+  };
+
+  teacher: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  } | null;
 }
 
 interface Props {
   onEdit: (id: string) => void;
 }
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
-});
-
+const client = Client;
 const lessonsService = new LessonsFrontendService(client);
 
 export default function LessonsList({ onEdit }: Props) {
@@ -62,6 +64,16 @@ export default function LessonsList({ onEdit }: Props) {
     }
   };
 
+  const dayNames: Record<number, string> = {
+    1: 'Понедельник',
+    2: 'Вторник',
+    3: 'Среда',
+    4: 'Четверг',
+    5: 'Пятница',
+    6: 'Суббота',
+    7: 'Воскресенье',
+  };
+
   if (loading)
     return <p className="text-gray-300">Загрузка...</p>;
 
@@ -76,13 +88,40 @@ export default function LessonsList({ onEdit }: Props) {
           className="p-4 flex items-center justify-between hover:bg-white/5"
         >
           <div>
-            <p className="text-lg font-medium">Урок #{lesson.id}</p>
-            <p className="text-gray-400 text-sm">Секция: {lesson.sectionId}</p>
-            <p className="text-gray-400 text-sm">Учитель: {lesson.teacherId}</p>
-            <p className="text-gray-400 text-sm">День недели: {lesson.dayOfWeek}</p>
-            <p className="text-gray-400 text-sm">{lesson.startsAt} - {lesson.endsAt}</p>
-            <p className="text-gray-500 text-sm">Локация: {lesson.location}</p>
-            <p className="text-gray-500 text-sm">Вместимость: {lesson.capacity}</p>
+            {/* Секция */}
+            <p className="text-white text-medium">
+              Секция: {lesson.section?.name ?? '—'}
+            </p>
+
+            {/* Учитель */}
+            <p className="text-gray-400 text-sm">
+              Учитель:{' '}
+              {lesson.teacher
+                ? `${lesson.teacher.lastName} ${lesson.teacher.firstName}`
+                : 'Не назначен'}
+            </p>
+
+            {/* День недели */}
+            <p className="text-gray-400 text-sm">
+              День недели: {dayNames[lesson.dayOfWeek] ?? lesson.dayOfWeek}
+            </p>
+
+            {/* Время */}
+            <p className="text-gray-400 text-sm">
+              {lesson.startsAt} — {lesson.endsAt}
+            </p>
+
+            {/* Локация */}
+            {lesson.location && (
+              <p className="text-gray-500 text-sm">
+                Локация: {lesson.location}
+              </p>
+            )}
+
+            {/* Вместимость */}
+            <p className="text-gray-500 text-sm">
+              Вместимость: {lesson.capacity}
+            </p>
           </div>
 
           <div className="flex gap-4">

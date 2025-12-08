@@ -116,28 +116,31 @@ export default function HomePage() {
     return () => window.clearTimeout(id)
   }, [])
 
-  async function loadSections() {
-    try {
-      const api = await sectionsService.findAll<any[]>()
+async function loadSections() {
+  try {
+    const api = await sectionsService.findAll<any[]>();
 
-      if (api.length === 0) {
-        setSectionsDynamic(sectionsFallback)
-      } else {
-        setSectionsDynamic(
-          api.map((s) => ({
-            id: String(s.id),
-            title: s.name,
-            description: s.description,
-            teacher: s.teacherName ?? 'Тренер не указан',
-            price: s.price ? `${s.price}₽` : '',
-            iconUrl: s.iconUrl ?? swordIcon,
-          }))
-        )
-      }
-    } catch {
-      setSectionsDynamic(sectionsFallback)
+    if (api.length === 0) {
+      setSectionsDynamic(sectionsFallback);
+    } else {
+      setSectionsDynamic(
+        api.map((s) => ({
+          id: String(s.id),
+          title: s.name,
+          description: s.description,
+          teacher: s.teachers?.[0]
+            ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
+            : "Тренер не указан",
+          price: s.price ? `${s.price}₽` : "",
+          iconUrl: s.iconUrl ?? swordIcon,
+        }))
+      );
     }
+  } catch {
+    setSectionsDynamic(sectionsFallback);
   }
+}
+
 
   async function loadPartners() {
     try {

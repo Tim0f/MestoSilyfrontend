@@ -36,6 +36,8 @@ interface Event {
   price?: number
 }
 
+
+
 export default function SchedulePage() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [events, setEvents] = useState<Event[]>([])
@@ -112,12 +114,91 @@ export default function SchedulePage() {
 
   const mockUserEnrollments = [1]
 
+
+async function fetchSessionsFromApi(): Promise<Session[] | null> {
+  try {
+    const res = await fetch("http://localhost:3000/api/lessons");
+    if (!res.ok) throw new Error("Ошибка сервера");
+
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) return null;
+
+    return data.map((lesson: any) => {
+      const teacher =
+        lesson.teacher
+          ? `${lesson.teacher.lastName ?? ""} ${lesson.teacher.firstName ?? ""}`.trim()
+          : "Не указан";
+
+      return {
+        id: lesson.id,
+        sectionId: lesson.section?.id ?? 0,
+        teacherId: lesson.teacher?.id ?? 0,
+        startTime: lesson.startsAt,
+        endTime: lesson.endsAt,
+        capacity: lesson.capacity,
+        currentEnrollment: lesson.currentEnrollment ?? 0,
+        section: {
+          name: lesson.section?.name ?? "Не указано",
+        },
+        teacher: {
+          name: teacher,
+        },
+        location: lesson.location ?? "Не указано",
+        iconUrl: Parkur,
+      };
+    });
+  } catch (e) {
+    console.warn("API недоступен. Использую mock.", e);
+    return null;
+  }
+}
+
+async function fetchEventsFromApi(): Promise<Event[] | null> {
+  try {
+    const res = await fetch("http://localhost:3000/api/events");
+    if (!res.ok) throw new Error("Ошибка сервера");
+
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) return null;
+
+    return data.map((event: any) => ({
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      imageUrl: event.imageUrl,
+      startTime: event.startTime,
+      endTime: event.endTime,
+      price: event.price,
+    }));
+  } catch (e) {
+    console.warn("API недоступен. Использую mock events.", e);
+    return null;
+  }
+}
+
+
+
+
   // ==== Заглушки вместо API ====
-  useEffect(() => {
-    setSessions(mockSessions)
-    setEvents(mockEvents)
-    if (isAuthenticated) setEnrolledSessions(mockUserEnrollments)
-  }, [selectedDate, isAuthenticated])
+useEffect(() => {
+  async function loadData() {
+    const apiSessions = await fetchSessionsFromApi();
+    const apiEvents = await fetchEventsFromApi();
+
+    // Если API ничего не вернул → fallback
+    setSessions(apiSessions ?? mockSessions);
+    setEvents(apiEvents ?? mockEvents);
+
+    if (isAuthenticated) {
+      setEnrolledSessions(mockUserEnrollments); // или грузить из API, если нужно
+    }
+  }
+
+  loadData();
+}, [selectedDate, isAuthenticated]);
+
 
   const handleEnroll = (sessionId: number) => {
     if (!isAuthenticated) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HttpClient } from '../../services/httpClient';
+import { Client } from '../../services/httpClient';
 import { NewsFrontendService } from '../../services/news.service';
 import NewsCreateModal from './NewsCreateModal';
 import NewsEditModal from './NewsEditModal';
@@ -14,13 +14,7 @@ interface NewsItem {
   createdBy?: string;
 }
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
-});
+const client = Client
 
 const newsService = new NewsFrontendService(client);
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { HttpClient } from '../services/httpClient';
+import { Client } from '../services/httpClient';
 import { ChatFrontendService } from '../services/chat.service';
 import { SectionsFrontendService } from '../services/sections.service';
 import { EventsFrontendService } from '../services/events.service';
@@ -8,13 +8,7 @@ import ChatCreateModal from '../components/chat/ChatCreateModal';
 import ChatEditModal from '../components/chat/ChatEditModal';
 import ChatAddParticipantModal from '../components/chat/ChatAddParticipantModal';
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
-});
+const client = Client
 
 const chatService = new ChatFrontendService(client);
 const sectionsService = new SectionsFrontendService(client);

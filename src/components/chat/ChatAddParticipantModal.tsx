@@ -1,6 +1,6 @@
 // src/components/chat/ChatAddParticipantModal.tsx
 import React, { useState } from 'react';
-import { HttpClient } from '../../services/httpClient';
+import { Client } from '../../services/httpClient';
 import { ChatFrontendService } from '../../services/chat.service';
 
 interface Props {
@@ -13,13 +13,7 @@ interface Props {
   reload?: () => Promise<void> | void;
 }
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
-});
+const client = Client
 
 const chatService = new ChatFrontendService(client);
 

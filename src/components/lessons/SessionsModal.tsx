@@ -3,12 +3,9 @@
 import React, { useEffect, useState } from "react";
 import BaseModal from "../ui/BaseModal";
 import { SessionsFrontendService } from "../../services/sessions.service";
-import { HttpClient } from "../../services/httpClient";
+import { Client } from "../../services/httpClient";
 
-const client = new HttpClient({
-  baseUrl: import.meta.env.VITE_ADMIN_API_URL ?? "http://localhost:3000/api",
-  getToken: () => localStorage.getItem("token") ?? undefined,
-});
+const client = Client;
 
 const sessionsService = new SessionsFrontendService(client);
 
