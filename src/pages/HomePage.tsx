@@ -15,7 +15,7 @@ import NewsSlider, { NewsEntry } from '../components/mainpageComponents/newsSlid
 import TeamSlider from '../components/mainpageComponents/TeamSlider'
 import PartnerSlider from '../components/mainpageComponents/PartnerSlider'
 
-import { HttpClient } from '../services/httpClient'
+import { Client } from '../services/httpClient'
 import { SectionsFrontendService } from '../services/sections.service'
 import { PartnersFrontendService } from '../services/partners.service'
 import { TeachersFrontendService } from '../services/teachers.service'
@@ -27,11 +27,7 @@ type Partner = {
   url: string
 }
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_API_URL as string) ?? 'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
-})
+const client = Client;
 
 const sectionsService = new SectionsFrontendService(client)
 const partnersService = new PartnersFrontendService(client)
@@ -177,6 +173,19 @@ async function loadSections() {
     }
   }
 
+  const teamMembers = useMemo(() => {
+  if (!teachersDynamic) return []
+
+  return teachersDynamic.map(t => ({
+    id: t.id,
+    name: `${t.lastName} ${t.firstName}`,
+    position: t.role ?? "Преподаватель",
+    Image: t.photoUrl ?? "",
+    audiosrc: t.audioUrl ?? "",
+  }))
+}, [teachersDynamic])
+
+
   const defaultSectionId = (sectionsDynamic ?? sectionsFallback)[0]?.id ?? 'fencing'
 
   const newsGroups: NewsEntry[][] = useMemo(
@@ -198,7 +207,6 @@ async function loadSections() {
           bgColor: 'bg-[#2D282A]',
         },
       ],
-      // дальше как у тебя...
     ],
     []
   )
@@ -231,7 +239,7 @@ async function loadSections() {
           </h2>
 
           {/* Если нет данных — TeamSlider сам покажет заглушки */}
-          <TeamSlider/>
+          <TeamSlider teamMembers={teamMembers} interval={5000} />
         </div>
       </section>
 

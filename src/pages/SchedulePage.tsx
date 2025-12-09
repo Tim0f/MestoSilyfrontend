@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { freeVisitsService } from "../services/FreeVisitsFrontendService"
 import { useAuth } from '../context/AuthContext'
 import Parkur from '../assets/svg/parkur.svg'
 import Border from '../assets/svg/texturedBorder.svg?react'
@@ -44,7 +45,7 @@ export default function SchedulePage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [enrolledSessions, setEnrolledSessions] = useState<number[]>([])
-  const [subscriptionCount] = useState(5)
+const [subscriptionCount, setSubscriptionCount] = useState<number>(0)
   const { isAuthenticated } = useAuth()
 
   // ==== Заглушки для занятий ====
@@ -194,6 +195,14 @@ useEffect(() => {
     if (isAuthenticated) {
       setEnrolledSessions(mockUserEnrollments); // или грузить из API, если нужно
     }
+    if (isAuthenticated) {
+  const userId = localStorage.getItem("userId") // или бери из JWT, AuthContext
+  if (userId) {
+    const visits = await freeVisitsService.getUserFreeVisits(userId)
+    setSubscriptionCount(visits?.available ?? 0)
+  }
+}
+
   }
 
   loadData();
