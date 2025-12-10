@@ -1,13 +1,10 @@
-// LessonsList.tsx
-// Список уроков с поддержкой редактирования и удаления
-
 import React, { useEffect, useState } from 'react';
 import { Client } from '../../services/httpClient';
 import { LessonsFrontendService } from '../../services/lessons.service';
 
 interface LessonItem {
   id: string;
-  dayOfWeek: number;
+  date: string;
   startsAt: string;
   endsAt: string;
   location: string;
@@ -64,21 +61,8 @@ export default function LessonsList({ onEdit }: Props) {
     }
   };
 
-  const dayNames: Record<number, string> = {
-    1: 'Понедельник',
-    2: 'Вторник',
-    3: 'Среда',
-    4: 'Четверг',
-    5: 'Пятница',
-    6: 'Суббота',
-    7: 'Воскресенье',
-  };
-
-  if (loading)
-    return <p className="text-gray-300">Загрузка...</p>;
-
-  if (error)
-    return <p className="text-red-400">{error}</p>;
+  if (loading) return <p className="text-gray-300">Загрузка...</p>;
+  if (error) return <p className="text-red-400">{error}</p>;
 
   return (
     <div className="bg-[#111] border border-white/10 rounded-xl divide-y divide-white/5">
@@ -88,12 +72,10 @@ export default function LessonsList({ onEdit }: Props) {
           className="p-4 flex items-center justify-between hover:bg-white/5"
         >
           <div>
-            {/* Секция */}
             <p className="text-white text-medium">
               Секция: {lesson.section?.name ?? '—'}
             </p>
 
-            {/* Учитель */}
             <p className="text-gray-400 text-sm">
               Учитель:{' '}
               {lesson.teacher
@@ -101,9 +83,9 @@ export default function LessonsList({ onEdit }: Props) {
                 : 'Не назначен'}
             </p>
 
-            {/* День недели */}
+            {/* Дата */}
             <p className="text-gray-400 text-sm">
-              День недели: {dayNames[lesson.dayOfWeek] ?? lesson.dayOfWeek}
+              Дата: {lesson.date}
             </p>
 
             {/* Время */}
@@ -111,14 +93,12 @@ export default function LessonsList({ onEdit }: Props) {
               {lesson.startsAt} — {lesson.endsAt}
             </p>
 
-            {/* Локация */}
             {lesson.location && (
               <p className="text-gray-500 text-sm">
                 Локация: {lesson.location}
               </p>
             )}
 
-            {/* Вместимость */}
             <p className="text-gray-500 text-sm">
               Вместимость: {lesson.capacity}
             </p>
@@ -131,7 +111,6 @@ export default function LessonsList({ onEdit }: Props) {
             >
               Редактировать
             </button>
-
             <button
               onClick={() => handleDelete(lesson.id)}
               className="text-red-400 hover:text-red-300"

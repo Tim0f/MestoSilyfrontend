@@ -1,6 +1,3 @@
-// LessonCreateModal.tsx
-// Модалка создания урока
-
 import React, { useEffect, useState } from 'react';
 import { Client } from '../../services/httpClient';
 import {
@@ -15,7 +12,7 @@ interface Props {
   onClose: () => void;
 }
 
-const client = Client
+const client = Client;
 
 const lessonsService = new LessonsFrontendService(client);
 const sectionsService = new SectionsFrontendService(client);
@@ -25,7 +22,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
   const [form, setForm] = useState<CreateLessonDto>({
     sectionId: '',
     teacherId: '',
-    dayOfWeek: 1,
+    date: '',
     startsAt: '',
     endsAt: '',
     location: '',
@@ -47,7 +44,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
       const s = await sectionsService.findAll();
       const t = await teachersService.findAll();
       setSections(Array.isArray(s) ? s : []);
-      setTeachers(Array.isArray(t) ? t : []);      
+      setTeachers(Array.isArray(t) ? t : []);
     } catch (err) {
       console.error(err);
     }
@@ -82,6 +79,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
         {error && <p className="text-red-400 mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+
           {/* Секция */}
           <div>
             <label className="block mb-1 text-gray-300">Секция</label>
@@ -118,22 +116,16 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
             </select>
           </div>
 
-          {/* День недели */}
+          {/* Дата */}
           <div>
-            <label className="block mb-1 text-gray-300">День недели</label>
-            <select
+            <label className="block mb-1 text-gray-300">Дата</label>
+            <input
+              type="date"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              value={form.dayOfWeek}
-              onChange={(e) => handleChange('dayOfWeek', Number(e.target.value))}
-            >
-              <option value={1}>Понедельник</option>
-              <option value={2}>Вторник</option>
-              <option value={3}>Среда</option>
-              <option value={4}>Четверг</option>
-              <option value={5}>Пятница</option>
-              <option value={6}>Суббота</option>
-              <option value={7}>Воскресенье</option>
-            </select>
+              value={form.date}
+              onChange={(e) => handleChange('date', e.target.value)}
+              required
+            />
           </div>
 
           {/* Время начала */}

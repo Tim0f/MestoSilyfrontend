@@ -1,6 +1,3 @@
-// LessonEditModal.tsx
-// Модалка редактирования урока
-
 import React, { useEffect, useState } from 'react';
 import { Client } from '../../services/httpClient';
 import {
@@ -15,14 +12,23 @@ interface Props {
   onClose: () => void;
 }
 
-const client = Client
+const client = Client;
 
 const lessonsService = new LessonsFrontendService(client);
 const sectionsService = new SectionsFrontendService(client);
 const teachersService = new TeachersFrontendService(client);
 
 export default function LessonEditModal({ id, onClose }: Props) {
-  const [form, setForm] = useState<UpdateLessonDto>({});
+  const [form, setForm] = useState<UpdateLessonDto>({
+    sectionId: '',
+    teacherId: '',
+    date: '',
+    startsAt: '',
+    endsAt: '',
+    location: '',
+    capacity: 0,
+  });
+
   const [sections, setSections] = useState<any[]>([]);
   const [teachers, setTeachers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,12 +46,11 @@ export default function LessonEditModal({ id, onClose }: Props) {
 
       setSections(Array.isArray(s) ? s : []);
       setTeachers(Array.isArray(t) ? t : []);
-      
 
       setForm({
         sectionId: lesson.sectionId,
         teacherId: lesson.teacherId,
-        dayOfWeek: lesson.dayOfWeek,
+        date: lesson.date,
         startsAt: lesson.startsAt,
         endsAt: lesson.endsAt,
         location: lesson.location,
@@ -98,7 +103,7 @@ export default function LessonEditModal({ id, onClose }: Props) {
             <label className="block mb-1 text-gray-300">Секция</label>
             <select
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              value={form.sectionId || ''}
+              value={form.sectionId}
               onChange={(e) => handleChange('sectionId', e.target.value)}
               required
             >
@@ -115,7 +120,7 @@ export default function LessonEditModal({ id, onClose }: Props) {
             <label className="block mb-1 text-gray-300">Учитель</label>
             <select
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              value={form.teacherId || ''}
+              value={form.teacherId}
               onChange={(e) => handleChange('teacherId', e.target.value)}
               required
             >
@@ -127,22 +132,16 @@ export default function LessonEditModal({ id, onClose }: Props) {
             </select>
           </div>
 
-          {/* День недели */}
+          {/* Дата */}
           <div>
-            <label className="block mb-1 text-gray-300">День недели</label>
-            <select
+            <label className="block mb-1 text-gray-300">Дата</label>
+            <input
+              type="date"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              value={form.dayOfWeek || 1}
-              onChange={(e) => handleChange('dayOfWeek', Number(e.target.value))}
-            >
-              <option value={1}>Понедельник</option>
-              <option value={2}>Вторник</option>
-              <option value={3}>Среда</option>
-              <option value={4}>Четверг</option>
-              <option value={5}>Пятница</option>
-              <option value={6}>Суббота</option>
-              <option value={7}>Воскресенье</option>
-            </select>
+              value={form.date}
+              onChange={(e) => handleChange('date', e.target.value)}
+              required
+            />
           </div>
 
           {/* Начало */}
@@ -151,7 +150,7 @@ export default function LessonEditModal({ id, onClose }: Props) {
             <input
               type="time"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              value={form.startsAt || ''}
+              value={form.startsAt}
               onChange={(e) => handleChange('startsAt', e.target.value)}
               required
             />
@@ -163,7 +162,7 @@ export default function LessonEditModal({ id, onClose }: Props) {
             <input
               type="time"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              value={form.endsAt || ''}
+              value={form.endsAt}
               onChange={(e) => handleChange('endsAt', e.target.value)}
               required
             />
@@ -175,7 +174,7 @@ export default function LessonEditModal({ id, onClose }: Props) {
             <input
               type="text"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              value={form.location || ''}
+              value={form.location}
               onChange={(e) => handleChange('location', e.target.value)}
               required
             />
@@ -187,7 +186,7 @@ export default function LessonEditModal({ id, onClose }: Props) {
             <input
               type="number"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              value={form.capacity || 0}
+              value={form.capacity}
               onChange={(e) => handleChange('capacity', Number(e.target.value))}
               required
             />
