@@ -36,7 +36,7 @@ export default function BazarPage() {
                 maskSize: 'contain',
                 WebkitMaskRepeat: 'no-repeat',
                 maskRepeat: 'no-repeat',
-                color:'black',
+                color:'customyellow',
                 height: '10px',
                 width: '10px'
               }}
