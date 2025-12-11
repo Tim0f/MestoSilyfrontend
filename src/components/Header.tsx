@@ -1,11 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { User, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import Logo2 from "../assets/svg/Logo2.svg";
-
-// Твои SVG
 import ProfileUp from "../assets/svg/profile_up.svg";
 import ProfileDown from "../assets/svg/profile_down.svg";
 import ProfileIcon from "../assets/svg/Vector (4).svg";
@@ -13,23 +11,25 @@ import ProfileIcon from "../assets/svg/Vector (4).svg";
 export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+
+  // Клик вне меню
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   return (
     <header className="bg-customgrey backdrop-blur-sm text-customyellow fixed top-0 left-0 right-0 z-50 font-p text-p">
@@ -56,7 +56,6 @@ export default function Header() {
               </Link>
             ) : (
               <>
-
                 {/* Зёрна */}
                 <Link to="/bazar" className="hover:text-primary-400 transition">
                   <span className="font-h2 text-primary-300 flex items-center gap-1">
@@ -69,7 +68,6 @@ export default function Header() {
                         maskSize: "contain",
                         WebkitMaskRepeat: "no-repeat",
                         maskRepeat: "no-repeat",
-                        fill: "#FFD700"
                       }}
                     />
                   </span>
@@ -78,8 +76,8 @@ export default function Header() {
                 {/* Профиль + меню */}
                 <div className="relative" ref={menuRef}>
                   <button
-                    onClick={() => setIsMenuOpen((prev) => !prev)}
-                    className="w-10 h-10 rounded-full bg-customgrey flex items-center justify-center  transition overflow-hidden"
+                    onClick={() => setIsMenuOpen(prev => !prev)}
+                    className="w-10 h-10 rounded-full bg-customgrey flex items-center justify-center transition overflow-hidden"
                     aria-label="Профиль"
                   >
                     {user?.avatarUrl ? (
@@ -91,50 +89,45 @@ export default function Header() {
 
                   {/* Выпадающее меню */}
                   {isMenuOpen && (
-  <div className="absolute right-0 mt-2 w-[210px] select-none">
-{/* Верхняя часть — ПРОФИЛЬ */}
-<div className="relative w-full h-[120px]">
-  {/* фон */}
-  <img
-    src={ProfileUp}
-    className="absolute top-0 left-0 w-full h-full pointer-events-none select-none"
-    alt=""
-  />
+                    <div className="absolute right-0 w-[210px] select-none">
 
-  {/* контент */}
-  <Link
-    to="/profile"
-    onClick={() => setIsMenuOpen(false)}
-    className="absolute inset-0 flex items-center justify-between px-4 z-10"
-  >
-    <span className="text-[22px] font-h1 text-[#F5C78B]">Профиль</span>
-    <img src={ProfileIcon} className="w-7 h-7" alt="" />
-  </Link>
-</div>
+                      {/* Верхняя часть — ПРОФИЛЬ */}
+                      <div className="relative w-full h-[120px]">
+                        <img
+                          src={ProfileUp}
+                          className="absolute top-0 left-0 w-full h-full pointer-events-none select-none"
+                          alt=""
+                        />
 
-{/* Нижняя часть — ВЫЙТИ */}
-<div className="relative w-full h-[120px]">
-  {/* фон (перевёрнутый) */}
-  <img
-    src={ProfileDown}
-    className="absolute top-0 left-0 w-full h-full pointer-events-none select-none rotate-180"
-    alt=""
-  />
+                        <Link
+                          to="/profile"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="absolute inset-0 flex items-center justify-between px-4 z-10"
+                        >
+                          <span className="text-[22px] font-h1 text-[#F5C78B]">Профиль</span>
+                          <img src={ProfileIcon} className="w-7 h-7" alt="" />
+                        </Link>
+                      </div>
 
-  {/* контент */}
-  <button
-    onClick={handleLogout}
-    className="absolute inset-0 flex items-center justify-between px-4 z-10 text-black"
-  >
-    <span className="text-[22px] font-h1">Выйти</span>
-    <LogOut className="w-7 h-7" />
-  </button>
-</div>
-  </div>
-)}
+                      {/* Нижняя часть — ВЫЙТИ */}
+                      <div className="relative w-full h-[120px] -mt-[40px]">
+                        <img
+                          src={ProfileDown}
+                          className="absolute top-0 left-0 w-full h-full pointer-events-none select-none rotate-180"
+                          alt=""
+                        />
 
+                        <button
+                          onClick={handleLogout}
+                          className="absolute inset-0 flex items-center justify-between px-4 z-10 text-black"
+                        >
+                          <span className="text-[22px] font-h1">Выйти</span>
+                          <LogOut className="w-7 h-7" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-
               </>
             )}
           </div>
