@@ -2,7 +2,11 @@ import { Send } from 'lucide-react'
 
 export default function Footer() {
   return (
+<<<<<<< HEAD
+    <footer className="w-full bg-customgrey text-customyellow px-10 py-16">
+=======
     <footer className="w-full bg-customgrey text-[#F4C884] px-10 py-16">
+>>>>>>> 8cd36341fad61f15904cf8c8fc227310f76d5951
       <div className="max-w-[1600px] mx-auto flex justify-between items-start">
 
         {/* Левый блок */}
