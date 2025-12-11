@@ -92,7 +92,7 @@ export default function ChatCreateModal({
             >
               Отмена
             </button>
-            <button type="submit" className="px-4 py-2 bg-green-600 rounded">
+            <button type="submit" className="px-4 py-2 bg-[#52C57B] rounded">
               Создать
             </button>
           </div>

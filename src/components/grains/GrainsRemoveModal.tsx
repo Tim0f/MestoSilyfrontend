@@ -81,7 +81,7 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
             <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500">
               Отмена
             </button>
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-red-600 text-black rounded hover:bg-red-500">
+            <button type="submit" disabled={loading} className="px-4 py-2 bg-[#D9534F] text-black rounded hover:bg-red-500">
               Списать
             </button>
           </div>

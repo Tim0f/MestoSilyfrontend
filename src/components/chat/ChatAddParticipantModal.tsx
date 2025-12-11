@@ -80,7 +80,7 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
               Отмена
             </button>
 
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-green-600 rounded">
+            <button type="submit" disabled={loading} className="px-4 py-2 bg-[#52C57B] rounded">
               {loading ? 'Добавление...' : 'Добавить'}
             </button>
           </div>

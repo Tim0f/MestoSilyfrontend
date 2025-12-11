@@ -67,13 +67,13 @@ export default function PartnersManager() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setEditPartner(p)}
-                  className="px-4 py-2 bg-blue-600 rounded hover:bg-[#5BC0EB]"
+                  className="px-4 py-2 bg-[#3DA9FC] rounded hover:bg-[#5BC0EB]"
                 >
                   Изменить
                 </button>
                 <button
                   onClick={() => removePartner(p.id)}
-                  className="px-4 py-2 bg-red-600 rounded hover:bg-red-500"
+                  className="px-4 py-2 bg-[#D9534F] rounded hover:bg-red-500"
                 >
                   Удалить
                 </button>

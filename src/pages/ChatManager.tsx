@@ -57,7 +57,7 @@ export default function ChatsManager() {
         <h1 className="text-3xl font-bold">Чаты</h1>
 
         <button
-          className="px-4 py-2 bg-green-600 rounded hover:bg-green-500"
+          className="px-4 py-2 bg-[#52C57B] rounded hover:bg-green-500"
           onClick={() => setCreateOpen(true)}
         >
           Создать чат
@@ -96,7 +96,7 @@ export default function ChatsManager() {
 
             <div className="flex flex-col gap-2">
               <button
-                className="px-3 py-1 bg-blue-600 rounded hover:bg-[#5BC0EB]"
+                className="px-3 py-1 bg-[#3DA9FC] rounded hover:bg-[#5BC0EB]"
                 onClick={() => openChatMessages(chat)}
               >
                 Открыть
@@ -117,7 +117,7 @@ export default function ChatsManager() {
               </button>
 
               <button
-                className="px-3 py-1 bg-red-600 rounded hover:bg-red-500"
+                className="px-3 py-1 bg-[#D9534F] rounded hover:bg-red-500"
                 onClick={() => deleteChat(chat.id)}
               >
                 Удалить

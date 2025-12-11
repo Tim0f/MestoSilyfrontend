@@ -100,14 +100,14 @@ export default function GrainManager() {
 
             <div className="flex gap-2">
               <button
-                className="px-3 py-1 bg-green-600 rounded"
+                className="px-3 py-1 bg-[#52C57B] rounded"
                 onClick={() => openAdd(user.id)}
               >
                 Начислить
               </button>
 
               <button
-                className="px-3 py-1 bg-red-600 rounded"
+                className="px-3 py-1 bg-[#D9534F] rounded"
                 onClick={() => openRemove(user.id)}
               >
                 Списать
@@ -121,7 +121,7 @@ export default function GrainManager() {
               </button>
 
               <button
-                className="px-3 py-1 bg-blue-600 rounded"
+                className="px-3 py-1 bg-[#3DA9FC] rounded"
                 onClick={() => openHistory(user.id)}
               >
                 История
