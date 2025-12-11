@@ -89,7 +89,7 @@ export default function GrainManager() {
         {filtered.map((user) => (
           <div
             key={user.id}
-            className="bg-[#111] p-4 rounded border border-white/10 flex justify-between items-center"
+            className="bg-customgrey p-4 rounded border border-white/10 flex justify-between items-center"
           >
             <div>
               <div className="font-bold text-lg">
@@ -114,7 +114,7 @@ export default function GrainManager() {
               </button>
 
               <button
-                className="px-3 py-1 bg-yellow-500 text-black rounded"
+                className="px-3 py-1 bg-customyellow text-black rounded"
                 onClick={() => openTransfer(user.id)}
               >
                 Перевести

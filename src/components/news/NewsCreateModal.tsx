@@ -67,14 +67,14 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-2xl text-white max-h-[90vh] overflow-y-auto">
+      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-2xl text-white max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Создать новость</h2>
 
-        {error && <div className="text-red-400 mb-3">{error}</div>}
+        {error && <div className="text-[#FF6B4A] mb-3">{error}</div>}
 
         <form onSubmit={submit} className="space-y-4">
           <div>
-            <label className="block mb-1 text-gray-300">Заголовок</label>
+            <label className="block mb-1 text-customwhite">Заголовок</label>
             <input
               type="text"
               value={title}
@@ -85,7 +85,7 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Контент</label>
+            <label className="block mb-1 text-customwhite">Контент</label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -96,7 +96,7 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Изображения (URL)</label>
+            <label className="block mb-1 text-customwhite">Изображения (URL)</label>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -108,7 +108,7 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
               <button
                 type="button"
                 onClick={addImage}
-                className="px-3 py-2 bg-blue-500 rounded hover:bg-blue-400"
+                className="px-3 py-2 bg-[#5BC0EB] rounded hover:bg-blue-400"
               >
                 Добавить
               </button>
@@ -122,7 +122,7 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
                   </div>
                   <div className="flex justify-between items-center mt-1 text-sm">
                     <span className="truncate">{img}</span>
-                    <button type="button" onClick={() => removeImage(idx)} className="text-red-400 ml-2">✕</button>
+                    <button type="button" onClick={() => removeImage(idx)} className="text-[#FF6B4A] ml-2">✕</button>
                   </div>
                 </div>
               ))}
@@ -130,7 +130,7 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Дата публикации</label>
+            <label className="block mb-1 text-customwhite">Дата публикации</label>
             <input
               type="date"
               value={publishedDate}
@@ -144,7 +144,7 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
             <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500">
               Отмена
             </button>
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400">
+            <button type="submit" disabled={loading} className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow">
               Создать
             </button>
           </div>

@@ -69,7 +69,7 @@ export default function ChatsManager() {
         {chats.map((chat) => (
           <div
             key={chat.id}
-            className="p-4 bg-[#111] border border-white/10 rounded flex justify-between"
+            className="p-4 bg-customgrey border border-white/10 rounded flex justify-between"
           >
             <div>
               <p><b>ID:</b> {chat.id}</p>
@@ -86,7 +86,7 @@ export default function ChatsManager() {
                       await client.delete(`/chat/${chat.id}/participants/${p.user.id}`);
                       await loadAll();
                     }}
-                    className="text-red-400 hover:text-red-300"
+                    className="text-[#FF6B4A] hover:text-red-300"
                   >
                     ✕
                   </button>
@@ -96,14 +96,14 @@ export default function ChatsManager() {
 
             <div className="flex flex-col gap-2">
               <button
-                className="px-3 py-1 bg-blue-600 rounded hover:bg-blue-500"
+                className="px-3 py-1 bg-blue-600 rounded hover:bg-[#5BC0EB]"
                 onClick={() => openChatMessages(chat)}
               >
                 Открыть
               </button>
 
               <button
-                className="px-3 py-1 bg-yellow-400 text-black rounded hover:bg-yellow-300"
+                className="px-3 py-1 bg-customyellow text-black rounded hover:bg-customyellow"
                 onClick={() => setEditChat(chat)}
               >
                 Редактировать

@@ -28,7 +28,7 @@ export default function Button({
   
   const variants = {
     primary: 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300',
+    secondary: 'bg-gray-200 text-gray-800 hover:bg-customwhite',
     success: 'bg-green-500 text-white hover:bg-green-600',
     danger: 'bg-red-500 text-white hover:bg-red-600',
     ghost: 'bg-transparent text-orange-600 hover:bg-orange-50',

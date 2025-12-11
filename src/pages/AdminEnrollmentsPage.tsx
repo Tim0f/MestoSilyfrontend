@@ -81,7 +81,7 @@ export default function AdminEnrollmentsPage() {
               key={s.id}
               className={`px-4 py-2 rounded ${
                 selectedSection === s.id
-                  ? "bg-yellow-500 text-black"
+                  ? "bg-customyellow text-black"
                   : "bg-[#3A3333]"
               }`}
               onClick={() => setSelectedSection(s.id)}
@@ -107,7 +107,7 @@ export default function AdminEnrollmentsPage() {
                   onClick={() => setSelectedLesson(l.id)}
                   className={`p-4 border rounded cursor-pointer ${
                     selectedLesson === l.id
-                      ? "border-yellow-400 bg-[#403a24]"
+                      ? "border-customyellow bg-[#403a24]"
                       : "border-gray-500 bg-[#2a2a2a]"
                   }`}
                 >

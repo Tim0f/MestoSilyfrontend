@@ -70,7 +70,7 @@ export default function AchievementsManager() {
 
         <button
           onClick={() => setCreateOpen(true)}
-          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+          className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
         >
           Создать ачивку
         </button>
@@ -83,35 +83,35 @@ export default function AchievementsManager() {
           {achievements.map((a) => (
             <div
               key={a.id}
-              className="p-4 bg-[#111] border border-white/10 rounded-xl flex justify-between"
+              className="p-4 bg-customgrey border border-white/10 rounded-xl flex justify-between"
             >
               <div>
                 <h2 className="text-xl font-semibold">{a.name}</h2>
                 <p className="text-gray-400">{a.description}</p>
 
-                <p className="text-gray-300 mt-2">
+                <p className="text-customwhite mt-2">
                   Раздел: <span className="text-white">{getSectionName(a.sectionId)}</span>
                 </p>
 
-                <p className="text-gray-300">
+                <p className="text-customwhite">
                   Награда: <span className="text-white">{a.rewardGrains} зерен</span>
                 </p>
 
-                <p className="text-gray-300">
+                <p className="text-customwhite">
                   Активна: {a.isActive ? 'Да' : 'Нет'}
                 </p>
               </div>
 
               <div className="flex flex-col gap-2">
                 <button
-                  className="px-3 py-1 bg-blue-500 rounded hover:bg-blue-400"
+                  className="px-3 py-1 bg-[#5BC0EB] rounded hover:bg-blue-400"
                   onClick={() => setEditAchievement(a)}
                 >
                   Изменить
                 </button>
 
                 <button
-                  className="px-3 py-1 bg-red-500 rounded hover:bg-red-400"
+                  className="px-3 py-1 bg-red-500 rounded hover:bg-[#FF6B4A]"
                   onClick={() => deleteAchievement(a.id)}
                 >
                   Удалить

@@ -49,12 +49,12 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-xl text-white max-h-[90vh] overflow-y-auto">
+      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-xl text-white max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Редактировать преподавателя</h2>
 
         <form onSubmit={save} className="space-y-4">
           <div>
-            <label className="block mb-1 text-gray-300">Фамилия</label>
+            <label className="block mb-1 text-customwhite">Фамилия</label>
             <input
               type="text"
               value={form.lastName}
@@ -64,7 +64,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Имя</label>
+            <label className="block mb-1 text-customwhite">Имя</label>
             <input
               type="text"
               value={form.firstName}
@@ -74,7 +74,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Отчество</label>
+            <label className="block mb-1 text-customwhite">Отчество</label>
             <input
               type="text"
               value={form.middleName || ''}
@@ -84,7 +84,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Телефон</label>
+            <label className="block mb-1 text-customwhite">Телефон</label>
             <input
               type="text"
               value={form.phone || ''}
@@ -94,7 +94,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Роль</label>
+            <label className="block mb-1 text-customwhite">Роль</label>
             <input
               type="text"
               value={form.role || ''}
@@ -104,7 +104,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Фото (URL)</label>
+            <label className="block mb-1 text-customwhite">Фото (URL)</label>
             <input
               type="text"
               value={form.photoUrl || ''}
@@ -114,7 +114,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Аудио (URL)</label>
+            <label className="block mb-1 text-customwhite">Аудио (URL)</label>
             <input
               type="text"
               value={form.audioUrl || ''}
@@ -133,7 +133,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-yellow-500 rounded text-black hover:bg-yellow-400"
+              className="px-4 py-2 bg-customyellow rounded text-black hover:bg-customyellow"
             >
               Сохранить
             </button>

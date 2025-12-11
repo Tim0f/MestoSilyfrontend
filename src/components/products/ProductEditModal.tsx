@@ -44,12 +44,12 @@ export default function ProductEditModal({ isOpen, onClose, product }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-xl text-white max-h-[90vh] overflow-y-auto">
+      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-xl text-white max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Изменить товар</h2>
 
         <form onSubmit={save} className="space-y-4">
           <div>
-            <label className="block mb-1 text-gray-300">Название</label>
+            <label className="block mb-1 text-customwhite">Название</label>
             <input
               type="text"
               value={form.name}
@@ -59,7 +59,7 @@ export default function ProductEditModal({ isOpen, onClose, product }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Описание</label>
+            <label className="block mb-1 text-customwhite">Описание</label>
             <textarea
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
@@ -69,7 +69,7 @@ export default function ProductEditModal({ isOpen, onClose, product }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Цена (₽)</label>
+            <label className="block mb-1 text-customwhite">Цена (₽)</label>
             <input
               type="number"
               min={0}
@@ -80,7 +80,7 @@ export default function ProductEditModal({ isOpen, onClose, product }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">URL изображения</label>
+            <label className="block mb-1 text-customwhite">URL изображения</label>
             <input
               type="text"
               value={form.imageUrl}
@@ -109,7 +109,7 @@ export default function ProductEditModal({ isOpen, onClose, product }: Props) {
 
             <button
               type="submit"
-              className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+              className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
             >
               Сохранить
             </button>

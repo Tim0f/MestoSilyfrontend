@@ -39,7 +39,7 @@ export default function ProductsManager() {
 
       <button
         onClick={() => setCreateOpen(true)}
-        className="mb-4 px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400 font-semibold"
+        className="mb-4 px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow font-semibold"
       >
         Создать товар
       </button>
@@ -51,7 +51,7 @@ export default function ProductsManager() {
           {products.map((p) => (
             <div
               key={p.id}
-              className="bg-[#111] border border-white/10 p-4 rounded-xl flex items-center justify-between"
+              className="bg-customgrey border border-white/10 p-4 rounded-xl flex items-center justify-between"
             >
               <div className="flex items-center gap-4">
                 <img
@@ -63,13 +63,13 @@ export default function ProductsManager() {
                 <div>
                   <p className="text-lg font-semibold">{p.name}</p>
                   <p className="text-gray-400 text-sm">{p.description}</p>
-                  <p className="text-yellow-400 text-lg mt-1">{p.price} ₽</p>
+                  <p className="text-customyellow text-lg mt-1">{p.price} ₽</p>
 
                   <p className="text-sm mt-1">
                     {p.isActive ? (
                       <span className="text-green-400 font-medium">🟢 Активен</span>
                     ) : (
-                      <span className="text-red-400 font-medium">🔴 Не активен</span>
+                      <span className="text-[#FF6B4A] font-medium">🔴 Не активен</span>
                     )}
                   </p>
                 </div>
@@ -78,7 +78,7 @@ export default function ProductsManager() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setEditProduct(p)}
-                  className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500"
+                  className="px-4 py-2 bg-blue-600 rounded hover:bg-[#5BC0EB]"
                 >
                   Изменить
                 </button>

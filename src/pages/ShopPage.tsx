@@ -121,7 +121,7 @@ export default function ShopPage() {
                     disabled={product.stock === 0}
                     className={`w-full py-3 rounded-lg font-h2 transition ${
                       product.stock === 0
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        ? 'bg-customwhite text-gray-500 cursor-not-allowed'
                         : 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700'
                     }`}
                   >

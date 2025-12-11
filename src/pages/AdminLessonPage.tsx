@@ -21,14 +21,14 @@ export default function AdminLessonsPage() {
         <div className="flex gap-4">
           <button
             onClick={() => setIsCreateOpen(true)}
-            className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold hover:bg-yellow-400"
+            className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow"
           >
             Создать урок
           </button>
 
           <button
             onClick={() => setIsSessionsOpen(true)}
-            className="px-4 py-2 bg-blue-500 text-black rounded font-semibold hover:bg-blue-400"
+            className="px-4 py-2 bg-[#5BC0EB] text-black rounded font-semibold hover:bg-blue-400"
           >
             Расписание
           </button>

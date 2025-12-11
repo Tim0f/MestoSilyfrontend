@@ -73,16 +73,16 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[#111] border border-white/10 p-8 rounded-xl w-full max-w-xl">
+      <div className="bg-customgrey border border-white/10 p-8 rounded-xl w-full max-w-xl">
         <h2 className="text-2xl font-bold mb-6">Создать урок</h2>
 
-        {error && <p className="text-red-400 mb-4">{error}</p>}
+        {error && <p className="text-[#FF6B4A] mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
 
           {/* Секция */}
           <div>
-            <label className="block mb-1 text-gray-300">Секция</label>
+            <label className="block mb-1 text-customwhite">Секция</label>
             <select
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
               value={form.sectionId}
@@ -100,7 +100,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
 
           {/* Учитель */}
           <div>
-            <label className="block mb-1 text-gray-300">Учитель</label>
+            <label className="block mb-1 text-customwhite">Учитель</label>
             <select
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
               value={form.teacherId}
@@ -118,7 +118,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
 
           {/* Дата */}
           <div>
-            <label className="block mb-1 text-gray-300">Дата</label>
+            <label className="block mb-1 text-customwhite">Дата</label>
             <input
               type="date"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -130,7 +130,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
 
           {/* Время начала */}
           <div>
-            <label className="block mb-1 text-gray-300">Начало</label>
+            <label className="block mb-1 text-customwhite">Начало</label>
             <input
               type="time"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -142,7 +142,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
 
           {/* Время окончания */}
           <div>
-            <label className="block mb-1 text-gray-300">Окончание</label>
+            <label className="block mb-1 text-customwhite">Окончание</label>
             <input
               type="time"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -154,7 +154,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
 
           {/* Локация */}
           <div>
-            <label className="block mb-1 text-gray-300">Локация</label>
+            <label className="block mb-1 text-customwhite">Локация</label>
             <input
               type="text"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -166,7 +166,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
 
           {/* Вместимость */}
           <div>
-            <label className="block mb-1 text-gray-300">Вместимость</label>
+            <label className="block mb-1 text-customwhite">Вместимость</label>
             <input
               type="number"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -188,7 +188,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold hover:bg-yellow-400 disabled:opacity-60"
+              className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow disabled:opacity-60"
             >
               {loading ? 'Создание...' : 'Создать'}
             </button>

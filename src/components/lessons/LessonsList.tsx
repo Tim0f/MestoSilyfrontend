@@ -61,11 +61,11 @@ export default function LessonsList({ onEdit }: Props) {
     }
   };
 
-  if (loading) return <p className="text-gray-300">Загрузка...</p>;
-  if (error) return <p className="text-red-400">{error}</p>;
+  if (loading) return <p className="text-customwhite">Загрузка...</p>;
+  if (error) return <p className="text-[#FF6B4A]">{error}</p>;
 
   return (
-    <div className="bg-[#111] border border-white/10 rounded-xl divide-y divide-white/5">
+    <div className="bg-customgrey border border-white/10 rounded-xl divide-y divide-white/5">
       {lessons.map((lesson) => (
         <div
           key={lesson.id}
@@ -107,13 +107,13 @@ export default function LessonsList({ onEdit }: Props) {
           <div className="flex gap-4">
             <button
               onClick={() => onEdit(lesson.id)}
-              className="text-yellow-400 hover:text-yellow-300"
+              className="text-customyellow hover:text-customyellow"
             >
               Редактировать
             </button>
             <button
               onClick={() => handleDelete(lesson.id)}
-              className="text-red-400 hover:text-red-300"
+              className="text-[#FF6B4A] hover:text-red-300"
             >
               Удалить
             </button>

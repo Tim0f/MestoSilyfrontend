@@ -89,7 +89,7 @@ export default function BazarPage() {
               </div>
   
               {/* Плейсхолдер изображения */}
-              <div className="w-full h-40 bg-gray-300/30 rounded-lg mb-4"></div>
+              <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4"></div>
   
               <h2 className="text-xl font-h1 mb-1">{item.title}</h2>
               <p className="text-sm text-primary-300 mb-4">{item.desc}</p>
@@ -142,7 +142,7 @@ export default function BazarPage() {
             </div>
 
             {/* Картинка */}
-            <div className="w-full h-40 bg-gray-300/30 rounded-lg mb-4 overflow-hidden">
+            <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4 overflow-hidden">
               {item.imageUrl ? (
                 <img
                   src={item.imageUrl}

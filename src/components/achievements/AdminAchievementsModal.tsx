@@ -50,7 +50,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
           <h2 className="text-3xl font-bold">🏆 Ачивки</h2>
           <button
             onClick={onClose}
-            className="text-white text-xl hover:text-red-400"
+            className="text-white text-xl hover:text-[#FF6B4A]"
           >
             ✖
           </button>

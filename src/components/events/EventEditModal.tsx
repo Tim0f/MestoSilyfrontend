@@ -101,15 +101,15 @@ export default function EventEditModal({ id, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[#111] border border-white/10 p-8 rounded-xl w-full max-w-xl text-white">
+      <div className="bg-customgrey border border-white/10 p-8 rounded-xl w-full max-w-xl text-white">
         <h2 className="text-2xl font-bold mb-6">Редактировать событие</h2>
 
-        {error && <p className="text-red-400 mb-4">{error}</p>}
+        {error && <p className="text-[#FF6B4A] mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* name */}
           <div>
-            <label className="block mb-1 text-gray-300">Служебное имя</label>
+            <label className="block mb-1 text-customwhite">Служебное имя</label>
             <input
               type="text"
               value={form.name || ''}
@@ -120,7 +120,7 @@ export default function EventEditModal({ id, onClose }: Props) {
 
           {/* title */}
           <div>
-            <label className="block mb-1 text-gray-300">Заголовок</label>
+            <label className="block mb-1 text-customwhite">Заголовок</label>
             <input
               type="text"
               value={form.title || ''}
@@ -131,7 +131,7 @@ export default function EventEditModal({ id, onClose }: Props) {
 
           {/* description */}
           <div>
-            <label className="block mb-1 text-gray-300">Описание</label>
+            <label className="block mb-1 text-customwhite">Описание</label>
             <textarea
               value={form.description || ''}
               onChange={(e) => handleChange('description', e.target.value)}
@@ -142,7 +142,7 @@ export default function EventEditModal({ id, onClose }: Props) {
 
           {/* date */}
           <div>
-            <label className="block mb-1 text-gray-300">Дата</label>
+            <label className="block mb-1 text-customwhite">Дата</label>
             <input
               type="date"
               value={form.date || ''}
@@ -154,7 +154,7 @@ export default function EventEditModal({ id, onClose }: Props) {
           {/* times */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 text-gray-300">Начало</label>
+              <label className="block mb-1 text-customwhite">Начало</label>
               <input
                 type="time"
                 value={form.startTime || ''}
@@ -164,7 +164,7 @@ export default function EventEditModal({ id, onClose }: Props) {
             </div>
 
             <div>
-              <label className="block mb-1 text-gray-300">Окончание</label>
+              <label className="block mb-1 text-customwhite">Окончание</label>
               <input
                 type="time"
                 value={form.endTime || ''}
@@ -176,7 +176,7 @@ export default function EventEditModal({ id, onClose }: Props) {
 
           {/* price */}
           <div>
-            <label className="block mb-1 text-gray-300">Цена</label>
+            <label className="block mb-1 text-customwhite">Цена</label>
             <input
               type="number"
               value={form.price ?? 0}
@@ -187,7 +187,7 @@ export default function EventEditModal({ id, onClose }: Props) {
 
           {/* maxParticipants */}
           <div>
-            <label className="block mb-1 text-gray-300">Максимум участников</label>
+            <label className="block mb-1 text-customwhite">Максимум участников</label>
             <input
               type="number"
               value={form.maxParticipants ?? 0}
@@ -198,7 +198,7 @@ export default function EventEditModal({ id, onClose }: Props) {
 
           {/* textColor */}
           <div>
-            <label className="block mb-1 text-gray-300">Цвет текста</label>
+            <label className="block mb-1 text-customwhite">Цвет текста</label>
             <input
               type="color"
               value={form.textColor || '#ffffff'}
@@ -209,7 +209,7 @@ export default function EventEditModal({ id, onClose }: Props) {
 
           {/* Image */}
           <div className="space-y-2">
-            <p className="text-gray-300">Изображение</p>
+            <p className="text-customwhite">Изображение</p>
             <img
               src={form.imageUrl}
               alt="image"
@@ -218,13 +218,13 @@ export default function EventEditModal({ id, onClose }: Props) {
             <input
               type="file"
               onChange={(e) => handleImageUpload(e.target.files?.[0] || null)}
-              className="w-full text-gray-300"
+              className="w-full text-customwhite"
             />
           </div>
 
           {/* Banner */
           <div className="space-y-2">
-            <p className="text-gray-300">Баннер</p>
+            <p className="text-customwhite">Баннер</p>
             {form.bannerUrl && (
               <img
                 src={form.bannerUrl}
@@ -235,13 +235,13 @@ export default function EventEditModal({ id, onClose }: Props) {
             <input
               type="file"
               onChange={(e) => handleBannerUpload(e.target.files?.[0] || null)}
-              className="w-full text-gray-300"
+              className="w-full text-customwhite"
             />
           </div>}
 
           {/* createdBy */}
           <div>
-            <label className="block mb-1 text-gray-300">ID создателя</label>
+            <label className="block mb-1 text-customwhite">ID создателя</label>
             <input
               type="text"
               value={form.createdBy || ''}
@@ -262,7 +262,7 @@ export default function EventEditModal({ id, onClose }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold hover:bg-yellow-400 disabled:opacity-60"
+              className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow disabled:opacity-60"
             >
               Сохранить изменения
             </button>

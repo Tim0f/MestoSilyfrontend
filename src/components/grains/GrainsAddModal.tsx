@@ -42,10 +42,10 @@ export default function GrainsAddModal({ isOpen, onClose, userId, onUpdated }: P
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="bg-[#111] p-6 rounded-xl w-full max-w-md text-white">
+      <div className="bg-customgrey p-6 rounded-xl w-full max-w-md text-white">
         <h3 className="text-xl font-bold mb-4">Начислить зерна</h3>
 
-        {error && <div className="text-red-400 mb-2">{error}</div>}
+        {error && <div className="text-[#FF6B4A] mb-2">{error}</div>}
 
         <form onSubmit={submit} className="space-y-3">
           <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="w-full px-3 py-2 rounded bg-[#222] border border-white/10" placeholder="Количество" required />

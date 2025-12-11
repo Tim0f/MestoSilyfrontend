@@ -52,20 +52,20 @@ export default function NewsManager() {
         <h1 className="text-3xl font-bold">Новости</h1>
         <button
           onClick={() => setCreateOpen(true)}
-          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+          className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
         >
           Создать новость
         </button>
       </div>
 
       {loading ? (
-        <p className="text-gray-300">Загрузка...</p>
+        <p className="text-customwhite">Загрузка...</p>
       ) : (
         <div className="space-y-4">
           {news.map((n) => (
             <div
               key={n.id}
-              className="bg-[#111] border border-white/10 p-4 rounded-xl flex gap-4"
+              className="bg-customgrey border border-white/10 p-4 rounded-xl flex gap-4"
             >
               <div className="w-28 h-20 flex-shrink-0 overflow-hidden rounded">
                 <img
@@ -83,19 +83,19 @@ export default function NewsManager() {
                   </div>
                 </div>
 
-                <p className="text-gray-300 mt-2 line-clamp-3">{n.content}</p>
+                <p className="text-customwhite mt-2 line-clamp-3">{n.content}</p>
 
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() => setEditItem(n)}
-                    className="px-3 py-1 bg-blue-500 rounded hover:bg-blue-400"
+                    className="px-3 py-1 bg-[#5BC0EB] rounded hover:bg-blue-400"
                   >
                     Редактировать
                   </button>
 
                   <button
                     onClick={() => remove(n.id)}
-                    className="px-3 py-1 bg-red-500 rounded hover:bg-red-400"
+                    className="px-3 py-1 bg-red-500 rounded hover:bg-[#FF6B4A]"
                   >
                     Удалить
                   </button>

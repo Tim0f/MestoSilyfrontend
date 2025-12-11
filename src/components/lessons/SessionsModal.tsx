@@ -77,7 +77,7 @@ export default function SessionsModal({ isOpen, onClose }: Props) {
             />
             <button
               onClick={loadByDate}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-black rounded font-semibold"
+              className="px-4 py-2 bg-[#5BC0EB] hover:bg-blue-400 text-black rounded font-semibold"
             >
               Загрузить
             </button>
