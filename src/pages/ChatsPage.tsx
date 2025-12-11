@@ -245,8 +245,8 @@ try {
   })();
 
   return (
-    <div className="min-h-screen bg-[#2D282A] text-white flex items-center justify-center py-10 px-4">
-      <div className="relative w-full max-w-[1400px]">
+    <div className="min-h-screen bg-[#2D282A] text-white flex items-top justify-center ">
+      <div className="relative w-full ">
         <div
           className="pointer-events-none absolute inset-0 z-50"
           style={{ ["--tw-url" as any]: `url(${texturedBorder})` }}

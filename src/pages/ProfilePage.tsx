@@ -3,7 +3,7 @@ import Logo2 from "../assets/svg/Logo2.svg";
 import Vector from "../assets/svg/Vector.svg";
 import LogoSvg from "../assets/svg/Rectangle_9.svg?react";
 
-import { HttpClient } from "../services/httpClient";
+import { Client } from "../services/httpClient";
 import { UsersFrontendService } from "../services/users.service";
 import { AchievementsFrontendService } from "../services/achievements.service";
 import { LessonsFrontendService } from "../services/lessons.service";
@@ -53,13 +53,7 @@ export default function ProfilePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [achievementCode, setAchievementCode] = useState("");
 
-  const client = new HttpClient({
-    baseUrl:
-      (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-      (import.meta.env.VITE_API_URL as string | undefined) ??
-      "http://localhost:3000/api",
-    getToken: () => localStorage.getItem("token") ?? undefined,
-  });
+  const client = Client;
 
   const usersService = new UsersFrontendService(client);
   const achievementsService = new AchievementsFrontendService(client);
@@ -112,7 +106,7 @@ export default function ProfilePage() {
       {/* PROFILE / SCHEDULE / BALANCE BLOCKS */}
       <div className="flex gap-6 w-full">
         <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 flex items-center gap-6 relative overflow-hidden" style={{ width: "629px", height: "448px" }}>
-          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl pointer-events-none opacity-20" />
+          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl pointer-events-none " />
           <img src={userData.avatarUrl} className="w-24 h-24 rounded-xl object-cover" />
           <div className="flex flex-col gap-1 text-sm">
             <h1 className="text-xl font-h2">{userData.firstName} {userData.lastName}</h1>
@@ -122,12 +116,12 @@ export default function ProfilePage() {
         </div>
 
         <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 relative" style={{ width: "715px", height: "448px" }}>
-          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
+          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl " />
           <h2 className="text-lg font-h2 mb-4">Расписание на сегодня</h2>
           <div className="w-full flex flex-col gap-6 overflow-y-auto pr-2 text-sm">
             {schedule.map((item) => (
               <div key={item.id} className="relative bg-[#2D282A] rounded-2xl p-6 border border-[#403B36] flex justify-between items-start">
-                <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
+                <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl " />
                 <div>
                   <h3 className="font-h2 text-xl leading-tight mb-4">{item.title}</h3>
                   <p className="text-[#E8E1DC] font-p text-base leading-snug max-w-[360px]">{item.description}</p>
@@ -142,7 +136,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 relative flex flex-col justify-between" style={{ width: "442px", height: "448px" }}>
-          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
+          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl " />
           <div>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-customyellow text-[170px] font-h1">{userData.totalGrains}</p>
@@ -166,13 +160,13 @@ export default function ProfilePage() {
           </button>
 
           <button onClick={() => { setActiveTab("general"); setActiveSection("general"); }} className="relative">
-            <LogoSvg width={233} height={81} className={`z-10 ${activeTab === "general" ? "fill-customyellow" : "opacity-60 hover:opacity-100 fill-customyellow"}`} />
+            <LogoSvg width={233} height={81} className={`z-10 ${activeTab === "general" ? "fill-customyellow" : " fill-customyellow"}`} />
             <span className={`absolute inset-0 flex items-center justify-center z-20 font-h1 text-2xl ${activeTab === "general" ? "text-customblack" : "text-[#F6C98F]"}`}>Общие</span>
           </button>
 
           <div className="relative">
             <button onClick={() => { setActiveTab("sections"); setOpenDropdown(!openDropdown); }} className="relative">
-              <LogoSvg width={233} height={81} className={`z-10 ${activeTab === "sections" ? "" : "opacity-60 hover:opacity-100"}`} />
+              <LogoSvg width={233} height={81} className={`z-10 ${activeTab === "sections" ? "" : " fill-customblack stroke-customyellow"}`} />
               <span className={`absolute inset-0 flex items-center justify-center z-20 font-h1 text-2xl ${activeTab === "sections" ? "text-customblack" : "text-[#F6C98F]"}`}>Секции</span>
               <span className={`absolute right-6 top-1/2 -translate-y-1/2 text-xl z-30 transition-transform ${openDropdown ? "rotate-180" : ""}`}>▼</span>
             </button>
@@ -195,7 +189,7 @@ export default function ProfilePage() {
       <div className="mt-12 flex flex-col gap-6 w-full max-w-4xl mx-auto">
         {filteredAchievements.map((a, i) => (
           <div key={i} className="flex items-center justify-between bg-[#2D282A] border border-[#403B36] rounded-2xl px-6 py-4 relative">
-            <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl opacity-20" />
+            <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl " />
             <div className="flex items-center gap-4">
               <img src={a.iconUrl} className="w-12 h-12" />
               <div className="flex flex-col">
@@ -220,7 +214,7 @@ export default function ProfilePage() {
 
       {/* МОДАЛЬНОЕ ОКНО */}
       {modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black  z-50">
           <div className="bg-[#2D282A] p-6 rounded-xl w-96 relative">
             <button className="absolute top-2 right-2 text-[#F6C98F] font-bold" onClick={() => setModalOpen(false)}>×</button>
             <h2 className="text-2xl font-h1 mb-4 text-[#F6C98F]">Введите код достижения</h2>

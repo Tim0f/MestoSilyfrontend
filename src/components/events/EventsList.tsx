@@ -2,7 +2,7 @@
 // Список событий с редактированием и удалением
 
 import React, { useEffect, useState } from 'react';
-import { HttpClient } from '../../services/httpClient';
+import { Client } from '../../services/httpClient';
 import { EventsFrontendService } from '../../services/events.service';
 
 interface EventItem {
@@ -25,13 +25,7 @@ interface Props {
   onEdit: (id: string) => void;
 }
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
-});
+const client = Client
 
 const eventsService = new EventsFrontendService(client);
 

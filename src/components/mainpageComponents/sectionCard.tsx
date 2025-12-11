@@ -21,6 +21,8 @@ type SectionCardProps = {
 export default function SectionCard({ tile, isActive, isDefaultActive, onActivate }: SectionCardProps) {
   const expanded = isActive || isDefaultActive
 
+  
+
   return (
     <div
       onMouseEnter={onActivate}

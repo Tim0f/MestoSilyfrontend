@@ -37,22 +37,27 @@ export interface EnrollDto {
 export class SectionsFrontendService {
   constructor(private readonly http: HttpClient) {}
 
+  /** Создание секции */
   create<T = unknown>(payload: CreateSectionDto) {
     return this.http.post<T>('/sections', payload);
   }
 
+  /** Получить все секции */
   findAll<T = unknown>() {
     return this.http.get<T>('/sections', { authenticate: false });
   }
 
+  /** Получить одну секцию */
   findOne<T = unknown>(sectionId: string) {
     return this.http.get<T>(`/sections/${sectionId}`, { authenticate: false });
   }
 
+  /** Обновить секцию */
   update<T = unknown>(sectionId: string, payload: UpdateSectionDto) {
     return this.http.patch<T>(`/sections/${sectionId}`, payload);
   }
 
+  /** Удалить секцию */
   remove<T = unknown>(sectionId: string) {
     return this.http.delete<T>(`/sections/${sectionId}`);
   }
@@ -62,12 +67,15 @@ export class SectionsFrontendService {
     return this.http.post<T>('/enrollments', payload);
   }
 
-  /** Добавление изображения в галерею секции */
+  /** Добавить изображение в галерею секции */
   addImage<T = unknown>(sectionId: string, imageUrl: string, position: number) {
-    return this.http.post<T>(`/sections/${sectionId}/images`, { imageUrl, position });
+    return this.http.post<T>(`/sections/${sectionId}/images`, {
+      imageUrl,
+      position,
+    });
   }
 
-  /** Получить список изображений галереи */
+  /** Получить изображения галереи */
   getImages<T = unknown>(sectionId: string) {
     return this.http.get<T>(`/sections/${sectionId}/images`);
   }

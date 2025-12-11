@@ -35,13 +35,41 @@ export interface UpdateEventDto {
   isActive?: boolean;
   publishedAt?: string | null;
 }
+function getUserIdFromToken(): string | null {
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.sub || payload.userId || null;
+  } catch (e) {
+    console.error("Ошибка декодирования токена", e);
+    return null;
+  }
+}
+
 
 export class EventsFrontendService {
   constructor(private readonly http: HttpClient) {}
 
-  create<T = unknown>(payload: CreateEventDto) {
-    return this.http.post<T>('/events', payload);
+  
+ create<T = unknown>(payload: CreateEventDto) {
+  const userId = getUserIdFromToken();
+
+  // Проверяем наличие userId
+  if (!userId) {
+    console.error("❌ Не удалось получить userId из токена");
+    throw new Error("Ошибка авторизации: не найден userId");
   }
+
+  // Подставляем createdBy автоматически
+  payload.createdBy = userId;
+
+  console.log("➡️ Отправляем payload:", payload);
+
+  return this.http.post<T>('/events', payload);
+}
+
 
   findAll<T = unknown>() {
     return this.http.get<T>('/events', { authenticate: false });

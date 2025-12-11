@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HttpClient } from '../../services/httpClient';
+import { Client } from '../../services/httpClient';
 import { TeachersFrontendService } from '../../services/teachers.service';
 
 import TeacherCreateModal from './TeacherscreateModal';
@@ -16,13 +16,7 @@ interface Teacher {
   audioUrl?: string;
 }
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
-});
+const client = Client
 
 const teachersService = new TeachersFrontendService(client);
 

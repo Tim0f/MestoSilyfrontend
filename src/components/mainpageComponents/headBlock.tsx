@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import Logo from '../../assets/svg/Logo1.svg?react'
-import LogoSvg from '../../assets/svg/Rectangle_9.svg?react'
+import ButtonSvg from '../../assets/svg/Rectangle_9.svg?react'
 import heroImage from '../../assets/img/Mask_group.png'
 
 export default function HeadBlock() {
@@ -31,7 +31,7 @@ export default function HeadBlock() {
           Секции и мероприятия для всех
         </p>
         <Link to="/sections" className="relative inline-block">
-          <LogoSvg width={233} height={81} className="text-customyellow z-10" />
+          <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
           <span className="absolute inset-0 flex items-center justify-center z-20 text-customblack font-p text-p">
             записаться
           </span>

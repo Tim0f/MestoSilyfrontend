@@ -1,49 +1,20 @@
-// src/components/lessons/SessionsModal.tsx
-
+// Updated SessionsModal.tsx
 import React, { useEffect, useState } from "react";
 import BaseModal from "../ui/BaseModal";
-import { SessionsFrontendService } from "../../services/sessions.service";
-import { HttpClient } from "../../services/httpClient";
+import { LessonsFrontendService } from "../../services/lessons.service";
+import { Client } from "../../services/httpClient";
 
-const client = new HttpClient({
-  baseUrl: import.meta.env.VITE_ADMIN_API_URL ?? "http://localhost:3000/api",
-  getToken: () => localStorage.getItem("token") ?? undefined,
-});
+const client = Client;
+const lessonsService = new LessonsFrontendService(client);
 
-const sessionsService = new SessionsFrontendService(client);
-
-// ---------- Типы ----------
-interface SessionLesson {
+interface LessonItem {
   id: string;
+  date: string;
   startsAt: string;
   endsAt: string;
   location: string | null;
   section: { id: string; name: string };
   teacher: { id: string; firstName: string; lastName: string } | null;
-}
-
-interface SessionEvent {
-  id: string;
-  name: string;
-  date: string;
-  _count: { eventRegistrations: number };
-}
-
-interface SessionsResponse {
-  year: number;
-  month: number;
-  sessions: SessionLesson[];
-  events: SessionEvent[];
-}
-
-interface ImportResponse {
-  success: boolean;
-  created: number;
-  errors: number;
-  details: {
-    createdSessions: any[];
-    errorMessages: string[];
-  };
 }
 
 interface Props {
@@ -52,220 +23,126 @@ interface Props {
 }
 
 export default function SessionsModal({ isOpen, onClose }: Props) {
-  const [data, setData] = useState<SessionsResponse | null>(null);
+  const [date, setDate] = useState<string>("");
+  const [rangeStart, setRangeStart] = useState<string>("");
+  const [rangeEnd, setRangeEnd] = useState<string>("");
+  const [lessons, setLessons] = useState<LessonItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // XLSX
-  const [file, setFile] = useState<File | null>(null);
-  const [importLoading, setImportLoading] = useState(false);
-  const [importResult, setImportResult] = useState<ImportResponse | null>(null);
-  const [importError, setImportError] = useState<string | null>(null);
-
-  const load = async () => {
-    const res = await sessionsService.findAll<SessionsResponse>();
-    setData(res);
+  const loadByDate = async () => {
+    if (!date) return;
+    setLoading(true);
+    const res = await lessonsService.findByDate<LessonItem[]>(date);
+    setLessons(res);
+    setLoading(false);
   };
+
+  const loadByRange = async () => {
+    if (!rangeStart || !rangeEnd) return;
+    setLoading(true);
+    const res = await lessonsService.findByDateRange<LessonItem[]>(rangeStart, rangeEnd);
+    setLessons(res);
+    setLoading(false);
+  };
+
+  const groupByDate = lessons.reduce<Record<string, LessonItem[]>>((acc, item) => {
+    if (!acc[item.date]) acc[item.date] = [];
+    acc[item.date].push(item);
+    return acc;
+  }, {});
+
+  const sortedDates = Object.keys(groupByDate).sort();
 
   useEffect(() => {
     if (isOpen) {
-      load();
-      setImportError(null);
-      setImportResult(null);
-      setFile(null);
+      setLessons([]);
+      setDate("");
+      setRangeStart("");
+      setRangeEnd("");
     }
   }, [isOpen]);
 
-  // ---------- СКАЧАТЬ ШАБЛОН ----------
-  const handleDownloadTemplate = async () => {
-    try {
-      const buffer = await sessionsService.downloadTemplate();
-
-      const blob = new Blob([buffer], {
-        type:
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "sessions_template.xlsx";
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Template error:", err);
-    }
-  };
-
-  // ---------- ИМПОРТ XLSX ----------
-  const handleImport = async () => {
-    if (!file) {
-      setImportError("Выберите XLSX файл");
-      return;
-    }
-
-    setImportError(null);
-    setImportLoading(true);
-
-    try {
-      const res = await sessionsService.importSchedule<ImportResponse>(file);
-      setImportResult(res);
-      await load(); // обновить расписание
-    } catch (err: any) {
-      setImportError(err?.message ?? "Ошибка при импорте");
-    } finally {
-      setImportLoading(false);
-    }
-  };
-
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose} title="Расписание (Sessions)">
-      {!data ? (
-        <p className="text-white">Загрузка…</p>
-      ) : (
-        <div className="space-y-6 text-white max-h-[70vh] overflow-y-auto">
-
-          {/* ===================== БЛОК ИМПОРТА ===================== */}
-          <div className="p-4 border border-white/20 rounded-lg">
-            <h2 className="text-xl font-bold mb-3">Импорт расписания (XLSX)</h2>
-
-            <div className="flex items-center gap-4 mb-4">
-              <button
-                onClick={handleDownloadTemplate}
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-black rounded font-semibold"
-              >
-                Скачать шаблон XLSX
-              </button>
-            </div>
-
+    <BaseModal isOpen={isOpen} onClose={onClose} title="Расписание уроков">
+      <div className="text-white space-y-6 max-h-[75vh] overflow-y-auto">
+        {/* DATE FILTER */}
+        <div className="p-4 border border-white/20 rounded-lg">
+          <h2 className="text-xl font-bold mb-3">Фильтр по дате</h2>
+          <div className="flex gap-4 items-center mb-4">
             <input
-              type="file"
-              accept=".xlsx"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="text-white mb-3"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="text-black px-3 py-2 rounded"
             />
-
             <button
-              disabled={importLoading}
-              onClick={handleImport}
-              className="px-4 py-2 bg-green-500 hover:bg-green-400 text-black rounded font-semibold"
+              onClick={loadByDate}
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-black rounded font-semibold"
             >
-              {importLoading ? "Загрузка..." : "Импортировать"}
+              Загрузить
             </button>
-
-            {/* Ошибки */}
-            {importError && (
-              <p className="text-red-400 mt-3">{importError}</p>
-            )}
-
-            {/* ========== РЕЗУЛЬТАТ ИМПОРТА ========== */}
-            {importResult && (
-              <div className="mt-6 p-4 border border-white/20 rounded bg-black/20">
-                <h3 className="text-lg font-bold mb-2">Результат импорта</h3>
-
-                <p className="mb-2">
-                  Создано: <b>{importResult.created}</b>, ошибок:{" "}
-                  <b>{importResult.errors}</b>
-                </p>
-
-                {/* ---- ТАБЛИЦА СОЗДАННЫХ УРОКОВ ---- */}
-                {importResult.details.createdSessions.length > 0 && (
-                  <div className="mt-4">
-                    <p className="font-semibold mb-2">Созданные занятия:</p>
-
-                    <table className="w-full text-sm border border-white/20">
-                      <thead className="bg-white/10">
-                        <tr>
-                          <th className="p-2 border border-white/20">Секция</th>
-                          <th className="p-2 border border-white/20">Время</th>
-                          <th className="p-2 border border-white/20">Учитель</th>
-                          <th className="p-2 border border-white/20">Место</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {importResult.details.createdSessions.map((s, i) => (
-                          <tr key={i} className="hover:bg-white/5">
-                            <td className="p-2 border border-white/10">
-                              {s.section?.name ?? "—"}
-                            </td>
-                            <td className="p-2 border border-white/10">
-                              {s.startsAt} — {s.endsAt}
-                            </td>
-                            <td className="p-2 border border-white/10">
-                              {s.teacher
-                                ? `${s.teacher.firstName} ${s.teacher.lastName}`
-                                : "—"}
-                            </td>
-                            <td className="p-2 border border-white/10">
-                              {s.location ?? "—"}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* ---- ТАБЛИЦА ОШИБОК ---- */}
-                {importResult.details.errorMessages.length > 0 && (
-                  <div className="mt-6">
-                    <p className="font-semibold text-red-300 mb-2">Ошибки:</p>
-
-                    <table className="w-full text-sm border border-red-500/40">
-                      <tbody>
-                        {importResult.details.errorMessages.map((msg, i) => (
-                          <tr key={i} className="hover:bg-red-500/10">
-                            <td className="p-2 border border-red-500/40 text-red-300">
-                              {msg}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* ===================== УРОКИ ===================== */}
-          <div>
-            <h3 className="text-lg font-semibold mt-4">Уроки:</h3>
-            {data.sessions.length === 0 ? (
-              <p className="text-white/60">Нет уроков</p>
-            ) : (
-              data.sessions.map((s) => (
-                <div key={s.id} className="p-3 border border-white/20 rounded">
-                  <p>
-                    <b>{s.section.name}</b> — {s.startsAt}–{s.endsAt}
-                  </p>
-                  <p>
-                    Преподаватель:{" "}
-                    {s.teacher
-                      ? `${s.teacher.firstName} ${s.teacher.lastName}`
-                      : "Не указан"}
-                  </p>
-                  <p>Место: {s.location ?? "—"}</p>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* ===================== СОБЫТИЯ ===================== */}
-          <div>
-            <h3 className="text-lg font-semibold mt-4">События:</h3>
-            {data.events.length === 0 ? (
-              <p className="text-white/60">Нет событий</p>
-            ) : (
-              data.events.map((e) => (
-                <div key={e.id} className="p-3 border border-white/20 rounded">
-                  <p><b>{e.name}</b></p>
-                  <p>Дата: {e.date}</p>
-                  <p>Записалось: {e._count.eventRegistrations}</p>
-                </div>
-              ))
-            )}
           </div>
         </div>
-      )}
+
+        {/* RANGE FILTER */}
+        <div className="p-4 border border-white/20 rounded-lg">
+          <h2 className="text-xl font-bold mb-3">Фильтр по диапазону дат</h2>
+          <div className="flex gap-4 items-center mb-4">
+            <input
+              type="date"
+              value={rangeStart}
+              onChange={(e) => setRangeStart(e.target.value)}
+              className="text-black px-3 py-2 rounded"
+            />
+            <input
+              type="date"
+              value={rangeEnd}
+              onChange={(e) => setRangeEnd(e.target.value)}
+              className="text-black px-3 py-2 rounded"
+            />
+            <button
+              onClick={loadByRange}
+              className="px-4 py-2 bg-green-500 hover:bg-green-400 text-black rounded font-semibold"
+            >
+              Загрузить
+            </button>
+          </div>
+        </div>
+
+        {/* RESULTS */}
+        {loading ? (
+          <p className="text-white">Загрузка…</p>
+        ) : lessons.length === 0 ? (
+          <p className="text-white/60">Нет уроков</p>
+        ) : (
+          <div className="overflow-x-auto border border-white/20 rounded p-4">
+            <div className="min-w-max grid" style={{ gridTemplateColumns: `repeat(${sortedDates.length}, 280px)` }}>
+              {sortedDates.map((d) => (
+                <div key={d} className="border border-white/10 p-3">
+                  <h3 className="font-bold text-lg mb-3">{d}</h3>
+
+                  {groupByDate[d]
+                    .sort((a, b) => a.startsAt.localeCompare(b.startsAt))
+                    .map((l) => (
+                      <div key={l.id} className="mb-3 p-3 bg-white/5 rounded">
+                        <p>
+                          <b>{l.section.name}</b>
+                        </p>
+                        <p>
+                          {l.startsAt} — {l.endsAt}
+                        </p>
+                        <p className="text-white/70 text-sm">
+                          Учитель: {l.teacher ? `${l.teacher.firstName} ${l.teacher.lastName}` : "—"}
+                        </p>
+                        <p className="text-white/70 text-sm">Место: {l.location ?? "—"}</p>
+                      </div>
+                    ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </BaseModal>
   );
 }

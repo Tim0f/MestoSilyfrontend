@@ -1,25 +1,26 @@
 import { HttpClient } from './httpClient';
 import { ensureFormData, type UploadInput } from './fileUpload';
 
-
 export interface CreateLessonDto {
   sectionId: string;
-  teacherId: string;
-  dayOfWeek: number;
+  teacherId?: string;
+  date: string;        // YYYY-MM-DD
   startsAt: string;
   endsAt: string;
-  location: string;
-  capacity: number;
+  location?: string;
+  capacity?: number;
+  description?: string;
 }
 
 export interface UpdateLessonDto {
   sectionId?: string;
   teacherId?: string;
-  dayOfWeek?: number;
+  date?: string;
   startsAt?: string;
   endsAt?: string;
   location?: string;
   capacity?: number;
+  description?: string;
 }
 
 export class LessonsFrontendService {
@@ -34,7 +35,9 @@ export class LessonsFrontendService {
   }
 
   getTemplate() {
-    return this.http.get<ArrayBuffer>('/lessons/template', { responseType: 'arrayBuffer' });
+    return this.http.get<ArrayBuffer>('/lessons/template', {
+      responseType: 'arrayBuffer',
+    });
   }
 
   importSchedule<T = unknown>(sectionId: string, file: UploadInput) {
@@ -44,8 +47,31 @@ export class LessonsFrontendService {
     );
   }
 
-  getSchedule<T = unknown>(sectionId: string) {
-    return this.http.get<T>(`/lessons/schedule/${sectionId}`);
+  /**
+   * Получить расписание секции с optional date range
+   */
+  getSchedule<T = unknown>(sectionId: string, startDate?: string, endDate?: string) {
+    return this.http.get<T>(`/lessons/schedule/${sectionId}`, {
+      query: { startDate, endDate },
+    });
+  }
+
+  /**
+   * Получить занятия по конкретной дате
+   */
+  findByDate<T = unknown>(date: string, sectionId?: string) {
+    return this.http.get<T>('/lessons/by-date', {
+      query: { date, sectionId },
+    });
+  }
+
+  /**
+   * Получить занятия по диапазону дат
+   */
+  findByDateRange<T = unknown>(startDate: string, endDate: string, sectionId?: string) {
+    return this.http.get<T>('/lessons/by-date-range', {
+      query: { startDate, endDate, sectionId },
+    });
   }
 
   findOne<T = unknown>(lessonId: string) {
@@ -60,4 +86,3 @@ export class LessonsFrontendService {
     return this.http.delete<T>(`/lessons/${lessonId}`);
   }
 }
-
