@@ -51,12 +51,12 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-[#111] p-5 rounded-xl w-full max-w-md text-white border border-white/10">
+      <div className="bg-customgrey p-5 rounded-xl w-full max-w-md text-white border border-white/10">
         <h3 className="text-lg font-semibold mb-3">Добавить участника</h3>
 
         <form onSubmit={submit} className="space-y-3">
           <div>
-            <label className="block mb-1 text-gray-300">ID пользователя</label>
+            <label className="block mb-1 text-customwhite">ID пользователя</label>
             <input
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
@@ -66,7 +66,7 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Или email</label>
+            <label className="block mb-1 text-customwhite">Или email</label>
             <input
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
@@ -80,7 +80,7 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
               Отмена
             </button>
 
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-green-600 rounded">
+            <button type="submit" disabled={loading} className="px-4 py-2 bg-[#52C57B] rounded">
               {loading ? 'Добавление...' : 'Добавить'}
             </button>
           </div>

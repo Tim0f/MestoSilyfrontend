@@ -50,14 +50,14 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="bg-[#111] border border-white/10 p-6 rounded-xl w-full max-w-md text-white">
+      <div className="bg-customgrey border border-white/10 p-6 rounded-xl w-full max-w-md text-white">
         <h3 className="text-xl font-bold mb-4">Списать зерна</h3>
 
-        {error && <div className="text-red-400 mb-2">{error}</div>}
+        {error && <div className="text-[#FF6B4A] mb-2">{error}</div>}
 
         <form onSubmit={submit} className="space-y-3">
           <div>
-            <label className="block mb-1 text-gray-300">Количество</label>
+            <label className="block mb-1 text-customwhite">Количество</label>
             <input
               type="number"
               min={1}
@@ -69,7 +69,7 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Причина (опционально)</label>
+            <label className="block mb-1 text-customwhite">Причина (опционально)</label>
             <input
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -81,7 +81,7 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
             <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500">
               Отмена
             </button>
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-red-600 text-black rounded hover:bg-red-500">
+            <button type="submit" disabled={loading} className="px-4 py-2 bg-[#D9534F] text-black rounded hover:bg-red-500">
               Списать
             </button>
           </div>

@@ -85,12 +85,12 @@ export default function ChatEditModal({ isOpen, onClose, chat, sections = [], ev
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-[#111] p-5 rounded-xl w-full max-w-md text-white border border-white/10">
+      <div className="bg-customgrey p-5 rounded-xl w-full max-w-md text-white border border-white/10">
         <h3 className="text-lg font-semibold mb-3">Редактировать чат</h3>
 
         <form onSubmit={save} className="space-y-4">
           <div>
-            <label className="block mb-1 text-gray-300">Тип чата</label>
+            <label className="block mb-1 text-customwhite">Тип чата</label>
             <select
               value={type ?? 'SUPPORT'}
               onChange={(e) => setType(e.target.value as any)}
@@ -104,7 +104,7 @@ export default function ChatEditModal({ isOpen, onClose, chat, sections = [], ev
 
           {type === 'SECTION' && (
             <div>
-              <label className="block mb-1 text-gray-300">Секция</label>
+              <label className="block mb-1 text-customwhite">Секция</label>
               <select
                 value={sectionId ?? ''}
                 onChange={(e) => setSectionId(e.target.value)}
@@ -122,7 +122,7 @@ export default function ChatEditModal({ isOpen, onClose, chat, sections = [], ev
 
           {type === 'EVENT' && (
             <div>
-              <label className="block mb-1 text-gray-300">Событие</label>
+              <label className="block mb-1 text-customwhite">Событие</label>
               <select
                 value={eventId ?? ''}
                 onChange={(e) => setEventId(e.target.value)}
@@ -142,7 +142,7 @@ export default function ChatEditModal({ isOpen, onClose, chat, sections = [], ev
             <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded">
               Отмена
             </button>
-            <button type="submit" disabled={saving} className="px-4 py-2 bg-yellow-500 text-black rounded">
+            <button type="submit" disabled={saving} className="px-4 py-2 bg-customyellow text-black rounded">
               {saving ? 'Сохранение...' : 'Сохранить'}
             </button>
           </div>

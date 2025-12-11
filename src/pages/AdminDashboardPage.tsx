@@ -25,11 +25,11 @@ export default function AdminDashboardPage() {
 
   if (!user || (user.role !== "ADMIN" && user.role !== "ROOT")) {
     return (
-      <div className="min-h-[70vh] bg-[#0f0f10] text-white flex items-center justify-center px-6">
+      <div className="min-h-[70vh] bg-customblack text-white flex items-center justify-center px-6">
         <div className="max-w-lg text-center space-y-4">
-          <ShieldCheck className="mx-auto text-yellow-400" size={48} />
+          <ShieldCheck className="mx-auto text-customyellow" size={48} />
           <h1 className="text-3xl font-h2">Доступ ограничен</h1>
-          <p className="text-base text-gray-300">
+          <p className="text-base text-customwhite">
             Эта страница доступна только администраторам.
           </p>
         </div>
@@ -101,18 +101,18 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#080808] text-white px-4 py-10">
+    <div className="min-h-screen bg-[customblack] text-white px-4 py-10">
       <div className="max-w-7xl mx-auto space-y-10">
 
         {/* HEADER */}
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-yellow-500">
+          <p className="text-xs uppercase tracking-[0.3em] text-customyellow">
             Админпанель
           </p>
           <h1 className="text-4xl md:text-5xl font-h2 mt-2">
             Управление Местом Силы
           </h1>
-          <p className="text-gray-300 mt-3 max-w-2xl">
+          <p className="text-customwhite mt-3 max-w-2xl">
             Выберите раздел для управления системой.
           </p>
         </div>
@@ -123,21 +123,21 @@ export default function AdminDashboardPage() {
           {/* Ачивки — кнопка открывает модалку */}
           <button
             onClick={() => setAchievementsOpen(true)}
-            className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
+            className="bg-customyellow hover:bg-customyellow text-black font-semibold rounded-xl p-4 text-center"
           >
             🏆 Ачивки
           </button>
 
           <Link
             to="enrollments"
-            className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
+            className="bg-customyellow hover:bg-customyellow text-black font-semibold rounded-xl p-4 text-center"
           >
             📘 Записи на секции
           </Link>
 
           <Link
             to="payments"
-            className="bg-yellow-600 hover:bg-yellow-500 text-black font-semibold rounded-xl p-4 text-center"
+            className="bg-customyellow hover:bg-customyellow text-black font-semibold rounded-xl p-4 text-center"
           >
             💳 Оплаты и чеки
           </Link>
@@ -149,10 +149,10 @@ export default function AdminDashboardPage() {
             <Link
               to={link}
               key={title}
-              className="rounded-2xl bg-gradient-to-br from-[#161616] to-[#0c0c0c] border border-white/5 p-6 hover:border-yellow-500/40 transition shadow-xl"
+              className="rounded-2xl bg-customgrey border border-white/5 p-6 hover:border-customyellow/40 transition shadow-xl"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-xl bg-yellow-500/10 text-yellow-400">
+                <div className="p-3 rounded-xl bg-customyellow/10 text-customyellow">
                   <Icon size={24} />
                 </div>
               </div>

@@ -60,15 +60,15 @@ export default function EventsList({ onEdit }: Props) {
     }
   };
 
-  if (loading) return <p className="text-gray-300">Загрузка...</p>;
-  if (error) return <p className="text-red-400">{error}</p>;
+  if (loading) return <p className="text-customwhite">Загрузка...</p>;
+  if (error) return <p className="text-[#FF6B4A]">{error}</p>;
 
   return (
     <div className="space-y-4">
       {events.map((ev) => (
         <div
           key={ev.id}
-          className="flex justify-between items-center bg-[#1a1a1a] border border-white/10 px-5 py-4 rounded-xl hover:bg-white/5"
+          className="flex justify-between items-center bg-customgrey border border-white/10 px-5 py-4 rounded-xl hover:bg-white/5"
         >
           <div className="space-y-1">
             <p className="text-lg font-semibold">{ev.title}</p>
@@ -84,14 +84,14 @@ export default function EventsList({ onEdit }: Props) {
           <div className="flex gap-3">
             <button
               onClick={() => onEdit(ev.id)}
-              className="px-4 py-2 bg-blue-500 text-black rounded hover:bg-blue-400"
+              className="px-4 py-2 bg-[#5BC0EB] text-black rounded hover:bg-blue-400"
             >
               Редактировать
             </button>
 
             <button
               onClick={() => handleDelete(ev.id)}
-              className="px-4 py-2 bg-red-500 text-black rounded hover:bg-red-400"
+              className="px-4 py-2 bg-red-500 text-black rounded hover:bg-[#FF6B4A]"
             >
               Удалить
             </button>

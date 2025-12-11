@@ -95,28 +95,28 @@ export default function NewsEditModal({ isOpen, onClose, item }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-2xl text-white max-h-[90vh] overflow-y-auto">
+      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-2xl text-white max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Редактировать новость</h2>
 
-        {error && <div className="text-red-400 mb-3">{error}</div>}
+        {error && <div className="text-[#FF6B4A] mb-3">{error}</div>}
 
         <form onSubmit={save} className="space-y-4">
           <div>
-            <label className="block mb-1 text-gray-300">Заголовок</label>
+            <label className="block mb-1 text-customwhite">Заголовок</label>
             <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full bg-[#222] border border-white/10 rounded px-3 py-2" />
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Контент</label>
+            <label className="block mb-1 text-customwhite">Контент</label>
             <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={6} className="w-full bg-[#222] border border-white/10 rounded px-3 py-2" />
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Картинки (URL)</label>
+            <label className="block mb-1 text-customwhite">Картинки (URL)</label>
 
             <div className="flex gap-2 mb-2">
               <input value={newImageInput} onChange={(e) => setNewImageInput(e.target.value)} className="flex-1 bg-[#222] border border-white/10 rounded px-3 py-2" placeholder="Добавить URL" />
-              <button type="button" onClick={addImage} className="px-3 py-2 bg-blue-500 rounded hover:bg-blue-400">Добавить</button>
+              <button type="button" onClick={addImage} className="px-3 py-2 bg-[#5BC0EB] rounded hover:bg-blue-400">Добавить</button>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
@@ -132,7 +132,7 @@ export default function NewsEditModal({ isOpen, onClose, item }: Props) {
                       <span className="text-sm truncate">{img}</span>
                     </label>
 
-                    <button type="button" onClick={() => removeImage(idx)} className="text-red-400">✕</button>
+                    <button type="button" onClick={() => removeImage(idx)} className="text-[#FF6B4A]">✕</button>
                   </div>
                 </div>
               ))}
@@ -140,13 +140,13 @@ export default function NewsEditModal({ isOpen, onClose, item }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Дата публикации</label>
+            <label className="block mb-1 text-customwhite">Дата публикации</label>
             <input type="date" value={publishedDate} onChange={(e) => setPublishedDate(e.target.value)} className="w-full bg-[#222] border border-white/10 rounded px-3 py-2" />
           </div>
 
           <div className="flex justify-end gap-3 mt-4">
             <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500">Отмена</button>
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400">Сохранить</button>
+            <button type="submit" disabled={loading} className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow">Сохранить</button>
           </div>
         </form>
       </div>

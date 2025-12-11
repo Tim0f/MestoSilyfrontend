@@ -99,12 +99,12 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-lg text-white">
+      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-lg text-white">
         <h2 className="text-xl font-bold mb-4">Создать ачивку</h2>
 
         <form onSubmit={create} className="space-y-4">
           <div>
-            <label className="block mb-1 text-gray-300">Название</label>
+            <label className="block mb-1 text-customwhite">Название</label>
             <input
               type="text"
               value={form.name}
@@ -114,7 +114,7 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Описание</label>
+            <label className="block mb-1 text-customwhite">Описание</label>
             <textarea
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
@@ -124,7 +124,7 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">URL иконки</label>
+            <label className="block mb-1 text-customwhite">URL иконки</label>
             <input
               type="text"
               value={form.iconUrl}
@@ -134,7 +134,7 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Награда (зерна)</label>
+            <label className="block mb-1 text-customwhite">Награда (зерна)</label>
             <input
               type="number"
               value={form.rewardGrains}
@@ -144,7 +144,7 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Раздел</label>
+            <label className="block mb-1 text-customwhite">Раздел</label>
             <select
               value={form.sectionId ?? ''}
               onChange={(e) => update('sectionId', e.target.value)}
@@ -171,15 +171,15 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
           </div>
 
           {checking && (
-            <div className="p-2 rounded bg-[#1b1b1b] text-yellow-400 text-sm">
+            <div className="p-2 rounded bg-[#1b1b1b] text-customyellow text-sm">
               Проверяем уникальность кода...
             </div>
           )}
 
           {generatedCode && (
             <div className="p-3 rounded bg-[#1b1b1b] border border-white/10">
-              <p className="text-sm text-gray-300">Сгенерированный уникальный код:</p>
-              <p className="font-bold text-yellow-400 text-lg">{generatedCode}</p>
+              <p className="text-sm text-customwhite">Сгенерированный уникальный код:</p>
+              <p className="font-bold text-customyellow text-lg">{generatedCode}</p>
             </div>
           )}
 
@@ -194,7 +194,7 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+              className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
               disabled={creating || checking}
             >
               {creating ? "Создаём..." : "Создать"}

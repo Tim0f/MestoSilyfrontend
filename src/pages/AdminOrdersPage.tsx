@@ -59,7 +59,7 @@ export default function AdminOrdersPage() {
           pendingReceipts.map((r) => (
             <div
               key={r.id}
-              className="p-4 border border-yellow-500/40 rounded-lg bg-[#423b1d]"
+              className="p-4 border border-customyellow/40 rounded-lg bg-[#423b1d]"
             >
               <div className="flex justify-between items-center">
                 <div>
@@ -114,7 +114,7 @@ export default function AdminOrdersPage() {
                 key={o.id}
                 className={`p-4 rounded-lg border ${
                   isPending
-                    ? "border-yellow-500/40 bg-[#423b1d]"
+                    ? "border-customyellow/40 bg-[#423b1d]"
                     : "border-gray-500/30 bg-[#333333]"
                 }`}
               >
@@ -125,7 +125,7 @@ export default function AdminOrdersPage() {
                 <p
                   className={`font-semibold mt-1 ${
                     isPending
-                      ? "text-yellow-400"
+                      ? "text-customyellow"
                       : isRedeemed
                       ? "text-green-400"
                       : "text-white/60"

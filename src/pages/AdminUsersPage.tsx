@@ -16,7 +16,7 @@ export default function AdminUsersPage() {
         <h1 className="text-3xl font-bold">Пользователи</h1>
         <button
           onClick={() => setIsCreateAdminOpen(true)}
-          className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold hover:bg-yellow-400"
+          className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow"
         >
           Создать администратора
         </button>

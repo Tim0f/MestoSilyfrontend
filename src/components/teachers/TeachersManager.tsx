@@ -57,7 +57,7 @@ export default function TeachersManager() {
 
         <button
           onClick={() => setCreateOpen(true)}
-          className="px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+          className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
         >
           Создать преподавателя
         </button>
@@ -70,7 +70,7 @@ export default function TeachersManager() {
           {teachers.map((t) => (
             <div
               key={t.id}
-              className="p-4 bg-[#111] border border-white/10 rounded-xl flex justify-between items-center"
+              className="p-4 bg-customgrey border border-white/10 rounded-xl flex justify-between items-center"
             >
               <div className="flex gap-4 items-center">
                 <img
@@ -81,20 +81,20 @@ export default function TeachersManager() {
 
                 <div>
                   <h2 className="text-xl font-semibold">{formatFio(t)}</h2>
-                  <p className="text-gray-300">Роль: {t.role || '—'}</p>
+                  <p className="text-customwhite">Роль: {t.role || '—'}</p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2">
                 <button
-                  className="px-3 py-1 bg-blue-500 rounded hover:bg-blue-400"
+                  className="px-3 py-1 bg-[#5BC0EB] rounded hover:bg-blue-400"
                   onClick={() => setEditTeacher(t)}
                 >
                   Изменить
                 </button>
 
                 <button
-                  className="px-3 py-1 bg-red-500 rounded hover:bg-red-400"
+                  className="px-3 py-1 bg-red-500 rounded hover:bg-[#FF6B4A]"
                   onClick={() => deleteTeacher(t.id)}
                 >
                   Удалить

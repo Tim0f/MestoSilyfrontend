@@ -31,7 +31,7 @@ export default function ChatCreateModal({
 
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-[#111] p-6 rounded-xl border border-white/10 w-full max-w-lg text-white">
+      <div className="bg-customgrey p-6 rounded-xl border border-white/10 w-full max-w-lg text-white">
         <h2 className="text-xl font-bold mb-4">Создать чат</h2>
 
         <form onSubmit={create} className="space-y-4">
@@ -92,7 +92,7 @@ export default function ChatCreateModal({
             >
               Отмена
             </button>
-            <button type="submit" className="px-4 py-2 bg-green-600 rounded">
+            <button type="submit" className="px-4 py-2 bg-[#52C57B] rounded">
               Создать
             </button>
           </div>

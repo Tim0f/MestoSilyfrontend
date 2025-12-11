@@ -210,7 +210,7 @@ const selectTeacher = (id: string) => {
                 onClick={() => selectTeacher(t.id)}
                 className={`flex items-center gap-3 p-2 rounded border ${
                  form.teacherIds[0] === t.id
-                    ? "border-yellow-500 bg-yellow-500/20"
+                    ? "border-customyellow bg-customyellow/20"
                     : "border-white/10 bg-[#222]"
                 }`}
               >
@@ -223,7 +223,7 @@ const selectTeacher = (id: string) => {
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400"
+          className="w-full px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
         >
           Сохранить изменения
         </button>

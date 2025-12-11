@@ -16,7 +16,7 @@ export default function AdminEventsPage() {
         <h1 className="text-3xl font-bold">События</h1>
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold hover:bg-yellow-400"
+          className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow"
         >
           Создать событие
         </button>

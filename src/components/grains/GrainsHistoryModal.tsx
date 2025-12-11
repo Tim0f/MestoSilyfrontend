@@ -42,10 +42,10 @@ export default function GrainsHistoryModal({ isOpen, onClose, userId }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-[#111] p-6 rounded-xl w-full max-w-xl max-h-[80vh] overflow-y-auto border border-white/10 text-white">
+      <div className="bg-customgrey p-6 rounded-xl w-full max-w-xl max-h-[80vh] overflow-y-auto border border-white/10 text-white">
         <h2 className="text-xl font-bold mb-4">История операций</h2>
 
-        <p className="mb-3 text-gray-300">Всего зерен: {total}</p>
+        <p className="mb-3 text-customwhite">Всего зерен: {total}</p>
 
         {loading && <p>Загрузка...</p>}
 

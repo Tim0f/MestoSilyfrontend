@@ -39,7 +39,7 @@ export default function PartnersManager() {
 
       <button
         onClick={() => setCreateOpen(true)}
-        className="mb-4 px-4 py-2 bg-yellow-500 text-black rounded hover:bg-yellow-400 font-semibold"
+        className="mb-4 px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow font-semibold"
       >
         Создать партнёра
       </button>
@@ -51,7 +51,7 @@ export default function PartnersManager() {
           {partners.map((p) => (
             <div
               key={p.id}
-              className="flex items-center justify-between bg-[#111] border border-white/10 p-4 rounded-xl"
+              className="flex items-center justify-between bg-customgrey border border-white/10 p-4 rounded-xl"
             >
               <div className="flex items-center gap-4">
                 <img
@@ -67,13 +67,13 @@ export default function PartnersManager() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setEditPartner(p)}
-                  className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-500"
+                  className="px-4 py-2 bg-[#3DA9FC] rounded hover:bg-[#5BC0EB]"
                 >
                   Изменить
                 </button>
                 <button
                   onClick={() => removePartner(p.id)}
-                  className="px-4 py-2 bg-red-600 rounded hover:bg-red-500"
+                  className="px-4 py-2 bg-[#D9534F] rounded hover:bg-red-500"
                 >
                   Удалить
                 </button>

@@ -78,14 +78,14 @@ export default function UserEditModal({ id, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[#111] border border-white/10 p-8 rounded-xl w-full max-w-xl">
+      <div className="bg-customgrey border border-white/10 p-8 rounded-xl w-full max-w-xl">
         <h2 className="text-2xl font-bold mb-6">Редактировать пользователя</h2>
 
-        {error && <p className="text-red-400 mb-4">{error}</p>}
+        {error && <p className="text-[#FF6B4A] mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block mb-1 text-gray-300">Имя</label>
+            <label className="block mb-1 text-customwhite">Имя</label>
             <input
               type="text"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -96,7 +96,7 @@ export default function UserEditModal({ id, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Фамилия</label>
+            <label className="block mb-1 text-customwhite">Фамилия</label>
             <input
               type="text"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -107,7 +107,7 @@ export default function UserEditModal({ id, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Телефон</label>
+            <label className="block mb-1 text-customwhite">Телефон</label>
             <input
               type="text"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -117,7 +117,7 @@ export default function UserEditModal({ id, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Дата рождения</label>
+            <label className="block mb-1 text-customwhite">Дата рождения</label>
             <input
               type="date"
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
@@ -132,11 +132,11 @@ export default function UserEditModal({ id, onClose }: Props) {
               checked={!!form.isActive}
               onChange={(e) => handleChange('isActive', e.target.checked)}
             />
-            <label className="text-gray-300">Активен</label>
+            <label className="text-customwhite">Активен</label>
           </div>
 
           <div>
-            <label className="block mb-1 text-gray-300">Роль</label>
+            <label className="block mb-1 text-customwhite">Роль</label>
             <select
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
               value={form.role || 'USER'}
@@ -160,7 +160,7 @@ export default function UserEditModal({ id, onClose }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-yellow-500 text-black rounded font-semibold hover:bg-yellow-400 disabled:opacity-60"
+              className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow disabled:opacity-60"
             >
               Сохранить изменения
             </button>
