@@ -4,6 +4,8 @@ import { Client } from "../../services/httpClient";
 import { SectionsFrontendService, CreateSectionDto } from "../../services/sections.service";
 import { UploadFrontendService } from "../../services/upload.service";
 import { TeachersFrontendService, TeacherDto } from "../../services/teachers.service";
+import { ChatFrontendService } from "../../services/chat.service";
+
 
 interface Props {
   isOpen: boolean;
@@ -15,6 +17,7 @@ const client = Client;
 const sectionsService = new SectionsFrontendService(client);
 const uploadService = new UploadFrontendService(client);
 const teachersService = new TeachersFrontendService(client);
+const chatService = new ChatFrontendService(client)
 
 /* ...imports... */
 
@@ -62,30 +65,39 @@ const [form, setForm] = useState({
   };
 
   const create = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+  e.preventDefault();
+  setError(null);
+  setLoading(true);
 
-    try {
-      if (!form.name.trim()) throw new Error("Название обязательно");
-      if (!form.description.trim()) throw new Error("Описание обязательно");
+  try {
+    if (!form.name.trim()) throw new Error("Название обязательно");
+    if (!form.description.trim()) throw new Error("Описание обязательно");
 
-      const imageUrl = await uploadIfNeeded(imageFile);
-      const iconUrl = await uploadIfNeeded(iconFile);
+    const imageUrl = await uploadIfNeeded(imageFile);
+    const iconUrl = await uploadIfNeeded(iconFile);
 
-      const payload: CreateSectionDto = { ...form };
+    const payload: CreateSectionDto = { ...form };
 
-      if (imageUrl) payload.imageUrl = imageUrl;
-      if (iconUrl) payload.iconUrl = iconUrl;
+    if (imageUrl) payload.imageUrl = imageUrl;
+    if (iconUrl) payload.iconUrl = iconUrl;
 
-      await sectionsService.create(payload);
-      onClose();
-    } catch (err: any) {
-      setError(err.message || "Ошибка создания секции");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Создаём секцию
+    const created: any = await sectionsService.create(payload);
+
+    // Создаём чат для секции
+    await chatService.createChat({
+      type: "SECTION",
+      sectionId: created.id,
+    });
+
+    onClose();
+  } catch (err: any) {
+    setError(err.message || "Ошибка создания секции");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} title="Создать секцию">
