@@ -6,8 +6,8 @@ import { User, LogOut } from "lucide-react";
 import Logo2 from "../assets/svg/Logo2.svg";
 
 // Твои SVG
-import ProfileTop from "../assets/svg/Rectangle 75.svg";
-import ProfileBottom from "../assets/svg/Rectangle 76.svg";
+import ProfileUp from "../assets/svg/profile_up.svg";
+import ProfileDown from "../assets/svg/profile_down.svg";
 import ProfileIcon from "../assets/svg/Vector (4).svg";
 
 export default function Header() {
@@ -89,50 +89,47 @@ export default function Header() {
                     )}
                   </button>
 
+                  {/* Выпадающее меню */}
                   {isMenuOpen && (
-  <div className="absolute right-0 mt-2 w-[210px] select-none" 
-  style={{ 
-  backgroundImage: `url(${ProfileBottom})`, 
-  backgroundSize: '100% 100%', 
-  backgroundRepeat: 'no-repeat',
-   backgroundPosition: 'center',
-   backgroundColor: 'none',
-   stroke: 'customyellow'
-   }}>
+  <div className="absolute right-0 mt-2 w-[210px] select-none">
+{/* Верхняя часть — ПРОФИЛЬ */}
+<div className="relative w-full h-[120px]">
+  {/* фон */}
+  <img
+    src={ProfileUp}
+    className="absolute top-0 left-0 w-full h-full pointer-events-none select-none"
+    alt=""
+  />
 
-    {/* ОБЩИЙ верхний фон для двух пунктов */}
-    <div className="relative w-full">
-      
-      {/* Профиль */}
-      <Link
-        to="/profile"
-        onClick={() => setIsMenuOpen(false)}
-        className="absolute left-0 top-0 w-full flex items-center justify-between px-5 py-[18px]"
-      >
-        <span className="text-[#30261D] text-[22px] font-semibold">
-          Профиль
-        </span>
-        <img src={ProfileIcon} className="w-7 h-7 opacity-80" />
-      </Link>
+  {/* контент */}
+  <Link
+    to="/profile"
+    onClick={() => setIsMenuOpen(false)}
+    className="absolute inset-0 flex items-center justify-between px-4 z-10"
+  >
+    <span className="text-[22px] font-h1 text-[#F5C78B]">Профиль</span>
+    <img src={ProfileIcon} className="w-7 h-7" alt="" />
+  </Link>
+</div>
 
-      {/* Выйти — размещается НИЖЕ на том же фоне */}
-      <button
-        onClick={handleLogout}
-        className="absolute left-0 top-[62px] w-full flex items-center justify-between px-5 py-[18px] text-[#30261D]"
-      >
-        <span className="text-[22px] font-semibold">Выйти</span>
-        <LogOut className="w-7 h-7 opacity-80" strokeWidth={2.5} />
-      </button>
-    </div>
+{/* Нижняя часть — ВЫЙТИ */}
+<div className="relative w-full h-[120px]">
+  {/* фон (перевёрнутый) */}
+  <img
+    src={ProfileDown}
+    className="absolute top-0 left-0 w-full h-full pointer-events-none select-none rotate-180"
+    alt=""
+  />
 
-    {/* Нижняя подложка (вторая SVG) только под "Выйти" */}
-    <div className="relative w-full -mt-[3px]">
-      <img
-        src={ProfileTop}
-        className="w-full h-auto pointer-events-none select-none"
-      />
-    </div>
-
+  {/* контент */}
+  <button
+    onClick={handleLogout}
+    className="absolute inset-0 flex items-center justify-between px-4 z-10 text-black"
+  >
+    <span className="text-[22px] font-h1">Выйти</span>
+    <LogOut className="w-7 h-7" />
+  </button>
+</div>
   </div>
 )}
 

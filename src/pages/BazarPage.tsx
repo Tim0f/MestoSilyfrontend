@@ -54,7 +54,6 @@ export default function BazarPage() {
 
   if (loading)
     return (
-<<<<<<< HEAD
       <div className="w-full min-h-screen bg-[#2D282A] text-white p-6">
         {/* Заголовок */}
         <div className="text-center mb-10 mt-10">
@@ -66,7 +65,7 @@ export default function BazarPage() {
   
         {/* Карточки */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {items.map((item) => (
+          {products.map((item) => ( 
             <div
               key={item.id}
               className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
@@ -102,9 +101,6 @@ export default function BazarPage() {
           ))}
         </div>
       </div>
-=======
-      <div className="text-white text-center mt-20">Загрузка товаров...</div>
->>>>>>> 8cd36341fad61f15904cf8c8fc227310f76d5951
     );
 
   return (
