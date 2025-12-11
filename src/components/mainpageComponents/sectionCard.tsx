@@ -56,7 +56,7 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
               maskSize: 'contain',
   WebkitMaskRepeat: 'no-repeat',
   maskRepeat: 'no-repeat',
-  backgroundColor: '#F5C78B',
+  backgroundColor: 'customyellow',
             }}
           />
         </div>

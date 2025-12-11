@@ -113,10 +113,10 @@ export default function TeamSlider({
           <button
             key={idx}
             onClick={() => handleDotClick(idx)}
-            className={`w-4 h-4 rounded-full border-2 border-[#F5C78B] transition-all duration-300 ${
+            className={`w-4 h-4 rounded-full border-2 border-customyellow transition-all duration-300 ${
             idx === centerIndex
-              ? 'bg-[#F5C78B] scale-125 shadow-[0_0_10px_#F5C78B]'
-              : 'bg-transparent hover:bg-[#F5C78B]/40'
+              ? 'bg-customyellow scale-125 shadow-[0_0_10px_customyellow]'
+              : 'bg-transparent hover:bg-customyellow/40'
           }`}
           />
         ))}

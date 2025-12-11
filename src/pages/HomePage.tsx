@@ -199,12 +199,12 @@ async function loadSections() {
         {
           title: 'Harda',
           content: 'В этот вторник в 18:30 состоится Hard Tournament...',
-          bgColor: 'bg-[#2D282A]',
+          bgColor: 'bg-customblack',
         },
         {
           title: 'Harda',
           content: 'В этот вторник в 18:30 состоится Hard Tournament...',
-          bgColor: 'bg-[#2D282A]',
+          bgColor: 'bg-customblack',
         },
       ],
     ],
@@ -232,7 +232,7 @@ async function loadSections() {
         imageSrc={newsImage}
       />
 
-      <section className="py-20 bg-[#2D282A]">
+      <section className="py-20 bg-customblack">
         <div className="container mx-auto px-4">
           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
             КОМАНДА
@@ -243,7 +243,7 @@ async function loadSections() {
         </div>
       </section>
 
-      <section className="py-20 bg-[#2D282A]">
+      <section className="py-20 bg-customblack">
         <div className="container mx-auto px-4">
           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
             ПАРТНЕРЫ

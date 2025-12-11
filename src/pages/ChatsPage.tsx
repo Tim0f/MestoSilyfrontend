@@ -276,7 +276,7 @@ const sendMessage = async (e?: React.FormEvent) => {
   })();
 
   return (
-    <div className="min-h-screen bg-[#2D282A] text-white flex items-top justify-center ">
+    <div className="min-h-screen bg-customblack text-white flex items-top justify-center ">
       <div className="relative w-full ">
         <div
           className="pointer-events-none absolute inset-0 z-50"
@@ -367,7 +367,7 @@ const sendMessage = async (e?: React.FormEvent) => {
                             <div
                               className={`p-4 rounded-2xl break-words ${
                                 isMine
-                                  ? "bg-[#E0B26F] text-[#2D282A] ml-auto"
+                                  ? "bg-[#E0B26F] text-customblack ml-auto"
                                   : "bg-[#F7C985] text-[#3A3333]"
                               }`}
                             >

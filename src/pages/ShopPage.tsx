@@ -67,7 +67,7 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="bg-[#2D282A] min-h-screen py-12">
+    <div className="bg-customblack min-h-screen py-12">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-h1">Магазин</h1>

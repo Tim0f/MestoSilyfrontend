@@ -102,10 +102,10 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="text-white bg-[#2D282A] min-h-screen p-6 space-y-6">
+    <div className="text-white bg-customblack min-h-screen p-6 space-y-6">
       {/* PROFILE / SCHEDULE / BALANCE BLOCKS */}
       <div className="flex gap-6 w-full">
-        <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 flex items-center gap-6 relative overflow-hidden" style={{ width: "629px", height: "448px" }}>
+        <div className="bg-customblack border border-[#403B36] rounded-2xl p-6 flex items-center gap-6 relative overflow-hidden" style={{ width: "629px", height: "448px" }}>
           <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl pointer-events-none " />
           <img src={userData.avatarUrl} className="w-24 h-24 rounded-xl object-cover" />
           <div className="flex flex-col gap-1 text-sm">
@@ -115,12 +115,12 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 relative" style={{ width: "715px", height: "448px" }}>
+        <div className="bg-customblack border border-[#403B36] rounded-2xl p-6 relative" style={{ width: "715px", height: "448px" }}>
           <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl " />
           <h2 className="text-lg font-h2 mb-4">Расписание на сегодня</h2>
           <div className="w-full flex flex-col gap-6 overflow-y-auto pr-2 text-sm">
             {schedule.map((item) => (
-              <div key={item.id} className="relative bg-[#2D282A] rounded-2xl p-6 border border-[#403B36] flex justify-between items-start">
+              <div key={item.id} className="relative bg-customblack rounded-2xl p-6 border border-[#403B36] flex justify-between items-start">
                 <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl " />
                 <div>
                   <h3 className="font-h2 text-xl leading-tight mb-4">{item.title}</h3>
@@ -135,12 +135,12 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-[#2D282A] border border-[#403B36] rounded-2xl p-6 relative flex flex-col justify-between" style={{ width: "442px", height: "448px" }}>
+        <div className="bg-customblack border border-[#403B36] rounded-2xl p-6 relative flex flex-col justify-between" style={{ width: "442px", height: "448px" }}>
           <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl " />
           <div>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-customyellow text-[170px] font-h1">{userData.totalGrains}</p>
-              <img src={Logo2} className="w-6 h-6" />
+              <img src={Logo2} className="w-40 h-40" />
             </div>
           </div>
         </div>
@@ -172,7 +172,7 @@ export default function ProfilePage() {
             </button>
 
             {openDropdown && (
-              <div className="absolute left-0 top-[100%] mt-2 w-[233px] bg-[#2D282A] border border-[#F6C98F] rounded-xl p-6 space-y-5 z-20">
+              <div className="absolute left-0 top-[100%] mt-2 w-[233px] bg-customblack border border-[#F6C98F] rounded-xl p-6 space-y-5 z-20">
                 {sections.map((sec) => (
                   <div key={sec.id} className="flex items-center gap-4 cursor-pointer" onClick={() => { setActiveSection(sec.id); setOpenDropdown(false); }}>
                     <div className={`w-7 h-7 rounded-full border-2 border-[#F6C98F] ${activeSection === sec.id ? "bg-[#F6C98F]" : ""}`}></div>
@@ -188,7 +188,7 @@ export default function ProfilePage() {
       {/* ACHIEVEMENTS LIST */}
       <div className="mt-12 flex flex-col gap-6 w-full max-w-4xl mx-auto">
         {filteredAchievements.map((a, i) => (
-          <div key={i} className="flex items-center justify-between bg-[#2D282A] border border-[#403B36] rounded-2xl px-6 py-4 relative">
+          <div key={i} className="flex items-center justify-between bg-customblack border border-[#403B36] rounded-2xl px-6 py-4 relative">
             <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl " />
             <div className="flex items-center gap-4">
               <img src={a.iconUrl} className="w-12 h-12" />
@@ -215,7 +215,7 @@ export default function ProfilePage() {
       {/* МОДАЛЬНОЕ ОКНО */}
       {modalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black  z-50">
-          <div className="bg-[#2D282A] p-6 rounded-xl w-96 relative">
+          <div className="bg-customblack p-6 rounded-xl w-96 relative">
             <button className="absolute top-2 right-2 text-[#F6C98F] font-bold" onClick={() => setModalOpen(false)}>×</button>
             <h2 className="text-2xl font-h1 mb-4 text-[#F6C98F]">Введите код достижения</h2>
             <input

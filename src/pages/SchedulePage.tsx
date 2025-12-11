@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import Parkur from "../assets/svg/parkur.svg";
 import Border from "../assets/svg/texturedBorder.svg?react"; // РАМКА КАК REACT-КОМПОНЕНТ
 import Border2 from "../components/border2";                 // ДРУГАЯ РАМКА (КОМПОНЕНТ)
-import Border3 from "../assets/svg/numb.svg?react";          // НОМЕРА, ТОЖЕ КОМПОНЕНТ
+import Border3 from "../components/border3";          // НОМЕРА, ТОЖЕ КОМПОНЕНТ
 
 // ===== КАРТИНКИ ДЛЯ СОБЫТИЙ =====
 import Event1 from "../assets/img/Mask_group.png";
@@ -340,34 +340,26 @@ const filteredSessions = isApiAvailable
 
   // ==== JSX (Дизайн не менял) ====
   return (
-    <div className="w-full min-h-screen bg-[#2D282A] text-white font-['Unbounded'] flex flex-col items-center pb-[200px]">
+    <div className="w-full min-h-screen bg-customblack text-white font-['Unbounded'] flex flex-col items-center pb-[200px]">
 
       {/* ===== Заголовок ===== */}
-      <h1 className="mt-[120px] text-[96px] font-h1 text-[#F5C78B] text-center">
+      <h1 className="mt-[120px] text-[96px] font-h1 text-customyellow text-center">
         РАСПИСАНИЕ
       </h1>
       <div className="flex items-center gap-[40px]">
 
-{/* ===== Количество бесплатных посещений ===== */}
-<div className="flex items-center gap-[20px]">
+      <div className="flex items-center gap-[20px]">
   <span className="text-[24px] text-white">Кол-во бесплатных посещений:</span>
 
-  {/* Рваный квадрат числа */}
-  <div className="
-    w-[95px] h-[85px] flex justify-center items-center fill-customyellow
-  "
-  style={{
-    backgroundImage: `url(${Border3})`,
-    backgroundSize: '95px 85px',
-    backgroundColor:'customyellow',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
-  }}
+  {/* Рваный квадрат числа через SVG */}
+  <Border3
+    className={`w-[95px] h-[85px] fill-customyellow stroke-customyellow flex justify-center items-center`}
   >
-    <span className="text-[28px] text-black font-h1 leading-none">
+    {/* Число */}
+    <span className="text-[28px] font-h1 text-black leading-none">
       {subscriptionCount}
     </span>
-  </div>
+  </Border3>
 </div>
 
 
@@ -435,7 +427,7 @@ const filteredSessions = isApiAvailable
       <div
         key={session.id}
         className={`w-[520px] h-[560px] p-[40px] relative 
-          ${isEnrolled ? 'bg-[#F5C78B] text-black' : 'bg-[#2D282A] text-white'}`}
+          ${isEnrolled ? 'bg-customyellow text-black' : 'bg-customblack text-white'}`}
         style={{
           backgroundImage: `url(${Border})`,
           backgroundSize: "100% 100%",
@@ -458,7 +450,7 @@ const filteredSessions = isApiAvailable
                 maskRepeat: "no-repeat",
                 WebkitMaskPosition: "center",
                 maskPosition: "center",
-                backgroundColor: isEnrolled ? '#2D282A' : '#F5C78B',
+                backgroundColor: isEnrolled ? '#2D282A' : 'customyellow',
               }}
             />
           </div>
@@ -470,7 +462,7 @@ const filteredSessions = isApiAvailable
             <div>
               <span
                 className={`text-[72px] font-['Zero_Cool'] leading-[80px] ${
-                  isEnrolled ? 'text-black' : 'text-[#F5C78B]'
+                  isEnrolled ? 'text-black' : 'text-customyellow'
                 }`}
               >
                 {formatTime(session.startTime)}
@@ -499,7 +491,7 @@ const filteredSessions = isApiAvailable
               {!isEnrolled ? (
                 <button
                   onClick={() => handleEnroll(session.id)}
-                  className="w-[213px] h-[73px] bg-[#F4C884] mx-auto rounded-[5px] border-2 border-[#2D282A] text-[20px] text-black font-h1 hover:bg-[#F4C884]/80 transition"
+                  className="w-[213px] h-[73px] bg-[#F4C884] mx-auto rounded-[5px] border-2 border-customblack text-[20px] text-black font-h1 hover:bg-[#F4C884]/80 transition"
                 >
                   записаться
                 </button>
@@ -536,12 +528,12 @@ const filteredSessions = isApiAvailable
       {/* 🔥 СТАТИЧНЫЙ ЗАГОЛОВОК */}
       <div className="w-full h-[320px] flex flex-col items-center justify-center text-center relative z-10">
 
-        <h2 className="text-[42px] font-['Zero_Cool'] text-[#F5C78B]">
+        <h2 className="text-[42px] font-['Zero_Cool'] text-customyellow">
           {(selectedEvent ?? events[0]).title}
         </h2>
 
         {/* ✔ ДАТА ИЗ СОБЫТИЯ, А НЕ ИЗ ВЫБРАННОЙ ДАТЫ */}
-        <p className="text-[62px] font-h1 text-[#F5C78B] mt-[10px]">
+        <p className="text-[62px] font-h1 text-customyellow mt-[10px]">
           {(() => {
             const ev = selectedEvent ?? events[0];
             const date = ev.date ? new Date(ev.date) : null;
@@ -554,7 +546,7 @@ const filteredSessions = isApiAvailable
         {/* 🔻 ПОКАЗЫВАЕТСЯ ТОЛЬКО ЕСЛИ selectedEvent == null */}
         {!selectedEvent && (
           <div
-            className="text-[#F5C78B] text-[46px] mt-[10px] cursor-pointer animate-bounce"
+            className="text-customyellow text-[46px] mt-[10px] cursor-pointer animate-bounce"
             onClick={() => setSelectedEvent(events[0])}
           >
             ▼
@@ -575,27 +567,25 @@ const filteredSessions = isApiAvailable
                 {selectedEvent.description}
               </p>
 
-              <p className="text-[32px] font-bold text-[#F5C78B] mb-[30px]">
+              <p className="text-[32px] font-bold text-customyellow mb-[30px]">
                 Стоимость: {selectedEvent.price ? `${selectedEvent.price} руб` : "Бесплатно"}
               </p>
 
               <button
-                className="relative text-black text-[20px] font-bold w-fit h-fit flex items-center justify-center"
+                className="bg-customyellow relative text-black text-[20px] font-bold w-fit h-fit flex items-center justify-center"
                 style={{
                   WebkitMaskImage: `url(${btnFrame})`,
                   maskImage: `url(${btnFrame})`,
                   WebkitMaskSize: "100% 100%",
                   maskSize: "100% 100%",
-                  backgroundColor: "#F5C78B",
                   padding: "18px 48px",
                 }}
               >
                 записаться
               </button>
-
               <div
                 onClick={() => setSelectedEvent(null)}
-                className="text-[#F5C78B] text-[46px] mt-[40px] cursor-pointer hover:opacity-80"
+                className="text-customyellow text-[46px] mt-[40px] cursor-pointer hover:opacity-80"
               >
                 ▲
               </div>
@@ -611,8 +601,8 @@ const filteredSessions = isApiAvailable
             <button
               key={ev.id}
               onClick={() => setSelectedEvent(ev)}
-              className={`w-[16px] h-[16px] rounded-full border-2 border-[#F5C78B] ${
-                idx === 0 ? "bg-[#F5C78B]" : "bg-transparent"
+              className={`w-[16px] h-[16px] rounded-full border-2 border-customyellow ${
+                idx === 0 ? "bg-customyellow" : "bg-transparent"
               }`}
             />
           ))}

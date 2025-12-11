@@ -45,7 +45,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[999]">
-      <div className="bg-[#2D282A] text-white w-full max-w-xl rounded-2xl p-6 shadow-xl border border-[#E0B26F]/30">
+      <div className="bg-customblack text-white w-full max-w-xl rounded-2xl p-6 shadow-xl border border-[#E0B26F]/30">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-3xl font-bold">🏆 Ачивки</h2>
           <button

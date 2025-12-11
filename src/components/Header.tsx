@@ -104,7 +104,7 @@ export default function Header() {
                           onClick={() => setIsMenuOpen(false)}
                           className="absolute inset-0 flex items-center justify-between px-4 z-10"
                         >
-                          <span className="text-[22px] font-h1 text-[#F5C78B]">Профиль</span>
+                          <span className="text-[22px] font-h1 text-customyellow">Профиль</span>
                           <img src={ProfileIcon} className="w-7 h-7" alt="" />
                         </Link>
                       </div>

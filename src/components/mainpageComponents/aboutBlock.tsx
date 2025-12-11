@@ -9,7 +9,7 @@ const stats = [
 
 export default function AboutBlock() {
   return (
-    <section className="py-20 flex justify-center items-center bg-[#2D282A]">
+    <section className="py-20 flex justify-center items-center bg-customblack">
       <div className="pl-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>

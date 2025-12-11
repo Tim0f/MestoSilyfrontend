@@ -14,7 +14,7 @@ export default function ModalEnroll({ onClose }: { onClose: () => void }) {
         <div className="relative w-[480px] h-[600px]">
 
           {/* фон */}
-          <div className="absolute inset-0 bg-[#F5C78B] rounded-[14px]" />
+          <div className="absolute inset-0 bg-customyellow rounded-[14px]" />
 
           {/* обводка */}
           <img
@@ -38,7 +38,7 @@ export default function ModalEnroll({ onClose }: { onClose: () => void }) {
         {/* Карточка №2 */}
         <div className="relative w-[480px] h-[600px]">
 
-          <div className="absolute inset-0 bg-[#2D282A] rounded-[14px]" />
+          <div className="absolute inset-0 bg-customblack rounded-[14px]" />
 
           <img
             src={InnerFrame}
@@ -50,10 +50,10 @@ export default function ModalEnroll({ onClose }: { onClose: () => void }) {
             <p className="mt-[10px] text-[20px] max-w-[300px] text-white">
               Откройте для себя искусство владения клинком.
             </p>
-            <div className="text-[82px] font-['Zero_Cool'] mt-[30px] text-[#F5C78B]">
+            <div className="text-[82px] font-['Zero_Cool'] mt-[30px] text-customyellow">
               1100₽
             </div>
-            <button className="mt-[40px] bg-[#F5C78B] text-black px-[50px] py-[16px] text-[22px] font-h1">
+            <button className="mt-[40px] bg-customyellow text-black px-[50px] py-[16px] text-[22px] font-h1">
               Оплатить
             </button>
           </div>
@@ -63,7 +63,7 @@ export default function ModalEnroll({ onClose }: { onClose: () => void }) {
 
       <button
         onClick={onClose}
-        className="absolute top-[20px] right-[40px] text-[48px] text-[#F5C78B]"
+        className="absolute top-[20px] right-[40px] text-[48px] text-customyellow"
       >
         ✕
       </button>

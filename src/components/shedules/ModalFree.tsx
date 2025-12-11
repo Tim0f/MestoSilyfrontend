@@ -24,7 +24,7 @@ export default function ModalFreeSessions({ onClose }: ModalFreeSessionsProps) {
               <div className="text-[64px] mt-[20px] font-bold">
                 {i === 0 ? "12🌀" : i === 1 ? "1100₽" : i === 2 ? "4950₽" : "9900₽"}
               </div>
-              <button className="bg-[#F5C78B] text-black px-[40px] py-[16px] mt-[20px] text-[22px]">
+              <button className="bg-customyellow text-black px-[40px] py-[16px] mt-[20px] text-[22px]">
                 Оплатить
               </button>
             </div>
@@ -35,7 +35,7 @@ export default function ModalFreeSessions({ onClose }: ModalFreeSessionsProps) {
 
       <button
         onClick={onClose}
-        className="absolute top-[20px] right-[40px] text-[48px] text-[#F5C78B]"
+        className="absolute top-[20px] right-[40px] text-[48px] text-customyellow"
       >
         ✕
       </button>

@@ -96,7 +96,7 @@ export default function SectionsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-[#F5C78B] text-xl">
+      <div className="min-h-screen flex items-center justify-center text-customyellow text-xl">
         Загрузка...
       </div>
     );
@@ -122,7 +122,7 @@ export default function SectionsPage() {
     }));
 
   return (
-    <div className="relative w-full min-h-screen bg-[#2D282A] text-[#F5C78B] flex flex-col items-center py-24 overflow-hidden">
+    <div className="relative w-full min-h-screen bg-customblack text-customyellow flex flex-col items-center py-24 overflow-hidden">
 
       <h1 className="text-6xl font-h1 text-customyellow mb-20 tracking-wide uppercase">
         Секции
@@ -132,7 +132,7 @@ export default function SectionsPage() {
 
         {/* Левая сетка */}
         <div className="relative w-[360px] h-[430px] mr-16">
-          <div className="absolute inset-0 border border-[#F5C78B] rounded-xl border-dashed" />
+          <div className="absolute inset-0 border border-customyellow rounded-xl border-dashed" />
           <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
             {[1, 2, 3, 4].map((i) => (
               <img
@@ -150,7 +150,7 @@ export default function SectionsPage() {
 
             <button
               onClick={prevSection}
-              className="w-6 h-6 border-t-2 border-l-2 border-[#F5C78B] rotate-[-45deg] hover:opacity-80 transition"
+              className="w-6 h-6 border-t-2 border-l-2 border-customyellow rotate-[-45deg] hover:opacity-80 transition"
             />
 
             <div
@@ -164,13 +164,13 @@ export default function SectionsPage() {
                 maskRepeat: "no-repeat",
                 WebkitMaskPosition: "center",
                 maskPosition: "center",
-                backgroundColor: "#F5C78B",
+                backgroundColor: "customyellow",
               }}
             />
 
             <button
               onClick={nextSection}
-              className="w-6 h-6 border-t-2 border-r-2 border-[#F5C78B] rotate-[45deg] hover:opacity-80 transition"
+              className="w-6 h-6 border-t-2 border-r-2 border-customyellow rotate-[45deg] hover:opacity-80 transition"
             />
           </div>
 
@@ -193,7 +193,7 @@ export default function SectionsPage() {
                 {current.description}
               </p>
 
-              <button className="mt-6 px-10 py-3 bg-[#F5C78B] text-[#2b2422] rounded-lg font-h2 hover:bg-[#eab97c] transition">
+              <button className="mt-6 px-10 py-3 bg-customyellow text-[#2b2422] rounded-lg font-h2 hover:bg-[#eab97c] transition">
                 записаться
               </button>
             </motion.div>
@@ -202,7 +202,7 @@ export default function SectionsPage() {
 
         {/* Правая сетка */}
         <div className="relative w-[360px] h-[430px] ml-16">
-          <div className="absolute inset-0 border border-[#F5C78B] rounded-xl border-dashed" />
+          <div className="absolute inset-0 border border-customyellow rounded-xl border-dashed" />
           <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
             {[1, 2, 3, 4].map((i) => (
               <img

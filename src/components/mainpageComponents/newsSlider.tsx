@@ -33,7 +33,7 @@ export default function NewsSlider({
   }
 
   return (
-    <section className="py-20 bg-[#2D282A]">
+    <section className="py-20 bg-customblack">
       <div className="px-10">
         <div className="text-center mb-12">
           <h2 className="text-h1 font-h1 text-customyellow mb-8" style={{ letterSpacing: '0.05em' }}>

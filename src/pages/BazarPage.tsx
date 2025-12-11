@@ -54,7 +54,7 @@ export default function BazarPage() {
 
   if (loading)
     return (
-      <div className="w-full min-h-screen bg-[#2D282A] text-white p-6">
+      <div className="w-full min-h-screen bg-customblack text-white p-6">
         {/* Заголовок */}
         <div className="text-center mb-10 mt-10">
           <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">БАЗАР</h1>
@@ -104,7 +104,7 @@ export default function BazarPage() {
     );
 
   return (
-    <div className="w-full min-h-screen bg-[#2D282A] text-white p-6">
+    <div className="w-full min-h-screen bg-customblack text-white p-6">
       {/* Заголовок */}
       <div className="text-center mb-10 mt-10">
         <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">

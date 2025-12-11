@@ -39,7 +39,7 @@ export default function NewsPage() {
   }
 
   return (
-    <div className="bg-[#2D282A] min-h-screen py-12">
+    <div className="bg-customblack min-h-screen py-12">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-h1 mb-8">Новости</h1>
 
