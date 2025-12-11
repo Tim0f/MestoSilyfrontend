@@ -148,7 +148,8 @@ export default function SchedulePage() {
       if (!res.ok) throw new Error('Ошибка сервера')
 
       const data = await res.json()
-      if (!Array.isArray(data) || data.length === 0) return []
+      if (!Array.isArray(data) || data.length === 0) return null
+
 
       // Мапим ответ в структуру Session (и собираем полные ISO-времена)
       return data.map((lesson: any) => {
@@ -190,7 +191,8 @@ export default function SchedulePage() {
       if (!res.ok) throw new Error('Ошибка сервера')
 
       const data = await res.json()
-      if (!Array.isArray(data) || data.length === 0) return []
+      if (!Array.isArray(data) || data.length === 0) return null
+
 
       return data.map((ev: any) => ({
         id: ev.id,
@@ -211,75 +213,55 @@ export default function SchedulePage() {
   // ==== Загрузка данных при выборе даты / монтировании ====
   useEffect(() => {
   async function loadData() {
-    
-    const dateISO = toISODateString(selectedDate)
 
-// ---- ЗАНЯТИЯ ----
-let apiSessions = await fetchSessionsFromApi(dateISO)
+  const dateISO = toISODateString(selectedDate)
 
-// Если API не работает — фиксируем это и используем mock
-if (apiSessions === null) {
-  setIsApiAvailable(false)
-  apiSessions = mockSessions
-} else {
-  setIsApiAvailable(true)
-}
+  // ---- ЗАНЯТИЯ ----
+  let apiSessions = await fetchSessionsFromApi(dateISO)
+  if (apiSessions === null) {
+    setIsApiAvailable(false)
+    apiSessions = mockSessions
+  } else {
+    setIsApiAvailable(true)
+  }
 
-// ---- СОБЫТИЯ ----
-let apiEvents = await fetchEventsFromApi()
-if (apiEvents === null) {
-  apiEvents = mockEvents
-}
+  // ---- СОБЫТИЯ ----
+  let apiEvents = await fetchEventsFromApi()
+  if (apiEvents === null) {
+    apiEvents = mockEvents
+  }
 
-setSessions(apiSessions)
-setEvents(apiEvents)
+  // ---------- УСТАНАВЛИВАЕМ ОДИН РАЗ ----------
+  setSessions(apiSessions)
+  setEvents(apiEvents)
 
-// Если событие не выбрано — выбираем первое
-if (!selectedEvent && apiEvents.length > 0) {
-  setSelectedEvent(apiEvents[0])
-}
+  if (!selectedEvent && apiEvents.length > 0) {
+    setSelectedEvent(apiEvents[0])
+  }
 
-
-    // ---- 🔥 ЕСЛИ API УПАЛ — БЕРЁМ ЗАГЛУШКИ БЕЗ ФИЛЬТРАЦИИ ----
-    const finalSessions = apiSessions ?? mockSessions
-    const finalEvents = apiEvents ?? mockEvents
-
-    setSessions(finalSessions)
-    setEvents(finalEvents)
-
-    // Если событие не выбрано — выбираем первое (с API или mock)
-    if (!selectedEvent && finalEvents.length > 0) {
-      setSelectedEvent(finalEvents[0])
-    }
-
-    // ---- 🔥 FREE VISITS / SUBSCRIPTIONS ----
-    if (isAuthenticated) {
+  // ---- FREE VISITS ----
+  if (isAuthenticated) {
+    try {
       const userId = localStorage.getItem('userId')
-
       if (userId) {
-        try {
-          const visits = await freeVisitsService.getUserFreeVisits(userId)
-          setSubscriptionCount(visits?.available ?? 0)
-        } catch {
-          console.warn("Free Visits упали → ставим 0")
-          setSubscriptionCount(0)
-        }
+        const visits = await freeVisitsService.getUserFreeVisits(userId)
+        setSubscriptionCount(visits?.available ?? 0)
       }
-    } else {
+    } catch {
       setSubscriptionCount(0)
     }
-
-    // ---- 🔥 ENROLLMENTS ----
-    if (isAuthenticated) {
-      try {
-        setEnrolledSessions(mockUserEnrollments)
-      } catch {
-        setEnrolledSessions([])
-      }
-    } else {
-      setEnrolledSessions([])
-    }
+  } else {
+    setSubscriptionCount(0)
   }
+
+  // ---- ENROLLMENTS ----
+  if (isAuthenticated) {
+    setEnrolledSessions(mockUserEnrollments)
+  } else {
+    setEnrolledSessions([])
+  }
+}
+
 
   loadData()
 }, [selectedDate, isAuthenticated])

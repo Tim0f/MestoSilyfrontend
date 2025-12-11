@@ -6,7 +6,6 @@ import axios from "axios";
 import {
   ChatSocketService,
   type ChatMessage as SocketChatMessage,
-  type ChatAck,
 } from "../services/chatSocket.service";
 
 type ChatItem = {
@@ -22,23 +21,20 @@ type ChatMessage = SocketChatMessage;
 export default function ChatsPage(): JSX.Element {
   const token = localStorage.getItem("token") || "";
 
-let userId: string | null = null;
-try {
-  const payload = JSON.parse(atob(token.split(".")[1]));
-  userId = payload.sub || payload.userId || null;
-} catch (e) {
-  console.warn("Failed to parse JWT", e);
-}
+  let userId: string | null = null;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    userId = payload.sub || payload.userId || null;
+  } catch {}
 
-  // API base for REST (ends with /api)
   const apiBase =
     (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
     "http://localhost:3000/api";
 
-  // socketBase must NOT include /api
   const socketBase = apiBase.replace(/\/api$/, "");
 
   const socketRef = useRef<ChatSocketService | null>(null);
+  const selectedChatIdRef = useRef<string | null>(null);
 
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -46,173 +42,14 @@ try {
   const [participantsMap, setParticipantsMap] = useState<Record<string, string>>({});
   const [typingUsers, setTypingUsers] = useState<Record<string, boolean>>({});
   const [newMessage, setNewMessage] = useState("");
-
   const [autoScroll, setAutoScroll] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(true);
+  const [loadingConnection, setLoadingConnection] = useState(true);
+  const [firstUnreadId, setFirstUnreadId] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);
-
-  // ---- Scroll ----
-  const scrollToBottom = (instant = false) => {
-    const c = containerRef.current;
-    if (!c) return;
-    try {
-      c.scrollTo({ top: c.scrollHeight, behavior: instant ? "auto" : "smooth" });
-    } catch {
-      endRef.current?.scrollIntoView({ behavior: instant ? "auto" : "smooth" });
-    }
-  };
-
-  const handleScroll = () => {
-    const c = containerRef.current;
-    if (!c) return;
-    const atBottom = c.scrollTop + c.clientHeight >= c.scrollHeight - 80;
-    setAutoScroll(atBottom);
-  };
-
-  // ---- Load chats ----
-  const loadChats = async () => {
-    try {
-      const res = await axios.get(`${apiBase}/chat`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const list = Array.isArray(res.data) ? res.data : [];
-      setChats(list);
-      setSelectedChatId((prev) => prev ?? list[0]?.id ?? null);
-    } catch (err) {
-      console.error("loadChats error:", err);
-    }
-  };
-
-  const loadParticipants = async (chatId: string) => {
-    try {
-      const res = await axios.get(`${apiBase}/chat/${chatId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const map: Record<string, string> = {};
-      (res.data.participants ?? []).forEach((p: any) => {
-        if (p.user) {
-          map[p.user.id] = `${p.user.firstName ?? ""} ${p.user.lastName ?? ""}`.trim();
-        }
-      });
-      setParticipantsMap(map);
-    } catch (err) {
-      console.warn("loadParticipants error:", err);
-    }
-  };
-
-  // ---- Init socket once ----
-  useEffect(() => {
-    if (!token) return;
-
-    socketRef.current = new ChatSocketService(socketBase, token);
-    socketRef.current.connect();
-
-    socketRef.current.onConnect(() => console.log("WS connected"));
-    socketRef.current.onDisconnect((r) => console.log("WS disconnected:", r));
-
-    socketRef.current.onNewMessage((msg) => {
-      if (msg.chatId === selectedChatId) {
-        setMessages((prev) => [...prev, msg]);
-        if (autoScroll) scrollToBottom();
-      }
-    });
-
-    socketRef.current.onUserTyping(({ userId, isTyping }) => {
-      if (!userId) return;
-
-      setTypingUsers((prev) => ({ ...prev, [userId]: isTyping }));
-
-      if (isTyping) {
-        setTimeout(() => {
-          setTypingUsers((prev) => ({ ...prev, [userId]: false }));
-        }, 3500);
-      }
-    });
-
-    return () => socketRef.current?.disconnect();
-  }, [token]);
-
-  // ---- Join selected chat ----
-  useEffect(() => {
-    if (!selectedChatId) return;
-
-    loadParticipants(selectedChatId);
-
-    const join = async () => {
-      try {
-        const ack = await socketRef.current!.joinChat(selectedChatId);
-
-        if (ack?.messages) {
-          const sorted = [...ack.messages].sort(
-            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          );
-          setMessages(sorted);
-          setTimeout(() => scrollToBottom(true), 50);
-          return;
-        }
-      } catch (err) {
-        console.warn("joinChat failed:", err);
-      }
-
-      // fallback
-      try {
-        const res = await axios.get(`${apiBase}/chat/${selectedChatId}/messages`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const sorted = [...res.data].sort(
-          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-        setMessages(sorted);
-        setTimeout(() => scrollToBottom(true), 50);
-      } catch (e) {
-        console.error("REST messages fallback failed:", e);
-      }
-    };
-
-    join();
-  }, [selectedChatId]);
-
-  // ---- Send message ----
-  const sendMessage = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!selectedChatId) return;
-
-    const text = newMessage.trim();
-    if (!text) return;
-
-    setNewMessage("");
-
-    try {
-      const ack = await socketRef.current?.sendMessage(selectedChatId, text);
-     if (ack?.message) {
-        // append directly if server returned created message in ack
-        setMessages((prev) => {
-          if (prev.some((m) => m.id === ack.message!.id)) return prev;
-          return [...prev, ack.message as ChatMessage];
-        });
-        if (autoScroll) scrollToBottom();
-        return;
-      }
-    } catch (err) {
-      console.warn("sendMessage failed:", err);
-    }
-  };
-
-  const onTypingChange = (v: string) => {
-    setNewMessage(v);
-    if (selectedChatId) {
-      socketRef.current?.sendTyping(selectedChatId, v.length > 0);
-    }
-  };
-
-  // ---- Autorefresh chats ----
-  useEffect(() => {
-    loadChats();
-    const t = setInterval(loadChats, 20000);
-    return () => clearInterval(t);
-  }, []);
+  const firstUnreadRef = useRef<HTMLDivElement | null>(null);
 
   const Avatar = ({ src, size = 44 }: { src?: string; size?: number }) => (
     <div
@@ -220,7 +57,7 @@ try {
       style={{ width: size, height: size, background: "#E0B26F" }}
     >
       {src ? (
-        <img src={src} className="w-full h-full object-cover rounded-full" alt="" />
+        <img src={src} className="w-full h-full object-cover rounded-full" />
       ) : (
         <span className="text-white font-bold">?</span>
       )}
@@ -232,6 +69,200 @@ try {
 
   const getChatAvatar = (c?: ChatItem) =>
     c?.section?.imageUrl ?? c?.event?.imageUrl ?? undefined;
+
+  function scrollToBottomSmooth() {
+    if (!endRef.current) return;
+    endRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+  }
+
+  const handleScroll = () => {
+    const c = containerRef.current;
+    if (!c) return;
+
+    const atBottom = c.scrollTop + c.clientHeight >= c.scrollHeight - 80;
+    setAutoScroll(atBottom);
+
+    if (firstUnreadId && firstUnreadRef.current) {
+      const el = firstUnreadRef.current;
+      const elRect = el.getBoundingClientRect();
+      const containerRect = c.getBoundingClientRect();
+      if (elRect.bottom <= containerRect.bottom) {
+        setFirstUnreadId(null);
+      }
+    }
+  };
+
+  const loadChats = async () => {
+    try {
+      const res = await axios.get(`${apiBase}/chat/all`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const list = Array.isArray(res.data) ? res.data : [];
+      setChats(list);
+      setSelectedChatId((prev) => prev ?? list[0]?.id ?? null);
+    } catch (e) {
+      console.error("loadChats error:", e);
+    }
+  };
+
+  const loadParticipants = async (chatId: string) => {
+    try {
+      const res = await axios.get(`${apiBase}/chat/${chatId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const map: Record<string, string> = {};
+      (res.data.participants ?? []).forEach((p: any) => {
+        if (p.user)
+          map[p.user.id] = `${p.user.firstName ?? ""} ${p.user.lastName ?? ""}`.trim();
+      });
+      setParticipantsMap(map);
+    } catch (e) {
+      console.warn("loadParticipants error:", e);
+    }
+  };
+
+  useEffect(() => {
+    selectedChatIdRef.current = selectedChatId;
+  }, [selectedChatId]);
+
+  useEffect(() => {
+    if (!token) return;
+    socketRef.current = new ChatSocketService(socketBase, token);
+    socketRef.current.connect();
+
+    if (typeof socketRef.current.onConnect === "function") {
+      socketRef.current.onConnect(() => setLoadingConnection(false));
+    } else {
+      setTimeout(() => setLoadingConnection(false), 500);
+    }
+
+    socketRef.current.onNewMessage((msg) => {
+      if (String(msg.chatId) === String(selectedChatIdRef.current)) {
+        setMessages((prev) => {
+          const alreadyHas = prev.some((m) => m.id === msg.id);
+          if (alreadyHas) return prev;
+
+          const upd = [...prev, msg];
+
+          if (!autoScroll && !firstUnreadId) {
+            setFirstUnreadId(msg.id);
+          }
+
+          return upd;
+        });
+
+        
+      }
+    });
+
+    socketRef.current.onUserTyping(({ userId, isTyping }) => {
+      if (!userId) return;
+      setTypingUsers((prev) => ({ ...prev, [userId]: isTyping }));
+      if (isTyping)
+        setTimeout(() => {
+          setTypingUsers((prev) => ({ ...prev, [userId]: false }));
+        }, 3500);
+    });
+
+    socketRef.current.onDisconnect?.(() => {
+      setLoadingConnection(true);
+    });
+
+    return () => socketRef.current?.disconnect();
+  }, [token]);
+
+  useEffect(() => {
+    if (!selectedChatId) return;
+    loadParticipants(selectedChatId);
+    setLoadingMessages(true);
+    setFirstUnreadId(null);
+
+    const join = async () => {
+      try {
+        const ack = await socketRef.current!.joinChat(selectedChatId);
+        if (ack?.messages) {
+          const sorted = [...ack.messages].sort(
+            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+          setMessages(sorted);
+          setLoadingMessages(false);
+          return;
+        }
+      } catch {}
+
+      try {
+        const res = await axios.get(`${apiBase}/chat/${selectedChatId}/messages`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const sorted = [...res.data].sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+        setMessages(sorted);
+      } catch (e) {
+        console.error("REST messages fallback failed:", e);
+      }
+
+      setLoadingMessages(false);
+      setTimeout(() => scrollToBottomSmooth(), 50);
+    };
+
+    join();
+  }, [selectedChatId]);
+
+const sendMessage = async (e?: React.FormEvent) => {
+  e?.preventDefault();
+  if (!selectedChatId) return;
+
+  const text = newMessage.trim();
+  if (!text) return;
+
+  setNewMessage("");
+
+  try {
+    const ack = await socketRef.current?.sendMessage(selectedChatId, text);
+
+    const msg = ack?.message;
+    if (!msg) return; // ← защита от undefined
+
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === msg.id)) return prev;
+      return [...prev, msg]; // ← строго ChatMessage
+    });
+
+  } catch {}
+};
+
+
+  const onTypingChange = (v: string) => {
+    setNewMessage(v);
+    if (selectedChatId) socketRef.current?.sendTyping(selectedChatId, v.length > 0);
+  };
+
+  useEffect(() => {
+    loadChats();
+    const t = setInterval(loadChats, 20000);
+    return () => clearInterval(t);
+  }, []);
+
+  //
+  // FIXED SCROLL TO FIRST UNREAD
+  //
+  useEffect(() => {
+    if (!firstUnreadId || !firstUnreadRef.current) return;
+
+    firstUnreadRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "end", // гарантирует полную видимость
+    });
+  }, [firstUnreadId]);
+
+  useEffect(() => {
+    if (!autoScroll) return;
+
+    requestAnimationFrame(() => {
+      scrollToBottomSmooth();
+    });
+  }, [messages]);
 
   const typingText = (() => {
     const active = Object.entries(typingUsers)
@@ -265,10 +296,10 @@ try {
                 {chats.length === 0 ? (
                   <div className="text-white/50 text-center">Чатов нет</div>
                 ) : (
-                  chats.map((c) => (
+                  chats.map((c: ChatItem) => (
                     <button
                       key={c.id}
-                      onClick={() => setSelectedChatId(c.id)}
+                      onClick={() => setSelectedChatId(String(c.id))}
                       className={`w-full flex items-center gap-4 p-4 rounded-md text-left ${
                         selectedChatId === c.id ? "bg-[#352e2e]" : "bg-transparent"
                       }`}
@@ -306,55 +337,56 @@ try {
                 onScroll={handleScroll}
                 className="flex-1 overflow-y-auto px-8 py-8"
               >
-                {messages.length === 0 ? (
+                {loadingConnection ? (
+                  <div className="text-center text-white/60 mt-10">Подключение к чату…</div>
+                ) : loadingMessages ? (
+                  <div className="text-center text-white/60 mt-10">Загрузка сообщений…</div>
+                ) : messages.length === 0 ? (
                   <div className="text-center text-white/60 mt-10">Нет сообщений</div>
                 ) : (
                   <div className="space-y-6">
                     {messages.map((m) => {
+                      const isMine = m.author?.id === userId;
+                      const isFirstUnread = m.id === firstUnreadId;
 
-  const isMine = m.author?.id === userId;
+                      return (
+                        <div
+                          key={m.id}
+                          ref={isFirstUnread ? firstUnreadRef : null}
+                          className={`flex items-end gap-4 ${isMine ? "justify-end" : "justify-start"}`}
+                        >
+                          {!isMine && <Avatar size={44} />}
 
-  return (
-    <div
-      key={m.id}
-      className={`flex items-end gap-4 ${
-        isMine ? "justify-end" : "justify-start"
-      }`}
-    >
-      {!isMine && <Avatar size={44} />}
+                          <div className={`max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
+                            {!isMine && (
+                              <div className="text-xs text-[#E0B26F] mb-1">
+                                {m.author?.firstName ?? "Пользователь"}
+                              </div>
+                            )}
 
-      <div className={`max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
-        {!isMine && (
-          <div className="text-xs text-[#E0B26F] mb-1">
-            {m.author?.firstName ?? "Пользователь"}
-          </div>
-        )}
+                            <div
+                              className={`p-4 rounded-2xl break-words ${
+                                isMine
+                                  ? "bg-[#E0B26F] text-[#2D282A] ml-auto"
+                                  : "bg-[#F7C985] text-[#3A3333]"
+                              }`}
+                            >
+                              {m.content}
 
-        <div
-          className={`p-4 rounded-2xl break-words ${
-            isMine
-              ? "bg-[#E0B26F] text-[#2D282A] ml-auto"
-              : "bg-[#F7C985] text-[#3A3333]"
-          }`}
-        >
-          {m.content}
-
-          <div className="text-right text-xs text-white/60 mt-2">
-            {new Date(m.createdAt).toLocaleTimeString("ru-RU", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-})}
-
+                              <div className="text-right text-xs text-white/60 mt-2">
+                                {new Date(m.createdAt).toLocaleTimeString("ru-RU", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
-                {/* Typing */}
                 {typingText && (
                   <div className="text-white/60 italic mt-4">{typingText}</div>
                 )}
@@ -362,7 +394,6 @@ try {
                 <div ref={endRef} />
               </div>
 
-              {/* Input */}
               <div className="px-8 py-6 border-t border-[#E0B26F]/20">
                 <form onSubmit={sendMessage} className="flex items-center gap-4">
                   <input
@@ -377,7 +408,6 @@ try {
                 </form>
               </div>
             </div>
-            {/* END RIGHT */}
           </div>
         </div>
       </div>
