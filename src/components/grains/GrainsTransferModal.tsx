@@ -17,7 +17,7 @@ const client = Client
 const grainsService = new GrainsFrontendService(client);
 const usersService = new UsersFrontendService(client);
 
-export default function GrainsTransferModal({ isOpen, onClose, fromUserId, onUpdated }: Props) {
+export default function GrainsTransferModal({ isOpen, onClose, onUpdated }: Props) {
   const [toUserId, setToUserId] = useState<string>('');
   const [toUserEmail, setToUserEmail] = useState<string>('');
   const [amount, setAmount] = useState<number>(0);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GrainsFrontendService } from '../../services/grains.service';
 import { Client } from '../../services/httpClient';
 

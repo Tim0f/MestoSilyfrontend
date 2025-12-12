@@ -39,7 +39,7 @@ export default function ShopPage() {
       return
     }
 
-    if (!user || user.grainBalance < price) {
+    if (!user || user.totalGrains < price) {
       alert('Недостаточно зёрен для покупки')
       return
     }
@@ -74,7 +74,7 @@ export default function ShopPage() {
           {isAuthenticated && user && (
             <div className="bg-white px-6 py-3 rounded-lg shadow-md">
               <span className="text-gray-600">Ваш баланс: </span>
-              <span className="text-2xl font-h1 text-orange-600">🌾 {user.grainBalance}</span>
+              <span className="text-2xl font-h1 text-orange-600">🌾 {user.totalGrains}</span>
             </div>
           )}
         </div>

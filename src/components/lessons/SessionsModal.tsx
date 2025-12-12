@@ -1,5 +1,5 @@
 // Updated SessionsModal.tsx
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import BaseModal from "../ui/BaseModal";
 import { LessonsFrontendService } from "../../services/lessons.service";
 import { Client } from "../../services/httpClient";

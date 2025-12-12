@@ -1,5 +1,5 @@
 // src/pages/SchedulePage.tsx
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Client } from "../services/httpClient";
 import { freeVisitsService } from "../services/FreeVisitsFrontendService";
 import { useAuth } from "../context/AuthContext";
@@ -13,12 +13,12 @@ import btnFrame from "../assets/svg/Rectangle_9.svg";
 
 import { EnrollmentsFrontendService } from "../services/enrollments.service";
 import { EventsFrontendService } from "../services/events.service";
-import { LessonsFrontendService } from "../services/lessons.service";
+// import { LessonsFrontendService } from "../services/lessons.service";
 
 // сервисы
 const enrollmentsService = new EnrollmentsFrontendService(Client);
 const eventsService = new EventsFrontendService(Client);
-const lessonsService = new LessonsFrontendService(Client);
+// const lessonsService = new LessonsFrontendService(Client);
 
 // ==========================
 // Типы
@@ -35,11 +35,11 @@ interface BackendEnrollmentRecord {
   event?: { id: string } | null;
 }
 
-interface MyEnrollment {
-  lessonId?: string | number | null;
-  eventId?: string | number | null;
-  sectionId?: string | number | null;
-}
+// interface MyEnrollment {
+//   lessonId?: string | number | null;
+//   eventId?: string | number | null;
+//   sectionId?: string | number | null;
+// }
 
 interface Session {
   id: string;

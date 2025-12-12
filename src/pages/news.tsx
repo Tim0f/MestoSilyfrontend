@@ -1,4 +1,4 @@
-import React from 'react';
+
 import NewsManager from '../components/news/NewsManager';
 
 export default function AdminNewsPage() {

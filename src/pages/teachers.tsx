@@ -1,4 +1,3 @@
-import React from 'react';
 import TeachersManager from '../components/teachers/TeachersManager';
 
 export default function TeachersPage() {

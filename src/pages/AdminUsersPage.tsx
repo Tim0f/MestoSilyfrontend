@@ -1,7 +1,7 @@
 // AdminUsersPage.tsx
 // Страница управления пользователями
 
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import UsersList from '../components/users/UserList';
 import AdminCreateModal from '../components/users/AdminCreateModal';
 import UserEditModal from '../components/users/UserEditModal';

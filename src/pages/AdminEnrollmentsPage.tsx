@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { HttpClient } from "../services/httpClient";
 import { EnrollmentsFrontendService } from "../services/enrollments.service";
 import { SectionsFrontendService } from "../services/sections.service";

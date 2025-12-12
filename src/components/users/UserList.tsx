@@ -1,7 +1,7 @@
 // UsersList.tsx
 // Список пользователей с кнопками редактирования и удаления
 
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Client } from '../../services/httpClient';
 import { UsersFrontendService } from '../../services/users.service';
 

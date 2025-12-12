@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type AudioPlayerProps = {
   src: string;
@@ -110,37 +110,37 @@ export default function AudioPlayer({ src, className, onPlayChange }: AudioPlaye
     return { heights, gap, barWidth };
   }, []);
 
-  const Waveform = ({ color }: { color: string }) => {
-    const { heights, gap, barWidth } = bars;
-    const viewHeight = 100;
-    const totalWidth = heights.length * barWidth + (heights.length - 1) * gap;
+  // const Waveform = ({ color }: { color: string }) => {
+  //   const { heights, gap, barWidth } = bars;
+  //   const viewHeight = 100;
+  //   const totalWidth = heights.length * barWidth + (heights.length - 1) * gap;
 
-    return (
-      <svg
-        width="100%"
-        viewBox={`0 0 ${totalWidth} ${viewHeight}`}
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        {heights.map((h, i) => {
-          const x = i * (barWidth + gap);
-          const barHeight = (h / 100) * viewHeight;
-          const y = (viewHeight - barHeight) / 2;
-          return (
-            <rect
-              key={i}
-              x={x}
-              y={y}
-              width={barWidth}
-              height={barHeight}
-              rx={2}
-              fill={color}
-            />
-          );
-        })}
-      </svg>
-    );
-  };
+  //   return (
+  //     <svg
+  //       width="100%"
+  //       viewBox={`0 0 ${totalWidth} ${viewHeight}`}
+  //       preserveAspectRatio="none"
+  //       aria-hidden="true"
+  //     >
+  //       {heights.map((h, i) => {
+  //         const x = i * (barWidth + gap);
+  //         const barHeight = (h / 100) * viewHeight;
+  //         const y = (viewHeight - barHeight) / 2;
+  //         return (
+  //           <rect
+  //             key={i}
+  //             x={x}
+  //             y={y}
+  //             width={barWidth}
+  //             height={barHeight}
+  //             rx={2}
+  //             fill={color}
+  //           />
+  //         );
+  //       })}
+  //     </svg>
+  //   );
+  // };
 
   return (
     <div

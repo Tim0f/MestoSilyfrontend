@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Logo2 from "../assets/svg/Logo2.svg";
-import Vector from "../assets/svg/Vector.svg";
 import LogoSvg from "../assets/svg/Rectangle_9.svg?react";
 
 import { Client } from "../services/httpClient";

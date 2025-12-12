@@ -1,6 +1,6 @@
 // AdminSectionsPage.tsx
 
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import SectionsList from '../components/sections/SectionList';
 import SectionCreateModal from '../components/sections/SectionCreateModal';
 import SectionEditModal from '../components/sections/SectionEditModal';

@@ -2,7 +2,7 @@
 // Универсальный лейаут для админского раздела
 // С навигацией, шапкой и общим стилем на все страницы
 
-import React from 'react';
+
 import { NavLink, Outlet } from 'react-router-dom';
 
 export default function AdminLayout() {

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Client } from '../../services/httpClient';
 import { SectionsFrontendService } from '../../services/sections.service';
-import { EventsFrontendService } from '../../services/events.service';
+// import { EventsFrontendService } from '../../services/events.service';
 import { ChatFrontendService } from '../../services/chat.service';
 
 interface Props {
@@ -23,7 +23,7 @@ const client = Client
 
 const chatService = new ChatFrontendService(client);
 const sectionsService = new SectionsFrontendService(client);
-const eventsService = new EventsFrontendService(client);
+// const eventsService = new EventsFrontendService(client);
 
 export default function ChatEditModal({ isOpen, onClose, chat, sections = [], events = [], reload }: Props) {
   const [type, setType] = useState<'SUPPORT' | 'SECTION' | 'EVENT'>('SUPPORT');
@@ -52,7 +52,6 @@ export default function ChatEditModal({ isOpen, onClose, chat, sections = [], ev
           }
         }
         if (!events || events.length === 0) {
-          const evs = await eventsService.findAll<any[]>();
           // best-effort
         }
       } catch {

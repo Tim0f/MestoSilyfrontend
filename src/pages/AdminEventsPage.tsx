@@ -1,7 +1,7 @@
 // AdminEventsPage.tsx
 // Страница управления событиями (Events)
 
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import EventsList from '../components/events/EventsList';
 import EventCreateModal from '../components/events/EventCreateModal';
 import EventEditModal from '../components/events/EventEditModal';
