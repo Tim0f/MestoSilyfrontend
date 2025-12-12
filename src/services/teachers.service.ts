@@ -53,4 +53,24 @@ export class TeachersFrontendService {
   remove<T = unknown>(teacherId: string) {
     return this.http.delete<T>(`/teachers/${teacherId}`);
   }
+
+  // ========= 🔥 ДОБАВЛЕНО: загрузка изображений =========
+uploadTempImage<T = { url: string }>(file: File) {
+  const fd = new FormData();
+  fd.append('file', file);
+
+  return this.http.post<T>('/upload/image', fd, {
+    authenticate: true,
+  });
+}
+
+uploadTempAudio<T = { url: string }>(file: File) {
+  const fd = new FormData();
+  fd.append('file', file);
+
+  return this.http.post<T>('/upload/audio', fd, {
+    authenticate: true,
+  });
+}
+
 }

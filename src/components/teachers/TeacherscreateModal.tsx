@@ -10,8 +10,7 @@ interface Props {
   onClose: () => void;
 }
 
-const client = Client
-
+const client = Client;
 const teachersService = new TeachersFrontendService(client);
 
 export default function TeacherCreateModal({ isOpen, onClose }: Props) {
@@ -25,8 +24,54 @@ export default function TeacherCreateModal({ isOpen, onClose }: Props) {
     audioUrl: '',
   });
 
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [audioPreview, setAudioPreview] = useState<string | null>(null);
+
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
+  const [loadingAudio, setLoadingAudio] = useState(false);
+
   const update = (k: keyof CreateTeacherDto, v: any) =>
     setForm((p) => ({ ...p, [k]: v }));
+
+  // Загрузка фото
+  const uploadPhoto = async (file: File | null) => {
+    if (!file) return;
+
+    setLoadingPhoto(true);
+    try {
+      const uploaded = await teachersService.uploadTempImage(file);
+
+      if (uploaded?.url) {
+        update('photoUrl', uploaded.url);
+        setPhotoPreview(uploaded.url);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка загрузки фото');
+    } finally {
+      setLoadingPhoto(false);
+    }
+  };
+
+  // Загрузка аудио
+  const uploadAudio = async (file: File | null) => {
+    if (!file) return;
+
+    setLoadingAudio(true);
+    try {
+      const uploaded = await teachersService.uploadTempAudio(file);
+
+      if (uploaded?.url) {
+        update('audioUrl', uploaded.url);
+        setAudioPreview(uploaded.url);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Ошибка загрузки аудио');
+    } finally {
+      setLoadingAudio(false);
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +87,8 @@ export default function TeacherCreateModal({ isOpen, onClose }: Props) {
         <h2 className="text-xl font-bold mb-4">Создать преподавателя</h2>
 
         <form onSubmit={submit} className="space-y-4">
+          
+          {/* ФИО */}
           <div>
             <label className="block mb-1 text-customwhite">Фамилия</label>
             <input
@@ -74,6 +121,7 @@ export default function TeacherCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* Телефон */}
           <div>
             <label className="block mb-1 text-customwhite">Телефон</label>
             <input
@@ -84,6 +132,7 @@ export default function TeacherCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* Роль */}
           <div>
             <label className="block mb-1 text-customwhite">Роль</label>
             <input
@@ -95,26 +144,47 @@ export default function TeacherCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* Фото загрузка */}
           <div>
-            <label className="block mb-1 text-customwhite">Фото (URL)</label>
+            <label className="block mb-1 text-customwhite">Фото</label>
             <input
-              type="text"
-              value={form.photoUrl}
-              onChange={(e) => update('photoUrl', e.target.value)}
+              type="file"
+              accept="image/*"
+              onChange={(e) => uploadPhoto(e.target.files?.[0] ?? null)}
               className="w-full bg-[#222] border border-white/10 px-3 py-2 rounded"
             />
+
+            {loadingPhoto && <p className="text-sm text-yellow-400 mt-1">Загрузка...</p>}
+
+            {photoPreview && (
+              <img
+                src={photoPreview}
+                alt="preview"
+                className="mt-3 w-32 h-32 object-cover rounded border border-white/20"
+              />
+            )}
           </div>
 
+          {/* Аудио загрузка */}
           <div>
-            <label className="block mb-1 text-customwhite">Аудио (URL)</label>
+            <label className="block mb-1 text-customwhite">Аудио</label>
             <input
-              type="text"
-              value={form.audioUrl}
-              onChange={(e) => update('audioUrl', e.target.value)}
+              type="file"
+              accept="audio/*"
+              onChange={(e) => uploadAudio(e.target.files?.[0] ?? null)}
               className="w-full bg-[#222] border border-white/10 px-3 py-2 rounded"
             />
+
+            {loadingAudio && <p className="text-sm text-yellow-400 mt-1">Загрузка...</p>}
+
+            {audioPreview && (
+              <audio controls className="mt-3 w-full">
+                <source src={audioPreview} />
+              </audio>
+            )}
           </div>
 
+          {/* Buttons */}
           <div className="flex justify-end gap-4 pt-4">
             <button
               type="button"

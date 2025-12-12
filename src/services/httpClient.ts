@@ -6,7 +6,6 @@ export interface RequestOptions<TBody = unknown> {
   query?: Record<string, unknown>;
   body?: TBody;
   headers?: HeadersInit;
-  /** Передавать ли заголовок Authorization. По умолчанию true. */
   authenticate?: boolean;
   responseType?: ResponseType;
   signal?: AbortSignal;
@@ -14,14 +13,7 @@ export interface RequestOptions<TBody = unknown> {
 
 export interface HttpClientOptions {
   baseUrl: string;
-  /**
-   * Возвращает JWT токен. Может быть синхронной или асинхронной функцией.
-   * Если вернёт undefined/null/пустую строку, заголовок Authorization не добавляется.
-   */
   getToken?: () => string | null | undefined | Promise<string | null | undefined>;
-  /**
-   * Переопределение fetch (например, для тестов или SSR).
-   */
   fetchFn?: typeof fetch;
   defaultHeaders?: HeadersInit;
 }
@@ -42,15 +34,7 @@ export class HttpClient {
   private readonly baseUrl: string;
 
   constructor(private readonly options: HttpClientOptions) {
-    // Привязываем fetch к глобальному объекту window, чтобы не терять контекст
-    if (options.fetchFn) {
-      this.fetchFn = options.fetchFn.bind(globalThis);
-    } else if (globalThis.fetch) {
-      this.fetchFn = globalThis.fetch.bind(globalThis);
-    } else {
-      throw new Error('Глобальный fetch недоступен. Передайте fetchFn в HttpClientOptions.');
-    }
-
+    this.fetchFn = (options.fetchFn ?? globalThis.fetch).bind(globalThis);
     this.baseUrl = options.baseUrl.replace(/\/+$/, '');
   }
 
@@ -80,24 +64,20 @@ export class HttpClient {
 
   private buildUrl(path: string, query?: Record<string, unknown>): string {
     const url = new URL(path.replace(/^\//, ''), `${this.baseUrl}/`);
+
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
-        if (value === undefined || value === null || value === '') {
-          return;
-        }
+        if (value == null || value === '') return;
 
         if (Array.isArray(value)) {
-          value.forEach((item) => {
-            if (item !== undefined && item !== null) {
-              url.searchParams.append(key, String(item));
-            }
-          });
+          value.forEach((item) => item != null && url.searchParams.append(key, String(item)));
           return;
         }
 
         url.searchParams.set(key, String(value));
       });
     }
+
     return url.toString();
   }
 
@@ -126,21 +106,26 @@ export class HttpClient {
     const url = this.buildUrl(path, query);
 
     const mergedHeaders = new Headers();
+
+    // default headers
     this.applyHeaders(mergedHeaders, this.options.defaultHeaders);
+
+    // request headers
     this.applyHeaders(mergedHeaders, headers);
 
+    // 🔥 Add auth header
     if (options?.authenticate !== false && this.options.getToken) {
       const token = await this.options.getToken();
-      if (token) {
-        mergedHeaders.set('Authorization', `Bearer ${token}`);
-      }
+      if (token) mergedHeaders.set('Authorization', `Bearer ${token}`);
     }
 
     let payload: BodyInit | undefined;
+
+    // 🔥 Correct FormData handling
     if (body !== undefined && body !== null) {
       if (this.isFormData(body)) {
         payload = body as FormData;
-        // Content-Type для FormData устанавливается автоматически
+        mergedHeaders.delete('Content-Type');
       } else if (
         typeof body === 'object' &&
         !this.isArrayBufferLike(body) &&
@@ -192,17 +177,12 @@ export class HttpClient {
         return (await response.arrayBuffer()) as TResponse;
       case 'json':
       default:
-        if (response.status === 204) {
-          return undefined as TResponse;
-        }
         return (await response.json()) as TResponse;
     }
   }
 
   private applyHeaders(target: Headers, source?: HeadersInit) {
-    if (!source) {
-      return;
-    }
+    if (!source) return;
 
     if (source instanceof Headers) {
       source.forEach((value, key) => target.set(key, value));
@@ -215,9 +195,7 @@ export class HttpClient {
     }
 
     Object.entries(source).forEach(([key, value]) => {
-      if (value !== undefined) {
-        target.set(key, String(value));
-      }
+      if (value !== undefined) target.set(key, String(value));
     });
   }
 }
@@ -226,6 +204,6 @@ export const Client = new HttpClient({
   baseUrl:
     (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
     (import.meta.env.VITE_API_URL as string | undefined) ??
-    "http://localhost:3000/api",
-  getToken: () => localStorage.getItem("token") ?? undefined,
+    'http://localhost:3000/api',
+  getToken: () => localStorage.getItem('token') ?? undefined,
 });

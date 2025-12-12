@@ -22,11 +22,12 @@ import { TeachersFrontendService } from '../services/teachers.service'
 import { NewsFrontendService } from '../services/news.service'
 
 type Partner = {
-  id: number
+  id: string
   name: string
   image: string
   url: string
 }
+
 
 const client = Client;
 
@@ -92,17 +93,18 @@ export default function HomePage() {
     []
   )
 
-  const partnersFallback: Partner[] = useMemo(
-    () => [
-      { id: 1, name: 'Школа Летово', image: Stick, url: 'Saga' },
-      { id: 2, name: 'Школа Осеннево', image: Stick, url: 'Saga' },
-      { id: 3, name: 'Школа Зимнево', image: Stick, url: 'Saga' },
-      { id: 4, name: 'Школа Весеннего', image: Stick, url: 'Saga' },
-      { id: 5, name: 'Школа Межсезонного', image: Stick, url: 'Saga' },
-      { id: 6, name: 'Школа Внесезонного', image: Stick, url: 'Saga' },
-    ],
-    []
-  )
+const partnersFallback: Partner[] = useMemo(
+  () => [
+    { id: '1', name: 'Школа Летово', image: Stick, url: 'Saga' },
+    { id: '2', name: 'Школа Осеннево', image: Stick, url: 'Saga' },
+    { id: '3', name: 'Школа Зимнево', image: Stick, url: 'Saga' },
+    { id: '4', name: 'Школа Весеннего', image: Stick, url: 'Saga' },
+    { id: '5', name: 'Школа Межсезонного', image: Stick, url: 'Saga' },
+    { id: '6', name: 'Школа Внесезонного', image: Stick, url: 'Saga' },
+  ],
+  []
+)
+
 
   useEffect(() => {
     loadSections()
@@ -132,19 +134,24 @@ export default function HomePage() {
     }
   }
 
-  async function loadPartners() {
-    try {
-      const api = await partnersService.findAll<any[]>()
-      setPartnersDynamic(api.length ? api.map((p) => ({
-        id: p.id,
-        name: p.name,
-        url: p.url ?? '#',
-        image: p.logoUrl ?? Stick,
-      })) : partnersFallback)
-    } catch {
-      setPartnersDynamic(partnersFallback)
-    }
+async function loadPartners() {
+  try {
+    const api = await partnersService.findAll<any[]>()
+    setPartnersDynamic(
+      api.length
+        ? api.map((p) => ({
+            id: p.id,                      // string
+            name: p.name,
+            url: p.link ?? '#',            // правильное поле из бэка
+            image: p.imageUrl ?? Stick,    // правильное поле из бэка
+          }))
+        : partnersFallback
+    )
+  } catch {
+    setPartnersDynamic(partnersFallback)
   }
+}
+
 
   async function loadTeachers() {
     try {

@@ -13,7 +13,6 @@ export interface UpdatePartnerDto {
   link?: string;
 }
 
-
 export class PartnersFrontendService {
   constructor(private readonly http: HttpClient) {}
 
@@ -37,8 +36,15 @@ export class PartnersFrontendService {
     return this.http.delete<T>(`/partners/${partnerId}`);
   }
 
+  // 👇 Добавили временную загрузку
+  uploadTempImage<T = { url: string }>(file: UploadInput) {
+    return this.http.post<T>('/upload/image', ensureFormData(file));
+  }
+
   uploadImage<T = unknown>(partnerId: string, file: UploadInput) {
-    return this.http.patch<T>(`/partners/${partnerId}/image`, ensureFormData(file));
+    return this.http.patch<T>(
+      `/partners/${partnerId}/image`,
+      ensureFormData(file)
+    );
   }
 }
-

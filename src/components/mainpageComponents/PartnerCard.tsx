@@ -1,12 +1,20 @@
+// PartnerCard.tsx
+
 type PartnerCardProps = {
   name: string
   image: string
+  url?: string
   texturedRound: string
 }
 
-export default function PartnerCard({ name, image, texturedRound }: PartnerCardProps) {
+export default function PartnerCard({ name, image, url, texturedRound }: PartnerCardProps) {
+  const Wrapper: any = url ? 'a' : 'div'
+
   return (
-    <div className="relative flex flex-col items-center">
+    <Wrapper
+      {...(url ? { href: url, target: '_blank', rel: 'noopener noreferrer' } : {})}
+      className="relative flex flex-col items-center group transition-transform hover:scale-105"
+    >
       <div className="relative w-64 h-64 rounded-full overflow-hidden">
         <div
           aria-hidden="true"
@@ -17,8 +25,8 @@ export default function PartnerCard({ name, image, texturedRound }: PartnerCardP
             backgroundRepeat: 'no-repeat',
           }}
         />
-        <div className="absolute inset-0 z-10 rounded-full " />
-        <div className="relative z-30 flex h-full w-full items-center justify-center">
+
+        <div className="relative z-30 flex h-full w-full items-center justify-center bg-black/20">
           <img
             src={image}
             alt={name}
@@ -26,10 +34,12 @@ export default function PartnerCard({ name, image, texturedRound }: PartnerCardP
           />
         </div>
       </div>
+
       <div className="mt-6 text-center">
-        <h3 className="text-h2 font-h2 text-customwhite">{name}</h3>
+        <h3 className="text-h2 font-h2 text-customwhite whitespace-pre-line">
+          {name}
+        </h3>
       </div>
-    </div>
+    </Wrapper>
   )
 }
-

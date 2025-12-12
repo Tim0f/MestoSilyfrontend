@@ -4,15 +4,16 @@ import {
   PartnersFrontendService,
   type CreatePartnerDto,
 } from '../../services/partners.service';
+import { UploadFrontendService } from '../../services/upload.service';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const client = Client
-
+const client = Client;
 const partnersService = new PartnersFrontendService(client);
+const uploadService = new UploadFrontendService(client);
 
 export default function PartnerCreateModal({ isOpen, onClose }: Props) {
   const [form, setForm] = useState<CreatePartnerDto>({
@@ -21,16 +22,35 @@ export default function PartnerCreateModal({ isOpen, onClose }: Props) {
     link: '',
   });
 
+  const [preview, setPreview] = useState<string>('');
+  const [file, setFile] = useState<File | null>(null);
+
   const update = (key: keyof CreatePartnerDto, value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let imageUrl = form.imageUrl.trim();
+
+    if (file) {
+      const res = await uploadService.image<{ filename: string }>(file);
+      imageUrl = uploadService.getFileUrl(res.filename);
+    }
+
     await partnersService.create({
       name: form.name.trim(),
-      imageUrl: form.imageUrl.trim(),
+      imageUrl,
       link: form.link.trim(),
     });
+
     onClose();
   };
 
@@ -54,14 +74,21 @@ export default function PartnerCreateModal({ isOpen, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-customwhite">URL изображения</label>
+            <label className="block mb-1 text-customwhite">Изображение</label>
             <input
-              type="text"
-              value={form.imageUrl}
-              onChange={(e) => update('imageUrl', e.target.value)}
-              required
+              type="file"
+              accept="image/*"
+              onChange={handleFile}
               className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
             />
+
+            {preview && (
+              <img
+                src={preview}
+                alt="preview"
+                className="mt-2 max-h-40 rounded border border-white/10"
+              />
+            )}
           </div>
 
           <div>

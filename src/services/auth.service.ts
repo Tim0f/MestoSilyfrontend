@@ -17,15 +17,25 @@ export type LoginDto = {
 export class AuthFrontendService {
   constructor(private readonly http: HttpClient) {}
 
-  register<T = unknown>(payload: RegisterDto): Promise<T> {
-    // Backend returns user data, no token here on register by default
-    return this.http.post<T>('/auth/register', payload, { authenticate: false });
-  }
+register<T = any>(payload: RegisterDto): Promise<T> {
+  return this.http.post<T>('/auth/register', payload, { authenticate: false }).then((res: any) => {
+    if (res?.token) {
+      localStorage.setItem('token', res.token);
+    }
+    return res;
+  });
+}
 
-  login<T = unknown>(payload: LoginDto): Promise<T> {
-    // Backend returns { access_token: string, user: User }
-    return this.http.post<T>('/auth/login', payload, { authenticate: false });
-  }
+
+login<T = any>(payload: LoginDto): Promise<T> {
+  return this.http.post<T>('/auth/login', payload, { authenticate: false }).then((res: any) => {
+    if (res?.token) {
+      localStorage.setItem('token', res.token);
+    }
+    return res;
+  });
+}
+
 
   me<T = unknown>(): Promise<T> {
     return this.http.get<T>('/auth/me');

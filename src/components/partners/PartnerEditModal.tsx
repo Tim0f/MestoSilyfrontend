@@ -16,8 +16,7 @@ interface Props {
   };
 }
 
-const client = Client
-
+const client = Client;
 const partnersService = new PartnersFrontendService(client);
 
 export default function PartnerEditModal({ isOpen, onClose, partner }: Props) {
@@ -27,8 +26,25 @@ export default function PartnerEditModal({ isOpen, onClose, partner }: Props) {
     link: partner.link,
   });
 
+  const [preview, setPreview] = useState<string>(partner.imageUrl || '');
+  const [file, setFile] = useState<File | null>(null);
+
   const update = (k: keyof UpdatePartnerDto, v: any) =>
     setForm((prev) => ({ ...prev, [k]: v }));
+
+  const onFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+
+    const formData = new FormData();
+    formData.append('image', f);
+
+    const uploaded = await partnersService.uploadTempImage(formData);
+    update('imageUrl', uploaded.url);
+  };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +71,23 @@ export default function PartnerEditModal({ isOpen, onClose, partner }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-customwhite">URL изображения</label>
+            <label className="block mb-1 text-customwhite">Изображение</label>
+
+            {preview && (
+              <img
+                src={preview}
+                alt="preview"
+                className="w-32 h-32 object-cover rounded mb-2 border border-white/10"
+              />
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={onFileSelect}
+              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2 mb-2"
+            />
+
             <input
               type="text"
               value={form.imageUrl}
