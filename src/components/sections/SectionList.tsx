@@ -1,7 +1,7 @@
 // SectionsList.tsx
 // Компонент списка секций с поддержкой удаления и редактирования
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Client } from '../../services/httpClient';
 import { SectionsFrontendService } from '../../services/sections.service';
 

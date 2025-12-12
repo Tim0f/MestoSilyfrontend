@@ -1,7 +1,7 @@
 // EventsList.tsx
 // Список событий с редактированием и удалением
 
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { Client } from '../../services/httpClient';
 import { EventsFrontendService } from '../../services/events.service';
 

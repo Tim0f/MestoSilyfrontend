@@ -1,33 +1,88 @@
+// src/pages/SchedulePage.tsx
 import React, { useEffect, useState } from "react";
-import { Client } from "../services/httpClient"; // путь к твоему HttpClient (Client)
+import { Client } from "../services/httpClient";
 import { freeVisitsService } from "../services/FreeVisitsFrontendService";
 import { useAuth } from "../context/AuthContext";
 
-// ===== SVG / Иконки / Картинки (твоё окружение) =====
-import Parkur from "../assets/svg/parkur.svg";
-import Border from "../assets/svg/texturedBorder.svg?react";
+import Parkur from "../assets/svg/parkur.svg"; // fallback icon (string path)
+import BorderUrl from "../assets/svg/texturedBorder.svg"; // src for <img>
 import Border2 from "../components/border2";
 import Border3 from "../components/border3";
 import Event1 from "../assets/img/Mask_group.png";
-import Event2 from "../assets/img/Mask_group2.png";
 import btnFrame from "../assets/svg/Rectangle_9.svg";
 
-// ==== Типы ====
+import { EnrollmentsFrontendService } from "../services/enrollments.service";
+import { EventsFrontendService } from "../services/events.service";
+import { LessonsFrontendService } from "../services/lessons.service";
+
+// сервисы
+const enrollmentsService = new EnrollmentsFrontendService(Client);
+const eventsService = new EventsFrontendService(Client);
+const lessonsService = new LessonsFrontendService(Client);
+
+// ==========================
+// Типы
+// ==========================
+interface BackendEnrollmentRecord {
+  id: string;
+  userId?: string;
+  sectionId?: string;
+  lessonId?: string | null;
+  eventId?: string | null;
+  // include from backend:
+  section?: { id: string; name?: string; iconUrl?: string };
+  lesson?: { id: string; startsAt?: string; endsAt?: string; teacher?: any } | null;
+  event?: { id: string } | null;
+}
+
+interface MyEnrollment {
+  lessonId?: string | number | null;
+  eventId?: string | number | null;
+  sectionId?: string | number | null;
+}
+
 interface Session {
-  id: string | number;
-  sectionId?: string | number;
-  teacherId?: string | number;
-  date?: string;
-  startTime: string;
-  endTime: string;
-  startsAt?: string;
-  endsAt?: string;
-  capacity?: number;
+  id: string;
+  sectionId: string;
+  teacherId: string;
+
+  date: string;    // ISO date string from backend
+  startsAt: string; // "HH:MM"
+  endsAt: string;   // "HH:MM"
+
+  startTime?: string; // optional full ISO date-time string
+  endTime?: string;
+
+  location: string;
+  capacity: number;
+  description: string;
+
+  enrollments: any[]; // backend enrollments array
   currentEnrollment?: number;
-  section: { name: string };
-  teacher: { name: string };
-  location?: string;
-  iconUrl: string;
+  price?: number;
+
+  section: {
+    id: string;
+    name: string;
+    description?: string;
+    imageUrl?: string;
+    iconUrl?: string; // url to icon (svg/png)
+    galleryDriveUrl?: string;
+    ageMin?: number;
+    ageMax?: number;
+    maxParticipants?: number;
+    isActive?: boolean;
+  };
+
+  teacher: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+    middleName?: string;
+    phone?: string;
+    photoUrl?: string;
+    audioUrl?: string;
+  };
 }
 
 interface Event {
@@ -41,86 +96,126 @@ interface Event {
   price?: number;
 }
 
-// ===== Утилиты =====
-function toISODateString(d: Date) {
+// ==========================
+// Утилиты
+// ==========================
+const toISODateString = (d: Date) => {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${dd}`;
+};
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString("ru-RU", { day: "numeric", month: "numeric" });
 
-const formatTime = (isoOrString: string) => {
+const formatTime = (val?: string) => {
+  if (!val) return "—";
   try {
-    const dt = new Date(isoOrString);
+    const dt = new Date(val);
     if (!isNaN(dt.getTime())) {
       return dt.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
     }
   } catch {}
-  return isoOrString ? isoOrString.slice(0, 5) : "—";
+  return val.slice(0, 5);
 };
 
-// ===== SchedulePage (всё внутри) =====
+function calcDuration(start?: string, end?: string): number {
+  if (!start || !end) return 0;
+  const [h1 = 0, m1 = 0] = start.split(":").map(Number);
+  const [h2 = 0, m2 = 0] = end.split(":").map(Number);
+  const t1 = (h1 || 0) * 60 + (m1 || 0);
+  const t2 = (h2 || 0) * 60 + (m2 || 0);
+  const diff = t2 - t1;
+  return Math.max(1, Math.round(diff / 60));
+}
+
+// ================================================================
+// SchedulePage
+// ================================================================
 export default function SchedulePage() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [enrolledSessions, setEnrolledSessions] = useState<Array<string | number>>([]);
+  const [enrolledEventIds, setEnrolledEventIds] = useState<Array<string | number>>([]);
   const [subscriptionCount, setSubscriptionCount] = useState<number>(0);
   const [loadingSessions, setLoadingSessions] = useState(false);
-  const [loadingEvents, setLoadingEvents] = useState(false);
   const [errorSessions, setErrorSessions] = useState<string | null>(null);
 
   const { isAuthenticated } = useAuth();
 
-  // ==== API: занятия (через Client) ====
+  // --- загрузка занятий по дате
   async function fetchSessionsFromApi(dateISO?: string): Promise<Session[] | null> {
     try {
-      // используем твой HttpClient Client
       const payload = await Client.get<any[]>("/lessons/by-date", {
-        query: { date: dateISO, sectionId: "" }, // пустой sectionId — снимает фильтрацию
+        query: { date: dateISO, sectionId: "" },
         authenticate: true,
       });
 
       if (!Array.isArray(payload)) return null;
 
-      // приводим в наш формат Session
       return payload.map((lesson: any) => {
         const datePart = (lesson.date ?? "").slice(0, 10);
         const startsAt = lesson.startsAt ?? lesson.startTime ?? "";
         const endsAt = lesson.endsAt ?? lesson.endTime ?? "";
 
-        const startTimeFull = datePart && startsAt ? `${datePart}T${startsAt}:00` : lesson.startTime ?? "";
-        const endTimeFull = datePart && endsAt ? `${datePart}T${endsAt}:00` : lesson.endTime ?? "";
+        const startTimeFull = datePart && startsAt ? `${datePart}T${startsAt}:00` : lesson.startTime;
+        const endTimeFull = datePart && endsAt ? `${datePart}T${endsAt}:00` : lesson.endTime;
+
+        const section = lesson.section ?? {};
+        const teacher = lesson.teacher ?? {};
 
         return {
           id: lesson.id,
-          sectionId: lesson.sectionId ?? lesson.section?.id,
-          teacherId: lesson.teacherId ?? lesson.teacher?.id,
-          date: lesson.date,
-          startTime: startTimeFull,
-          endTime: endTimeFull,
+          sectionId: lesson.sectionId ?? section.id ?? "",
+          teacherId: lesson.teacherId ?? teacher.id ?? "",
+
+          date: lesson.date ?? "",
           startsAt,
           endsAt,
-          capacity: lesson.capacity,
-          currentEnrollment: lesson.enrollments ? lesson.enrollments.length : (lesson.currentEnrollment ?? 0),
-          section: { name: lesson.section?.name ?? "Не указано" },
-          teacher: { name: lesson.teacher ? `${lesson.teacher.firstName ?? ""} ${lesson.teacher.lastName ?? ""}`.trim() : "Не указан" },
+          startTime: startTimeFull,
+          endTime: endTimeFull,
+
           location: lesson.location ?? "—",
-          iconUrl: Parkur,
+          capacity: lesson.capacity ?? 0,
+          description: lesson.description ?? section.description ?? "",
+          price: lesson.price ?? 1100,
+
+          enrollments: lesson.enrollments ?? [],
+          currentEnrollment: (lesson.enrollments ?? []).length,
+
+          section: {
+            id: section.id ?? "",
+            name: section.name ?? "Не указано",
+            description: section.description ?? "",
+            imageUrl: section.imageUrl ?? "",
+            iconUrl: section.iconUrl ?? Parkur,
+            galleryDriveUrl: section.galleryDriveUrl ?? "",
+            ageMin: section.ageMin ?? 0,
+            ageMax: section.ageMax ?? 0,
+            maxParticipants: section.maxParticipants ?? 0,
+            isActive: section.isActive ?? true,
+          },
+
+          teacher: {
+            id: teacher.id ?? "",
+            firstName: teacher.firstName ?? "",
+            lastName: teacher.lastName ?? "",
+            middleName: teacher.middleName ?? "",
+            phone: teacher.phone ?? "",
+            photoUrl: teacher.photoUrl ?? "",
+            audioUrl: teacher.audioUrl ?? "",
+          },
         } as Session;
       });
     } catch (e: any) {
-      console.warn("fetchSessionsFromApi error", e);
-      // если сервер вернул объект с message (например 401), пробросим
       throw e;
     }
   }
 
-  // ==== API: события ====
+  // --- загрузка событий
   async function fetchEventsFromApi(): Promise<Event[] | null> {
     try {
       const payload = await Client.get<any[]>("/events", { authenticate: true });
@@ -130,7 +225,7 @@ export default function SchedulePage() {
         title: ev.title,
         description: ev.description,
         imageUrl: ev.imageUrl ?? ev.bannerUrl ?? Event1,
-        date: ev.date ? ev.date.slice(0, 10) : undefined,
+        date: ev.date?.slice(0, 10),
         startTime: ev.startTime,
         endTime: ev.endTime,
         price: ev.price,
@@ -141,13 +236,42 @@ export default function SchedulePage() {
     }
   }
 
-  // ==== Load data ====
+ // --- загрузка моих записей
+// --- загрузка моих записей
+const loadMyEnrollments = async (): Promise<void> => {
+  try {
+    const arr = await enrollmentsService.getMyEnrollments<BackendEnrollmentRecord[]>();
+
+    // запишем тип для r, чтобы не было implicit any
+    const lessonIds = arr
+      .filter((r: BackendEnrollmentRecord) => r.lessonId != null)
+      .map((r: BackendEnrollmentRecord) => r.lessonId as string | number);
+
+    const sectionOnlyIds = arr
+      .filter((r: BackendEnrollmentRecord) => !r.lessonId && r.sectionId)
+      .map((r: BackendEnrollmentRecord) => r.sectionId as string | number);
+
+    const eventIds = arr
+      .filter((r: BackendEnrollmentRecord) => r.eventId != null)
+      .map((r: BackendEnrollmentRecord) => r.eventId as string | number);
+
+    setEnrolledSessions([...lessonIds, ...sectionOnlyIds]);
+    setEnrolledEventIds(eventIds);
+  } catch (err) {
+    console.error("Ошибка загрузки записей:", err);
+    setEnrolledSessions([]);
+    setEnrolledEventIds([]);
+  }
+};
+
+
+
+  // LOAD DATA useEffect
   useEffect(() => {
     let mounted = true;
 
     async function loadData() {
       const dateISO = toISODateString(selectedDate);
-
       setLoadingSessions(true);
       setErrorSessions(null);
 
@@ -156,91 +280,132 @@ export default function SchedulePage() {
         if (!mounted) return;
         setSessions(apiSessions ?? []);
       } catch (e: any) {
-        // если 401 — покажем сообщение в консоли и в UI
         if (e?.status === 401 || e?.statusCode === 401) {
-          setErrorSessions("Неавторизован. Пожалуйста, войдите в систему.");
+          setErrorSessions("Неавторизован. Войдите в систему.");
         } else {
           setErrorSessions("Ошибка при загрузке занятий");
         }
         setSessions([]);
       } finally {
-        if (mounted) setLoadingSessions(false);
+        mounted && setLoadingSessions(false);
       }
 
-      setLoadingEvents(true);
-      try {
-        const apiEvents = await fetchEventsFromApi();
-        if (!mounted) return;
-        setEvents(apiEvents ?? []);
-        if (!selectedEvent && apiEvents && apiEvents.length > 0) {
-          setSelectedEvent(apiEvents[0]);
-        }
-      } finally {
-        if (mounted) setLoadingEvents(false);
+      const ev = await fetchEventsFromApi();
+      if (mounted) {
+        setEvents(ev ?? []);
+        if (!selectedEvent && ev && ev.length > 0) setSelectedEvent(ev[0]);
       }
 
-      // free visits
       if (isAuthenticated) {
-        const userId = localStorage.getItem("userId");
-        if (userId) {
+        await loadMyEnrollments();
+        const uid = localStorage.getItem("userId");
+        if (uid) {
           try {
-            const visits = await freeVisitsService.getUserFreeVisits(userId);
-            if (mounted) setSubscriptionCount(visits?.available ?? 0);
+            const visits = await freeVisitsService.getUserFreeVisits(uid);
+            mounted && setSubscriptionCount(visits?.available ?? 0);
           } catch {
-            if (mounted) setSubscriptionCount(0);
+            mounted && setSubscriptionCount(0);
           }
         }
       } else {
+        setEnrolledSessions([]);
+        setEnrolledEventIds([]);
         setSubscriptionCount(0);
       }
-
-      // enrolled sessions — пока пусто, в ожидании реального API
-      setEnrolledSessions([]);
     }
 
     loadData();
-
     return () => {
       mounted = false;
     };
   }, [selectedDate, isAuthenticated]);
 
-  // ==== Локальные UI-хендлеры ====
-  const weekDates = (() => {
-    const dates: Date[] = [];
-    const current = new Date(selectedDate);
-    const day = current.getDay();
-    const diffToMonday = day === 0 ? -6 : 1 - day;
-    current.setDate(current.getDate() + diffToMonday);
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(current);
-      d.setDate(current.getDate() + i);
-      dates.push(d);
-    }
-    return dates;
-  })();
-
-  const selectedISO = toISODateString(selectedDate);
-  const filteredSessions = sessions.filter((s) => ((s.date ?? "").slice(0,10)) === selectedISO);
-
-  const handleEnroll = (sessionId: string | number) => {
+  // ====== запись на урок ======
+  const enrollToLesson = async (session: Session) => {
     if (!isAuthenticated) {
       alert("Пожалуйста, войдите в систему");
       return;
     }
-    // Тут можно вызвать реальный endpoint для записи.
-    alert("Заглушка: записываем на занятие");
-    setEnrolledSessions(prev => [...prev, sessionId]);
+
+    try {
+      if (enrolledSessions.includes(session.id)) {
+        alert("Вы уже записаны");
+        return;
+      }
+
+      const payload = { sectionId: session.section.id, lessonId: session.id };
+      await enrollmentsService.enroll(payload);
+
+      // обновляем локально
+      setEnrolledSessions((prev) => [...prev, session.id]);
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === session.id ? { ...s, currentEnrollment: (s.currentEnrollment ?? 0) + 1 } : s
+        )
+      );
+
+      // также обновим список записей на случай, если бэкенд вернёт дополнительные поля
+      await loadMyEnrollments();
+
+      alert("Вы успешно записаны на занятие");
+    } catch (err: any) {
+      console.error("enrollToLesson error", err);
+      const msg = err?.details?.message ?? err?.message ?? "Ошибка записи";
+      alert(msg);
+    }
   };
 
-  // ==== JSX ====
+  // ====== регистрация на событие ======
+  const registerForEvent = async (eventId: string | number) => {
+    if (!isAuthenticated) {
+      alert("Пожалуйста, войдите в систему");
+      return;
+    }
+
+    try {
+      if (enrolledEventIds.includes(eventId)) {
+        await eventsService.cancelRegistration(String(eventId));
+        setEnrolledEventIds((prev) => prev.filter((id) => id !== eventId));
+        alert("Вы отменили регистрацию");
+        return;
+      }
+
+      await eventsService.registerForEvent(String(eventId));
+      setEnrolledEventIds((prev) => [...prev, eventId]);
+      alert("Успешно зарегистрированы на событие");
+    } catch (err: any) {
+      console.error("registerForEvent error", err);
+      alert(err?.message ?? "Ошибка регистрации");
+    }
+  };
+
+  // helpers for week
+  const weekDates = (() => {
+    const arr: Date[] = [];
+    const c = new Date(selectedDate);
+    const wd = c.getDay();
+    const diff = wd === 0 ? -6 : 1 - wd;
+    c.setDate(c.getDate() + diff);
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(c);
+      d.setDate(c.getDate() + i);
+      arr.push(d);
+    }
+    return arr;
+  })();
+
+  const selectedISO = toISODateString(selectedDate);
+  const filteredSessions = sessions.filter((s) => (s.date ?? "").slice(0, 10) === selectedISO);
+
+  // ===========================
+  // РЕНДЕР
+  // ===========================
   return (
     <div className="w-full min-h-screen bg-customblack text-white font-['Unbounded'] flex flex-col items-center pb-[200px]">
-
       <h1 className="mt-[120px] text-[96px] font-h1 text-customyellow text-center">РАСПИСАНИЕ</h1>
 
+      {/* верхняя панель */}
       <div className="flex items-center gap-[40px] mt-6">
-
         <div className="flex items-center gap-[20px]">
           <span className="text-[24px] text-white">Кол-во бесплатных посещений:</span>
           <Border3 className="w-[95px] h-[85px] fill-customyellow stroke-customyellow flex justify-center items-center">
@@ -253,7 +418,6 @@ export default function SchedulePage() {
             {weekDates.map((date, i) => {
               const isActive = date.toDateString() === selectedDate.toDateString();
               const dayName = date.toLocaleDateString("ru-RU", { weekday: "short" });
-
               return (
                 <button key={i} onClick={() => setSelectedDate(date)} className="w-[95px] h-[85px] flex flex-col justify-center items-center">
                   <Border2 className={`${isActive ? "fill-customblack" : "fill-customyellow"} stroke-customyellow`}>
@@ -273,74 +437,97 @@ export default function SchedulePage() {
         </div>
       </div>
 
-      {/* Сообщения об ошибке / загрузке */}
-      {errorSessions && (
-        <div className="text-red-400 mt-[30px] text-center">{errorSessions}</div>
-      )}
+      {/* ошибки */}
+      {errorSessions && <div className="text-red-400 mt-[30px] text-center">{errorSessions}</div>}
 
-      {/* Если нет занятий */}
+      {/* нет занятий */}
       {!loadingSessions && filteredSessions.length === 0 && !errorSessions && (
-        <div className="text-center text-[32px] text-customyellow mt-[60px]">
-          На этот день занятий нет
-        </div>
+        <div className="text-center text-[32px] text-customyellow mt-[60px]">На этот день занятий нет</div>
       )}
 
-      {/* Карточки занятий */}
+      {/* карточки занятий */}
       {filteredSessions.length > 0 && (
-        <div className="mt-[60px] w-full h-full max-w-[1600px] flex justify-center gap-[40px] flex-wrap">
-          {filteredSessions.map(session => {
+        <div className="mt-[60px] w-full max-w-[1600px] flex justify-center gap-[40px] flex-wrap">
+          {filteredSessions.map((session) => {
             const isEnrolled = enrolledSessions.includes(session.id);
-
             return (
-              <div key={session.id} className={`w-[520px] h-[560px] p-[40px] relative ${isEnrolled ? 'bg-customyellow text-black' : 'bg-customblack text-white'}`}
-                style={{ backgroundImage: `url(${Border})`, backgroundSize: "100% 100%", backgroundRepeat: "no-repeat" }}>
-                <div className="flex w-full h-full">
+              <div
+                key={session.id}
+                className={`relative w-[520px] h-[560px] p-[40px] ${isEnrolled ? "text-black" : "text-white"}`}
+              >
+                {/* рамка (img сверху) */}
+                <img src={BorderUrl} alt="" className="absolute inset-0 w-full h-full z-20 pointer-events-none" />
+
+                {/* фон под рамкой */}
+                <div className={`absolute inset-0 ${isEnrolled ? "bg-customyellow" : "bg-customblack"}`} />
+
+                {/* контент поверх */}
+                <div className="relative z-10 flex w-full h-full">
+                  {/* левая часть - иконка секции (mask) */}
                   <div className="w-1/2 flex items-center justify-center">
-                    <div aria-hidden className="w-[220px] h-[480px] select-none pointer-events-none"
+                    <div
+                      className="w-[220px] h-[480px] select-none"
                       style={{
-                        WebkitMaskImage: `url(${session.iconUrl})`,
-                        maskImage: `url(${session.iconUrl})`,
+                        WebkitMaskImage: `url(${session.section.iconUrl ?? Parkur})`,
+                        maskImage: `url(${session.section.iconUrl ?? Parkur})`,
                         WebkitMaskSize: "contain",
                         maskSize: "contain",
                         WebkitMaskRepeat: "no-repeat",
                         maskRepeat: "no-repeat",
                         WebkitMaskPosition: "center",
                         maskPosition: "center",
-                        backgroundColor: isEnrolled ? '#2D282A' : '#F4C884',
-                      }} />
+                        backgroundColor: isEnrolled ? "#2D282A" : "#F4C884",
+                      }}
+                    />
                   </div>
 
+                  {/* правая часть - текст */}
                   <div className="w-1/2 flex flex-col">
                     <div>
-                      <span className={`text-[72px] font-['Zero_Cool'] leading-[80px] ${isEnrolled ? 'text-black' : 'text-customyellow'}`}>
-                        {formatTime(session.startTime)}
+                      <span className={`text-h1 font-h1 leading-[80px] ${isEnrolled ? "text-customblack" : "text-customyellow"}`}>
+                        {formatTime(session.startsAt)}
                       </span>
 
-                      <h3 className="text-[28px] font-h1 text-customyellow drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
-                        {session.section.name}
-                      </h3>
-
-                      <p className="text-[16px] mt-[10px] max-w-[300px] text-customwhite font-p">
-                        Место: {session.location} <br />
-                        Участников: {session.currentEnrollment}/{session.capacity}
-                      </p>
-                    </div>
-
-                    <div className="mt-[20px] flex items-center gap-[12px]">
-                      <div>
-                        <div className="text-customyellow font-p">Учитель:</div>
-                        <div className="text-customwhite font-p">{session.teacher.name}</div>
+                      <div className={` text-p font-p -mt-2   ${isEnrolled ? "text-black" : "text-customyellow"}`}>
+                        длительность: {calcDuration(session.startsAt, session.endsAt)} часа
                       </div>
                     </div>
 
-                    <div className="pt-[20px]">
+                    <h3 className={`text-h2 font-h2  mt-[10px] ${isEnrolled ? "text-customblack" : "text-customwhite"}`}>{session.section.name}</h3>
+
+                    <p className={`text-p font-p mt-[10px] max-w-[280px]  leading-[20px] ${isEnrolled ? "text-customblack" : "text-customwhite"}`}>
+                      {session.description}
+                    </p>
+
+                    <div className="mt-[20px] flex items-center gap-[12px]">
+                      {session.teacher.photoUrl ? (
+                        <img src={session.teacher.photoUrl} alt={`${session.teacher.firstName ?? ""}`} className="w-8 h-8 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-[#F4C884]" />
+                      )}
+
+                      <div>
+                        <div className={`text-p font-p ${isEnrolled ? "text-customblack" : "text-customwhite"}`}>
+                          {session.teacher.lastName ?? ""} {session.teacher.firstName ?? ""} {session.teacher.middleName ?? ""}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={`text-h2 font-h2 mt-[20px] ${isEnrolled ? "text-customblack" : "text-customwhite"}`}>
+                      {session.price} руб
+                    </div>
+
+                    <div className="pt-[10px]">
                       {!isEnrolled ? (
-                        <button onClick={() => handleEnroll(session.id)} className="w-[213px] h-[73px] bg-[#F4C884] mx-auto rounded-[5px] border-2 border-customblack text-[20px] text-black font-h1 hover:bg-[#F4C884]/80 transition">
+                        <button
+                          onClick={() => enrollToLesson(session)}
+                          className="w-[213px] h-[73px] bg-customyellow mx-auto rounded-[5px] text-p text-customblack font-p hover:bg-[#F4C884]/80 transition"
+                        >
                           записаться
                         </button>
                       ) : (
-                        <div className="w-[213px] h-[73px] bg-[#F4C884] mt-[24px] mx-auto rounded-[5px] border-2 border-black flex items-center justify-center">
-                          <span className="text-[20px] font-h1">записан(а)</span>
+                        <div className="w-[213px] h-[73px] bg-customblack mx-auto rounded-[5px] flex items-center justify-center">
+                          <span className="text-p font-p text-customyellow">записан(а)</span>
                         </div>
                       )}
                     </div>
@@ -352,51 +539,52 @@ export default function SchedulePage() {
         </div>
       )}
 
-      {/* События — показываем ТОЛЬКО если events.length > 0 */}
+      {/* события */}
       {events.length > 0 && (
         <div className="w-full flex flex-col items-center mt-[80px]">
-          <div className="w-full relative flex flex-col items-center overflow-hidden" style={{ backgroundImage: `url(${(selectedEvent ?? events[0]).imageUrl ?? Event1})`, backgroundSize: "cover", backgroundPosition: "center" }}>
-            <div className="absolute inset-0 bg-black/40 pointer-events-none"></div>
+          <div className="w-full relative flex flex-col items-center overflow-hidden" style={{ backgroundImage: `url(${(selectedEvent ?? events[0]).imageUrl})`, backgroundSize: "cover", backgroundPosition: "center" }}>
+            <div className="absolute inset-0 bg-black/40" />
 
             <div className="w-full h-[320px] flex flex-col items-center justify-center text-center relative z-10">
               <h2 className="text-[42px] font-['Zero_Cool'] text-customyellow">{(selectedEvent ?? events[0]).title}</h2>
 
               <p className="text-[62px] font-h1 text-customyellow mt-[10px]">
-                {(() => { const ev = selectedEvent ?? events[0]; const date = ev.date ? new Date(ev.date) : null; return date ? formatDate(date) : "—"; })()}{" "}
+                {(() => {
+                  const ev = selectedEvent ?? events[0];
+                  const d = ev.date ? new Date(ev.date) : null;
+                  return d ? formatDate(d) : "—";
+                })()}{" "}
                 {formatTime((selectedEvent ?? events[0]).startTime ?? "")}–{formatTime((selectedEvent ?? events[0]).endTime ?? "")}
               </p>
 
-              {/* стрелка для разворачивания */}
               {!selectedEvent && (
                 <div className="text-customyellow text-[46px] mt-[10px] cursor-pointer animate-bounce" onClick={() => setSelectedEvent(events[0])}>▼</div>
               )}
             </div>
 
-            {/* Развернутый блок — кнопка показывается ТОЛЬКО здесь */}
             {selectedEvent && (
               <div className="w-full relative z-10 py-[80px]">
                 <div className="max-w-[1400px] mx-auto flex">
-                  <div className="w-5/12 pr-[40px] flex items-start justify-end"></div>
-
-                  <div className="w-1/2 pl-[40px] flex flex-col text-white">
+                  <div className="w-5/12" />
+                  <div className="w-1/2 pl-[40px] text-white flex flex-col">
                     <p className="text-[20px] leading-[28px] mb-[20px] whitespace-pre-line">{selectedEvent.description}</p>
 
-                    <p className="text-[32px] font-bold text-customyellow mb-[30px]">
-                      Стоимость: {selectedEvent.price ? `${selectedEvent.price} руб` : "Бесплатно"}
-                    </p>
+                    <p className="text-[32px] font-bold text-customyellow mb-[30px]">Стоимость: {selectedEvent.price ? `${selectedEvent.price} руб` : "Бесплатно"}</p>
 
-                    <button className="bg-customyellow relative text-black text-[20px] font-bold w-fit h-fit flex items-center justify-center"
-                      style={{ WebkitMaskImage: `url(${btnFrame})`, maskImage: `url(${btnFrame})`, WebkitMaskSize: "100% 100%", maskSize: "100% 100%", padding: "18px 48px" }}>
-                      записаться
+                    <button
+                      onClick={() => registerForEvent(selectedEvent.id)}
+                      className="bg-customyellow relative text-black text-[20px] font-bold w-fit h-fit flex items-center justify-center"
+                      style={{ WebkitMaskImage: `url(${btnFrame})`, maskImage: `url(${btnFrame})`, WebkitMaskSize: "100% 100%", padding: "18px 48px" }}
+                    >
+                      {enrolledEventIds.includes(selectedEvent.id) ? "Отменить регистрацию" : "зарегистрироваться"}
                     </button>
 
-                    <div onClick={() => setSelectedEvent(null)} className="text-customyellow text-[46px] mt-[40px] cursor-pointer hover:opacity-80">▲</div>
+                    <div onClick={() => setSelectedEvent(null)} className="text-customyellow text-[46px] mt-[40px] cursor-pointer">▲</div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* точки */}
             {!selectedEvent && (
               <div className="flex justify-center gap-[14px] mt-[35px] relative z-10">
                 {events.map((ev, idx) => (
@@ -407,7 +595,6 @@ export default function SchedulePage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

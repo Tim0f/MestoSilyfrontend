@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Client } from '../../services/httpClient';
 import { NewsFrontendService } from '../../services/news.service';
 import NewsCreateModal from './NewsCreateModal';

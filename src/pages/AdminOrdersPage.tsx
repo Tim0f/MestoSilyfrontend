@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { HttpClient } from "../services/httpClient";
 import { OrdersFrontendService } from "../services/orders.service";
 
