@@ -54,8 +54,18 @@ export class NewsFrontendService {
     return this.http.delete<T>(`/news/${id}`);
   }
 
+  /**
+   * Загрузка изображения ПЕРЕД созданием новости.
+   * Backend должен вернуть: { url: string }
+   */
+  uploadTempImage<T = { url: string }>(file: UploadInput) {
+    return this.http.post<T>('/upload/image', ensureFormData(file));
+  }
+
+  /**
+   * Загрузка изображения к существующей новости.
+   */
   uploadImage<T = unknown>(id: string, file: UploadInput) {
     return this.http.patch<T>(`/news/${id}/image`, ensureFormData(file));
   }
 }
-

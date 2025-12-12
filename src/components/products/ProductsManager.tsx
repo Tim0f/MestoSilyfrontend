@@ -63,7 +63,7 @@ export default function ProductsManager() {
                 <div>
                   <p className="text-lg font-semibold">{p.name}</p>
                   <p className="text-gray-400 text-sm">{p.description}</p>
-                  <p className="text-customyellow text-lg mt-1">{p.price} ₽</p>
+                  <p className="text-customyellow text-lg mt-1">{p.price} зерен</p>
 
                   <p className="text-sm mt-1">
                     {p.isActive ? (

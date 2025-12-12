@@ -77,7 +77,7 @@ export default function EventsList({ onEdit }: Props) {
             <p className="text-gray-400 text-sm">
               Время: {ev.startTime} — {ev.endTime}
             </p>
-            <p className="text-gray-500 text-sm">Цена: {ev.price}₽</p>
+            <p className="text-gray-500 text-sm">Цена: {ev.price}зерен</p>
             <p className="text-gray-500 text-sm">Максимум участников: {ev.maxParticipants}</p>
           </div>
 

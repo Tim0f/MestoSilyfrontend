@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react";
 import Logo2 from "../assets/svg/Logo2.svg";
 import ProfileUp from "../assets/svg/profile_up.svg";
 import ProfileDown from "../assets/svg/profile_down.svg";
-import ProfileIcon from "../assets/svg/Vector (4).svg";
+import ProfileIcon from "../assets/svg/ProfileIcon.svg";
 
 export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();

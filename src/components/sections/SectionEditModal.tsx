@@ -20,28 +20,29 @@ const sectionsService = new SectionsFrontendService(client);
 const uploadService = new UploadFrontendService(client);
 const teachersService = new TeachersFrontendService(client);
 
-/* ...imports... */
-
 export default function SectionEditModal({ id, isOpen, onClose }: Props) {
   const [teachers, setTeachers] = useState<TeacherDto[]>([]);
   const [loading, setLoading] = useState(true);
 
-const [form, setForm] = useState({
-  name: "",
-  description: "",
-  imageUrl: "",
-  iconUrl: "",
-  galleryDriveUrl: "",
-  ageMin: 5,
-  ageMax: 5,
-  maxParticipants: 1,
-  isActive: true,
-  teacherIds: [] as string[],
-});
-
+  const [form, setForm] = useState({
+    name: "",
+    description: "",
+    imageUrl: "",
+    iconUrl: "",
+    galleryDriveUrl: "",
+    ageMin: 5,
+    ageMax: 5,
+    maxParticipants: 1,
+    isActive: true,
+    teacherIds: [] as string[],
+  });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [iconFile, setIconFile] = useState<File | null>(null);
+
+  // NEW — Preview states
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [iconPreview, setIconPreview] = useState<string | null>(null);
 
   useEffect(() => {
     load();
@@ -72,13 +73,28 @@ const [form, setForm] = useState({
   const handleChange = (k: string, v: any) =>
     setForm((p) => ({ ...p, [k]: v }));
 
-const selectTeacher = (id: string) => {
-  setForm((p) => ({
-    ...p,
-    teacherIds: [id], // всегда один
-  }));
-};
+  const selectTeacher = (id: string) => {
+    setForm((p) => ({
+      ...p,
+      teacherIds: [id], // всегда один
+    }));
+  };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setImageFile(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleIconSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setIconFile(file);
+    if (file) {
+      setIconPreview(URL.createObjectURL(file));
+    }
+  };
 
   const uploadIfNeeded = async (file: File | null) => {
     if (!file) return undefined;
@@ -128,22 +144,40 @@ const selectTeacher = (id: string) => {
           />
         </div>
 
-        {/* Текущее фото */}
-        {form.imageUrl && (
-          <img src={form.imageUrl} className="w-32 rounded" />
-        )}
+        {/* Фото секции */}
         <div>
-          <label className="block mb-1">Новое фото секции</label>
-          <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] ?? null)} />
+          <label className="block mb-1">Фото секции</label>
+
+          {/* Preview or current */}
+          {imagePreview ? (
+            <img src={imagePreview} className="w-32 rounded mb-2" />
+          ) : form.imageUrl ? (
+            <img src={form.imageUrl} className="w-32 rounded mb-2" />
+          ) : null}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+          />
         </div>
 
-        {/* Текущая иконка */}
-        {form.iconUrl && (
-          <img src={form.iconUrl} className="w-20 rounded" />
-        )}
+        {/* Иконка */}
         <div>
-          <label className="block mb-1">Новая иконка</label>
-          <input type="file" accept="image/*" onChange={(e) => setIconFile(e.target.files?.[0] ?? null)} />
+          <label className="block mb-1">Иконка секции</label>
+
+          {/* Preview or current */}
+          {iconPreview ? (
+            <img src={iconPreview} className="w-20 rounded mb-2" />
+          ) : form.iconUrl ? (
+            <img src={form.iconUrl} className="w-20 rounded mb-2" />
+          ) : null}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleIconSelect}
+          />
         </div>
 
         {/* Галерея */}
@@ -166,7 +200,7 @@ const selectTeacher = (id: string) => {
           />
         </div>
 
-        {/* Возраст / участники */}
+        {/* Возраст и лимиты */}
         <div className="grid grid-cols-3 gap-2">
           <div>
             <label className="block mb-1">Возраст мин.</label>
@@ -194,7 +228,9 @@ const selectTeacher = (id: string) => {
               type="number"
               className="w-full bg-[#222] rounded px-3 py-2"
               value={form.maxParticipants}
-              onChange={(e) => handleChange("maxParticipants", Number(e.target.value))}
+              onChange={(e) =>
+                handleChange("maxParticipants", Number(e.target.value))
+              }
             />
           </div>
         </div>
@@ -209,13 +245,18 @@ const selectTeacher = (id: string) => {
                 key={t.id}
                 onClick={() => selectTeacher(t.id)}
                 className={`flex items-center gap-3 p-2 rounded border ${
-                 form.teacherIds[0] === t.id
+                  form.teacherIds[0] === t.id
                     ? "border-customyellow bg-customyellow/20"
                     : "border-white/10 bg-[#222]"
                 }`}
               >
-                <img src={t.photoUrl} className="w-12 h-12 rounded object-cover" />
-                <span>{t.lastName} {t.firstName}</span>
+                <img
+                  src={t.photoUrl}
+                  className="w-12 h-12 rounded object-cover"
+                />
+                <span>
+                  {t.lastName} {t.firstName}
+                </span>
               </button>
             ))}
           </div>

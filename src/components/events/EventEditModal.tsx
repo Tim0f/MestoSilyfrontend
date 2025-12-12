@@ -7,14 +7,13 @@ import {
   EventsFrontendService,
   type UpdateEventDto,
 } from '../../services/events.service';
-import { ensureFormData } from '../../services/fileUpload';
 
 interface Props {
   id: string;
   onClose: () => void;
 }
 
-const client = Client
+const client = Client;
 
 const eventsService = new EventsFrontendService(client);
 
@@ -43,7 +42,7 @@ export default function EventEditModal({ id, onClose }: Props) {
         textColor: data.textColor,
         imageUrl: data.imageUrl,
         bannerUrl: data.bannerUrl,
-        createdBy: data.createdBy,
+        createdBy: data.createdBy, // сохраняем в state, но поле не показываем
       });
 
       setLoading(false);
@@ -77,7 +76,7 @@ export default function EventEditModal({ id, onClose }: Props) {
     try {
       await eventsService.uploadImage(id, file);
       load();
-    } catch (err: any) {
+    } catch {
       alert('Ошибка загрузки изображения');
     }
   };
@@ -87,7 +86,7 @@ export default function EventEditModal({ id, onClose }: Props) {
     try {
       await eventsService.uploadBanner(id, file);
       load();
-    } catch (err: any) {
+    } catch {
       alert('Ошибка загрузки баннера');
     }
   };
@@ -100,8 +99,8 @@ export default function EventEditModal({ id, onClose }: Props) {
     );
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-customgrey border border-white/10 p-8 rounded-xl w-full max-w-xl text-white">
+    <div className="fixed inset-0 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-customgrey border border-white/10 p-8 rounded-xl w-full max-w-xl max-h-[90vh] overflow-y-auto text-white">
         <h2 className="text-2xl font-bold mb-6">Редактировать событие</h2>
 
         {error && <p className="text-[#FF6B4A] mb-4">{error}</p>}
@@ -210,19 +209,22 @@ export default function EventEditModal({ id, onClose }: Props) {
           {/* Image */}
           <div className="space-y-2">
             <p className="text-customwhite">Изображение</p>
-            <img
-              src={form.imageUrl}
-              alt="image"
-              className="w-full max-h-40 object-cover rounded border border-white/10"
-            />
+            {form.imageUrl && (
+              <img
+                src={form.imageUrl}
+                alt="image"
+                className="w-full max-h-40 object-cover rounded border border-white/10"
+              />
+            )}
             <input
               type="file"
+              accept="image/*"
               onChange={(e) => handleImageUpload(e.target.files?.[0] || null)}
               className="w-full text-customwhite"
             />
           </div>
 
-          {/* Banner */
+          {/* Banner */}
           <div className="space-y-2">
             <p className="text-customwhite">Баннер</p>
             {form.bannerUrl && (
@@ -234,19 +236,9 @@ export default function EventEditModal({ id, onClose }: Props) {
             )}
             <input
               type="file"
+              accept="image/*"
               onChange={(e) => handleBannerUpload(e.target.files?.[0] || null)}
               className="w-full text-customwhite"
-            />
-          </div>}
-
-          {/* createdBy */}
-          <div>
-            <label className="block mb-1 text-customwhite">ID создателя</label>
-            <input
-              type="text"
-              value={form.createdBy || ''}
-              onChange={(e) => handleChange('createdBy', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
             />
           </div>
 

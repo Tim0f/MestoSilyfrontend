@@ -8,14 +8,13 @@ interface NewsItem {
   id: string;
   title: string;
   content: string;
-  images: string[]; // for listing
-  imageUrl?: string; // active image
+  images: string[];
+  imageUrl?: string;
   publishedAt: string;
   createdBy?: string;
 }
 
-const client = Client
-
+const client = Client;
 const newsService = new NewsFrontendService(client);
 
 export default function NewsManager() {
@@ -27,10 +26,21 @@ export default function NewsManager() {
   const load = async () => {
     setLoading(true);
     try {
-      const data: any = await newsService.findAll();
-      setNews(Array.isArray(data) ? data : []);
+      const response: any = await newsService.findAll();
+
+      console.log("News response:", response); // ← для дебага
+
+      // Бэкенд возвращает объект вида { data: [...], meta: {...} }
+      const list =
+        Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response)
+            ? response
+            : [];
+
+      setNews(list);
     } catch (err) {
-      console.error(err);
+      console.error('Ошибка загрузки новостей:', err);
     } finally {
       setLoading(false);
     }
@@ -69,7 +79,11 @@ export default function NewsManager() {
             >
               <div className="w-28 h-20 flex-shrink-0 overflow-hidden rounded">
                 <img
-                  src={n.images && n.images.length ? n.images[0] : n.imageUrl || 'https://via.placeholder.com/160x120'}
+                  src={
+                    n.images?.[0] ||
+                    n.imageUrl ||
+                    'https://via.placeholder.com/160x120'
+                  }
                   alt={n.title}
                   className="w-full h-full object-cover"
                 />
@@ -83,7 +97,9 @@ export default function NewsManager() {
                   </div>
                 </div>
 
-                <p className="text-customwhite mt-2 line-clamp-3">{n.content}</p>
+                <p className="text-customwhite mt-2 line-clamp-3">
+                  {n.content}
+                </p>
 
                 <div className="mt-3 flex gap-2">
                   <button
@@ -104,7 +120,9 @@ export default function NewsManager() {
             </div>
           ))}
 
-          {!news.length && <p className="text-gray-400">Новостей пока нет</p>}
+          {!news.length && (
+            <p className="text-gray-400">Новостей пока нет</p>
+          )}
         </div>
       )}
 

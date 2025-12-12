@@ -5,13 +5,13 @@ import dragonIcon from '../assets/svg/dragon.svg'
 import masksIcon from '../assets/svg/masks.svg'
 import womenIcon from '../assets/svg/women.svg'
 
-import newsImage from '../assets/img/Mask_group2.png'
+import newsFallbackImg from '../assets/img/Mask_group2.png'
 import Stick from '../assets/img/sticker.webp'
 
 import HeadBlock from '../components/mainpageComponents/headBlock'
 import AboutBlock from '../components/mainpageComponents/aboutBlock'
 import SectionSlider, { ShowcaseSection } from '../components/mainpageComponents/sectionSlider'
-import NewsSlider, { NewsEntry } from '../components/mainpageComponents/newsSlider'
+import NewsSlider from '../components/mainpageComponents/newsSlider'
 import TeamSlider from '../components/mainpageComponents/TeamSlider'
 import PartnerSlider from '../components/mainpageComponents/PartnerSlider'
 
@@ -19,6 +19,7 @@ import { Client } from '../services/httpClient'
 import { SectionsFrontendService } from '../services/sections.service'
 import { PartnersFrontendService } from '../services/partners.service'
 import { TeachersFrontendService } from '../services/teachers.service'
+import { NewsFrontendService } from '../services/news.service'
 
 type Partner = {
   id: number
@@ -32,24 +33,25 @@ const client = Client;
 const sectionsService = new SectionsFrontendService(client)
 const partnersService = new PartnersFrontendService(client)
 const teachersService = new TeachersFrontendService(client)
+const newsService = new NewsFrontendService(client)
 
 export default function HomePage() {
   const [activeTileId, setActiveTileId] = useState<string>('fencing')
   const [newsRevealed, setNewsRevealed] = useState(false)
   const [currentNewsPage, setCurrentNewsPage] = useState(0)
 
-  // ---- ДИНАМИЧЕСКИЕ ДАННЫЕ ----
   const [sectionsDynamic, setSectionsDynamic] = useState<ShowcaseSection[] | null>(null)
   const [partnersDynamic, setPartnersDynamic] = useState<Partner[] | null>(null)
   const [teachersDynamic, setTeachersDynamic] = useState<any[] | null>(null)
 
-  // ---- ЗАГЛУШКИ ----
+  const [news, setNews] = useState<any[]>([])
+
   const sectionsFallback: ShowcaseSection[] = useMemo(
     () => [
       {
         id: 'fencing',
         title: 'Актерское фехтование',
-        description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+        description: 'Откройте для себя искусство владения клинком.',
         teacher: 'Иван Иванович Иванов',
         price: '1000₽/час',
         iconUrl: swordIcon,
@@ -57,7 +59,7 @@ export default function HomePage() {
       {
         id: 'archery',
         title: 'Лучная стрельба',
-        description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+        description: 'Откройте для себя искусство владения клинком.',
         teacher: 'Иван Иванович Иванов',
         price: '1000₽/час',
         iconUrl: arrowIcon,
@@ -65,7 +67,7 @@ export default function HomePage() {
       {
         id: 'dragon',
         title: 'Фэнтези клуб',
-        description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+        description: 'Откройте для себя искусство владения клинком.',
         teacher: 'Иван Иванович Иванов',
         price: '1000₽/час',
         iconUrl: dragonIcon,
@@ -73,7 +75,7 @@ export default function HomePage() {
       {
         id: 'theatre',
         title: 'Театр',
-        description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+        description: 'Откройте для себя искусство владения клинком.',
         teacher: 'Иван Иванович Иванов',
         price: '1000₽/час',
         iconUrl: masksIcon,
@@ -81,7 +83,7 @@ export default function HomePage() {
       {
         id: 'dance',
         title: 'Пластика и танец',
-        description: 'Откройте для себя искусство владения клинком. От базовых стоек до изящных атак.',
+        description: 'Откройте для себя искусство владения клинком.',
         teacher: 'Иван Иванович Иванов',
         price: '1000₽/час',
         iconUrl: womenIcon,
@@ -102,58 +104,43 @@ export default function HomePage() {
     []
   )
 
-  // ---- ЗАГРУЗКА РЕАЛЬНЫХ ДАННЫХ ----
   useEffect(() => {
     loadSections()
     loadPartners()
     loadTeachers()
+    loadNews()
 
-    const id = window.setTimeout(() => setNewsRevealed(true), 0)
+    const id = window.setTimeout(() => setNewsRevealed(true), 10)
     return () => window.clearTimeout(id)
   }, [])
 
-async function loadSections() {
-  try {
-    const api = await sectionsService.findAll<any[]>();
-
-    if (api.length === 0) {
-      setSectionsDynamic(sectionsFallback);
-    } else {
-      setSectionsDynamic(
-        api.map((s) => ({
-          id: String(s.id),
-          title: s.name,
-          description: s.description,
-          teacher: s.teachers?.[0]
-            ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
-            : "Тренер не указан",
-          price: s.price ? `${s.price}₽` : "",
-          iconUrl: s.iconUrl ?? swordIcon,
-        }))
-      );
+  async function loadSections() {
+    try {
+      const api = await sectionsService.findAll<any[]>()
+      setSectionsDynamic(api.length ? api.map((s) => ({
+        id: String(s.id),
+        title: s.name,
+        description: s.description,
+        teacher: s.teachers?.[0]
+          ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
+          : "Тренер не указан",
+        price: s.price ? `${s.price}₽` : "",
+        iconUrl: s.iconUrl ?? swordIcon,
+      })) : sectionsFallback)
+    } catch {
+      setSectionsDynamic(sectionsFallback)
     }
-  } catch {
-    setSectionsDynamic(sectionsFallback);
   }
-}
-
 
   async function loadPartners() {
     try {
       const api = await partnersService.findAll<any[]>()
-
-      if (api.length === 0) {
-        setPartnersDynamic(partnersFallback)
-      } else {
-        setPartnersDynamic(
-          api.map((p) => ({
-            id: p.id,
-            name: p.name,
-            url: p.url ?? '#',
-            image: p.logoUrl ?? Stick,
-          }))
-        )
-      }
+      setPartnersDynamic(api.length ? api.map((p) => ({
+        id: p.id,
+        name: p.name,
+        url: p.url ?? '#',
+        image: p.logoUrl ?? Stick,
+      })) : partnersFallback)
     } catch {
       setPartnersDynamic(partnersFallback)
     }
@@ -162,54 +149,31 @@ async function loadSections() {
   async function loadTeachers() {
     try {
       const api = await teachersService.findAll<any[]>()
-
-      if (api.length === 0) {
-        setTeachersDynamic(null) // TeamSlider сам показывает заглушки
-      } else {
-        setTeachersDynamic(api)
-      }
+      setTeachersDynamic(api.length ? api : null)
     } catch {
       setTeachersDynamic(null)
     }
   }
 
+  async function loadNews() {
+    try {
+      const api: any[] = await newsService.findRecent<any[]>(6)
+      setNews(api.length ? api : [])
+    } catch {
+      setNews([])
+    }
+  }
+
   const teamMembers = useMemo(() => {
-  if (!teachersDynamic) return []
-
-  return teachersDynamic.map(t => ({
-    id: t.id,
-    name: `${t.lastName} ${t.firstName}`,
-    position: t.role ?? "Преподаватель",
-    Image: t.photoUrl ?? "",
-    audiosrc: t.audioUrl ?? "",
-  }))
-}, [teachersDynamic])
-
-
-  const defaultSectionId = (sectionsDynamic ?? sectionsFallback)[0]?.id ?? 'fencing'
-
-  const newsGroups: NewsEntry[][] = useMemo(
-    () => [
-      [
-        {
-          title: 'Harda',
-          content: 'В этот вторник в 18:30 состоится Hard Tournament\nБолельщикам вход бесплатный!...',
-          bgColor: 'bg-black/60',
-        },
-        {
-          title: 'Harda',
-          content: 'В этот вторник в 18:30 состоится Hard Tournament...',
-          bgColor: 'bg-customblack',
-        },
-        {
-          title: 'Harda',
-          content: 'В этот вторник в 18:30 состоится Hard Tournament...',
-          bgColor: 'bg-customblack',
-        },
-      ],
-    ],
-    []
-  )
+    if (!teachersDynamic) return []
+    return teachersDynamic.map(t => ({
+      id: t.id,
+      name: `${t.lastName} ${t.firstName}`,
+      position: t.role ?? "Преподаватель",
+      Image: t.photoUrl ?? "",
+      audiosrc: t.audioUrl ?? "",
+    }))
+  }, [teachersDynamic])
 
   return (
     <div className="bg-customblack min-h-screen">
@@ -220,16 +184,16 @@ async function loadSections() {
         sections={sectionsDynamic ?? sectionsFallback}
         activeId={activeTileId}
         onChangeActive={setActiveTileId}
-        defaultActiveId={defaultSectionId}
+        defaultActiveId={(sectionsDynamic ?? sectionsFallback)[0]?.id}
       />
 
       <NewsSlider
-        newsGroups={newsGroups}
+        news={news}
+        fallbackImage={newsFallbackImg}
         currentPage={currentNewsPage}
         onPageChange={setCurrentNewsPage}
-        onToggleReveal={setNewsRevealed}
         isRevealed={newsRevealed}
-        imageSrc={newsImage}
+        onToggleReveal={setNewsRevealed}
       />
 
       <section className="py-20 bg-customblack">
@@ -237,8 +201,6 @@ async function loadSections() {
           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
             КОМАНДА
           </h2>
-
-          {/* Если нет данных — TeamSlider сам покажет заглушки */}
           <TeamSlider teamMembers={teamMembers} interval={5000} />
         </div>
       </section>
@@ -248,7 +210,6 @@ async function loadSections() {
           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
             ПАРТНЕРЫ
           </h2>
-
           <PartnerSlider partners={partnersDynamic ?? partnersFallback} />
         </div>
       </section>

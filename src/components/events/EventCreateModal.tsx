@@ -7,15 +7,17 @@ import {
   EventsFrontendService,
   type CreateEventDto,
 } from '../../services/events.service';
+import { UploadFrontendService } from '../../services/upload.service';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const client = Client
+const client = Client;
 
 const eventsService = new EventsFrontendService(client);
+const uploadService = new UploadFrontendService(client);
 
 export default function EventCreateModal({ isOpen, onClose }: Props) {
   const [form, setForm] = useState<CreateEventDto>({
@@ -36,8 +38,33 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Новый блок — файлы + превью
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+
   const handleChange = (key: keyof CreateEventDto, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setImageFile(file);
+    if (file) setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleBannerSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setBannerFile(file);
+    if (file) setBannerPreview(URL.createObjectURL(file));
+  };
+
+  const uploadIfNeeded = async (file: File | null) => {
+    if (!file) return undefined;
+    const uploaded = await uploadService.image(file);
+    return (uploaded as any).url;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,9 +73,13 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
     setLoading(true);
 
     try {
-      // Корректный ISO-формат
+      const newImageUrl = await uploadIfNeeded(imageFile);
+      const newBannerUrl = await uploadIfNeeded(bannerFile);
+
       const payload = {
         ...form,
+        imageUrl: newImageUrl ?? form.imageUrl,
+        bannerUrl: newBannerUrl ?? form.bannerUrl,
         date: new Date(`${form.date}T${form.startTime}:00`).toISOString(),
       };
 
@@ -72,8 +103,9 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
         {error && <p className="text-[#FF6B4A] mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* name */}
           <div>
-            <label className="block mb-1 text-customwhite">Служебное имя (name)</label>
+            <label className="block mb-1">Служебное имя</label>
             <input
               type="text"
               value={form.name}
@@ -83,8 +115,9 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* title */}
           <div>
-            <label className="block mb-1 text-customwhite">Заголовок</label>
+            <label className="block mb-1">Заголовок</label>
             <input
               type="text"
               value={form.title}
@@ -94,8 +127,9 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* description */}
           <div>
-            <label className="block mb-1 text-customwhite">Описание</label>
+            <label className="block mb-1">Описание</label>
             <textarea
               value={form.description}
               onChange={(e) => handleChange('description', e.target.value)}
@@ -105,8 +139,9 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* date */}
           <div>
-            <label className="block mb-1 text-customwhite">Дата</label>
+            <label className="block mb-1">Дата</label>
             <input
               type="date"
               value={form.date}
@@ -116,9 +151,10 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* times */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1 text-customwhite">Начало</label>
+              <label className="block mb-1">Начало</label>
               <input
                 type="time"
                 value={form.startTime}
@@ -128,7 +164,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
               />
             </div>
             <div>
-              <label className="block mb-1 text-customwhite">Окончание</label>
+              <label className="block mb-1">Окончание</label>
               <input
                 type="time"
                 value={form.endTime}
@@ -139,8 +175,9 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             </div>
           </div>
 
+          {/* price */}
           <div>
-            <label className="block mb-1 text-customwhite">Цена</label>
+            <label className="block mb-1">Цена</label>
             <input
               type="number"
               value={form.price}
@@ -150,19 +187,23 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* maxParticipants */}
           <div>
-            <label className="block mb-1 text-customwhite">Максимум участников</label>
+            <label className="block mb-1">Максимум участников</label>
             <input
               type="number"
               value={form.maxParticipants}
-              onChange={(e) => handleChange('maxParticipants', Number(e.target.value))}
+              onChange={(e) =>
+                handleChange('maxParticipants', Number(e.target.value))
+              }
               className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
               required
             />
           </div>
 
+          {/* textColor */}
           <div>
-            <label className="block mb-1 text-customwhite">Цвет текста</label>
+            <label className="block mb-1">Цвет текста</label>
             <input
               type="color"
               value={form.textColor}
@@ -171,28 +212,33 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             />
           </div>
 
+          {/* image upload */}
           <div>
-            <label className="block mb-1 text-customwhite">URL изображения</label>
-            <input
-              type="text"
-              value={form.imageUrl}
-              onChange={(e) => handleChange('imageUrl', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              required
-            />
+            <label className="block mb-1">Изображение события</label>
+
+            {imagePreview ? (
+              <img src={imagePreview} className="w-32 rounded mb-2" />
+            ) : form.imageUrl ? (
+              <img src={form.imageUrl} className="w-32 rounded mb-2" />
+            ) : null}
+
+            <input type="file" accept="image/*" onChange={handleImageSelect} />
           </div>
 
+          {/* banner upload */}
           <div>
-            <label className="block mb-1 text-customwhite">URL баннера</label>
-            <input
-              type="text"
-              value={form.bannerUrl}
-              onChange={(e) => handleChange('bannerUrl', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
-              required
-            />
+            <label className="block mb-1">Баннер события</label>
+
+            {bannerPreview ? (
+              <img src={bannerPreview} className="w-32 rounded mb-2" />
+            ) : form.bannerUrl ? (
+              <img src={form.bannerUrl} className="w-32 rounded mb-2" />
+            ) : null}
+
+            <input type="file" accept="image/*" onChange={handleBannerSelect} />
           </div>
 
+          {/* actions */}
           <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"

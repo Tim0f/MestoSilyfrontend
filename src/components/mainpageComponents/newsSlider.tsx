@@ -1,28 +1,29 @@
 import NewsCard from './NewsCard'
 
-export type NewsEntry = {
-  title: string
-  content: string
-  bgColor: string
-}
-
-type NewsSliderProps = {
-  newsGroups: NewsEntry[][]
+export type NewsSliderProps = {
+  news: any[]
+  fallbackImage: string
   currentPage: number
   onPageChange: (index: number) => void
   onToggleReveal: (value: boolean) => void
   isRevealed: boolean
-  imageSrc: string
 }
 
 export default function NewsSlider({
-  newsGroups,
+  news,
+  fallbackImage,
   currentPage,
   onPageChange,
   onToggleReveal,
   isRevealed,
-  imageSrc,
 }: NewsSliderProps) {
+  const pageSize = 3
+  const pages = Math.ceil(news.length / pageSize)
+
+  const groups = Array.from({ length: pages }, (_, i) =>
+    news.slice(i * pageSize, (i + 1) * pageSize)
+  )
+
   const handlePaginationClick = (index: number) => {
     if (index === currentPage) return
     onToggleReveal(false)
@@ -36,42 +37,55 @@ export default function NewsSlider({
     <section className="py-20 bg-customblack">
       <div className="px-10">
         <div className="text-center mb-12">
-          <h2 className="text-h1 font-h1 text-customyellow mb-8" style={{ letterSpacing: '0.05em' }}>
+          <h2 className="text-h1 font-h1 text-customyellow mb-8">
             НОВОСТИ
           </h2>
         </div>
 
         <div className="relative">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {newsGroups[currentPage]?.map((newsItem, index) => (
+            {groups[currentPage]?.map((item: any, index: number) => (
               <NewsCard
-                key={`${currentPage}-${index}`}
-                title={newsItem.title}
-                content={newsItem.content}
-                bgColorClass={newsItem.bgColor}
-                imageSrc={imageSrc}
-                imageAlt={newsItem.title}
+                key={item.id}
+                title={item.title}
+                content={item.content}
+                imageSrc={item.images?.[0] ?? fallbackImage}
+                imageAlt={item.title}
                 transitionDelay={index * 100}
                 isRevealed={isRevealed}
               />
             ))}
+
+            {groups.length === 0 && (
+              <>
+                <NewsCard
+                  title="Новостей пока нет"
+                  content="Скоро тут появятся свежие новости!"
+                  imageSrc={fallbackImage}
+                  imageAlt="placeholder"
+                  transitionDelay={0}
+                  isRevealed={true}
+                />
+              </>
+            )}
           </div>
         </div>
 
-        <div className="flex justify-center mt-12 gap-3">
-          {newsGroups.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handlePaginationClick(index)}
-              className={`transition-all duration-300 ${
-                index === currentPage
-                  ? 'w-3 h-3 bg-primary-500 rounded-full scale-110'
-                  : 'w-3 h-3 border border-primary-500/50 rounded-full hover:border-primary-500/80 hover:scale-110'
-              }`}
-              aria-label={`Перейти на страницу ${index + 1}`}
-            />
-          ))}
-        </div>
+        {groups.length > 1 && (
+          <div className="flex justify-center mt-12 gap-3">
+            {groups.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handlePaginationClick(index)}
+                className={`transition-all duration-300 ${
+                  index === currentPage
+                    ? 'w-3 h-3 bg-primary-500 rounded-full scale-110'
+                    : 'w-3 h-3 border border-primary-500/50 rounded-full hover:border-primary-500/80 hover:scale-110'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

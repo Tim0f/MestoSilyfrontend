@@ -154,7 +154,7 @@ export default function SectionsPage() {
             />
 
             <div
-              className="w-[125px] h-[125px]"
+              className="w-[175px] h-[522px] "
               style={{
                 WebkitMaskImage: `url(${current.iconUrl})`,
                 maskImage: `url(${current.iconUrl})`,
@@ -164,7 +164,7 @@ export default function SectionsPage() {
                 maskRepeat: "no-repeat",
                 WebkitMaskPosition: "center",
                 maskPosition: "center",
-                backgroundColor: "customyellow",
+                backgroundColor: "#F4C884",
               }}
             />
 

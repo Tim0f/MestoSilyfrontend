@@ -1,30 +1,51 @@
-import React, { useState } from 'react';
-import { Client } from '../../services/httpClient';
+import React, { useState } from "react";
+import { Client } from "../../services/httpClient";
 import {
   ProductsFrontendService,
   type CreateProductDto,
-} from '../../services/products.service';
+} from "../../services/products.service";
+import { UploadFrontendService } from "../../services/upload.service";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const client = Client
+const client = Client;
 
 const productsService = new ProductsFrontendService(client);
+const uploadService = new UploadFrontendService(client);
 
 export default function ProductCreateModal({ isOpen, onClose }: Props) {
   const [form, setForm] = useState<CreateProductDto>({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     price: 0,
-    imageUrl: '',
+    imageUrl: "",
     isActive: true,
   });
 
+  const [uploading, setUploading] = useState(false);
+
   const update = (k: keyof CreateProductDto, v: any) =>
     setForm((prev) => ({ ...prev, [k]: v }));
+
+const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (!e.target.files?.length) return;
+
+  setUploading(true);
+  const file = e.target.files[0];
+
+  try {
+    const res = await uploadService.image<{ filename: string }>(file);
+
+    const url = uploadService.getFileUrl(res.filename);
+    update("imageUrl", url);
+  } finally {
+    setUploading(false);
+  }
+};
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +66,7 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
             <input
               type="text"
               value={form.name}
-              onChange={(e) => update('name', e.target.value)}
+              onChange={(e) => update("name", e.target.value)}
               required
               className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
             />
@@ -55,7 +76,7 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Описание</label>
             <textarea
               value={form.description}
-              onChange={(e) => update('description', e.target.value)}
+              onChange={(e) => update("description", e.target.value)}
               rows={3}
               required
               className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
@@ -63,33 +84,43 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block mb-1 text-customwhite">Цена (₽)</label>
+            <label className="block mb-1 text-customwhite">Цена (В зернах)</label>
             <input
               type="number"
               value={form.price}
-              onChange={(e) => update('price', Number(e.target.value))}
+              onChange={(e) => update("price", Number(e.target.value))}
               min={0}
               required
               className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
             />
           </div>
 
+          {/* Загрузка изображения */}
           <div>
-            <label className="block mb-1 text-customwhite">URL изображения</label>
+            <label className="block mb-1 text-customwhite">Изображение товара</label>
             <input
-              type="text"
-              value={form.imageUrl}
-              onChange={(e) => update('imageUrl', e.target.value)}
-              required
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
               className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
             />
+
+            {uploading && <p className="text-yellow-400 mt-1">Загрузка...</p>}
+
+            {form.imageUrl && (
+              <img
+                src={form.imageUrl}
+                alt="preview"
+                className="mt-2 w-32 h-32 object-cover rounded border border-white/20"
+              />
+            )}
           </div>
 
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={form.isActive}
-              onChange={(e) => update('isActive', e.target.checked)}
+              onChange={(e) => update("isActive", e.target.checked)}
             />
             Активен
           </label>
@@ -106,6 +137,7 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
             <button
               type="submit"
               className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
+              disabled={uploading}
             >
               Создать
             </button>
