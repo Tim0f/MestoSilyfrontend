@@ -1,81 +1,92 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+
 import Layout from './layouts/BaseLayout'
-import HomePage from './pages/HomePage'
-import ShopPage from './pages/ShopPage'
-import SchedulePage from './pages/SchedulePage'
-import NewsPage from './pages/NewsPage'
-import ChatsPage from './pages/ChatsPage'
-import ProfilePage from './pages/ProfilePage'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import SectionsPage from './pages/SectionsPage'
-import AdminDashboardPage from './pages/AdminDashboardPage'
-import AdminNewsPage from './pages/news'
-import GrainsPage from './pages/grains'
-import ProductsPage from './pages/products'
-import PartnersPage from './pages/partners'
-import TeachersPage from './pages/teachers'
-import AchievementsPage from './pages/achievements'
-import ChatManagementPage from './pages/ChatManager'
-import AdminSectionsPage from './pages/AdminSectionPage'
-import AdminUsersPage from './pages/AdminUsersPage'
-import AdminLessonsPage from './pages/AdminLessonPage'
-import AdminEventsPage from './pages/AdminEventsPage'
 import AdminLayout from './layouts/AdminLayout'
-import AdminEnrollmentsPage from './pages/AdminEnrollmentsPage'
-import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
-import BazarPage from './pages/BazarPage'
-import AdminOrdersPage from './pages/AdminOrdersPage'
+import { AuthProvider } from './context/AuthContext'
+
+// ===== Public pages =====
+const HomePage = lazy(() => import('./pages/HomePage'))
+const ShopPage = lazy(() => import('./pages/ShopPage'))
+const SchedulePage = lazy(() => import('./pages/SchedulePage'))
+const NewsPage = lazy(() => import('./pages/NewsPage'))
+const ChatsPage = lazy(() => import('./pages/ChatsPage'))
+const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const SectionsPage = lazy(() => import('./pages/SectionsPage'))
+const BazarPage = lazy(() => import('./pages/BazarPage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+
+// ===== Admin pages =====
+const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage'))
+const AdminUsersPage = lazy(() => import('./pages/AdminUsersPage'))
+const AdminSectionsPage = lazy(() => import('./pages/AdminSectionPage'))
+const AdminLessonsPage = lazy(() => import('./pages/AdminLessonPage'))
+const AdminEventsPage = lazy(() => import('./pages/AdminEventsPage'))
+const AchievementsPage = lazy(() => import('./pages/achievements'))
+const GrainsPage = lazy(() => import('./pages/grains'))
+const PartnersPage = lazy(() => import('./pages/partners'))
+const ProductsPage = lazy(() => import('./pages/products'))
+const AdminNewsPage = lazy(() => import('./pages/news'))
+const TeachersPage = lazy(() => import('./pages/teachers'))
+const ChatManagementPage = lazy(() => import('./pages/ChatManager'))
+const AdminOrdersPage = lazy(() => import('./pages/AdminOrdersPage'))
+const AdminEnrollmentsPage = lazy(() => import('./pages/AdminEnrollmentsPage'))
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
+        <Suspense fallback={null}>
+          <Routes>
 
-          {/* Публичный Layout */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="shop" element={<ShopPage />} />
-            <Route path="schedule" element={<SchedulePage />} />
-            <Route path="news" element={<NewsPage />} />
-            <Route path="chats" element={<ChatsPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="sections" element={<SectionsPage />} />
-            <Route path="bazar" element={<BazarPage />} />
-          </Route>
+            {/* ===== Public layout ===== */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="shop" element={<ShopPage />} />
+              <Route path="schedule" element={<SchedulePage />} />
+              <Route path="news" element={<NewsPage />} />
+              <Route path="chats" element={<ChatsPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+              <Route path="sections" element={<SectionsPage />} />
+              <Route path="bazar" element={<BazarPage />} />
+            </Route>
 
-          {/* Админский Layout */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<AdminDashboardPage />} />
-            <Route path="users" element={<AdminUsersPage />} />
-            <Route path="sections" element={<AdminSectionsPage />} />
-            <Route path="lessons" element={<AdminLessonsPage />} />
-            <Route path="events" element={<AdminEventsPage />} />
-            <Route path="achievements" element={<AchievementsPage />} />
-            <Route path="grains" element={<GrainsPage />} />
-            <Route path="partners" element={<PartnersPage />} />
-            <Route path="products" element={<ProductsPage />} />
-            <Route path="news" element={<AdminNewsPage />} />
-            <Route path="teachers" element={<TeachersPage />} />
-            <Route path="chats" element={<ChatManagementPage />} />
-            <Route path="orders" element={<AdminOrdersPage />} />
-            <Route path="enrollments" element={<AdminEnrollmentsPage />} />
+            {/* ===== Admin layout ===== */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<AdminDashboardPage />} />
+              <Route path="users" element={<AdminUsersPage />} />
+              <Route path="sections" element={<AdminSectionsPage />} />
+              <Route path="lessons" element={<AdminLessonsPage />} />
+              <Route path="events" element={<AdminEventsPage />} />
+              <Route path="achievements" element={<AchievementsPage />} />
+              <Route path="grains" element={<GrainsPage />} />
+              <Route path="partners" element={<PartnersPage />} />
+              <Route path="products" element={<ProductsPage />} />
+              <Route path="news" element={<AdminNewsPage />} />
+              <Route path="teachers" element={<TeachersPage />} />
+              <Route path="chats" element={<ChatManagementPage />} />
+              <Route path="orders" element={<AdminOrdersPage />} />
+              <Route path="enrollments" element={<AdminEnrollmentsPage />} />
+            </Route>
 
-          </Route>
+            {/* ===== Auth ===== */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
 
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+            {/* ===== 404 redirect ===== */}
+            <Route path="*" element={<Navigate to="/" replace />} />
 
-        </Routes>
+          </Routes>
+        </Suspense>
       </Router>
     </AuthProvider>
   )
