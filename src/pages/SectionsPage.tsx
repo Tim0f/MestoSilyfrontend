@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, lazy, Suspense } from "react";
 import TeamSlider from "../components/mainpageComponents/TeamSlider";
 
 import swordImage from "../assets/svg/sword.svg";
@@ -7,6 +6,10 @@ import arrowImage from "../assets/svg/arrow.svg";
 import dragonImage from "../assets/svg/dragon.svg";
 import masksImage from "../assets/svg/masks.svg";
 import womenImage from "../assets/svg/women.svg";
+
+const AnimatedSectionContent = lazy(
+  () => import('../components/AnimatedSectionContent')
+);
 
 // сервисы
 import { HttpClient } from "../services/httpClient";
@@ -104,12 +107,6 @@ export default function SectionsPage() {
 
   const current = sections[currentIndex];
 
-  const variants = {
-    enter: (dir: number) => ({ opacity: 0, y: dir > 0 ? 40 : -40 }),
-    center: { opacity: 1, y: 0 },
-    exit: (dir: number) => ({ opacity: 0, y: dir > 0 ? -40 : 40 }),
-  };
-
   // ★ Собираем преподавателей со всех секций
   const teamMembers = sections
     .flatMap((s) => s.teachers ?? [])
@@ -174,30 +171,15 @@ export default function SectionsPage() {
             />
           </div>
 
-          <AnimatePresence custom={direction} mode="popLayout">
-            <motion.div
-              key={current.id}
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.5 }}
-              className="flex flex-col items-center"
-            >
-              <h2 className="text-3xl text-white font-black mb-3 uppercase tracking-wide">
-                {current.name}
-              </h2>
+<Suspense fallback={null}>
+  <AnimatedSectionContent
+    id={current.id}
+    name={current.name}
+    description={current.description}
+    direction={direction}
+  />
+</Suspense>
 
-              <p className="text-white mb-5 leading-relaxed max-w-md">
-                {current.description}
-              </p>
-
-              <button className="mt-6 px-10 py-3 bg-customyellow text-[#2b2422] rounded-lg font-h2 hover:bg-[#eab97c] transition">
-                записаться
-              </button>
-            </motion.div>
-          </AnimatePresence>
         </div>
 
         {/* Правая сетка */}
