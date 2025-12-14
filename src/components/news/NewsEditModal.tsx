@@ -52,16 +52,15 @@ export default function NewsEditModal({ isOpen, onClose, item }: Props) {
     setNewImageInput('');
   };
 
-  const removeImage = (idx: number) => {
-    setImages((p) => p.filter((_, i) => i !== idx));
-    // if removed active image, clear or set fallback
-    if (images[idx] === activeImage) {
-      setActiveImage((prev) => {
-        const after = images.filter((_, i) => i !== idx);
-        return after[0];
-      });
-    }
-  };
+const removeImage = (idx: number) => {
+  const after = images.filter((_, i) => i !== idx);
+  setImages(after);
+
+  if (images[idx] === activeImage) {
+    setActiveImage(after[0]);
+  }
+};
+
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();

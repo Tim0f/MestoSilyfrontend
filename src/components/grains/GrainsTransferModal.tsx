@@ -85,8 +85,25 @@ export default function GrainsTransferModal({ isOpen, onClose, onUpdated }: Prop
         <form onSubmit={submit} className="space-y-3">
           <div>
             <label className="block mb-1 text-customwhite">ID получателя (опционально)</label>
-            <input value={toUserId} onChange={(e) => setToUserId(e.target.value)} className="w-full px-3 py-2 rounded bg-[#222] border border-white/10" />
-          </div>
+            <select
+  value={toUserId}
+  onChange={(e) => {
+    setToUserId(e.target.value);
+    setToUserEmail(''); // чтобы не было конфликта
+  }}
+  className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+>
+  <option value="">Выберите пользователя</option>
+  {users.map((u) => (
+    <option key={u.id} value={u.id}>
+      {u.email}
+    </option>
+  ))}
+</select>
+
+            
+            
+            </div>
 
           <div>
             <label className="block mb-1 text-customwhite">Email получателя (опционально)</label>

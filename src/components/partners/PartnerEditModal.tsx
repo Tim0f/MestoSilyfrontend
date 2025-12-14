@@ -27,24 +27,23 @@ export default function PartnerEditModal({ isOpen, onClose, partner }: Props) {
   });
 
   const [preview, setPreview] = useState<string>(partner.imageUrl || '');
-  const [file, setFile] = useState<File | null>(null);
 
   const update = (k: keyof UpdatePartnerDto, v: any) =>
     setForm((prev) => ({ ...prev, [k]: v }));
 
-  const onFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
+const onFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const f = e.target.files?.[0];
+  if (!f) return;
 
-    setFile(f);
-    setPreview(URL.createObjectURL(f));
+  setPreview(URL.createObjectURL(f));
 
-    const formData = new FormData();
-    formData.append('image', f);
+  const formData = new FormData();
+  formData.append('image', f);
 
-    const uploaded = await partnersService.uploadTempImage(formData);
-    update('imageUrl', uploaded.url);
-  };
+  const uploaded = await partnersService.uploadTempImage(formData);
+  update('imageUrl', uploaded.url);
+};
+
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();

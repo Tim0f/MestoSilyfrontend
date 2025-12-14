@@ -30,17 +30,10 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [images, setImages] = useState<string[]>([]);
-  const [imageInput, setImageInput] = useState('');
   const [publishedDate, setPublishedDate] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // const addImage = () => {
-  //   const url = imageInput.trim();
-  //   if (!url) return;
-  //   setImages((p) => [...p, url]);
-  //   setImageInput('');
-  // };
 
   const removeImage = (idx: number) => {
     setImages((p) => p.filter((_, i) => i !== idx));

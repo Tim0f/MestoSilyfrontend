@@ -1,4 +1,3 @@
-import AudioPlayer from './AudioPlayer'
 import texturedRound from '../../assets/svg/texturedRound.svg'
 
 type CardProps = {
@@ -9,7 +8,7 @@ type CardProps = {
   onPlayChange?: (isPlaying: boolean) => void
 }
 
-export default function TeamCard({ Image, name, position, audiosrc, onPlayChange }: CardProps) {
+export default function TeamCard({ Image, name, position }: CardProps) {
   return (
     <div className="p-6 w-[590px] flex flex-col items-center text-customwhite">
       <div className="relative w-[590px] h-[590px] rounded-full flex items-center justify-center p-6 mb-6">
@@ -30,7 +29,6 @@ export default function TeamCard({ Image, name, position, audiosrc, onPlayChange
 
       <div className="text-p font-p text-center">{position}</div>
       <div className="text-h2 font-h2 text-center">{name}</div>
-      <AudioPlayer src={audiosrc} onPlayChange={onPlayChange} />
     </div>
   )
 }
