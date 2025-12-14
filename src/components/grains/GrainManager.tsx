@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { UsersFrontendService } from '../../services/users.service';
 import { Client } from '../../services/httpClient';
-import GrainsAddModal from './GrainsAddModal';
-import GrainsRemoveModal from './GrainsRemoveModal';
-import GrainsTransferModal from './GrainsTransferModal';
-import GrainsHistoryModal  from './GrainsHistoryModal';
+const GrainsAddModal = lazy(() => import('./GrainsAddModal'));
+const GrainsRemoveModal = lazy(() => import('./GrainsRemoveModal'));
+const GrainsTransferModal = lazy(() => import('./GrainsTransferModal'));
+const GrainsHistoryModal = lazy(() => import('./GrainsHistoryModal'));
+
 import { User } from '../../types/User';
 
 const client = Client
@@ -131,7 +132,9 @@ export default function GrainManager() {
         ))}
       </div>
 
-      {/* ADD */}
+
+        <Suspense fallback={null}>
+          {/* ADD */}
       <GrainsAddModal
         isOpen={modalAdd}
         onClose={() => setModalAdd(false)}
@@ -161,6 +164,8 @@ export default function GrainManager() {
         onClose={() => setModalHistory(false)}
         userId={selectedUserId ?? ''}
       />
+        </Suspense>
+      
     </div>
   );
 }

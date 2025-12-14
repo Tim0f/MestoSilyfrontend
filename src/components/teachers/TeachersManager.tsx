@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Client } from '../../services/httpClient';
 import { TeachersFrontendService } from '../../services/teachers.service';
 
-import TeacherCreateModal from './TeacherscreateModal';
-import TeacherEditModal from './TeachersEditModal';
+const TeacherCreateModal = lazy(() => import('./TeacherscreateModal'));
+const TeacherEditModal = lazy(() => import('./TeachersEditModal'));
 
 interface Teacher {
   id: string;
@@ -105,6 +105,7 @@ export default function TeachersManager() {
         </div>
       )}
 
+<Suspense fallback={null}>
       <TeacherCreateModal
         isOpen={createOpen}
         onClose={() => {
@@ -123,6 +124,8 @@ export default function TeachersManager() {
           }}
         />
       )}
+</Suspense>
+
     </div>
   );
 }

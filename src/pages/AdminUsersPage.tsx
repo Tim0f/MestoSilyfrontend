@@ -1,10 +1,14 @@
 // AdminUsersPage.tsx
 // Страница управления пользователями
 
-import  { useState } from 'react';
+import  { useState, lazy, Suspense } from 'react';
+
 import UsersList from '../components/users/UserList';
-import AdminCreateModal from '../components/users/AdminCreateModal';
-import UserEditModal from '../components/users/UserEditModal';
+const AdminCreateModal = lazy(() => import('../components/users/AdminCreateModal'));
+const UserEditModal = lazy(() => import('../components/users/UserEditModal'));
+
+
+
 
 export default function AdminUsersPage() {
   const [isCreateAdminOpen, setIsCreateAdminOpen] = useState(false);
@@ -21,8 +25,8 @@ export default function AdminUsersPage() {
           Создать администратора
         </button>
       </div>
-
       <UsersList onEdit={(id) => setEditUserId(id)} />
+    <Suspense fallback={null}>
 
       {/* Модалка создания администратора */}
       <AdminCreateModal
@@ -37,6 +41,9 @@ export default function AdminUsersPage() {
           onClose={() => setEditUserId(null)}
         />
       )}
+
+    </Suspense>
+
     </div>
   );
 }

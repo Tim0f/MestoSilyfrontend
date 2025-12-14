@@ -1,12 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Client } from '../../services/httpClient';
 import {
   AchievementsFrontendService,
 } from '../../services/achievements.service';
 import { SectionsFrontendService } from '../../services/sections.service';
 
-import AchievementCreateModal from './AchievementsCreateModal';
-import AchievementEditModal from './AchievementsEditModal';
+const AchievementCreateModal = lazy(
+  () => import('./AchievementsCreateModal')
+);
+
+const AchievementEditModal = lazy(
+  () => import('./AchievementsEditModal')
+);
+
 
 interface Achievement {
   id: string;
@@ -122,6 +128,7 @@ export default function AchievementsManager() {
         </div>
       )}
 
+      <Suspense fallback={null}>
       <AchievementCreateModal
         isOpen={createOpen}
         onClose={() => {
@@ -142,6 +149,9 @@ export default function AchievementsManager() {
           sections={sections}
         />
       )}
+        
+      </Suspense>
+
     </div>
   );
 }

@@ -1,9 +1,10 @@
 // AdminSectionsPage.tsx
 
-import  { useState } from 'react';
+import  { useState, lazy, Suspense } from 'react';
 import SectionsList from '../components/sections/SectionList';
-import SectionCreateModal from '../components/sections/SectionCreateModal';
-import SectionEditModal from '../components/sections/SectionEditModal';
+const SectionCreateModal = lazy(() => import('../components/sections/SectionCreateModal'));
+const SectionEditModal = lazy(() => import('../components/sections/SectionEditModal'));
+
 
 export default function AdminSectionsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -22,6 +23,7 @@ export default function AdminSectionsPage() {
       </div>
 
       <SectionsList onEdit={(id) => setEditId(id)} />
+<Suspense fallback={null}>
 
       {/* Модалка создания */}
       <SectionCreateModal
@@ -37,6 +39,8 @@ export default function AdminSectionsPage() {
           onClose={() => setEditId(null)}
         />
       )}
+</Suspense>
+
     </div>
   );
 }

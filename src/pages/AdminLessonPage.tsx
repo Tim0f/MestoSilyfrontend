@@ -1,10 +1,11 @@
 // AdminLessonsPage.tsx
 
-import  { useState } from "react";
-import LessonsList from "../components/lessons/LessonsList";
-import LessonCreateModal from "../components/lessons/LessonCreateModal";
-import LessonEditModal from "../components/lessons/LessonEditModal";
-import SessionsModal from "../components/lessons/SessionsModal";
+import  { useState, lazy, Suspense } from "react";
+
+import LessonsList from '../components/lessons/LessonsList';
+const LessonCreateModal = lazy(() => import('../components/lessons/LessonCreateModal'));
+const LessonEditModal = lazy(() => import('../components/lessons/LessonEditModal'));
+const SessionsModal = lazy(() => import('../components/lessons/SessionsModal'));
 
 export default function AdminLessonsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -34,9 +35,9 @@ export default function AdminLessonsPage() {
           </button>
         </div>
       </div>
-
-      <LessonsList onEdit={(id) => setEditId(id)} />
-
+            <LessonsList onEdit={(id) => setEditId(id)} />
+              
+<Suspense fallback={null}>
       {/* создание */}
       <LessonCreateModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} />
 
@@ -45,6 +46,9 @@ export default function AdminLessonsPage() {
 
       {/* новое — расписание */}
       <SessionsModal isOpen={isSessionsOpen} onClose={() => setIsSessionsOpen(false)} />
-    </div>
+    
+
+</Suspense>
+</div>
   );
 }

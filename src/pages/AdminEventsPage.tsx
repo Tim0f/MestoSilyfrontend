@@ -1,10 +1,10 @@
 // AdminEventsPage.tsx
 // Страница управления событиями (Events)
 
-import  { useState } from 'react';
+import  { useState, lazy, Suspense } from 'react';
+const EventCreateModal = lazy(() => import('../components/events/EventCreateModal'));
 import EventsList from '../components/events/EventsList';
-import EventCreateModal from '../components/events/EventCreateModal';
-import EventEditModal from '../components/events/EventEditModal';
+const EventEditModal = lazy(() => import('../components/events/EventEditModal'));
 
 export default function AdminEventsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -21,8 +21,10 @@ export default function AdminEventsPage() {
           Создать событие
         </button>
       </div>
-
       <EventsList onEdit={(id) => setEditId(id)} />
+        
+<Suspense fallback={null}>
+      
 
       <EventCreateModal
         isOpen={isCreateOpen}
@@ -35,6 +37,8 @@ export default function AdminEventsPage() {
           onClose={() => setEditId(null)}
         />
       )}
+</Suspense>
+
     </div>
   );
 }

@@ -1,0 +1,53 @@
+import { FC } from "react";
+
+interface AchievementCodeModalProps {
+  open: boolean;
+  code: string;
+  onChange: (value: string) => void;
+  onClose: () => void;
+  onSubmit: () => void;
+}
+
+const AchievementCodeModal: FC<AchievementCodeModalProps> = ({
+  open,
+  code,
+  onChange,
+  onClose,
+  onSubmit,
+}) => {
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black z-50">
+      <div className="bg-customblack p-6 rounded-xl w-96 relative">
+        <button
+          className="absolute top-2 right-2 text-[#F6C98F] font-bold"
+          onClick={onClose}
+        >
+          ×
+        </button>
+
+        <h2 className="text-2xl font-h1 mb-4 text-[#F6C98F]">
+          Введите код достижения
+        </h2>
+
+        <input
+          type="text"
+          value={code}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Введите код"
+          className="w-full p-2 rounded-lg text-black mb-4"
+        />
+
+        <button
+          onClick={onSubmit}
+          className="bg-[#F6C98F] text-black px-6 py-2 rounded-xl hover:brightness-90"
+        >
+          Получить
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default AchievementCodeModal;

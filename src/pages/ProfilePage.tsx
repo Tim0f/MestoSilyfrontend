@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Logo2 from "../assets/svg/Logo2.svg";
 import LogoSvg from "../assets/svg/Rectangle_9.svg?react";
 
@@ -7,6 +7,10 @@ import { UsersFrontendService } from "../services/users.service";
 import { AchievementsFrontendService } from "../services/achievements.service";
 import { LessonsFrontendService } from "../services/lessons.service";
 import { SectionsFrontendService } from "../services/sections.service";
+const AchievementCodeModal = lazy(
+  () => import("../components/achievements/AchievementCodeModal")
+);
+
 
 interface Achievement {
   name: string;
@@ -212,27 +216,16 @@ export default function ProfilePage() {
       </div>
 
       {/* МОДАЛЬНОЕ ОКНО */}
-      {modalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black  z-50">
-          <div className="bg-customblack p-6 rounded-xl w-96 relative">
-            <button className="absolute top-2 right-2 text-[#F6C98F] font-bold" onClick={() => setModalOpen(false)}>×</button>
-            <h2 className="text-2xl font-h1 mb-4 text-[#F6C98F]">Введите код достижения</h2>
-            <input
-              type="text"
-              value={achievementCode}
-              onChange={(e) => setAchievementCode(e.target.value)}
-              placeholder="Введите код"
-              className="w-full p-2 rounded-lg text-black mb-4"
-            />
-            <button
-              onClick={handleSubmitCode}
-              className="bg-[#F6C98F] text-black px-6 py-2 rounded-xl hover:brightness-90"
-            >
-              Получить
-            </button>
-          </div>
-        </div>
-      )}
+<Suspense fallback={null}>
+  <AchievementCodeModal
+    open={modalOpen}
+    code={achievementCode}
+    onChange={setAchievementCode}
+    onClose={() => setModalOpen(false)}
+    onSubmit={handleSubmitCode}
+  />
+</Suspense>
+
     </div>
   );
 }

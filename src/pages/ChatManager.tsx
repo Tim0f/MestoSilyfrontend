@@ -1,12 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Client } from '../services/httpClient';
 import { ChatFrontendService } from '../services/chat.service';
 import { SectionsFrontendService } from '../services/sections.service';
 import { EventsFrontendService } from '../services/events.service';
 
-import ChatCreateModal from '../components/chat/ChatCreateModal';
-import ChatEditModal from '../components/chat/ChatEditModal';
-import ChatAddParticipantModal from '../components/chat/ChatAddParticipantModal';
+const ChatCreateModal = lazy(() => import('../components/chat/ChatCreateModal'));
+const ChatEditModal = lazy(() => import('../components/chat/ChatEditModal'));
+const ChatAddParticipantModal = lazy(() => import('../components/chat/ChatAddParticipantModal'));
+
+
 
 const client = Client
 
@@ -142,6 +144,7 @@ export default function ChatsManager() {
         </div>
       )}
 
+<Suspense fallback={null}>
       {/* MODALS */}
       <ChatCreateModal
         isOpen={createOpen}
@@ -170,6 +173,9 @@ export default function ChatsManager() {
           reload={loadAll}
         />
       )}
+
+</Suspense>
+
     </div>
   );
 }

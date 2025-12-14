@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useState } from "react";
+import { useState, lazy, Suspense } from 'react';
 
-import AdminAchievementsModal from "../components/achievements/AdminAchievementsModal";
+
+const AdminAchievementsModal = lazy(() => import("../components/achievements/AdminAchievementsModal"));
 
 import {
   ShieldCheck,
@@ -162,12 +163,15 @@ export default function AdminDashboardPage() {
           ))}
         </section>
       </div>
-
+<Suspense fallback={null}>
       {/* ACHIEVEMENTS MODAL */}
       <AdminAchievementsModal
         isOpen={achievementsOpen}
         onClose={() => setAchievementsOpen(false)}
       />
+
+</Suspense>
+
     </div>
   );
 }

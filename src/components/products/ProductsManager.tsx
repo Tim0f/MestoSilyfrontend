@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Client } from '../../services/httpClient';
 import { ProductsFrontendService } from '../../services/products.service';
-import ProductCreateModal from './ProductCreateModal';
-import ProductEditModal from './ProductEditModal';
+const ProductCreateModal = lazy(() => import('./ProductCreateModal'));
+const ProductEditModal = lazy(() => import('./ProductEditModal'));
 
 const client = Client
 
@@ -95,6 +95,7 @@ export default function ProductsManager() {
         </div>
       )}
 
+      <Suspense fallback={null}>
       <ProductCreateModal
         isOpen={createOpen}
         onClose={() => {
@@ -113,6 +114,8 @@ export default function ProductsManager() {
           product={editProduct}
         />
       )}
+      </Suspense>
+
     </div>
   );
 }

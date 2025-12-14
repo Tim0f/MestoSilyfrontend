@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Client } from '../../services/httpClient';
 import { NewsFrontendService } from '../../services/news.service';
-import NewsCreateModal from './NewsCreateModal';
-import NewsEditModal from './NewsEditModal';
+const NewsCreateModal = lazy(() => import('./NewsCreateModal'));
+const NewsEditModal = lazy (() => import('./NewsEditModal'));
 
 interface NewsItem {
   id: string;
@@ -126,6 +126,8 @@ export default function NewsManager() {
         </div>
       )}
 
+
+<Suspense fallback={null}>
       <NewsCreateModal
         isOpen={createOpen}
         onClose={() => {
@@ -144,6 +146,9 @@ export default function NewsManager() {
           item={editItem}
         />
       )}
+
+</Suspense>
+
     </div>
   );
 }

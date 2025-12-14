@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { Client } from '../../services/httpClient';
 import { PartnersFrontendService } from '../../services/partners.service';
-import PartnerCreateModal from './PartnersCreateModal';
-import PartnerEditModal from './PartnerEditModal';
+const PartnerCreateModal = lazy(() => import('./PartnersCreateModal'));
+const PartnerEditModal = lazy(() => import('./PartnerEditModal'));
 
 const client = Client
 
@@ -83,6 +83,7 @@ export default function PartnersManager() {
         </div>
       )}
 
+      <Suspense fallback={null}>
       <PartnerCreateModal
         isOpen={createOpen}
         onClose={() => {
@@ -101,6 +102,9 @@ export default function PartnersManager() {
           partner={editPartner}
         />
       )}
+
+      </Suspense>
+
     </div>
   );
 }
