@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import Logo2 from "../assets/svg/Logo2.svg";
+import texturedSquare from "../assets/svg/texturedBorder.svg";
 import { ProductsFrontendService } from "../services/products.service";
 import { OrdersFrontendService } from "../services/orders.service";
 import { HttpClient } from "../services/httpClient";
+import ButtonSvg from '../../assets/svg/Rectangle_9.svg?react'
 
 const client = new HttpClient({
   baseUrl:
@@ -64,7 +66,13 @@ export default function BazarPage() {
         </div>
   
         {/* Карточки */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+        style={{
+          backgroundImage: `url(${texturedSquare})`,
+          backgroundSize: '100% 100%',
+          backgroundRepeat: 'no-repeat',
+          
+        }}>
           {products.map((item) => ( 
             <div
               key={item.id}
@@ -117,7 +125,13 @@ export default function BazarPage() {
       </div>
 
       {/* Карточки */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+      style={{
+        backgroundImage: `url(${texturedSquare})`,
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
+        
+      }}>
         {products.map((item) => (
           <div
             key={item.id}
@@ -156,12 +170,13 @@ export default function BazarPage() {
             <h2 className="text-xl font-h1 mb-1">{item.name}</h2>
             <p className="text-sm text-primary-300 mb-4">{item.description}</p>
 
-            <button
+            <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
+          <span
               onClick={() => buy(item.id)}
               className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90"
             >
               купить
-            </button>
+              </span>
           </div>
         ))}
       </div>

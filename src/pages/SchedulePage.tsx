@@ -10,9 +10,13 @@ import Border2 from "../components/border2";
 import Border3 from "../components/border3";
 import Event1 from "../assets/img/Mask_group.png";
 import btnFrame from "../assets/svg/Rectangle_9.svg";
+import bg from "../assets/svg/bg_mogal.svg";
+import ButtonSvg from '../assets/svg/Rectangle_9.svg?react';
+import Logo2 from "../assets/svg/Logo2.svg";
 
 import { EnrollmentsFrontendService } from "../services/enrollments.service";
 import { EventsFrontendService } from "../services/events.service";
+
 // import { LessonsFrontendService } from "../services/lessons.service";
 
 // сервисы
@@ -106,6 +110,8 @@ const toISODateString = (d: Date) => {
   return `${y}-${m}-${dd}`;
 };
 
+
+
 const formatDate = (d: Date) =>
   d.toLocaleDateString("ru-RU", { day: "numeric", month: "numeric" });
 
@@ -143,6 +149,7 @@ export default function SchedulePage() {
   const [subscriptionCount, setSubscriptionCount] = useState<number>(0);
   const [loadingSessions, setLoadingSessions] = useState(false);
   const [errorSessions, setErrorSessions] = useState<string | null>(null);
+  const [isFreeVisitsModalOpen, setIsFreeVisitsModalOpen] = useState(false);
 
   const { isAuthenticated } = useAuth();
 
@@ -408,9 +415,17 @@ const loadMyEnrollments = async (): Promise<void> => {
       <div className="flex items-center gap-[40px] mt-6">
         <div className="flex items-center gap-[20px]">
           <span className="text-[24px] text-white">Кол-во бесплатных посещений:</span>
-          <Border3 className="w-[95px] h-[85px] fill-customyellow stroke-customyellow flex justify-center items-center">
-            <span className="text-[28px] font-h1 text-black leading-none">{subscriptionCount}</span>
-          </Border3>
+          <button
+  onClick={() => setIsFreeVisitsModalOpen(true)}
+  className="w-[95px] h-[85px] flex justify-center items-center"
+>
+  <Border3 className="w-full h-full fill-customyellow stroke-customyellow flex justify-center items-center hover:scale-[1.03] transition">
+    <span className="text-[28px] font-h1 text-black leading-none">
+      {subscriptionCount}
+    </span>
+  </Border3>
+</button>
+
         </div>
 
         <div className="flex items-center gap-[28px]">
@@ -595,6 +610,116 @@ const loadMyEnrollments = async (): Promise<void> => {
           </div>
         </div>
       )}
+      {/* ================= МОДАЛКА ПОКУПКИ ЗАНЯТИЙ ================= */}
+{isFreeVisitsModalOpen && (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70">
+    <div className="relative w-[95vw] max-w-[1600px] max-h-[85vh]  text-white overflow-hidden">
+
+      {/* рамка */}
+      <img
+        src={bg}
+        alt=""
+        className="absolute inset-0 w-full h-full pointer-events-none"
+      />
+
+      {/* закрыть */}
+      <button
+        onClick={() => setIsFreeVisitsModalOpen(false)}
+        className="absolute top-[24px] right-[32px] text-customyellow text-[42px] hover:scale-110 transition z-20"
+      >
+        ×
+      </button>
+
+      {/* контент */}
+      <div className="relative z-10 h-full px-[48px] py-[48px] overflow-y-auto">
+        <div className="flex flex-wrap justify-center gap-[32px]">
+
+          {/* ПРОБНОЕ */}
+          <div className="w-[300px] min-h-[450px] bg-customyellow text-black p-[32px] flex flex-col justify-between">
+            <div>
+              <h3 className="text-[36px] font-h1">1 занятие</h3>
+              <p className="text-[16px] mt-[16px] leading-[20px]">
+                Откройте для себя искусство владения клинком.
+                От базовых стоек до изящных атак.
+              </p>
+            </div>
+            
+
+            <div className="flex items-center gap-[12px]"
+            >
+              <span className="text-[64px] font-h1 leading-none">12</span>
+
+  <img
+    src={Logo2}
+    alt=""
+    className="w-[40px] h-[40px] object-contain"
+  />
+</div>
+<button className="bg-black text-customyellow py-[14px] text-[18px] font-bold hover:opacity-80 transition"
+            style={{ WebkitMaskImage: `url(${btnFrame})`, maskImage: `url(${btnFrame})`, WebkitMaskSize: "100% 100%", padding: "18px 48px" }}>
+              Оплатить
+            </button>
+</div>
+
+          {/* 1 ЗАНЯТИЕ */}
+          <div className="w-[300px] min-h-[450px] border-2 border-customyellow p-[32px] flex flex-col justify-between">
+            <div>
+              <h3 className="text-[36px] font-h1">1 занятие</h3>
+              <p className="text-[16px] mt-[16px] leading-[20px] text-customyellow">
+                Откройте для себя искусство владения клинком.
+                От базовых стоек до изящных атак.
+              </p>
+            </div>
+
+            <div className="text-[56px] font-h1 text-customyellow">1100₽</div>
+            <button className="bg-customyellow text-black py-[14px] text-[18px] font-bold hover:opacity-80 transition"
+            style={{ WebkitMaskImage: `url(${btnFrame})`, maskImage: `url(${btnFrame})`, WebkitMaskSize: "100% 100%", padding: "18px 48px" }}>
+              Оплатить
+            </button>
+          </div>
+
+          {/* 5 ЗАНЯТИЙ */}
+          <div className="w-[300px] min-h-[450px] border-2 border-customyellow p-[32px] flex flex-col justify-between">
+            <div>
+              <h3 className="text-[36px] font-h1">5 занятий</h3>
+              <p className="text-[16px] mt-[16px] leading-[20px] text-customyellow">
+                Откройте для себя искусство владения клинком.
+                От базовых стоек до изящных атак.
+              </p>
+            </div>
+
+            <div className="text-[56px] font-h1 text-customyellow">4950₽</div>
+            <button className="bg-customyellow text-black py-[14px] text-[18px] font-bold hover:opacity-80 transition"
+            style={{ WebkitMaskImage: `url(${btnFrame})`, maskImage: `url(${btnFrame})`, WebkitMaskSize: "100% 100%", padding: "18px 48px" }}>
+              Оплатить
+            </button>
+          </div>
+
+          {/* 10 ЗАНЯТИЙ */}
+          <div className="w-[300px] min-h-[450px] border-2 border-customyellow p-[32px] flex flex-col justify-between">
+            <div>
+              <h3 className="text-[36px] font-h1">10 занятий</h3>
+              <p className="text-[16px] mt-[16px] leading-[20px] text-customyellow">
+                Откройте для себя искусство владения клинком.
+                От базовых стоек до изящных атак.
+              </p>
+            </div>
+
+            <div className="text-[56px] font-h1 text-customyellow">9900₽</div>
+            <button className="bg-customyellow text-black py-[14px] text-[18px] font-bold hover:opacity-80 transition"
+            style={{ WebkitMaskImage: `url(${btnFrame})`, maskImage: `url(${btnFrame})`, WebkitMaskSize: "100% 100%", padding: "18px 48px" }}>
+              Оплатить
+            </button>
+          </div>
+          
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+)}
+
     </div>
   );
 }
