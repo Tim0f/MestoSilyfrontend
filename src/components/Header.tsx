@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { LogOut } from "lucide-react";
 
-import Logo2 from "../assets/svg/Logo2.svg";
+import Zerno from "../assets/svg/Zerno.svg";
 import ProfileUp from "../assets/svg/profile_up.svg";
 import ProfileDown from "../assets/svg/profile_down.svg";
 import ProfileIcon from "../assets/svg/ProfileIcon.svg";
@@ -90,7 +90,7 @@ export default function Header() {
                 <Link to="/bazar" className="hover:text-primary-400 transition">
                   <span className="font-h2 text-primary-300 flex items-center gap-1">
                     {user?.totalGrains}
-                    <img src={Logo2} className="w-[20px]" />
+                    <img src={Zerno} className="w-[20px]" />
                   </span>
                 </Link>
 

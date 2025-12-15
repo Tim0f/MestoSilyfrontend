@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import Logo2 from "../assets/svg/Logo2.svg";
+import Zerno from "../assets/svg/Zerno.svg";
 import LogoSvg from "../assets/svg/Rectangle_9.svg?react";
 
 import { Client } from "../services/httpClient";
@@ -143,7 +143,7 @@ export default function ProfilePage() {
           <div>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-customyellow text-[170px] font-h1">{userData.totalGrains}</p>
-              <img src={Logo2} className="w-40 h-40" />
+              <img src={Zerno} className="w-40 h-40" />
             </div>
           </div>
         </div>
@@ -208,7 +208,7 @@ export default function ProfilePage() {
               )}
               <div className="flex items-center gap-2">
                 <span className="text-customyellow text-xl font-h1">{a.rewardGrains}</span>
-                <img src={Logo2} className="w-5 h-5" />
+                <img src={Zerno} className="w-5 h-5" />
               </div>
             </div>
           </div>

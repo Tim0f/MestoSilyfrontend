@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Logo2 from "../assets/svg/Logo2.svg";
+import Zerno from "../assets/svg/Zerno.svg";
 import texturedSquare from "../assets/svg/texturedBorder.svg";
 import { ProductsFrontendService } from "../services/products.service";
 import { OrdersFrontendService } from "../services/orders.service";
@@ -82,7 +82,7 @@ export default function BazarPage() {
               <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
                 {item.price} 
                 <img
-              src={Logo2}
+              src={Zerno}
               className='w-[20px] fill-black text-black'
               style={{
                 WebkitMaskSize: 'contain',
@@ -141,7 +141,7 @@ export default function BazarPage() {
             <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
               {item.price}
               <img
-                src={Logo2}
+                src={Zerno}
                 className="w-[20px]"
                 style={{
                   WebkitMaskSize: "contain",
