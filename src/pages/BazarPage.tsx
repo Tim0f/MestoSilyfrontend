@@ -4,7 +4,7 @@ import texturedSquare from "../assets/svg/texturedBorder.svg";
 import { ProductsFrontendService } from "../services/products.service";
 import { OrdersFrontendService } from "../services/orders.service";
 import { HttpClient } from "../services/httpClient";
-import ButtonSvg from '../../assets/svg/Rectangle_9.svg?react'
+import ButtonSvg from '../assets/svg/Rectangle_9.svg?react'
 
 const client = new HttpClient({
   baseUrl:
