@@ -1,5 +1,4 @@
 // PartnerSlider.tsx
-import texturedRound from '../../assets/svg/texturedRound.svg'
 import PartnerCard from './PartnerCard'
 
 export type Partner = {
@@ -23,7 +22,6 @@ export default function PartnerSlider({ partners, className = '' }: PartnerSlide
           name={partner.name}
           image={partner.image}
           url={partner.url}
-          texturedRound={texturedRound}
         />
       ))}
     </div>

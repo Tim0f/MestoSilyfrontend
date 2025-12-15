@@ -128,8 +128,8 @@ export default function SectionsPage() {
       <div className="relative flex items-center justify-center w-full max-w-7xl px-8">
 
         {/* Левая сетка */}
-        <div className="relative w-[360px] h-[430px] mr-16">
-          <div className="absolute inset-0 border border-customyellow rounded-xl border-dashed" />
+        <div className="relative w-[360px] h-[430px] mr-16 ">
+          <div className="absolute inset-0 textured-border rounded-xl " />
           <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
             {[1, 2, 3, 4].map((i) => (
               <img
