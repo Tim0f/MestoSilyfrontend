@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import Zerno from "../assets/svg/Zerno.svg";
-import LogoSvg from "../assets/svg/Rectangle_9.svg?react";
+import LogoSvg from "../assets/svg/button.svg?react";
 
 import { Client } from "../services/httpClient";
 import { UsersFrontendService } from "../services/users.service";

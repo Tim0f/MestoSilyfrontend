@@ -1,6 +1,6 @@
 // src/components/schedules/EventCard.tsx
 import React from "react";
-import btnFrame from "../../assets/svg/Rectangle_9.svg";
+import btnFrame from "../../assets/svg/button.svg";
 
 interface Event {
   id: string | number;

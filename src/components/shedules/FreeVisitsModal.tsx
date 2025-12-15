@@ -1,7 +1,7 @@
 import React from 'react';
 import bg from '../../assets/svg/bg_mogal.svg';
 import Zerno from '../../assets/svg/Zerno.svg';
-import btnFrame from '../../assets/svg/Rectangle_9.svg';
+import btnFrame from '../../assets/svg/button.svg';
 
 interface Props {
   open: boolean;

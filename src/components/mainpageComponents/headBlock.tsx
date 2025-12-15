@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import Logo from '../../assets/svg/Logo1.svg?react'
-import ButtonSvg from '../../assets/svg/Rectangle_9.svg?react'
+import ButtonSvg from '../../assets/svg/button.svg?react'
 import heroImage from '../../assets/img/Mask_group.png'
 
 export default function HeadBlock() {

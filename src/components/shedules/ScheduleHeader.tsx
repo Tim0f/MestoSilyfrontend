@@ -1,5 +1,5 @@
 import React from 'react';
-import Border2 from '../../assets/svg/Rectangle_13.svg';
+import Border2 from '../../assets/svg/weeknumb.svg';
 import Border3 from '../../assets/svg/numb.svg';
 
 interface Props {
