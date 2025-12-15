@@ -38,11 +38,10 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
     container_name: mesto_sily_frontend
     restart: unless-stopped
-    env_file: .env
-    environment:
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
     ports:
       - "4173:80"
     depends_on:
@@ -50,5 +49,6 @@ services:
 
 volumes:
   redis_data:
+
 
 
