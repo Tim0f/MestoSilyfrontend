@@ -1,0 +1,76 @@
+import { HttpClient } from './httpClient';
+
+export interface TeacherDto {
+  id: string;
+  firstName: string;
+  lastName: string;
+  middleName?: string;
+  phone?: string;
+  role?: string;
+  photoUrl?: string;
+  audioUrl?: string;
+}
+
+export interface CreateTeacherDto {
+  firstName: string;
+  lastName: string;
+  middleName?: string;
+  phone?: string;
+  role?: string;
+  photoUrl?: string;
+  audioUrl?: string;
+}
+
+export interface UpdateTeacherDto {
+  firstName?: string;
+  lastName?: string;
+  middleName?: string;
+  phone?: string;
+  role?: string;
+  photoUrl?: string;
+  audioUrl?: string;
+}
+
+export class TeachersFrontendService {
+  constructor(private readonly http: HttpClient) {}
+
+  create<T = unknown>(payload: CreateTeacherDto) {
+    return this.http.post<T>('/teachers', payload);
+  }
+
+  findAll<T = TeacherDto[]>() {
+    return this.http.get<T>('/teachers', { authenticate: false });
+  }
+
+  findOne<T = TeacherDto>(teacherId: string) {
+    return this.http.get<T>(`/teachers/${teacherId}`, { authenticate: false });
+  }
+
+  update<T = unknown>(teacherId: string, payload: UpdateTeacherDto) {
+    return this.http.patch<T>(`/teachers/${teacherId}`, payload);
+  }
+
+  remove<T = unknown>(teacherId: string) {
+    return this.http.delete<T>(`/teachers/${teacherId}`);
+  }
+
+  // ========= 🔥 ДОБАВЛЕНО: загрузка изображений =========
+uploadTempImage<T = { url: string }>(file: File) {
+  const fd = new FormData();
+  fd.append('file', file);
+
+  return this.http.post<T>('/upload/image', fd, {
+    authenticate: true,
+  });
+}
+
+uploadTempAudio<T = { url: string }>(file: File) {
+  const fd = new FormData();
+  fd.append('file', file);
+
+  return this.http.post<T>('/upload/audio', fd, {
+    authenticate: true,
+  });
+}
+
+}
