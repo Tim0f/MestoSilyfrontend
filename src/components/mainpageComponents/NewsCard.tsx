@@ -1,4 +1,3 @@
-import texturedSquare from '../../assets/svg/texturedBorder.svg'
 
 type NewsCardProps = {
   title: string
@@ -14,7 +13,6 @@ export default function NewsCard({
   content,
   imageSrc,
   imageAlt,
-  transitionDelay,
   isRevealed,
 }: NewsCardProps) {
   return (
