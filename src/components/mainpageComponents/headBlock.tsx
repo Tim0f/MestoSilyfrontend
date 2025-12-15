@@ -30,7 +30,7 @@ export default function HeadBlock() {
           <br />
           Секции и мероприятия для всех
         </p>
-        <Link to="/sections" className="relative inline-block">
+        <Link to="/schedule" className="relative inline-block">
           <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
           <span className="absolute inset-0 flex items-center justify-center z-20 text-customblack font-p text-p">
             записаться

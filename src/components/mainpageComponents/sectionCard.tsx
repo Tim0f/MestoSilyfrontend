@@ -80,7 +80,7 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
               <div className="mt-auto">
                 {tile.price && <div className="text-h2 font-h2 text-customwhite mb-4">{tile.price}</div>}
                 <Link
-                  to="/sections"
+                  to="/schedule"
                   className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-p transition"
                 >
                   записаться

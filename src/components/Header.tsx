@@ -14,7 +14,6 @@ export default function Header() {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
-  // Клик вне меню
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -38,15 +37,47 @@ export default function Header() {
 
           {/* Навигация */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/" className="hover:text-primary-400 transition">Главная</Link>
-            <Link to="/sections" className="hover:text-primary-400 transition">Секции</Link>
-            <Link to="/schedule" className="hover:text-primary-400 transition">Расписание</Link>
-            <Link to="/chats" className="hover:text-primary-400 transition">Чат</Link>
+            {!isAuthenticated ? (
+              <>
+                <Link to="/#home" className="hover:text-primary-400 transition">
+                  Главная
+                </Link>
+                <Link to="/#about" className="hover:text-primary-400 transition">
+                  О нас
+                </Link>
+                <Link to="/#sections" className="hover:text-primary-400 transition">
+                  Секции
+                </Link>
+                <Link to="/#news" className="hover:text-primary-400 transition">
+                  Новости
+                </Link>
+                <Link to="/#team" className="hover:text-primary-400 transition">
+                  Команда
+                </Link>
+                <Link to="/#partners" className="hover:text-primary-400 transition">
+                  Партнеры
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/" className="hover:text-primary-400 transition">
+                  Главная
+                </Link>
+                <Link to="/sections" className="hover:text-primary-400 transition">
+                  Секции
+                </Link>
+                <Link to="/schedule" className="hover:text-primary-400 transition">
+                  Расписание
+                </Link>
+                <Link to="/chats" className="hover:text-primary-400 transition">
+                  Чат
+                </Link>
+              </>
+            )}
           </nav>
 
           {/* Правая часть */}
           <div className="flex items-center gap-4">
-
             {!isAuthenticated ? (
               <Link
                 to="/login"
@@ -56,67 +87,41 @@ export default function Header() {
               </Link>
             ) : (
               <>
-                {/* Зёрна */}
                 <Link to="/bazar" className="hover:text-primary-400 transition">
                   <span className="font-h2 text-primary-300 flex items-center gap-1">
                     {user?.totalGrains}
-                    <img
-                      src={Logo2}
-                      className="w-[20px] select-none"
-                      style={{
-                        WebkitMaskSize: "contain",
-                        maskSize: "contain",
-                        WebkitMaskRepeat: "no-repeat",
-                        maskRepeat: "no-repeat",
-                      }}
-                    />
+                    <img src={Logo2} className="w-[20px]" />
                   </span>
                 </Link>
 
-                {/* Профиль + меню */}
                 <div className="relative" ref={menuRef}>
                   <button
-                    onClick={() => setIsMenuOpen(prev => !prev)}
-                    className="w-10 h-10 rounded-full bg-customgrey flex items-center justify-center transition overflow-hidden"
-                    aria-label="Профиль"
+                    onClick={() => setIsMenuOpen((p) => !p)}
+                    className="w-10 h-10 rounded-full bg-customgrey flex items-center justify-center overflow-hidden"
                   >
                     {user?.avatarUrl ? (
-                      <img src={user.avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                      <img src={user.avatarUrl} className="w-full h-full object-cover" />
                     ) : (
                       <img src={ProfileIcon} className="w-6 h-6" />
                     )}
                   </button>
 
-                  {/* Выпадающее меню */}
                   {isMenuOpen && (
                     <div className="absolute right-0 w-[210px] select-none">
-
-                      {/* Верхняя часть — ПРОФИЛЬ */}
                       <div className="relative w-full h-[120px]">
-                        <img
-                          src={ProfileUp}
-                          className="absolute top-0 left-0 w-full h-full pointer-events-none select-none"
-                          alt=""
-                        />
-
+                        <img src={ProfileUp} className="absolute w-full h-full" />
                         <Link
                           to="/profile"
                           onClick={() => setIsMenuOpen(false)}
                           className="absolute inset-0 flex items-center justify-between px-4 z-10"
                         >
-                          <span className="text-[22px] font-h1 text-customyellow">Профиль</span>
-                          <img src={ProfileIcon} className="w-7 h-7" alt="" />
+                          <span className="text-[22px] font-h1">Профиль</span>
+                          <img src={ProfileIcon} className="w-7 h-7" />
                         </Link>
                       </div>
 
-                      {/* Нижняя часть — ВЫЙТИ */}
                       <div className="relative w-full h-[120px] -mt-[40px]">
-                        <img
-                          src={ProfileDown}
-                          className="absolute top-0 left-0 w-full h-full pointer-events-none select-none rotate-180"
-                          alt=""
-                        />
-
+                        <img src={ProfileDown} className="absolute w-full h-full rotate-180" />
                         <button
                           onClick={handleLogout}
                           className="absolute inset-0 flex items-center justify-between px-4 z-10 text-black"

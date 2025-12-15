@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+
 import swordIcon from '../assets/svg/sword.svg'
 import arrowIcon from '../assets/svg/arrow.svg'
 import dragonIcon from '../assets/svg/dragon.svg'
@@ -28,8 +30,7 @@ type Partner = {
   url: string
 }
 
-
-const client = Client;
+const client = Client
 
 const sectionsService = new SectionsFrontendService(client)
 const partnersService = new PartnersFrontendService(client)
@@ -37,6 +38,8 @@ const teachersService = new TeachersFrontendService(client)
 const newsService = new NewsFrontendService(client)
 
 export default function HomePage() {
+  const location = useLocation()
+
   const [activeTileId, setActiveTileId] = useState<string>('fencing')
   const [newsRevealed, setNewsRevealed] = useState(false)
   const [currentNewsPage, setCurrentNewsPage] = useState(0)
@@ -93,18 +96,17 @@ export default function HomePage() {
     []
   )
 
-const partnersFallback: Partner[] = useMemo(
-  () => [
-    { id: '1', name: 'Школа Летово', image: Stick, url: 'Saga' },
-    { id: '2', name: 'Школа Осеннево', image: Stick, url: 'Saga' },
-    { id: '3', name: 'Школа Зимнево', image: Stick, url: 'Saga' },
-    { id: '4', name: 'Школа Весеннего', image: Stick, url: 'Saga' },
-    { id: '5', name: 'Школа Межсезонного', image: Stick, url: 'Saga' },
-    { id: '6', name: 'Школа Внесезонного', image: Stick, url: 'Saga' },
-  ],
-  []
-)
-
+  const partnersFallback: Partner[] = useMemo(
+    () => [
+      { id: '1', name: 'Школа Летово', image: Stick, url: 'Saga' },
+      { id: '2', name: 'Школа Осеннево', image: Stick, url: 'Saga' },
+      { id: '3', name: 'Школа Зимнево', image: Stick, url: 'Saga' },
+      { id: '4', name: 'Школа Весеннего', image: Stick, url: 'Saga' },
+      { id: '5', name: 'Школа Межсезонного', image: Stick, url: 'Saga' },
+      { id: '6', name: 'Школа Внесезонного', image: Stick, url: 'Saga' },
+    ],
+    []
+  )
 
   useEffect(() => {
     loadSections()
@@ -116,42 +118,63 @@ const partnersFallback: Partner[] = useMemo(
     return () => window.clearTimeout(id)
   }, [])
 
+  // 🔥 ПЛАВНЫЙ СКРОЛЛ ПО HASH
+  useEffect(() => {
+    if (!location.hash) return
+
+    const targetId = location.hash.replace('#', '')
+    const element = document.getElementById(targetId)
+    if (!element) return
+
+    const timeout = setTimeout(() => {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      })
+    }, 100)
+
+    return () => clearTimeout(timeout)
+  }, [location.hash])
+
   async function loadSections() {
     try {
       const api = await sectionsService.findAll<any[]>()
-      setSectionsDynamic(api.length ? api.map((s) => ({
-        id: String(s.id),
-        title: s.name,
-        description: s.description,
-        teacher: s.teachers?.[0]
-          ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
-          : "Тренер не указан",
-        price: s.price ? `${s.price}₽` : "",
-        iconUrl: s.iconUrl ?? swordIcon,
-      })) : sectionsFallback)
+      setSectionsDynamic(
+        api.length
+          ? api.map((s) => ({
+              id: String(s.id),
+              title: s.name,
+              description: s.description,
+              teacher: s.teachers?.[0]
+                ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
+                : 'Тренер не указан',
+              price: s.price ? `${s.price}₽` : '',
+              iconUrl: s.iconUrl ?? swordIcon,
+            }))
+          : sectionsFallback
+      )
     } catch {
       setSectionsDynamic(sectionsFallback)
     }
   }
 
-async function loadPartners() {
-  try {
-    const api = await partnersService.findAll<any[]>()
-    setPartnersDynamic(
-      api.length
-        ? api.map((p) => ({
-            id: p.id,                      // string
-            name: p.name,
-            url: p.link ?? '#',            // правильное поле из бэка
-            image: p.imageUrl ?? Stick,    // правильное поле из бэка
-          }))
-        : partnersFallback
-    )
-  } catch {
-    setPartnersDynamic(partnersFallback)
+  async function loadPartners() {
+    try {
+      const api = await partnersService.findAll<any[]>()
+      setPartnersDynamic(
+        api.length
+          ? api.map((p) => ({
+              id: p.id,
+              name: p.name,
+              url: p.link ?? '#',
+              image: p.imageUrl ?? Stick,
+            }))
+          : partnersFallback
+      )
+    } catch {
+      setPartnersDynamic(partnersFallback)
+    }
   }
-}
-
 
   async function loadTeachers() {
     try {
@@ -173,37 +196,47 @@ async function loadPartners() {
 
   const teamMembers = useMemo(() => {
     if (!teachersDynamic) return []
-    return teachersDynamic.map(t => ({
+    return teachersDynamic.map((t) => ({
       id: t.id,
       name: `${t.lastName} ${t.firstName}`,
-      position: t.role ?? "Преподаватель",
-      Image: t.photoUrl ?? "",
-      audiosrc: t.audioUrl ?? "",
+      position: t.role ?? 'Преподаватель',
+      Image: t.photoUrl ?? '',
+      audiosrc: t.audioUrl ?? '',
     }))
   }, [teachersDynamic])
 
   return (
     <div className="bg-customblack min-h-screen">
-      <HeadBlock />
-      <AboutBlock />
 
-      <SectionSlider
-        sections={sectionsDynamic ?? sectionsFallback}
-        activeId={activeTileId}
-        onChangeActive={setActiveTileId}
-        defaultActiveId={(sectionsDynamic ?? sectionsFallback)[0]?.id}
-      />
+      <section id="home">
+        <HeadBlock />
+      </section>
 
-      <NewsSlider
-        news={news}
-        fallbackImage={newsFallbackImg}
-        currentPage={currentNewsPage}
-        onPageChange={setCurrentNewsPage}
-        isRevealed={newsRevealed}
-        onToggleReveal={setNewsRevealed}
-      />
+      <section id="about">
+        <AboutBlock />
+      </section>
 
-      <section className="py-20 bg-customblack">
+      <section id="sections">
+        <SectionSlider
+          sections={sectionsDynamic ?? sectionsFallback}
+          activeId={activeTileId}
+          onChangeActive={setActiveTileId}
+          defaultActiveId={(sectionsDynamic ?? sectionsFallback)[0]?.id}
+        />
+      </section>
+
+      <section id="news">
+        <NewsSlider
+          news={news}
+          fallbackImage={newsFallbackImg}
+          currentPage={currentNewsPage}
+          onPageChange={setCurrentNewsPage}
+          isRevealed={newsRevealed}
+          onToggleReveal={setNewsRevealed}
+        />
+      </section>
+
+      <section id="team" className="py-20 bg-customblack">
         <div className="container mx-auto px-4">
           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
             КОМАНДА
@@ -212,7 +245,7 @@ async function loadPartners() {
         </div>
       </section>
 
-      <section className="py-20 bg-customblack">
+      <section id="partners" className="py-20 bg-customblack">
         <div className="container mx-auto px-4">
           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
             ПАРТНЕРЫ
@@ -220,6 +253,7 @@ async function loadPartners() {
           <PartnerSlider partners={partnersDynamic ?? partnersFallback} />
         </div>
       </section>
+
     </div>
   )
 }
