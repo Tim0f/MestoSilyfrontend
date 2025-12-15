@@ -11,7 +11,6 @@ import Border3 from "../components/border3";
 import Event1 from "../assets/img/Mask_group.png";
 import btnFrame from "../assets/svg/Rectangle_9.svg";
 import bg from "../assets/svg/bg_mogal.svg";
-import ButtonSvg from '../assets/svg/Rectangle_9.svg?react';
 import Logo2 from "../assets/svg/Logo2.svg";
 
 import { EnrollmentsFrontendService } from "../services/enrollments.service";
