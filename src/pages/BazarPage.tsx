@@ -3,15 +3,10 @@ import Zerno from "../assets/svg/Zerno.svg";
 import texturedSquare from "../assets/svg/texturedBorder.svg";
 import { ProductsFrontendService } from "../services/products.service";
 import { OrdersFrontendService } from "../services/orders.service";
-import { HttpClient } from "../services/httpClient";
+import { Client } from "../services/httpClient";
 import ButtonSvg from '../assets/svg/button.svg?react'
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    "http://localhost:3000/api",
-  getToken: () => localStorage.getItem("token") ?? undefined,
-});
+const client = Client;
 
 const productsService = new ProductsFrontendService(client);
 const ordersService = new OrdersFrontendService(client);

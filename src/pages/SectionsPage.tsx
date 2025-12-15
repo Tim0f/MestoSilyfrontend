@@ -12,16 +12,10 @@ const AnimatedSectionContent = lazy(
 );
 
 // сервисы
-import { HttpClient } from "../services/httpClient";
+import { Client } from "../services/httpClient";
 import { SectionsFrontendService } from "../services/sections.service";
 
-const client = new HttpClient({
-  baseUrl:
-    import.meta.env.VITE_API_URL ??
-    import.meta.env.VITE_ADMIN_API_URL ??
-    "http://localhost:3000/api",
-  getToken: () => localStorage.getItem("token") ?? undefined,
-});
+const client = Client;
 
 const sectionsService = new SectionsFrontendService(client);
 

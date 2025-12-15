@@ -1,13 +1,10 @@
 import  { useEffect, useState } from "react";
-import { HttpClient } from "../services/httpClient";
+import { Client } from "../services/httpClient";
 import { EnrollmentsFrontendService } from "../services/enrollments.service";
 import { SectionsFrontendService } from "../services/sections.service";
 import { LessonsFrontendService } from "../services/lessons.service";
 
-const client = new HttpClient({
-  baseUrl: import.meta.env.VITE_ADMIN_API_URL ?? "http://localhost:3000/api",
-  getToken: () => localStorage.getItem("token") ?? undefined,
-});
+const client = Client;
 
 const enrollService = new EnrollmentsFrontendService(client);
 const sectionsService = new SectionsFrontendService(client);

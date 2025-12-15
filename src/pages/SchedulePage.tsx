@@ -58,6 +58,7 @@ const toISO = (d: Date) => d.toISOString().slice(0, 10);
 export default function SchedulePage() {
   const { isAuthenticated } = useAuth();
 
+
   const [sessions, setSessions] = useState<Session[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -136,12 +137,17 @@ export default function SchedulePage() {
     setEnrolledSessions(arr.filter((r) => r.lessonId).map((r) => r.lessonId));
     setEnrolledEventIds(arr.filter((r) => r.eventId).map((r) => r.eventId));
   };
+const { user } = useAuth();
 
-  const loadFreeVisits = async () => {
-    if (!isAuthenticated) return;
-    const count = await freeVisitsService.getMyFreeVisits();
-    setSubscriptionCount(count);
-  };
+const loadFreeVisits = async () => {
+  if (!isAuthenticated || !user?.id) return;
+
+  const res = await freeVisitsService.getUserFreeVisits(String(user.id));
+
+  setSubscriptionCount(res?.available ?? 0);
+};
+
+
 
   /* ====================== EFFECT ====================== */
   useEffect(() => {
