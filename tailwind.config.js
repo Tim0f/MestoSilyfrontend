@@ -105,50 +105,50 @@ plugin(({ addUtilities }) => {
     },
 
 
-   '.team': {
-  position: 'relative',
-  width: '590px',
-  height: '590px',
-  borderRadius: '9999px',
-  isolation: 'isolate',
-},
+//    '.team': {
+//   position: 'relative',
+//   width: '590px',
+//   height: '590px',
+//   borderRadius: '9999px',
+//   isolation: 'isolate',
+// },
 
 
-        /* === РАМКА === */
-'.team::before': {
-  content: '""',
-  position: 'absolute',
-  inset: '-30px',
-  borderRadius: '9999px',
-  backgroundColor: '#F5C78B',
+//         /* === РАМКА === */
+// '.team::before': {
+//   content: '""',
+//   position: 'absolute',
+//   inset: '-30px',
+//   borderRadius: '9999px',
+//   backgroundColor: '#F5C78B',
 
-  WebkitMaskImage: 'url("/src/assets/svg/RoundTextureTeam.svg")',
-  WebkitMaskRepeat: 'no-repeat',
-  WebkitMaskSize: '100% 100%',
+//   WebkitMaskImage: 'url("/src/assets/svg/RoundTextureTeam.svg")',
+//   WebkitMaskRepeat: 'no-repeat',
+//   WebkitMaskSize: '100% 100%',
 
-  maskImage: 'url("/src/assets/svg/RoundTextureTeam.svg")',
-  maskRepeat: 'no-repeat',
-  maskSize: '100% 100%',
+//   maskImage: 'url("/src/assets/svg/RoundTextureTeam.svg")',
+//   maskRepeat: 'no-repeat',
+//   maskSize: '100% 100%',
 
-  zIndex: '1',
-  pointerEvents: 'none',
-},
+//   zIndex: '1',
+//   pointerEvents: 'none',
+// },
 
-'.team .frame-padding': {
-  position: 'absolute',
-  inset: '36px', // 🔥 РЕАЛЬНЫЙ ОТСТУП ПОД РАМКУ
-  borderRadius: '9999px',
-  zIndex: '2',
-},
+// '.team .frame-padding': {
+//   position: 'absolute',
+//   inset: '36px', // 🔥 РЕАЛЬНЫЙ ОТСТУП ПОД РАМКУ
+//   borderRadius: '9999px',
+//   zIndex: '2',
+// },
 
 
-        /* === ВНУТРЕННИЙ КРУГ === */
-'.team .inner': {
-  width: '100%',
-  height: '100%',
-  borderRadius: '9999px',
-  overflow: 'hidden',
-},
+//         /* === ВНУТРЕННИЙ КРУГ === */
+// '.team .inner': {
+//   width: '100%',
+//   height: '100%',
+//   borderRadius: '9999px',
+//   overflow: 'hidden',
+// },
 
       })
     }),

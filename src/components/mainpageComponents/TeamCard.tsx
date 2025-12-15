@@ -1,5 +1,3 @@
-import texturedRound from '../../assets/svg/texturedRound.svg'
-
 type CardProps = {
   Image: string
   name: string
@@ -16,14 +14,20 @@ export default function TeamCard({ Image, name, position }: CardProps) {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-20"
           style={{
-            backgroundImage: `url(${texturedRound})`,
+            backgroundImage: 'url(/svg/texturedRound.svg)', // ← ЕДИНСТВЕННОЕ ИЗМЕНЕНИЕ
             backgroundSize: '100% 100%',
             backgroundRepeat: 'no-repeat',
           }}
         />
-        <div className="absolute inset-0 z-10 rounded-full " />
+
+        <div className="absolute inset-0 z-10 rounded-full" />
+
         <div className="relative z-30 w-[537px] h-[537px] rounded-full overflow-hidden">
-          <img src={Image} alt={name} className="object-cover w-full h-full" />
+          <img
+            src={Image}
+            alt={name}
+            className="object-cover w-full h-full"
+          />
         </div>
       </div>
 

@@ -1,4 +1,3 @@
-import texturedSquare from '../../assets/svg/texturedBorder.svg'
 import { Link } from 'react-router-dom'
 
 export type ShowcaseSection = {
@@ -18,10 +17,13 @@ type SectionCardProps = {
   onActivate: () => void
 }
 
-export default function SectionCard({ tile, isActive, isDefaultActive, onActivate }: SectionCardProps) {
+export default function SectionCard({
+  tile,
+  isActive,
+  isDefaultActive,
+  onActivate,
+}: SectionCardProps) {
   const expanded = isActive || isDefaultActive
-
-  
 
   return (
     <div
@@ -34,11 +36,11 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
     >
       <div
         aria-hidden="true"
-        className=" absolute inset-0 z-20"
+        className="absolute inset-0 z-20"
         style={{
-          backgroundImage: `url(${texturedSquare})`,
+          backgroundImage: 'url(/svg/texturedBorder.svg)', // ← ЕДИНСТВЕННОЕ ИЗМЕНЕНИЕ
           backgroundSize: 'cover',
-          height:'530px',
+          height: '530px',
           width: '550px',
           backgroundRepeat: 'no-repeat',
         }}
@@ -54,9 +56,9 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
               maskImage: `url(${tile.iconUrl})`,
               WebkitMaskSize: 'contain',
               maskSize: 'contain',
-  WebkitMaskRepeat: 'no-repeat',
-  maskRepeat: 'no-repeat',
-  backgroundColor: '#F5C78B',
+              WebkitMaskRepeat: 'no-repeat',
+              maskRepeat: 'no-repeat',
+              backgroundColor: '#F5C78B',
             }}
           />
         </div>
@@ -67,7 +69,10 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
               <h3 className="text-h2 font-h2 text-customyellow drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
                 {tile.title}
               </h3>
-              <p className="text-customwhite w-[300px] font-p max-w-md mb-6 mt-4">{tile.description}</p>
+
+              <p className="text-customwhite w-[300px] font-p max-w-md mb-6 mt-4">
+                {tile.description}
+              </p>
 
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 rounded-full bg-customyellow/60 border border-customyellow/30" />
@@ -78,7 +83,12 @@ export default function SectionCard({ tile, isActive, isDefaultActive, onActivat
               </div>
 
               <div className="mt-auto">
-                {tile.price && <div className="text-h2 font-h2 text-customwhite mb-4">{tile.price}</div>}
+                {tile.price && (
+                  <div className="text-h2 font-h2 text-customwhite mb-4">
+                    {tile.price}
+                  </div>
+                )}
+
                 <Link
                   to="/schedule"
                   className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-p transition"
