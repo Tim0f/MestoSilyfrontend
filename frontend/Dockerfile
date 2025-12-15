@@ -6,8 +6,8 @@ WORKDIR /app
 # Копируем package files
 COPY package*.json ./
 
-# Устанавливаем зависимости
-RUN npm ci
+# Устанавливаем зависимости (fallback на npm install, если нет lock-файла)
+RUN if [ -f package-lock.json ]; then npm ci --prefer-offline; else npm install; fi
 
 # Копируем исходники
 COPY . .

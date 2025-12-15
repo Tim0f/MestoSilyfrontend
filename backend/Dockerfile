@@ -81,6 +81,10 @@ COPY prisma ./prisma/
 # Генерируем Prisma Client
 RUN npx prisma generate
 
+# Значения по умолчанию для подключения к внешнему Postgres
+# Можно переопределить через переменные окружения при запуске контейнера
+ENV DATABASE_URL="postgresql://mesto_sily_user:mesto_sily_postgres@host.docker.internal:5432/mesto_sily"
+
 # Копируем собранное приложение из builder
 COPY --from=builder /app/dist ./dist
 
