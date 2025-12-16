@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import Zerno from "../assets/svg/Zerno.svg";
-import texturedSquare from "../assets/svg/texturedBorder.svg";
 import { ProductsFrontendService } from "../services/products.service";
 import { OrdersFrontendService } from "../services/orders.service";
 import { Client } from "../services/httpClient";
-import ButtonSvg from '../assets/svg/button.svg?react'
+// import ButtonSvg from '../assets/svg/button.svg?react'
 
 const client = Client;
 
