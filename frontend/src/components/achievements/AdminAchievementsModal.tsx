@@ -1,6 +1,6 @@
 // src/components/achievements/AdminAchievementsModal.tsx
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { Client } from "../../services/httpClient";
 
 type Achievement = {
   id: string;
@@ -17,20 +17,20 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Achievement | null>(null);
-
-  const apiBase =
-    (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
-    "http://localhost:3000/api";
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
 
     const load = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get(`${apiBase}/achievements`);
-        setAchievements(res.data || []);
+        const data = await Client.get<Achievement[]>("/achievements");
+        setAchievements(data ?? []);
       } catch (e) {
         console.error("Failed to load achievements:", e);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -66,7 +66,9 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
         {/* LIST */}
         <div className="max-h-72 overflow-y-auto space-y-2 pr-2">
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="text-white/50 text-center py-6">Загрузка...</div>
+          ) : filtered.length === 0 ? (
             <div className="text-white/50 text-center py-6">Ничего не найдено</div>
           ) : (
             filtered.map((a) => (
@@ -81,7 +83,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
           )}
         </div>
 
-        {/* SELECTED ACHIEVEMENT */}
+        {/* SELECTED */}
         {selected && (
           <div className="mt-6 bg-[#3A3333] rounded-xl p-4 border border-[#E0B26F]/40">
             <div className="text-lg font-semibold mb-2">{selected.name}</div>

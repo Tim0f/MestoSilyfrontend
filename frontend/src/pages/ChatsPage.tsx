@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Send, MoreVertical } from "lucide-react";
 import texturedBorder from "../assets/svg/texturedBorder.svg";
-import axios from "axios";
+import { Client } from "../services/httpClient";
 import {
   ChatSocketService,
   type ChatMessage as SocketChatMessage,
@@ -27,11 +27,10 @@ export default function ChatsPage(): JSX.Element {
     userId = payload.sub || payload.userId || null;
   } catch {}
 
-  const apiBase =
-    (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||
-    "http://localhost:3000/api";
-
-  const socketBase = apiBase.replace(/\/api$/, "");
+  // 🔌 socket base (без /api)
+  const socketBase = Client["options"]?.baseUrl
+    ? Client["options"].baseUrl.replace(/\/api$/, "")
+    : "";
 
   const socketRef = useRef<ChatSocketService | null>(null);
   const selectedChatIdRef = useRef<string | null>(null);
@@ -39,7 +38,9 @@ export default function ChatsPage(): JSX.Element {
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [participantsMap, setParticipantsMap] = useState<Record<string, string>>({});
+  const [participantsMap, setParticipantsMap] = useState<Record<string, string>>(
+    {}
+  );
   const [typingUsers, setTypingUsers] = useState<Record<string, boolean>>({});
   const [newMessage, setNewMessage] = useState("");
   const [autoScroll, setAutoScroll] = useState(true);
@@ -83,8 +84,7 @@ export default function ChatsPage(): JSX.Element {
     setAutoScroll(atBottom);
 
     if (firstUnreadId && firstUnreadRef.current) {
-      const el = firstUnreadRef.current;
-      const elRect = el.getBoundingClientRect();
+      const elRect = firstUnreadRef.current.getBoundingClientRect();
       const containerRect = c.getBoundingClientRect();
       if (elRect.bottom <= containerRect.bottom) {
         setFirstUnreadId(null);
@@ -92,14 +92,15 @@ export default function ChatsPage(): JSX.Element {
     }
   };
 
+  // ======================
+  // HTTP
+  // ======================
+
   const loadChats = async () => {
     try {
-      const res = await axios.get(`${apiBase}/chat/all`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const list = Array.isArray(res.data) ? res.data : [];
-      setChats(list);
-      setSelectedChatId((prev) => prev ?? list[0]?.id ?? null);
+      const list = await Client.get<ChatItem[]>("/chat/all");
+      setChats(Array.isArray(list) ? list : []);
+      setSelectedChatId((prev) => prev ?? list?.[0]?.id ?? null);
     } catch (e) {
       console.error("loadChats error:", e);
     }
@@ -107,72 +108,88 @@ export default function ChatsPage(): JSX.Element {
 
   const loadParticipants = async (chatId: string) => {
     try {
-      const res = await axios.get(`${apiBase}/chat/${chatId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const data = await Client.get<{
+        participants?: Array<{
+          user?: { id: string; firstName?: string; lastName?: string };
+        }>;
+      }>(`/chat/${chatId}`);
+
       const map: Record<string, string> = {};
-      (res.data.participants ?? []).forEach((p: any) => {
-        if (p.user)
-          map[p.user.id] = `${p.user.firstName ?? ""} ${p.user.lastName ?? ""}`.trim();
+      data.participants?.forEach((p) => {
+        if (p.user) {
+          map[p.user.id] = `${p.user.firstName ?? ""} ${
+            p.user.lastName ?? ""
+          }`.trim();
+        }
       });
+
       setParticipantsMap(map);
     } catch (e) {
       console.warn("loadParticipants error:", e);
     }
   };
 
+  // ======================
+  // SOCKET
+  // ======================
+
   useEffect(() => {
     selectedChatIdRef.current = selectedChatId;
   }, [selectedChatId]);
 
   useEffect(() => {
-    if (!token) return;
-    socketRef.current = new ChatSocketService(socketBase, token);
-    socketRef.current.connect();
+  if (!token) return;
 
-    if (typeof socketRef.current.onConnect === "function") {
-      socketRef.current.onConnect(() => setLoadingConnection(false));
-    } else {
-      setTimeout(() => setLoadingConnection(false), 500);
-    }
+  socketRef.current = new ChatSocketService(socketBase, token);
+  socketRef.current.connect();
 
-    socketRef.current.onNewMessage((msg) => {
-      if (String(msg.chatId) === String(selectedChatIdRef.current)) {
-        setMessages((prev) => {
-          const alreadyHas = prev.some((m) => m.id === msg.id);
-          if (alreadyHas) return prev;
+  socketRef.current.onConnect?.(() => {
+    setLoadingConnection(false);
+  });
 
-          const upd = [...prev, msg];
+  socketRef.current.onNewMessage((msg) => {
+    if (String(msg.chatId) !== String(selectedChatIdRef.current)) return;
 
-          if (!autoScroll && !firstUnreadId) {
-            setFirstUnreadId(msg.id);
-          }
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === msg.id)) return prev;
 
-          return upd;
-        });
-
-        
+      if (!autoScroll && !firstUnreadId) {
+        setFirstUnreadId(msg.id);
       }
-    });
 
-    socketRef.current.onUserTyping(({ userId, isTyping }) => {
-      if (!userId) return;
-      setTypingUsers((prev) => ({ ...prev, [userId]: isTyping }));
-      if (isTyping)
-        setTimeout(() => {
-          setTypingUsers((prev) => ({ ...prev, [userId]: false }));
-        }, 3500);
+      return [...prev, msg];
     });
+  });
 
-    socketRef.current.onDisconnect?.(() => {
-      setLoadingConnection(true);
-    });
+  socketRef.current.onUserTyping(({ userId, isTyping }) => {
+    if (!userId) return;
 
-    return () => socketRef.current?.disconnect();
-  }, [token]);
+    setTypingUsers((prev) => ({ ...prev, [userId]: isTyping }));
+
+    if (isTyping) {
+      setTimeout(() => {
+        setTypingUsers((prev) => ({ ...prev, [userId]: false }));
+      }, 3500);
+    }
+  });
+
+  socketRef.current.onDisconnect?.(() => {
+    setLoadingConnection(true);
+  });
+
+  return () => {
+    socketRef.current?.disconnect();
+    socketRef.current = null;
+  };
+}, [token]);
+
+  // ======================
+  // JOIN CHAT
+  // ======================
 
   useEffect(() => {
     if (!selectedChatId) return;
+
     loadParticipants(selectedChatId);
     setLoadingMessages(true);
     setFirstUnreadId(null);
@@ -182,7 +199,9 @@ export default function ChatsPage(): JSX.Element {
         const ack = await socketRef.current!.joinChat(selectedChatId);
         if (ack?.messages) {
           const sorted = [...ack.messages].sort(
-            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            (a, b) =>
+              new Date(a.createdAt).getTime() -
+              new Date(b.createdAt).getTime()
           );
           setMessages(sorted);
           setLoadingMessages(false);
@@ -191,11 +210,13 @@ export default function ChatsPage(): JSX.Element {
       } catch {}
 
       try {
-        const res = await axios.get(`${apiBase}/chat/${selectedChatId}/messages`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const sorted = [...res.data].sort(
-          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        const list = await Client.get<ChatMessage[]>(
+          `/chat/${selectedChatId}/messages`
+        );
+        const sorted = [...list].sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() -
+            new Date(b.createdAt).getTime()
         );
         setMessages(sorted);
       } catch (e) {
@@ -203,40 +224,49 @@ export default function ChatsPage(): JSX.Element {
       }
 
       setLoadingMessages(false);
-      setTimeout(() => scrollToBottomSmooth(), 50);
+      setTimeout(scrollToBottomSmooth, 50);
     };
 
     join();
   }, [selectedChatId]);
 
-const sendMessage = async (e?: React.FormEvent) => {
-  e?.preventDefault();
-  if (!selectedChatId) return;
+  // ======================
+  // SEND MESSAGE
+  // ======================
 
-  const text = newMessage.trim();
-  if (!text) return;
+  const sendMessage = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!selectedChatId) return;
 
-  setNewMessage("");
+    const text = newMessage.trim();
+    if (!text) return;
 
-  try {
-    const ack = await socketRef.current?.sendMessage(selectedChatId, text);
+    setNewMessage("");
 
-    const msg = ack?.message;
-    if (!msg) return; // ← защита от undefined
+    try {
+      const ack = await socketRef.current?.sendMessage(
+        selectedChatId,
+        text
+      );
+      const msg = ack?.message;
+      if (!msg) return;
 
-    setMessages((prev) => {
-      if (prev.some((m) => m.id === msg.id)) return prev;
-      return [...prev, msg]; // ← строго ChatMessage
-    });
-
-  } catch {}
-};
-
+      setMessages((prev) =>
+        prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]
+      );
+    } catch {}
+  };
 
   const onTypingChange = (v: string) => {
     setNewMessage(v);
-    if (selectedChatId) socketRef.current?.sendTyping(selectedChatId, v.length > 0);
+    if (selectedChatId) {
+      socketRef.current?.sendTyping(selectedChatId, v.length > 0);
+    }
   };
+
+  // ======================
+  // INIT
+  // ======================
 
   useEffect(() => {
     loadChats();
@@ -244,24 +274,18 @@ const sendMessage = async (e?: React.FormEvent) => {
     return () => clearInterval(t);
   }, []);
 
-  //
-  // FIXED SCROLL TO FIRST UNREAD
-  //
   useEffect(() => {
     if (!firstUnreadId || !firstUnreadRef.current) return;
 
     firstUnreadRef.current.scrollIntoView({
       behavior: "smooth",
-      block: "end", // гарантирует полную видимость
+      block: "end",
     });
   }, [firstUnreadId]);
 
   useEffect(() => {
     if (!autoScroll) return;
-
-    requestAnimationFrame(() => {
-      scrollToBottomSmooth();
-    });
+    requestAnimationFrame(scrollToBottomSmooth);
   }, [messages]);
 
   const typingText = (() => {
@@ -271,19 +295,27 @@ const sendMessage = async (e?: React.FormEvent) => {
 
     if (active.length === 0) return null;
     if (active.length === 1) return `${active[0]} печатает…`;
-    if (active.length === 2) return `${active[0]} и ${active[1]} печатают…`;
+    if (active.length === 2)
+      return `${active[0]} и ${active[1]} печатают…`;
     return `${active[0]} и ещё ${active.length - 1} печатают…`;
   })();
 
+  // ======================
+  // RENDER
+  // ======================
+
   return (
-    <div className="min-h-screen bg-customblack text-white flex items-top justify-center ">
-      <div className="relative w-full ">
+    <div className="min-h-screen bg-customblack text-white flex items-top justify-center">
+      <div className="relative w-full">
         <div
           className="pointer-events-none absolute inset-0 z-50"
           style={{ ["--tw-url" as any]: `url(${texturedBorder})` }}
         />
 
-        <div className="bg-transparent rounded-xl overflow-hidden shadow-lg" style={{ height: "78vh" }}>
+        <div
+          className="bg-transparent rounded-xl overflow-hidden shadow-lg"
+          style={{ height: "78vh" }}
+        >
           <div className="flex h-full">
             {/* LEFT */}
             <div className="w-1/3 bg-[#3A3333] flex flex-col">
@@ -296,17 +328,21 @@ const sendMessage = async (e?: React.FormEvent) => {
                 {chats.length === 0 ? (
                   <div className="text-white/50 text-center">Чатов нет</div>
                 ) : (
-                  chats.map((c: ChatItem) => (
+                  chats.map((c) => (
                     <button
                       key={c.id}
                       onClick={() => setSelectedChatId(String(c.id))}
                       className={`w-full flex items-center gap-4 p-4 rounded-md text-left ${
-                        selectedChatId === c.id ? "bg-[#352e2e]" : "bg-transparent"
+                        selectedChatId === c.id
+                          ? "bg-[#352e2e]"
+                          : "bg-transparent"
                       }`}
                     >
                       <Avatar src={getChatAvatar(c)} size={56} />
                       <div className="flex-1">
-                        <div className="font-bold text-lg">{getChatName(c)}</div>
+                        <div className="font-bold text-lg">
+                          {getChatName(c)}
+                        </div>
                         <div className="text-sm text-white/70 mt-1">
                           Сообщений: {c._count?.messages ?? 0}
                         </div>
@@ -323,10 +359,14 @@ const sendMessage = async (e?: React.FormEvent) => {
                 <div className="flex items-center gap-4">
                   <Avatar
                     size={56}
-                    src={getChatAvatar(chats.find((c) => c.id === selectedChatId) ?? undefined)}
+                    src={getChatAvatar(
+                      chats.find((c) => c.id === selectedChatId)
+                    )}
                   />
                   <div className="text-2xl font-bold">
-                    {getChatName(chats.find((c) => c.id === selectedChatId) ?? undefined)}
+                    {getChatName(
+                      chats.find((c) => c.id === selectedChatId)
+                    )}
                   </div>
                 </div>
                 <MoreVertical size={20} />
@@ -338,11 +378,17 @@ const sendMessage = async (e?: React.FormEvent) => {
                 className="flex-1 overflow-y-auto px-8 py-8"
               >
                 {loadingConnection ? (
-                  <div className="text-center text-white/60 mt-10">Подключение к чату…</div>
+                  <div className="text-center text-white/60 mt-10">
+                    Подключение к чату…
+                  </div>
                 ) : loadingMessages ? (
-                  <div className="text-center text-white/60 mt-10">Загрузка сообщений…</div>
+                  <div className="text-center text-white/60 mt-10">
+                    Загрузка сообщений…
+                  </div>
                 ) : messages.length === 0 ? (
-                  <div className="text-center text-white/60 mt-10">Нет сообщений</div>
+                  <div className="text-center text-white/60 mt-10">
+                    Нет сообщений
+                  </div>
                 ) : (
                   <div className="space-y-6">
                     {messages.map((m) => {
@@ -353,14 +399,23 @@ const sendMessage = async (e?: React.FormEvent) => {
                         <div
                           key={m.id}
                           ref={isFirstUnread ? firstUnreadRef : null}
-                          className={`flex items-end gap-4 ${isMine ? "justify-end" : "justify-start"}`}
+                          className={`flex items-end gap-4 ${
+                            isMine
+                              ? "justify-end"
+                              : "justify-start"
+                          }`}
                         >
                           {!isMine && <Avatar size={44} />}
 
-                          <div className={`max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
+                          <div
+                            className={`max-w-[70%] ${
+                              isMine ? "text-right" : "text-left"
+                            }`}
+                          >
                             {!isMine && (
                               <div className="text-xs text-[#E0B26F] mb-1">
-                                {m.author?.firstName ?? "Пользователь"}
+                                {m.author?.firstName ??
+                                  "Пользователь"}
                               </div>
                             )}
 
@@ -372,9 +427,10 @@ const sendMessage = async (e?: React.FormEvent) => {
                               }`}
                             >
                               {m.content}
-
                               <div className="text-right text-xs text-white/60 mt-2">
-                                {new Date(m.createdAt).toLocaleTimeString("ru-RU", {
+                                {new Date(
+                                  m.createdAt
+                                ).toLocaleTimeString("ru-RU", {
                                   hour: "2-digit",
                                   minute: "2-digit",
                                 })}
@@ -388,21 +444,31 @@ const sendMessage = async (e?: React.FormEvent) => {
                 )}
 
                 {typingText && (
-                  <div className="text-white/60 italic mt-4">{typingText}</div>
+                  <div className="text-white/60 italic mt-4">
+                    {typingText}
+                  </div>
                 )}
 
                 <div ref={endRef} />
               </div>
 
               <div className="px-8 py-6 border-t border-[#E0B26F]/20">
-                <form onSubmit={sendMessage} className="flex items-center gap-4">
+                <form
+                  onSubmit={sendMessage}
+                  className="flex items-center gap-4"
+                >
                   <input
                     value={newMessage}
-                    onChange={(e) => onTypingChange(e.target.value)}
+                    onChange={(e) =>
+                      onTypingChange(e.target.value)
+                    }
                     placeholder="Напишите сообщение..."
                     className="flex-1 bg-[#3a3434] text-white rounded-full px-6 py-4 outline-none placeholder-white/40"
                   />
-                  <button type="submit" className="p-3 rounded-full bg-[#E0B26F]">
+                  <button
+                    type="submit"
+                    className="p-3 rounded-full bg-[#E0B26F]"
+                  >
                     <Send size={20} />
                   </button>
                 </form>

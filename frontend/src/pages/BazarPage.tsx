@@ -1,185 +1,347 @@
 import { useEffect, useState } from "react";
+
 import Zerno from "../assets/svg/Zerno.svg";
+
 import texturedSquare from "../assets/svg/texturedBorder.svg";
+
 import { ProductsFrontendService } from "../services/products.service";
+
 import { OrdersFrontendService } from "../services/orders.service";
-import { HttpClient } from "../services/httpClient";
+
+import { Client } from "../services/httpClient";
+
 import ButtonSvg from '../assets/svg/button.svg?react'
 
-const client = new HttpClient({
-  baseUrl:
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    "http://localhost:3000/api",
-  getToken: () => localStorage.getItem("token") ?? undefined,
-});
+  
+
+const client = Client;
+
+  
 
 const productsService = new ProductsFrontendService(client);
+
 const ordersService = new OrdersFrontendService(client);
 
+  
+
 export default function BazarPage() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  const loadProducts = async () => {
-    try {
-      const res = await productsService.findAll<any[]>();
-      setProducts(res);
-    } catch (err) {
-      console.error("Ошибка загрузки товаров:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [products, setProducts] = useState<any[]>([]);
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
+  const [loading, setLoading] = useState(true);
 
-  const buy = async (productId: string) => {
-    try {
-      const order = await ordersService.create({
-        items: [
-          {
-            productId, // ← корректное поле под твой backend DTO
-            quantity: 1,
-          },
-        ],
-      });
-
-      alert("Покупка прошла успешно! Чек отправлен на почту.");
-      console.log("Order success:", order);
-    } catch (err: any) {
-      console.error(err);
-      alert(err.message ?? "Ошибка при покупке");
-    }
-  };
-
-  if (loading)
-    return (
-      <div className="w-full min-h-screen bg-customblack text-white p-6">
-        {/* Заголовок */}
-        <div className="text-center mb-10 mt-10">
-          <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">БАЗАР</h1>
-          <p className="text-primary-300 text-lg max-w-xl mx-auto opacity-80">
-            При покупке вам придёт чек на почту, который нужно показать там, где можно материализовать покупку
-          </p>
-        </div>
   
-        {/* Карточки */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-        style={{
-          backgroundImage: `url(${texturedSquare})`,
-          backgroundSize: '100% 100%',
-          backgroundRepeat: 'no-repeat',
-          
-        }}>
-          {products.map((item) => ( 
-            <div
-              key={item.id}
-              className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
-            >
-              {/* Цена */}
-              <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
-                {item.price} 
-                <img
-              src={Zerno}
-              className='w-[20px] fill-black text-black'
-              style={{
-                WebkitMaskSize: 'contain',
-                maskSize: 'contain',
-                WebkitMaskRepeat: 'no-repeat',
-                maskRepeat: 'no-repeat',
-                color:'customyellow',
-                height: '10px',
-                width: '10px'
-              }}
-    />
-              </div>
+
+  const loadProducts = async () => {
+
+    try {
+
+      const res = await productsService.findAll<any[]>();
+
+      setProducts(res);
+
+    } catch (err) {
+
+      console.error("Ошибка загрузки товаров:", err);
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
   
-              {/* Плейсхолдер изображения */}
-              <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4"></div>
+
+  useEffect(() => {
+
+    loadProducts();
+
+  }, []);
+
   
-              <h2 className="text-xl font-h1 mb-1">{item.title}</h2>
-              <p className="text-sm text-primary-300 mb-4">{item.desc}</p>
+
+  const buy = async (productId: string) => {
+
+    try {
+
+      const order = await ordersService.create({
+
+        items: [
+
+          {
+
+            productId, // ← корректное поле под твой backend DTO
+
+            quantity: 1,
+
+          },
+
+        ],
+
+      });
+
   
-              <button className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90">
-                купить
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
 
-  return (
-    <div className="w-full min-h-screen bg-customblack text-white p-6">
-      {/* Заголовок */}
-      <div className="text-center mb-10 mt-10">
-        <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">
-          БАЗАР
-        </h1>
-        <p className="text-primary-300 text-lg max-w-xl mx-auto opacity-80">
-          При покупке вам придёт чек на почту, который нужно показать там, где
-          можно материализовать покупку
-        </p>
-      </div>
+      alert("Покупка прошла успешно! Чек отправлен на почту.");
 
-      {/* Карточки */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-      style={{
-        backgroundImage: `url(${texturedSquare})`,
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
-        
-      }}>
-        {products.map((item) => (
-          <div
-            key={item.id}
-            className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
-          >
-            {/* Цена */}
-            <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
-              {item.price}
-              <img
-                src={Zerno}
-                className="w-[20px]"
-                style={{
-                  WebkitMaskSize: "contain",
-                  maskSize: "contain",
-                  WebkitMaskRepeat: "no-repeat",
-                  maskRepeat: "no-repeat",
-                  color: "black",
-                  height: "10px",
-                  width: "10px",
-                }}
-              />
-            </div>
+      console.log("Order success:", order);
 
-            {/* Картинка */}
-            <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4 overflow-hidden">
-              {item.imageUrl ? (
-                <img
-                  src={item.imageUrl}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-700/40" />
-              )}
-            </div>
+    } catch (err: any) {
 
-            <h2 className="text-xl font-h1 mb-1">{item.name}</h2>
-            <p className="text-sm text-primary-300 mb-4">{item.description}</p>
+      console.error(err);
 
-            <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
-          <span
-              onClick={() => buy(item.id)}
-              className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90"
-            >
-              купить
-              </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+      alert(err.message ?? "Ошибка при покупке");
+
+    }
+
+  };
+
+  
+
+  if (loading)
+
+    return (
+
+      <div className="w-full min-h-screen bg-customblack text-white p-6">
+
+        {/* Заголовок */}
+
+        <div className="text-center mb-10 mt-10">
+
+          <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">БАЗАР</h1>
+
+          <p className="text-primary-300 text-lg max-w-xl mx-auto opacity-80">
+
+            При покупке вам придёт чек на почту, который нужно показать там, где можно материализовать покупку
+
+          </p>
+
+        </div>
+
+        {/* Карточки */}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+
+        style={{
+
+          backgroundImage: `url(${texturedSquare})`,
+
+          backgroundSize: '100% 100%',
+
+          backgroundRepeat: 'no-repeat',
+
+        }}>
+
+          {products.map((item) => (
+
+            <div
+
+              key={item.id}
+
+              className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
+
+            >
+
+              {/* Цена */}
+
+              <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
+
+                {item.price}
+
+                <img
+
+              src={Zerno}
+
+              className='w-[20px] fill-black text-black'
+
+              style={{
+
+                WebkitMaskSize: 'contain',
+
+                maskSize: 'contain',
+
+                WebkitMaskRepeat: 'no-repeat',
+
+                maskRepeat: 'no-repeat',
+
+                color:'customyellow',
+
+                height: '10px',
+
+                width: '10px'
+
+              }}
+
+    />
+
+              </div>
+
+              {/* Плейсхолдер изображения */}
+
+              <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4"></div>
+
+              <h2 className="text-xl font-h1 mb-1">{item.title}</h2>
+
+              <p className="text-sm text-primary-300 mb-4">{item.desc}</p>
+
+              <button className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90">
+
+                купить
+
+              </button>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </div>
+
+    );
+
+  
+
+  return (
+
+    <div className="w-full min-h-screen bg-customblack text-white p-6">
+
+      {/* Заголовок */}
+
+      <div className="text-center mb-10 mt-10">
+
+        <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">
+
+          БАЗАР
+
+        </h1>
+
+        <p className="text-primary-300 text-lg max-w-xl mx-auto opacity-80">
+
+          При покупке вам придёт чек на почту, который нужно показать там, где
+
+          можно материализовать покупку
+
+        </p>
+
+      </div>
+
+  
+
+      {/* Карточки */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+
+      style={{
+
+        backgroundImage: `url(${texturedSquare})`,
+
+        backgroundSize: '100% 100%',
+
+        backgroundRepeat: 'no-repeat',
+
+      }}>
+
+        {products.map((item) => (
+
+          <div
+
+            key={item.id}
+
+            className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
+
+          >
+
+            {/* Цена */}
+
+            <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
+
+              {item.price}
+
+              <img
+
+                src={Zerno}
+
+                className="w-[20px]"
+
+                style={{
+
+                  WebkitMaskSize: "contain",
+
+                  maskSize: "contain",
+
+                  WebkitMaskRepeat: "no-repeat",
+
+                  maskRepeat: "no-repeat",
+
+                  color: "black",
+
+                  height: "10px",
+
+                  width: "10px",
+
+                }}
+
+              />
+
+            </div>
+
+  
+
+            {/* Картинка */}
+
+            <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4 overflow-hidden">
+
+              {item.imageUrl ? (
+
+                <img
+
+                  src={item.imageUrl}
+
+                  className="w-full h-full object-cover"
+
+                />
+
+              ) : (
+
+                <div className="w-full h-full bg-gray-700/40" />
+
+              )}
+
+            </div>
+
+  
+
+            <h2 className="text-xl font-h1 mb-1">{item.name}</h2>
+
+            <p className="text-sm text-primary-300 mb-4">{item.description}</p>
+
+  
+
+            <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
+
+          <span
+
+              onClick={() => buy(item.id)}
+
+              className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90"
+
+            >
+
+              купить
+
+              </span>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </div>
+
+  );
+
 }

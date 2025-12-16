@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {Client} from '../../services/httpClient';
+import { UploadFrontendService } from '../../services/upload.service';
 import {
   AchievementsFrontendService,
   type CreateAchievementDto,
@@ -34,11 +35,12 @@ export default function AchievementCreateModal({
     sectionId: '',
     isActive: true,
   });
-
+const uploadService = new UploadFrontendService(client);
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
 
   const [creating, setCreating] = useState(false);
+const [uploadingIcon, setUploadingIcon] = useState(false);
 
   const update = (k: keyof CreateAchievementDto, v: any) =>
     setForm((p) => ({ ...p, [k]: v }));
@@ -50,6 +52,23 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
 
   // Проверяем, нет ли ачивки с таким кодом
   return !achievements.some(a => a.code === code);
+};
+const uploadIcon = async (file: File) => {
+  setUploadingIcon(true);
+
+  try {
+    // предполагаем, что бэк возвращает { filename: string }
+    const res = await uploadService.image<{ filename: string }>(file);
+
+    const iconUrl = uploadService.getFileUrl(res.filename);
+
+    update('iconUrl', iconUrl);
+  } catch (e) {
+    console.error('Ошибка загрузки иконки', e);
+    alert('Не удалось загрузить иконку');
+  } finally {
+    setUploadingIcon(false);
+  }
 };
 
 
@@ -124,14 +143,31 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
           </div>
 
           <div>
-            <label className="block mb-1 text-customwhite">URL иконки</label>
-            <input
-              type="text"
-              value={form.iconUrl}
-              onChange={(e) => update('iconUrl', e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
-            />
-          </div>
+  <label className="block mb-1 text-customwhite">Иконка</label>
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) uploadIcon(file);
+    }}
+    className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+  />
+
+  {uploadingIcon && (
+    <p className="text-sm text-customyellow mt-1">Загружаем иконку...</p>
+  )}
+
+  {form.iconUrl && (
+    <img
+      src={form.iconUrl}
+      alt="icon preview"
+      className="mt-2 w-16 h-16 object-contain rounded bg-[#111]"
+    />
+  )}
+</div>
+
 
           <div>
             <label className="block mb-1 text-customwhite">Награда (зерна)</label>
