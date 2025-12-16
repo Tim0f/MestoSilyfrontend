@@ -44,6 +44,7 @@ model Section {
   imageUrl        String?
   iconUrl         String?
   galleryDriveUrl String?
+  price           Int           @default(0) 
   ageMin          Int           @default(12)
   ageMax          Int           @default(17)
   maxParticipants Int?

@@ -78,6 +78,14 @@ export class CreateSectionDto {
   @IsString()
   galleryDriveUrl?: string;
 
+  @ApiProperty({
+    example: 1500,
+    description: 'Стоимость одного занятия для секции (в условных единицах/руб.)',
+  })
+  @IsInt()
+  @Min(0)
+  price: number;
+
   // -------------------------
   // 🔥 Новое поле
   // -------------------------
@@ -87,7 +95,7 @@ export class CreateSectionDto {
     required: false,
   })
   @IsOptional()
-@IsArray()
-@IsString({ each: true }) // вместо IsUUID
-teacherIds?: string[];
+  @IsArray()
+  @IsString({ each: true }) // вместо IsUUID
+  teacherIds?: string[];
 }
