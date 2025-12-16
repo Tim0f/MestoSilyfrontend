@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import Zerno from "../assets/svg/Zerno.svg";
-import texturedSquare from "../assets/svg/texturedBorder.svg";
 import { ProductsFrontendService } from "../services/products.service";
 import { OrdersFrontendService } from "../services/orders.service";
 import { Client } from "../services/httpClient";
-import ButtonSvg from '../assets/svg/button.svg?react'
+// import ButtonSvg from '../assets/svg/button.svg?react'
 
 const client = Client;
 
@@ -58,51 +57,10 @@ export default function BazarPage() {
           <p className="text-primary-300 text-lg max-w-xl mx-auto opacity-80">
             При покупке вам придёт чек на почту, который нужно показать там, где можно материализовать покупку
           </p>
+          <h1>Товаров пока нет</h1>
         </div>
-  
-        {/* Карточки */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-        style={{
-          backgroundImage: `url(${texturedSquare})`,
-          backgroundSize: '100% 100%',
-          backgroundRepeat: 'no-repeat',
-          
-        }}>
-          {products.map((item) => ( 
-            <div
-              key={item.id}
-              className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
-            >
-              {/* Цена */}
-              <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
-                {item.price} 
-                <img
-              src={Zerno}
-              className='w-[20px] fill-black text-black'
-              style={{
-                WebkitMaskSize: 'contain',
-                maskSize: 'contain',
-                WebkitMaskRepeat: 'no-repeat',
-                maskRepeat: 'no-repeat',
-                color:'customyellow',
-                height: '10px',
-                width: '10px'
-              }}
-    />
-              </div>
-  
-              {/* Плейсхолдер изображения */}
-              <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4"></div>
-  
-              <h2 className="text-xl font-h1 mb-1">{item.title}</h2>
-              <p className="text-sm text-primary-300 mb-4">{item.desc}</p>
-  
-              <button className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90">
-                купить
-              </button>
-            </div>
-          ))}
-        </div>
+      
+        
       </div>
     );
 
@@ -120,59 +78,51 @@ export default function BazarPage() {
       </div>
 
       {/* Карточки */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-      style={{
-        backgroundImage: `url(${texturedSquare})`,
-        backgroundSize: '100% 100%',
-        backgroundRepeat: 'no-repeat',
-        
-      }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {products.map((item) => (
           <div
-            key={item.id}
-            className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
-          >
-            {/* Цена */}
-            <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
-              {item.price}
-              <img
-                src={Zerno}
-                className="w-[20px]"
-                style={{
-                  WebkitMaskSize: "contain",
-                  maskSize: "contain",
-                  WebkitMaskRepeat: "no-repeat",
-                  maskRepeat: "no-repeat",
-                  color: "black",
-                  height: "10px",
-                  width: "10px",
-                }}
-              />
-            </div>
+  key={item.id}
+  className="relative w-[442px] h-[500px] textured-border overflow-hidden p-[10px]"
+>
+  {/* КАРТИНКА + ЦЕНА */}
+  <div className="relative w-full h-[210px] pt-[10px]">
+    {item.imageUrl ? (
+      <img
+        src={item.imageUrl}
+        className="w-[387px] h-[200px] object-cover"
+      />
+    ) : (
+      <div className="w-full h-full bg-gray-700/40" />
+    )}
 
-            {/* Картинка */}
-            <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4 overflow-hidden">
-              {item.imageUrl ? (
-                <img
-                  src={item.imageUrl}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-700/40" />
-              )}
-            </div>
+    {/* Цена */}
+    <div className="absolute top-1 right-0 bg-customyellow text-black w-[108px] h-[81px] rounded-md shadow flex items-center justify-center text-h2 font-h2">
+      {item.price}
+      <img src={Zerno} className="w-[30px] h-[30px]" />
+    </div>
+  </div>
 
-            <h2 className="text-xl font-h1 mb-1">{item.name}</h2>
-            <p className="text-sm text-primary-300 mb-4">{item.description}</p>
+  {/* КОНТЕНТ */}
+  <div className="flex flex-col h-[calc(100%-210px)] p-[25px]">
+    <h2 className="text-h2 font-h2 mb-2">
+      {item.name}
+    </h2>
 
-            <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
-          <span
-              onClick={() => buy(item.id)}
-              className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90"
-            >
-              купить
-              </span>
-          </div>
+    <p className="text-p mb-4 opacity-80">
+      {item.description}
+    </p>
+
+    {/* КНОПКА */}
+    <span
+      onClick={() => buy(item.id)}
+      className="mt-auto w-full bg-[#f6c98f] text-black font-p py-2 text-center hover:brightness-90 cursor-pointer"
+    >
+      купить
+    </span>
+  </div>
+</div>
+
+
         ))}
       </div>
     </div>
