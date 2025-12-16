@@ -4,6 +4,7 @@ import {
   AchievementsFrontendService,
   type UpdateAchievementDto,
 } from '../../services/achievements.service';
+import { UploadFrontendService } from '../../services/upload.service';
 
 interface Props {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const client = Client;
+const uploadService = new UploadFrontendService(client);
 
 const achievementsService = new AchievementsFrontendService(client);
 
@@ -38,6 +40,7 @@ export default function AchievementEditModal({
     sectionId: achievement.sectionId,
     isActive: achievement.isActive,
   });
+const [uploadingIcon, setUploadingIcon] = useState(false);
 
   const update = (k: keyof UpdateAchievementDto, v: any) =>
     setForm((prev) => ({ ...prev, [k]: v }));
@@ -48,6 +51,23 @@ export default function AchievementEditModal({
     await achievementsService.update(achievement.id, form);
     onClose();
   };
+
+const uploadIcon = async (file: File) => {
+  setUploadingIcon(true);
+
+  try {
+    const res = await uploadService.image<{ filename: string }>(file);
+    const iconUrl = uploadService.getFileUrl(res.filename);
+
+    update('iconUrl', iconUrl);
+  } catch (e) {
+    console.error('Ошибка загрузки иконки', e);
+    alert('Не удалось загрузить иконку');
+  } finally {
+    setUploadingIcon(false);
+  }
+};
+
 
   if (!isOpen) return null;
 
@@ -78,14 +98,43 @@ export default function AchievementEditModal({
           </div>
 
           <div>
-            <label className="block mb-1 text-customwhite">URL иконки</label>
-            <input
-              type="text"
-              value={form.iconUrl}
-              onChange={(e) => update('iconUrl', e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
-            />
-          </div>
+  <label className="block mb-1 text-customwhite">Иконка</label>
+
+  {/* Предпросмотр текущей иконки */}
+  {form.iconUrl && (
+    <div className="mb-2">
+      <img
+        src={form.iconUrl}
+        alt="icon preview"
+        className="w-16 h-16 object-contain rounded bg-[#111]"
+      />
+    </div>
+  )}
+
+  {/* Загрузка новой */}
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) uploadIcon(file);
+    }}
+    className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+  />
+
+  {uploadingIcon && (
+    <p className="text-sm text-customyellow mt-1">
+      Загружаем новую иконку...
+    </p>
+  )}
+
+  {form.iconUrl && !uploadingIcon && (
+    <p className="text-xs text-gray-400 mt-1">
+      Выберите файл, чтобы заменить текущую иконку
+    </p>
+  )}
+</div>
+
 
           <div>
             <label className="block mb-1 text-customwhite">Награда (зерна)</label>

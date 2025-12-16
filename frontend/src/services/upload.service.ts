@@ -12,12 +12,16 @@ export class UploadFrontendService {
     return this.http.post<T>('/upload/video', ensureFormData(file));
   }
 
-  // optional helper: server may expose file url builder; if not, you can use returned filename from upload
+  /**
+   * helper для формирования URL загруженного файла
+   * (если бэк не возвращает абсолютный url)
+   */
   getFileUrl(filename: string) {
     const base =
-      (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-      (import.meta.env.VITE_API_URL as string | undefined) ??
+      (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ||
+      (import.meta.env.VITE_API_URL as string | undefined) ||
       'http://localhost:3000';
-    return `${base}/uploads/${filename}`;
+
+    return `${base.replace(/\/api$/, '')}/uploads/${filename}`;
   }
 }
