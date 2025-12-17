@@ -353,7 +353,7 @@ const sendMessage = async (e?: React.FormEvent) => {
                         <div
                           key={m.id}
                           ref={isFirstUnread ? firstUnreadRef : null}
-                          className={`flex items-end gap-4 ${isMine ? "justify-end" : "justify-start"}`}
+                          className={`flex  items-end gap-4 ${isMine ? "justify-end" : "justify-start"}`}
                         >
                           {!isMine && <Avatar size={44} />}
 
@@ -365,7 +365,7 @@ const sendMessage = async (e?: React.FormEvent) => {
                             )}
 
                             <div
-                              className={`p-4 rounded-2xl break-words ${
+                              className={`p-4 w-auro max-w-[640px] rounded-2xl break-words ${
                                 isMine
                                   ? "bg-[#E0B26F] text-customblack ml-auto"
                                   : "bg-[#F7C985] text-[#3A3333]"
