@@ -1,5 +1,7 @@
 // src/services/grains.service.ts
-import { HttpClient } from './httpClient';
+import { HttpClient, Client } from './httpClient';
+
+// const client = Client;
 
 export interface AddGrainsDto {
   userId: string;
@@ -46,4 +48,7 @@ export class GrainsFrontendService {
   transfersByUser<T = unknown>(userId: string) {
     return this.http.get<T>(`/grains/transfers/${userId}`);
   }
+
 }
+
+  export const grainsFrontendService = new GrainsFrontendService(Client);

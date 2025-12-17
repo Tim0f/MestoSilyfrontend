@@ -34,7 +34,7 @@ export default function WeekSwitcher({
 
       {/* ===== БЕСПЛАТНЫЕ ПОСЕЩЕНИЯ ===== */}
       <div className="flex items-center gap-[20px]">
-        <span className="text-[24px] text-white">
+        <span className="text-p font-p text-white w-[243px]">
           Кол-во бесплатных посещений:
         </span>
 

@@ -1,31 +1,27 @@
-// src/services/FreeVisitsFrontendService.ts
-
-export interface FreeVisitsResponse {
-  total: number
-  used: number
-  available: number
-  visits: {
-    id: number
-    amount: number
-    used: number
-    createdAt: string
-  }[]
-}
+import { Client } from "./httpClient";
 
 export class FreeVisitsFrontendService {
-  private baseUrl = "http://localhost:3000/api/free-visits"
 
-  async getUserFreeVisits(userId: string): Promise<FreeVisitsResponse | null> {
-    try {
-      const res = await fetch(`${this.baseUrl}/${userId}`)
-      if (!res.ok) throw new Error("Ошибка получения бесплатных посещений")
+  async getUserFreeVisits(userId: string) {
+    return Client.get(`/free-visits/${userId}`);
+  }
 
-      return await res.json()
-    } catch (e) {
-      console.warn("FreeVisits API недоступен:", e)
-      return null
-    }
+purchaseFreeVisits(amount: 1 | 5 | 10) {
+  return Client.post(
+    "/free-visits/purchase",
+    { amount },
+    { authenticate: true }
+  );
+}
+
+
+  async useFreeVisit(userId: string) {
+    return Client.post(
+      "/free-visits/use",
+      { userId },
+      { authenticate: true }
+    );
   }
 }
 
-export const freeVisitsService = new FreeVisitsFrontendService()
+export const freeVisitsService = new FreeVisitsFrontendService();
