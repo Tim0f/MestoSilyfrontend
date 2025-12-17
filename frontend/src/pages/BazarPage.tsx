@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 
 import Zerno from "../assets/svg/Zerno.svg";
 
-import texturedSquare from "../assets/svg/texturedBorder.svg";
-
 import { ProductsFrontendService } from "../services/products.service";
 
 import { OrdersFrontendService } from "../services/orders.service";
 
 import { Client } from "../services/httpClient";
 
-import ButtonSvg from '../assets/svg/button.svg?react'
+// import ButtonSvg from '../assets/svg/button.svg?react'
 
   
 
@@ -118,83 +116,7 @@ export default function BazarPage() {
 
           </p>
 
-        </div>
-
-        {/* Карточки */}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-
-        style={{
-
-          backgroundImage: `url(${texturedSquare})`,
-
-          backgroundSize: '100% 100%',
-
-          backgroundRepeat: 'no-repeat',
-
-        }}>
-
-          {products.map((item) => (
-
-            <div
-
-              key={item.id}
-
-              className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
-
-            >
-
-              {/* Цена */}
-
-              <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
-
-                {item.price}
-
-                <img
-
-              src={Zerno}
-
-              className='w-[20px] fill-black text-black'
-
-              style={{
-
-                WebkitMaskSize: 'contain',
-
-                maskSize: 'contain',
-
-                WebkitMaskRepeat: 'no-repeat',
-
-                maskRepeat: 'no-repeat',
-
-                color:'customyellow',
-
-                height: '10px',
-
-                width: '10px'
-
-              }}
-
-    />
-
-              </div>
-
-              {/* Плейсхолдер изображения */}
-
-              <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4"></div>
-
-              <h2 className="text-xl font-h1 mb-1">{item.title}</h2>
-
-              <p className="text-sm text-primary-300 mb-4">{item.desc}</p>
-
-              <button className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90">
-
-                купить
-
-              </button>
-
-            </div>
-
-          ))}
+          <h1>Товаров пока нет</h1>
 
         </div>
 
@@ -232,109 +154,94 @@ export default function BazarPage() {
 
       {/* Карточки */}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-
-      style={{
-
-        backgroundImage: `url(${texturedSquare})`,
-
-        backgroundSize: '100% 100%',
-
-        backgroundRepeat: 'no-repeat',
-
-      }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
         {products.map((item) => (
 
           <div
 
-            key={item.id}
+  key={item.id}
 
-            className="bg-[#151212] rounded-xl border border-primary-300/30 p-4 shadow-md relative"
+  className="relative w-[442px] h-[500px] textured-border overflow-hidden p-[10px]"
 
-          >
+>
 
-            {/* Цена */}
+  {/* КАРТИНКА + ЦЕНА */}
 
-            <div className="absolute top-3 right-3 bg-[#f6c98f] text-black font-h1 px-3 py-1 rounded-md shadow flex items-center">
+  <div className="relative w-full h-[210px] pt-[10px]">
 
-              {item.price}
+    {item.imageUrl ? (
 
-              <img
+      <img
 
-                src={Zerno}
+        src={item.imageUrl}
 
-                className="w-[20px]"
+        className="w-[387px] h-[200px] object-cover"
 
-                style={{
+      />
 
-                  WebkitMaskSize: "contain",
+    ) : (
 
-                  maskSize: "contain",
+      <div className="w-full h-full bg-gray-700/40" />
 
-                  WebkitMaskRepeat: "no-repeat",
-
-                  maskRepeat: "no-repeat",
-
-                  color: "black",
-
-                  height: "10px",
-
-                  width: "10px",
-
-                }}
-
-              />
-
-            </div>
+    )}
 
   
 
-            {/* Картинка */}
+    {/* Цена */}
 
-            <div className="w-full h-40 bg-customwhite/30 rounded-lg mb-4 overflow-hidden">
+    <div className="absolute top-1 right-0 bg-customyellow text-black w-[108px] h-[81px] rounded-md shadow flex items-center justify-center text-h2 font-h2">
 
-              {item.imageUrl ? (
+      {item.price}
 
-                <img
+      <img src={Zerno} className="w-[30px] h-[30px]" />
 
-                  src={item.imageUrl}
+    </div>
 
-                  className="w-full h-full object-cover"
-
-                />
-
-              ) : (
-
-                <div className="w-full h-full bg-gray-700/40" />
-
-              )}
-
-            </div>
+  </div>
 
   
 
-            <h2 className="text-xl font-h1 mb-1">{item.name}</h2>
+  {/* КОНТЕНТ */}
 
-            <p className="text-sm text-primary-300 mb-4">{item.description}</p>
+  <div className="flex flex-col h-[calc(100%-210px)] p-[25px]">
+
+    <h2 className="text-h2 font-h2 mb-2">
+
+      {item.name}
+
+    </h2>
 
   
 
-            <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
+    <p className="text-p mb-4 opacity-80">
 
-          <span
+      {item.description}
 
-              onClick={() => buy(item.id)}
+    </p>
 
-              className="w-full bg-[#f6c98f] text-black font-h1 py-2 rounded-md mt-auto hover:brightness-90"
+  
 
-            >
+    {/* КНОПКА */}
 
-              купить
+    <span
 
-              </span>
+      onClick={() => buy(item.id)}
 
-          </div>
+      className="mt-auto w-full bg-[#f6c98f] text-black font-p py-2 text-center hover:brightness-90 cursor-pointer"
+
+    >
+
+      купить
+
+    </span>
+
+  </div>
+
+</div>
+
+  
+  
 
         ))}
 

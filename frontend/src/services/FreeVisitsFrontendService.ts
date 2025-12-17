@@ -1,31 +1,35 @@
-// src/services/FreeVisitsFrontendService.ts
-
 import { Client } from "./httpClient";
 
+/* ====================== TYPES ====================== */
+
 export interface FreeVisitsResponse {
-  total: number;
-  used: number;
   available: number;
-  visits: {
-    id: number;
-    amount: number;
-    used: number;
-    createdAt: string;
-  }[];
+  total?: number;
 }
 
+/* ====================== SERVICE ====================== */
+
 export class FreeVisitsFrontendService {
-  async getUserFreeVisits(
-    userId: string
-  ): Promise<FreeVisitsResponse | null> {
-    try {
-      return await Client.get<FreeVisitsResponse>(
-        `/free-visits/${userId}`
-      );
-    } catch (e) {
-      console.warn("FreeVisits API недоступен:", e);
-      return null;
-    }
+  async getUserFreeVisits(userId: string): Promise<FreeVisitsResponse> {
+    return Client.get<FreeVisitsResponse>(`/free-visits/${userId}`, {
+      authenticate: true,
+    });
+  }
+
+  purchaseFreeVisits(amount: 1 | 5 | 10) {
+    return Client.post(
+      "/free-visits/purchase",
+      { amount },
+      { authenticate: true }
+    );
+  }
+
+  async useFreeVisit(userId: string) {
+    return Client.post(
+      "/free-visits/use",
+      { userId },
+      { authenticate: true }
+    );
   }
 }
 
