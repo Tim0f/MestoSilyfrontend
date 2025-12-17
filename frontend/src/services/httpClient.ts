@@ -1,3 +1,5 @@
+/* ====================== TYPES ====================== */
+
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 export type ResponseType = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'void';
@@ -13,10 +15,16 @@ export interface RequestOptions<TBody = unknown> {
 
 export interface HttpClientOptions {
   baseUrl: string;
-  getToken?: () => string | null | undefined | Promise<string | null | undefined>;
+  getToken?: () =>
+    | string
+    | null
+    | undefined
+    | Promise<string | null | undefined>;
   fetchFn?: typeof fetch;
   defaultHeaders?: HeadersInit;
 }
+
+/* ====================== ERROR ====================== */
 
 export class HttpError<T = unknown> extends Error {
   constructor(
@@ -29,16 +37,27 @@ export class HttpError<T = unknown> extends Error {
   }
 }
 
+/* ====================== CLIENT ====================== */
+
 export class HttpClient {
   private readonly fetchFn: typeof fetch;
   private readonly baseUrl: string;
 
   constructor(private readonly options: HttpClientOptions) {
-    this.fetchFn = (options.fetchFn ?? globalThis.fetch).bind(globalThis);
+    if (!options.baseUrl || !/^https?:\/\//i.test(options.baseUrl)) {
+      throw new Error(`HttpClient: invalid baseUrl "${options.baseUrl}"`);
+    }
+
     this.baseUrl = options.baseUrl.replace(/\/+$/, '');
+    this.fetchFn = (options.fetchFn ?? globalThis.fetch).bind(globalThis);
   }
 
-  get<TResponse = unknown>(path: string, options?: RequestOptions): Promise<TResponse> {
+  /* ====================== PUBLIC API ====================== */
+
+  get<TResponse = unknown>(
+    path: string,
+    options?: RequestOptions,
+  ): Promise<TResponse> {
     return this.request<TResponse>('GET', path, options);
   }
 
@@ -58,19 +77,34 @@ export class HttpClient {
     return this.request<TResponse>('PATCH', path, { ...options, body });
   }
 
-  delete<TResponse = unknown>(path: string, options?: RequestOptions): Promise<TResponse> {
+  delete<TResponse = unknown>(
+    path: string,
+    options?: RequestOptions,
+  ): Promise<TResponse> {
     return this.request<TResponse>('DELETE', path, options);
   }
 
+  /* ====================== INTERNAL ====================== */
+
   private buildUrl(path: string, query?: Record<string, unknown>): string {
-    const url = new URL(path.replace(/^\//, ''), `${this.baseUrl}/`);
+    // 🔥 если вдруг передали абсолютный URL — используем как есть
+    if (/^https?:\/\//i.test(path)) {
+      return path;
+    }
+
+    const url = new URL(
+      path.replace(/^\//, ''),
+      `${this.baseUrl}/`,
+    );
 
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
         if (value == null || value === '') return;
 
         if (Array.isArray(value)) {
-          value.forEach((item) => item != null && url.searchParams.append(key, String(item)));
+          value.forEach((v) => {
+            if (v != null) url.searchParams.append(key, String(v));
+          });
           return;
         }
 
@@ -89,11 +123,14 @@ export class HttpClient {
     return typeof Blob !== 'undefined' && value instanceof Blob;
   }
 
-  private isArrayBufferLike(value: unknown): value is ArrayBuffer | ArrayBufferView {
+  private isArrayBufferLike(
+    value: unknown,
+  ): value is ArrayBuffer | ArrayBufferView {
     return (
       typeof ArrayBuffer !== 'undefined' &&
       (value instanceof ArrayBuffer ||
-        (typeof ArrayBuffer.isView === 'function' && ArrayBuffer.isView(value)))
+        (typeof ArrayBuffer.isView === 'function' &&
+          ArrayBuffer.isView(value)))
     );
   }
 
@@ -102,7 +139,15 @@ export class HttpClient {
     path: string,
     options?: RequestOptions,
   ): Promise<TResponse> {
-    const { body, query, headers, responseType = 'json', signal } = options ?? {};
+    const {
+      body,
+      query,
+      headers,
+      responseType = 'json',
+      signal,
+      authenticate = true,
+    } = options ?? {};
+
     const url = this.buildUrl(path, query);
 
     const mergedHeaders = new Headers();
@@ -113,18 +158,19 @@ export class HttpClient {
     // request headers
     this.applyHeaders(mergedHeaders, headers);
 
-    // 🔥 Add auth header
-    if (options?.authenticate !== false && this.options.getToken) {
+    // 🔐 auth
+    if (authenticate && this.options.getToken) {
       const token = await this.options.getToken();
-      if (token) mergedHeaders.set('Authorization', `Bearer ${token}`);
+      if (token) {
+        mergedHeaders.set('Authorization', `Bearer ${token}`);
+      }
     }
 
     let payload: BodyInit | undefined;
 
-    // 🔥 Correct FormData handling
     if (body !== undefined && body !== null) {
       if (this.isFormData(body)) {
-        payload = body as FormData;
+        payload = body;
         mergedHeaders.delete('Content-Type');
       } else if (
         typeof body === 'object' &&
@@ -146,21 +192,22 @@ export class HttpClient {
     });
 
     if (!response.ok) {
-      let errorPayload: unknown;
+      let errorDetails: unknown = null;
+
       try {
-        errorPayload = await response.clone().json();
+        errorDetails = await response.clone().json();
       } catch {
         try {
-          errorPayload = await response.clone().text();
+          errorDetails = await response.clone().text();
         } catch {
-          errorPayload = null;
+          errorDetails = null;
         }
       }
 
       throw new HttpError(
-        `Запрос ${method} ${url} завершился со статусом ${response.status}`,
+        `HTTP ${method} ${url} failed with status ${response.status}`,
         response.status,
-        errorPayload,
+        errorDetails,
       );
     }
 
@@ -185,26 +232,28 @@ export class HttpClient {
     if (!source) return;
 
     if (source instanceof Headers) {
-      source.forEach((value, key) => target.set(key, value));
+      source.forEach((v, k) => target.set(k, v));
       return;
     }
 
     if (Array.isArray(source)) {
-      source.forEach(([key, value]) => target.set(key, value));
+      source.forEach(([k, v]) => target.set(k, v));
       return;
     }
 
-    Object.entries(source).forEach(([key, value]) => {
-      if (value !== undefined) target.set(key, String(value));
+    Object.entries(source).forEach(([k, v]) => {
+      if (v !== undefined) target.set(k, String(v));
     });
   }
 }
+
+/* ====================== SINGLETON ====================== */
 
 export const Client = new HttpClient({
   baseUrl:
     import.meta.env.VITE_ADMIN_API_URL ||
     import.meta.env.VITE_API_URL ||
     'http://localhost:3000/api',
-  getToken: () => localStorage.getItem('token') ?? undefined,
-});
 
+  getToken: () => localStorage.getItem('token'),
+});
