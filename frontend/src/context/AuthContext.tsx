@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import axios from 'axios'
+import { Client } from '../services/httpClient'
 
 interface User {
   id: number
@@ -24,7 +24,7 @@ interface AuthContextType {
     firstName: string,
     lastName: string,
     phone: string,
-    dateOfBirth: string,
+    dateOfBirth: string
   ) => Promise<void>
   logout: () => void
 }
@@ -37,23 +37,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const token = localStorage.getItem('token')
-
     if (!token) {
       setIsLoading(false)
       return
     }
-
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     fetchUser()
   }, [])
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('/api/auth/me')
-      setUser(response.data)
+      const data = await Client.get<User>('/auth/me')
+      setUser(data)
     } catch {
       localStorage.removeItem('token')
-      delete axios.defaults.headers.common['Authorization']
       setUser(null)
     } finally {
       setIsLoading(false)
@@ -61,12 +57,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post('/api/auth/login', { email, password })
-    const { token } = response.data
+    const res = await Client.post<{ token: string }>('/auth/login', { email, password }, { authenticate: false })
+    const { token } = res
 
     localStorage.setItem('token', token)
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-
     await fetchUser()
   }
 
@@ -78,19 +72,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     phone: string,
     dateOfBirth: string
   ) => {
-    await axios.post('/api/auth/register', {
-      email,
-      password,
-      firstName,
-      lastName,
-      phone,
-      dateOfBirth,
-    })
+    await Client.post('/auth/register', { email, password, firstName, lastName, phone, dateOfBirth }, { authenticate: false })
   }
 
   const logout = () => {
     localStorage.removeItem('token')
-    delete axios.defaults.headers.common['Authorization']
     setUser(null)
   }
 
@@ -102,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         register,
-        logout,
+        logout
       }}
     >
       {children}
@@ -112,8 +98,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider')
   return context
 }

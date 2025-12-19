@@ -1,4 +1,5 @@
-import { HttpClient } from './httpClient';
+// src/services/auth.service.ts
+import { HttpClient, Client } from './httpClient';
 
 export type RegisterDto = {
   email: string;
@@ -17,27 +18,23 @@ export type LoginDto = {
 export class AuthFrontendService {
   constructor(private readonly http: HttpClient) {}
 
-register<T = any>(payload: RegisterDto): Promise<T> {
-  return this.http.post<T>('/auth/register', payload, { authenticate: false }).then((res: any) => {
-    if (res?.token) {
-      localStorage.setItem('token', res.token);
-    }
-    return res;
-  });
-}
+  register<T = any>(payload: RegisterDto) {
+    return this.http.post<T>('/auth/register', payload, { authenticate: false }).then(res => {
+      if ((res as any)?.token) localStorage.setItem('token', (res as any).token);
+      return res;
+    });
+  }
 
+  login<T = any>(payload: LoginDto) {
+    return this.http.post<T>('/auth/login', payload, { authenticate: false }).then(res => {
+      if ((res as any)?.token) localStorage.setItem('token', (res as any).token);
+      return res;
+    });
+  }
 
-login<T = any>(payload: LoginDto): Promise<T> {
-  return this.http.post<T>('/auth/login', payload, { authenticate: false }).then((res: any) => {
-    if (res?.token) {
-      localStorage.setItem('token', res.token);
-    }
-    return res;
-  });
-}
-
-
-  me<T = unknown>(): Promise<T> {
+  me<T = unknown>() {
     return this.http.get<T>('/auth/me');
   }
 }
+
+export const AuthService = new AuthFrontendService(Client);

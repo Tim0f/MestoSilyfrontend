@@ -4,6 +4,7 @@ import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  envDir: '../',
   plugins: [react(), svgr()],
   server: {
     port: 3001,
@@ -15,4 +16,3 @@ export default defineConfig({
     },
   },
 })
-
