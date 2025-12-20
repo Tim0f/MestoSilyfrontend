@@ -103,26 +103,33 @@ export class HttpClient {
   }
 
 private buildUrl(path: string, query?: Record<string, unknown>): string {
-  // всегда создаём объект URL
-  const url = new URL(
-    path.replace(/^\//, ''),
-    this.baseUrl.endsWith('/') ? this.baseUrl : this.baseUrl + '/'
-  );
+  let url: URL;
+
+  // абсолютный URL — используем напрямую
+  if (/^https?:\/\//i.test(path)) {
+    url = new URL(path);
+  } else {
+    const cleanPath = path.replace(/^\//, '');
+    url = new URL(
+      cleanPath,
+      this.baseUrl.endsWith('/') ? this.baseUrl : this.baseUrl + '/'
+    );
+  }
 
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
       if (value == null || value === '') return;
       if (Array.isArray(value)) {
-        value.forEach(v => { if (v != null) url.searchParams.append(key, String(v)); });
-        return;
+        value.forEach(v => v != null && url.searchParams.append(key, String(v)));
+      } else {
+        url.searchParams.set(key, String(value));
       }
-      url.searchParams.set(key, String(value));
     });
   }
 
-  console.log('[HttpClient] Request URL:', url.toString());
   return url.toString();
 }
+
 
 
   private applyHeaders(target: Headers, source?: HeadersInit) {
