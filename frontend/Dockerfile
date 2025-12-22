@@ -4,7 +4,7 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Build args для Vite
-ARG VITE_API_URL=/api
+ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
 # Копируем package files
