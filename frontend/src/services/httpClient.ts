@@ -140,7 +140,14 @@ private buildUrl(path: string, query?: Record<string, unknown>): string {
   }
 }
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+if (!API_URL) {
+  throw new Error('VITE_API_URL is missing at build time');
+}
+
 export const Client = new HttpClient({
-  baseUrl: import.meta.env.VITE_API_URL!,
+  baseUrl: API_URL,
   getToken: () => localStorage.getItem('token'),
 });
+

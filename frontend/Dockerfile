@@ -7,6 +7,10 @@ WORKDIR /app
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
+# Проверка наличия VITE_API_URL
+RUN if [ -z "$VITE_API_URL" ]; then echo "❌ VITE_API_URL is not set" && exit 1; fi
+
+
 # Копируем package files
 COPY package*.json ./
 
