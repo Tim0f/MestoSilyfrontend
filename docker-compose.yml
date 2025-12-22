@@ -39,7 +39,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VITE_API_URL: /api
     container_name: mesto_sily_frontend
     restart: unless-stopped
     ports:
