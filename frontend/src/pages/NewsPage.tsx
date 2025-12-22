@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { Newspaper, Calendar } from 'lucide-react'
+import { Client } from '../services/httpClient'
 
 interface NewsItem {
   id: number
@@ -12,23 +12,14 @@ interface NewsItem {
 }
 
 export default function NewsPage() {
-  const [news, setNews] = useState<NewsItem[]>([])
+const [news, setNews] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchNews()
+    Client.get<NewsItem[]>('/news')
+      .then(setNews)
+      .finally(() => setLoading(false))
   }, [])
-
-  const fetchNews = async () => {
-    try {
-      const response = await axios.get('/api/news')
-      setNews(response.data)
-    } catch (error) {
-      console.error('Ошибка загрузки новостей:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   if (loading) {
     return (

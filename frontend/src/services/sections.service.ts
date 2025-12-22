@@ -1,17 +1,31 @@
 import { HttpClient } from './httpClient';
 
+/* =======================
+   DTO
+======================= */
+
 export interface CreateSectionDto {
   name: string;
-  description: string;
+  description?: string;
   imageUrl?: string;
   iconUrl?: string;
+
   ageMin: number;
   ageMax: number;
-  maxParticipants: number;
-  isActive: boolean;
-  galleryDriveUrl: string;
 
-  /** список учителей для секции */
+  /** максимум участников секции */
+  maxParticipants?: number;
+
+  /** активна ли секция */
+  isActive?: boolean;
+
+  /** ссылка на Google Drive */
+  galleryDriveUrl?: string;
+
+  /** цена одного занятия */
+  price: number;
+
+  /** ID учителей */
   teacherIds?: string[];
 }
 
@@ -25,14 +39,20 @@ export interface UpdateSectionDto {
   maxParticipants?: number;
   isActive?: boolean;
   galleryDriveUrl?: string;
+  price?: number;
 
-  /** список учителей */
+  /** 🔥 полностью заменяет список учителей */
   teacherIds?: string[];
 }
 
 export interface EnrollDto {
+  sectionId: string;
   lessonId?: string;
 }
+
+/* =======================
+   SERVICE
+======================= */
 
 export class SectionsFrontendService {
   constructor(private readonly http: HttpClient) {}
@@ -42,14 +62,16 @@ export class SectionsFrontendService {
     return this.http.post<T>('/sections', payload);
   }
 
-  /** Получить все секции */
+  /** Получить все активные секции */
   findAll<T = unknown>() {
     return this.http.get<T>('/sections', { authenticate: false });
   }
 
   /** Получить одну секцию */
   findOne<T = unknown>(sectionId: string) {
-    return this.http.get<T>(`/sections/${sectionId}`, { authenticate: false });
+    return this.http.get<T>(`/sections/${sectionId}`, {
+      authenticate: false,
+    });
   }
 
   /** Обновить секцию */
@@ -62,27 +84,37 @@ export class SectionsFrontendService {
     return this.http.delete<T>(`/sections/${sectionId}`);
   }
 
-  /** Запись в секцию */
-  enroll<T = unknown>(payload: { sectionId: string; lessonId?: string }) {
+  /** Запись в секцию (userId берётся из JWT) */
+  enroll<T = unknown>(payload: EnrollDto) {
     return this.http.post<T>('/enrollments', payload);
   }
 
-  /** Добавить изображение в галерею секции */
-  addImage<T = unknown>(sectionId: string, imageUrl: string, position: number) {
+  /* =======================
+     ГАЛЕРЕЯ
+  ======================= */
+
+  /** Добавить изображение */
+  addImage<T = unknown>(
+    sectionId: string,
+    imageUrl: string,
+    position: number,
+  ) {
     return this.http.post<T>(`/sections/${sectionId}/images`, {
       imageUrl,
       position,
     });
   }
 
-  /** Получить изображения галереи */
+  /** Получить изображения */
   getImages<T = unknown>(sectionId: string) {
     return this.http.get<T>(`/sections/${sectionId}/images`);
   }
 
   /** Обновить позицию изображения */
   updateImagePosition<T = unknown>(imageId: string, position: number) {
-    return this.http.patch<T>(`/sections/images/${imageId}`, { position });
+    return this.http.patch<T>(`/sections/images/${imageId}`, {
+      position,
+    });
   }
 
   /** Удалить изображение */

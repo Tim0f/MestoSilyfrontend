@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
-import axios from 'axios'
+import { useEffect, useState } from 'react'
 import { ShoppingCart, Check } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+import { Client } from '../services/httpClient'
 
 interface Product {
   id: number
@@ -13,49 +13,30 @@ interface Product {
 }
 
 export default function ShopPage() {
-  const [products, setProducts] = useState<Product[]>([])
+const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [purchaseSuccess, setPurchaseSuccess] = useState<number | null>(null)
+
   const { user, isAuthenticated } = useAuth()
 
   useEffect(() => {
-    fetchProducts()
+    Client.get<Product[]>('/products')
+      .then(setProducts)
+      .finally(() => setLoading(false))
   }, [])
 
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get('/api/products')
-      setProducts(response.data)
-    } catch (error) {
-      console.error('Ошибка загрузки товаров:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+
 
   const handlePurchase = async (productId: number, price: number) => {
-    if (!isAuthenticated) {
-      alert('Пожалуйста, войдите в систему для покупки товаров')
-      return
-    }
+    if (!isAuthenticated) return alert('Войдите в систему')
 
-    if (!user || user.totalGrains < price) {
-      alert('Недостаточно зёрен для покупки')
-      return
-    }
+    if (!user || user.totalGrains < price)
+      return alert('Недостаточно средств')
 
-    try {
-      await axios.post('/api/orders', {
-        productId,
-        quantity: 1,
-      })
-      setPurchaseSuccess(productId)
-      setTimeout(() => setPurchaseSuccess(null), 3000)
-      // Обновить баланс пользователя
-      window.location.reload()
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Ошибка при покупке')
-    }
+    await Client.post('/orders', { productId, quantity: 1 })
+    setPurchaseSuccess(productId)
+    setTimeout(() => setPurchaseSuccess(null), 3000)
+    window.location.reload()
   }
 
   if (loading) {
