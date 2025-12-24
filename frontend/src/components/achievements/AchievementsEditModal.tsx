@@ -54,12 +54,9 @@ const [uploadingIcon, setUploadingIcon] = useState(false);
 
 const uploadIcon = async (file: File) => {
   setUploadingIcon(true);
-
   try {
-    const res = await uploadService.image<{ filename: string }>(file);
-    const iconUrl = uploadService.getFileUrl(res.filename);
-
-    update('iconUrl', iconUrl);
+    const filename = await uploadService.image(file);
+    update('iconUrl', filename);
   } catch (e) {
     console.error('Ошибка загрузки иконки', e);
     alert('Не удалось загрузить иконку');
@@ -67,6 +64,7 @@ const uploadIcon = async (file: File) => {
     setUploadingIcon(false);
   }
 };
+
 
 
   if (!isOpen) return null;

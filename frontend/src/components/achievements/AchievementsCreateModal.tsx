@@ -53,16 +53,12 @@ const checkUniqueCode = async (code: string): Promise<boolean> => {
   // Проверяем, нет ли ачивки с таким кодом
   return !achievements.some(a => a.code === code);
 };
+
 const uploadIcon = async (file: File) => {
   setUploadingIcon(true);
-
   try {
-    // предполагаем, что бэк возвращает { filename: string }
-    const res = await uploadService.image<{ filename: string }>(file);
-
-    const iconUrl = uploadService.getFileUrl(res.filename);
-
-    update('iconUrl', iconUrl);
+    const filename = await uploadService.image(file);
+    update('iconUrl', filename);
   } catch (e) {
     console.error('Ошибка загрузки иконки', e);
     alert('Не удалось загрузить иконку');
@@ -70,6 +66,7 @@ const uploadIcon = async (file: File) => {
     setUploadingIcon(false);
   }
 };
+
 
 
   // 🔄 Генерация уникального кода

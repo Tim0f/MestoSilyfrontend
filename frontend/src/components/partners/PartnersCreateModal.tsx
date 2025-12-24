@@ -35,24 +35,24 @@ export default function PartnerCreateModal({ isOpen, onClose }: Props) {
     setPreview(URL.createObjectURL(f));
   };
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const submit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    let imageUrl = form.imageUrl.trim();
+  let imageUrl = form.imageUrl.trim();
 
-    if (file) {
-      const res = await uploadService.image<{ filename: string }>(file);
-      imageUrl = uploadService.getFileUrl(res.filename);
-    }
+  if (file) {
+    const {filename} = await uploadService.image(file);
+    imageUrl = filename;
+  }
 
-    await partnersService.create({
-      name: form.name.trim(),
-      imageUrl,
-      link: form.link.trim(),
-    });
+  await partnersService.create({
+    name: form.name.trim(),
+    imageUrl,
+    link: form.link.trim(),
+  });
 
-    onClose();
-  };
+  onClose();
+};
 
   if (!isOpen) return null;
 
