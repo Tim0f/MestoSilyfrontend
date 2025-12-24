@@ -1,17 +1,29 @@
+// upload.service.ts
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Request } from 'express';
+import { join } from 'path';
+import { existsSync } from 'fs';
 
 @Injectable()
 export class UploadService {
-  constructor(private configService: ConfigService) {}
+  getPublicFileUrl(req: Request, filename: string): string {
+    const protocol =
+      req.headers['x-forwarded-proto']?.toString() || req.protocol;
+    const host = req.headers.host;
 
-  getFileUrl(filename: string): string {
-    const baseUrl = this.configService.get<string>('BASE_URL') || 'http://localhost:3000';
-    return `${baseUrl}/uploads/${filename}`;
+    return `${protocol}://${host}/api/uploads/${filename}`;
+  }
+
+  getFilePath(filename: string): string {
+    return join(process.cwd(), 'uploads', filename);
+  }
+
+  fileExists(filename: string): boolean {
+    return existsSync(this.getFilePath(filename));
   }
 
   validateImage(file: Express.Multer.File): boolean {
-    const allowedMimes = [
+    return [
       'image/jpeg',
       'image/png',
       'image/jpg',
@@ -19,17 +31,20 @@ export class UploadService {
       'image/webp',
       'image/svg+xml',
       'image/svg',
-    ];
-    return allowedMimes.includes(file.mimetype);
+    ].includes(file.mimetype);
   }
 
   validateVideo(file: Express.Multer.File): boolean {
-    const allowedMimes = ['video/mp4', 'video/webm', 'video/avi'];
-    return allowedMimes.includes(file.mimetype);
+    return ['video/mp4', 'video/webm', 'video/avi'].includes(file.mimetype);
   }
 
   validateAudio(file: Express.Multer.File): boolean {
-    const allowedMimes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/webm'];
-    return allowedMimes.includes(file.mimetype);
+    return [
+      'audio/mpeg',
+      'audio/mp3',
+      'audio/wav',
+      'audio/ogg',
+      'audio/webm',
+    ].includes(file.mimetype);
   }
 }
