@@ -1,15 +1,48 @@
 // upload.service.ts
 import { Injectable } from '@nestjs/common';
-import { Request } from 'express';
-import { join } from 'path';
-import { existsSync } from 'fs';
 
 @Injectable()
 export class UploadService {
-  getFileUrl(req: Request, filename: string): string {
-    const protocol = req.protocol;
-    const host = req.get('host'); // 81.177.216.68:3000
-    return `${protocol}://${host}/api/uploads/${filename}`;
+  /**
+   * BACKWARD COMPATIBLE
+   * Можно вызывать:
+   *  - getFileUrl(filename)
+   *  - getFileUrl(req, filename)
+   */
+  getFileUrl(
+    reqOrFilename:
+      | string
+      | { protocol?: string; get?(name: string): string | undefined },
+    maybeFilename?: string,
+  ): string {
+    let filename: string;
+    let baseUrl: string;
+
+    // 🟢 Старый вариант: getFileUrl(filename)
+    if (typeof reqOrFilename === 'string') {
+      filename = reqOrFilename;
+      baseUrl =
+        process.env.PUBLIC_BASE_URL ||
+        process.env.APP_URL ||
+        'http://localhost:3000';
+    } else {
+      // 🟢 Новый вариант: getFileUrl(req, filename)
+      if (!maybeFilename) {
+        throw new Error('Filename is required');
+      }
+
+      filename = maybeFilename;
+      const protocol = reqOrFilename.protocol || 'http';
+      const host = reqOrFilename.get?.('host');
+
+      if (!host) {
+        throw new Error('Host header is missing');
+      }
+
+      baseUrl = `${protocol}://${host}`;
+    }
+
+    return `${baseUrl}/api/uploads/${filename}`;
   }
 
   validateImage(file: Express.Multer.File): boolean {
@@ -38,4 +71,3 @@ export class UploadService {
     ].includes(file.mimetype);
   }
 }
-
