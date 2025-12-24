@@ -6,8 +6,10 @@ import { existsSync } from 'fs';
 
 @Injectable()
 export class UploadService {
-  getFileUrl(filename: string): string {
-    return `/api/uploads/${filename}`;
+  getFileUrl(req: Request, filename: string): string {
+    const protocol = req.protocol;
+    const host = req.get('host'); // 81.177.216.68:3000
+    return `${protocol}://${host}/api/uploads/${filename}`;
   }
 
   validateImage(file: Express.Multer.File): boolean {

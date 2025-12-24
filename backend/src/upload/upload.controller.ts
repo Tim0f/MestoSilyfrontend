@@ -1,3 +1,4 @@
+// upload.controller.ts
 import {
   Controller,
   Post,
@@ -5,11 +6,13 @@ import {
   UseInterceptors,
   UseGuards,
   BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { UploadService } from './upload.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Request } from 'express';
 
 @ApiTags('Upload')
 @Controller('upload')
@@ -26,25 +29,25 @@ export class UploadController {
     schema: {
       type: 'object',
       properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
+        file: { type: 'string', format: 'binary' },
       },
     },
   })
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
+  uploadImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+  ) {
     if (!file) {
       throw new BadRequestException('Файл не загружен');
     }
 
     if (!this.uploadService.validateImage(file)) {
-      throw new BadRequestException('Допустимые форматы: JPEG, PNG, GIF, WEBP');
+      throw new BadRequestException('Недопустимый формат изображения');
     }
 
     return {
       filename: file.filename,
-      url: this.uploadService.getFileUrl(file.filename),
+      url: this.uploadService.getFileUrl(req, file.filename),
       size: file.size,
       mimeType: file.mimetype,
     };
@@ -52,65 +55,33 @@ export class UploadController {
 
   @Post('video')
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Загрузить видео' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  uploadVideo(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('Файл не загружен');
-    }
-
-    if (!this.uploadService.validateVideo(file)) {
-      throw new BadRequestException('Допустимые форматы: MP4, WEBM, AVI');
+  uploadVideo(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+  ) {
+    if (!file || !this.uploadService.validateVideo(file)) {
+      throw new BadRequestException('Недопустимый формат видео');
     }
 
     return {
       filename: file.filename,
-      url: this.uploadService.getFileUrl(file.filename),
-      size: file.size,
-      mimeType: file.mimetype,
+      url: this.uploadService.getFileUrl(req, file.filename),
     };
   }
 
   @Post('audio')
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Загрузить аудио' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  uploadAudio(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('Файл не загружен');
-    }
-
-    if (!this.uploadService.validateAudio(file)) {
-      throw new BadRequestException('Допустимые форматы: MP3, WAV, OGG, WEBM');
+  uploadAudio(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+  ) {
+    if (!file || !this.uploadService.validateAudio(file)) {
+      throw new BadRequestException('Недопустимый формат аудио');
     }
 
     return {
       filename: file.filename,
-      url: this.uploadService.getFileUrl(file.filename),
-      size: file.size,
-      mimeType: file.mimetype,
+      url: this.uploadService.getFileUrl(req, file.filename),
     };
   }
 }
