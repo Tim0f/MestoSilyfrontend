@@ -32,7 +32,7 @@ import { EnrollmentsModule } from './enrollments/enrollments.module';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads',
+      serveRoot: '/api/uploads',
     }),
     ThrottlerModule.forRoot([
       {

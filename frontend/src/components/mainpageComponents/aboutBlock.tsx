@@ -1,4 +1,5 @@
-import aboutImage from '../../assets/img/Mask_group2.png'
+import aboutImage from '../../assets/img/about.png'
+import Mask2 from '../../assets/img/Mask2.png'
 
 const stats = [
   { value: '5', label: 'событий в месяц' },
@@ -31,7 +32,17 @@ export default function AboutBlock() {
           </div>
 
           <div className="relative">
-            <img src={aboutImage} alt="Наша команда" className="w-full h-auto object-cover" />
+            <img src={aboutImage} alt="Наша команда" className="w-full h-auto object-cover"
+            style={{            
+              maskImage: `url(${Mask2})`,
+  maskSize: '100% 100%',
+  maskRepeat: 'no-repeat',
+  maskPosition: 'center',
+
+  WebkitMaskImage: `url(${Mask2})`,
+  WebkitMaskSize: '100% 100%',
+  WebkitMaskRepeat: 'no-repeat',
+  WebkitMaskPosition: 'center',}} />
           </div>
         </div>
       </div>

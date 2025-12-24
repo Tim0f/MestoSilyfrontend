@@ -2,17 +2,13 @@ import { Link } from 'react-router-dom'
 import Logo from '../../assets/svg/Logo1.svg?react'
 import ButtonSvg from '../../assets/svg/button.svg?react'
 import heroImage from '../../assets/img/Mask_group.png'
+import Mask1 from '../../assets/img/Mask1.png' 
 
 export default function HeadBlock() {
   return (
     <section
       className="relative min-h-screen flex items-center justify-center text-white overflow-hidden"
-      style={{
-        backgroundImage: `url(${heroImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
+
     >
       <div
         className="absolute inset-0 bg-customblack"
@@ -21,6 +17,15 @@ export default function HeadBlock() {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
+            maskImage: `url(${Mask1})`,
+  maskSize: '100% 100%',
+  maskRepeat: 'no-repeat',
+  maskPosition: 'center',
+
+  WebkitMaskImage: `url(${Mask1})`,
+  WebkitMaskSize: '100% 100%',
+  WebkitMaskRepeat: 'no-repeat',
+  WebkitMaskPosition: 'center',
         }}
       />
       <div className="relative z-10 container mx-auto px-4 text-center pt-16 flex flex-col items-center justify-center">

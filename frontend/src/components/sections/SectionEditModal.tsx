@@ -7,6 +7,7 @@ import {
   TeachersFrontendService,
   type TeacherDto,
 } from "../../services/teachers.service";
+import { getPublicUrl } from "../../utils/publicUrl";
 
 interface Props {
   id: string;
@@ -27,8 +28,8 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    imageUrl: "",
-    iconUrl: "",
+    imageUrl: null as string | null,
+    iconUrl: null as string | null,
     galleryDriveUrl: "",
     ageMin: 5,
     ageMax: 5,
@@ -40,25 +41,27 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [iconFile, setIconFile] = useState<File | null>(null);
 
-  // NEW — Preview states
+  // ⚠️ preview хранит ЛИБО blob:, ЛИБО путь от backend
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [iconPreview, setIconPreview] = useState<string | null>(null);
 
   useEffect(() => {
-    load();
-  }, [id]);
+    if (isOpen) load();
+  }, [id, isOpen]);
 
   const load = async () => {
+    setLoading(true);
+
     const data: any = await sectionsService.findOne(id);
     const loadedTeachers = await teachersService.findAll();
 
     setTeachers(loadedTeachers);
 
     setForm({
-      name: data.name,
-      description: data.description,
-      imageUrl: data.imageUrl,
-      iconUrl: data.iconUrl,
+      name: data.name ?? "",
+      description: data.description ?? "",
+      imageUrl: data.imageUrl ?? null,
+      iconUrl: data.iconUrl ?? null,
       galleryDriveUrl: data.galleryDriveUrl ?? "",
       ageMin: data.ageMin,
       ageMax: data.ageMax,
@@ -67,57 +70,59 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
       teacherIds: data.teachers?.map((t: any) => t.id) ?? [],
     });
 
+    // ✅ backend возвращает путь, НЕ абсолютный URL
+    setImagePreview(data.imageUrl ?? null);
+    setIconPreview(data.iconUrl ?? null);
+
+    setImageFile(null);
+    setIconFile(null);
+
     setLoading(false);
   };
 
-  const handleChange = (k: string, v: any) =>
-    setForm((p) => ({ ...p, [k]: v }));
+  const handleChange = (key: string, value: any) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
-  const selectTeacher = (id: string) => {
-    setForm((p) => ({
-      ...p,
-      teacherIds: [id], // всегда один
+  const selectTeacher = (teacherId: string) => {
+    setForm((prev) => ({
+      ...prev,
+      teacherIds: [teacherId],
     }));
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
+  const handleImageSelect = (file: File | null) => {
     setImageFile(file);
-    if (file) {
-      setImagePreview(URL.createObjectURL(file));
-    }
+    setImagePreview(file ? URL.createObjectURL(file) : form.imageUrl);
   };
 
-  const handleIconSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
+  const handleIconSelect = (file: File | null) => {
     setIconFile(file);
-    if (file) {
-      setIconPreview(URL.createObjectURL(file));
-    }
+    setIconPreview(file ? URL.createObjectURL(file) : form.iconUrl);
   };
 
   const uploadIfNeeded = async (file: File | null) => {
     if (!file) return undefined;
-    const uploaded = await uploadService.image(file);
-    return (uploaded as any).url;
+    const uploaded: any = await uploadService.image(file);
+    return uploaded.filename || uploaded.name || uploaded.url;
   };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newImage = await uploadIfNeeded(imageFile);
-    const newIcon = await uploadIfNeeded(iconFile);
+    const newImageUrl = await uploadIfNeeded(imageFile);
+    const newIconUrl = await uploadIfNeeded(iconFile);
 
     await sectionsService.update(id, {
       ...form,
-      imageUrl: newImage ?? form.imageUrl,
-      iconUrl: newIcon ?? form.iconUrl,
+      imageUrl: newImageUrl ?? form.imageUrl,
+      iconUrl: newIconUrl ?? form.iconUrl,
     });
 
     onClose();
   };
 
-  if (loading) return null;
+  if (!isOpen || loading) return null;
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} title="Редактировать секцию">
@@ -138,8 +143,8 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
           <label className="block mb-1">Описание</label>
           <textarea
             className="w-full bg-[#222] rounded px-3 py-2"
-            value={form.description}
             rows={3}
+            value={form.description}
             onChange={(e) => handleChange("description", e.target.value)}
           />
         </div>
@@ -148,91 +153,90 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
         <div>
           <label className="block mb-1">Фото секции</label>
 
-          {/* Preview or current */}
-          {imagePreview ? (
-            <img src={imagePreview} className="w-32 rounded mb-2" />
-          ) : form.imageUrl ? (
-            <img src={form.imageUrl} className="w-32 rounded mb-2" />
-          ) : null}
+          {imagePreview && (
+            <img
+              src={getPublicUrl(imagePreview)}
+              className="w-32 h-32 rounded mb-2 object-cover border border-white/20"
+              alt=""
+            />
+          )}
 
           <input
             type="file"
             accept="image/*"
-            onChange={handleImageSelect}
+            onChange={(e) =>
+              handleImageSelect(e.target.files?.[0] ?? null)
+            }
           />
         </div>
 
-        {/* Иконка */}
+        {/* Иконка секции */}
         <div>
           <label className="block mb-1">Иконка секции</label>
 
-          {/* Preview or current */}
-          {iconPreview ? (
-            <img src={iconPreview} className="w-20 rounded mb-2" />
-          ) : form.iconUrl ? (
-            <img src={form.iconUrl} className="w-20 rounded mb-2" />
-          ) : null}
+          {iconPreview && (
+            <img
+              src={getPublicUrl(iconPreview)}
+              className="w-20 h-20 rounded mb-2 object-cover border border-white/20"
+              alt=""
+            />
+          )}
 
           <input
             type="file"
             accept="image/*"
-            onChange={handleIconSelect}
+            onChange={(e) =>
+              handleIconSelect(e.target.files?.[0] ?? null)
+            }
           />
         </div>
 
         {/* Галерея */}
         <div>
-          <label className="block mb-1">Ссылка на галерею</label>
+          <label className="block mb-1">Ссылка на Google Drive галерею</label>
           <input
             className="w-full bg-[#222] rounded px-3 py-2"
             value={form.galleryDriveUrl}
-            onChange={(e) => handleChange("galleryDriveUrl", e.target.value)}
+            onChange={(e) =>
+              handleChange("galleryDriveUrl", e.target.value)
+            }
           />
         </div>
 
-        {/* Статус */}
+        {/* Активность */}
         <div>
           <label className="block mb-1">Активна?</label>
           <input
             type="checkbox"
             checked={form.isActive}
-            onChange={(e) => handleChange("isActive", e.target.checked)}
+            onChange={(e) =>
+              handleChange("isActive", e.target.checked)
+            }
           />
         </div>
 
         {/* Возраст и лимиты */}
         <div className="grid grid-cols-3 gap-2">
-          <div>
-            <label className="block mb-1">Возраст мин.</label>
-            <input
-              type="number"
-              className="w-full bg-[#222] rounded px-3 py-2"
-              value={form.ageMin}
-              onChange={(e) => handleChange("ageMin", Number(e.target.value))}
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1">Возраст макс.</label>
-            <input
-              type="number"
-              className="w-full bg-[#222] rounded px-3 py-2"
-              value={form.ageMax}
-              onChange={(e) => handleChange("ageMax", Number(e.target.value))}
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1">Макс. участников</label>
-            <input
-              type="number"
-              className="w-full bg-[#222] rounded px-3 py-2"
-              value={form.maxParticipants}
-              onChange={(e) =>
-                handleChange("maxParticipants", Number(e.target.value))
-              }
-            />
-          </div>
+          <input
+            type="number"
+            className="bg-[#222] rounded px-3 py-2"
+            value={form.ageMin}
+            onChange={(e) => handleChange("ageMin", Number(e.target.value))}
+          />
+          <input
+            type="number"
+            className="bg-[#222] rounded px-3 py-2"
+            value={form.ageMax}
+            onChange={(e) => handleChange("ageMax", Number(e.target.value))}
+          />
+          <input
+            type="number"
+            className="bg-[#222] rounded px-3 py-2"
+            value={form.maxParticipants}
+            onChange={(e) =>
+              handleChange("maxParticipants", Number(e.target.value))
+            }
+          />
         </div>
 
         {/* Учителя */}
@@ -251,8 +255,9 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
                 }`}
               >
                 <img
-                  src={t.photoUrl}
+                  src={getPublicUrl(t.photoUrl)}
                   className="w-12 h-12 rounded object-cover"
+                  alt=""
                 />
                 <span>
                   {t.lastName} {t.firstName}
@@ -264,7 +269,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
+          className="w-full px-4 py-2 bg-customyellow text-black rounded"
         >
           Сохранить изменения
         </button>
