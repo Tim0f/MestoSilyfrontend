@@ -1,93 +1,116 @@
-// upload.controller.ts
 import {
   Controller,
   Post,
   UploadedFile,
   UseInterceptors,
-  BadRequestException,
-  Get,
-  Param,
-  Res,
-  Req,
-  NotFoundException,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiConsumes, ApiBody, ApiOperation } from '@nestjs/swagger';
-import { Response, Request } from 'express';
+import { ApiTags, ApiOperation, ApiConsumes, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { UploadService } from './upload.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('Upload')
-@Controller()
+@Controller('upload')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('JWT-auth')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
-  // ================= UPLOAD IMAGE =================
-  @Post('upload/image')
-  @UseGuards(JwtAuthGuard)
+  @Post('image')
   @UseInterceptors(FileInterceptor('file'))
-  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Загрузить изображение' })
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
-        file: { type: 'string', format: 'binary' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
       },
     },
   })
-  uploadImage(
-    @UploadedFile() file: Express.Multer.File,
-    @Req() req: Request,
-  ) {
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('Файл не загружен');
     }
 
     if (!this.uploadService.validateImage(file)) {
-      throw new BadRequestException('Недопустимый формат изображения');
+      throw new BadRequestException('Допустимые форматы: JPEG, PNG, GIF, WEBP');
     }
 
     return {
       filename: file.filename,
-      url: this.uploadService.getPublicFileUrl(req, file.filename),
+      url: this.uploadService.getFileUrl(file.filename),
       size: file.size,
       mimeType: file.mimetype,
     };
   }
 
-  // ================= UPLOAD AUDIO =================
-  @Post('upload/audio')
-  @UseGuards(JwtAuthGuard)
+  @Post('video')
   @UseInterceptors(FileInterceptor('file'))
-  uploadAudio(
-    @UploadedFile() file: Express.Multer.File,
-    @Req() req: Request,
-  ) {
+  @ApiOperation({ summary: 'Загрузить видео' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  uploadVideo(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('Файл не загружен');
+    }
+
+    if (!this.uploadService.validateVideo(file)) {
+      throw new BadRequestException('Допустимые форматы: MP4, WEBM, AVI');
+    }
+
+    return {
+      filename: file.filename,
+      url: this.uploadService.getFileUrl(file.filename),
+      size: file.size,
+      mimeType: file.mimetype,
+    };
+  }
+
+  @Post('audio')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Загрузить аудио' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  uploadAudio(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('Файл не загружен');
     }
 
     if (!this.uploadService.validateAudio(file)) {
-      throw new BadRequestException('Недопустимый формат аудио');
+      throw new BadRequestException('Допустимые форматы: MP3, WAV, OGG, WEBM');
     }
 
     return {
       filename: file.filename,
-      url: this.uploadService.getPublicFileUrl(req, file.filename),
+      url: this.uploadService.getFileUrl(file.filename),
       size: file.size,
       mimeType: file.mimetype,
     };
-  }
-
-  // ================= GET FILE =================
-  @Get('uploads/:filename')
-  getFile(@Param('filename') filename: string, @Res() res: Response) {
-    if (!this.uploadService.fileExists(filename)) {
-      throw new NotFoundException('Файл не найден');
-    }
-
-    return res.sendFile(this.uploadService.getFilePath(filename));
   }
 }

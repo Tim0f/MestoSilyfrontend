@@ -6,20 +6,8 @@ import { existsSync } from 'fs';
 
 @Injectable()
 export class UploadService {
-  getPublicFileUrl(req: Request, filename: string): string {
-    const protocol =
-      req.headers['x-forwarded-proto']?.toString() || req.protocol;
-    const host = req.headers.host;
-
-    return `${protocol}://${host}/api/uploads/${filename}`;
-  }
-
-  getFilePath(filename: string): string {
-    return join(process.cwd(), 'uploads', filename);
-  }
-
-  fileExists(filename: string): boolean {
-    return existsSync(this.getFilePath(filename));
+  getFileUrl(filename: string): string {
+    return `/api/uploads/${filename}`;
   }
 
   validateImage(file: Express.Multer.File): boolean {
@@ -48,3 +36,4 @@ export class UploadService {
     ].includes(file.mimetype);
   }
 }
+
