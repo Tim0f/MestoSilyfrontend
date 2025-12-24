@@ -37,14 +37,13 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files[0];
 
   try {
-    const res = await uploadService.image<{ filename: string }>(file);
-
-    const url = uploadService.getFileUrl(res.filename);
-    update("imageUrl", url);
+    const res = await uploadService.image(file);
+    update("imageUrl", res.filename);
   } finally {
     setUploading(false);
   }
 };
+
 
 
   const submit = async (e: React.FormEvent) => {

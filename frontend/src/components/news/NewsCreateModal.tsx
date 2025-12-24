@@ -4,6 +4,7 @@ import {
   NewsFrontendService,
   type CreateNewsDto,
 } from '../../services/news.service';
+import { getPublicUrl } from '../../utils/publicUrl';
 
 interface Props {
   isOpen: boolean;
@@ -13,7 +14,6 @@ interface Props {
 const client = Client;
 const newsService = new NewsFrontendService(client);
 
-// 🟡 Декодируем JWT и достаём sub
 function getUserIdFromToken(): string | null {
   const token = localStorage.getItem('token');
   if (!token) return null;
@@ -34,29 +34,29 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-
-  const removeImage = (idx: number) => {
-    setImages((p) => p.filter((_, i) => i !== idx));
+  const removeImage = () => {
+    setImages([]);
   };
 
-  // 🖼 Upload image → backend → return URL
-  const handleFileUpload = async (file: File | null) => {
-    if (!file) return;
-    try {
-      setLoading(true);
+const handleFileUpload = async (file: File | null) => {
+  if (!file) return;
 
-      const uploaded = await newsService.uploadTempImage(file);
+  try {
+    setLoading(true);
 
-      if (uploaded?.url) {
-        setImages((prev) => [...prev, uploaded.url]);
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Ошибка загрузки изображения');
-    } finally {
-      setLoading(false);
-    }
-  };
+    const url = await newsService.uploadTempImage(file);
+
+    // 🔥 ТОЛЬКО ОДНА КАРТИНКА
+    setImages([url]);
+  } catch (err) {
+    console.error(err);
+    setError('Ошибка загрузки изображения');
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,11 +67,8 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
     if (!images.length) return setError('Добавьте минимум одну картинку');
     if (!publishedDate) return setError('Выберите дату публикации');
 
-    // 🟡 Берём userId из токена
     const createdBy = getUserIdFromToken();
-    if (!createdBy) {
-      return setError('Не удалось получить userId из токена');
-    }
+    if (!createdBy) return setError('Не удалось получить userId');
 
     setLoading(true);
     try {
@@ -80,7 +77,7 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
         content: content.trim(),
         images,
         publishedAt: new Date(`${publishedDate}T00:00:00`).toISOString(),
-        createdBy, // ← вот здесь вставляем sub
+        createdBy,
       };
 
       await newsService.create(payload);
@@ -103,95 +100,70 @@ export default function NewsCreateModal({ isOpen, onClose }: Props) {
 
         <form onSubmit={submit} className="space-y-4">
 
-          {/* Title */}
           <div>
-            <label className="block mb-1 text-customwhite">Заголовок</label>
+            <label className="block mb-1">Заголовок</label>
             <input
-              type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
-              required
             />
           </div>
 
-          {/* Content */}
           <div>
-            <label className="block mb-1 text-customwhite">Контент</label>
+            <label className="block mb-1">Контент</label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={6}
               className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
-              required
             />
           </div>
 
-          {/* Image upload */}
           <div>
-            <label className="block mb-1 text-customwhite">
-              Изображения
-            </label>
+            <label className="block mb-1">Изображения</label>
 
-            <div className="mt-3">
-              <input
-                type="file"
-                onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
-              />
-            </div>
+            <input
+              type="file"
+              onChange={(e) => handleFileUpload(e.target.files?.[0] || null)}
+            />
 
             <div className="flex flex-wrap gap-3 mt-4">
-              {images.map((img, idx) => (
-                <div key={idx} className="w-28">
-                  <div className="w-28 h-20 rounded overflow-hidden bg-[#222] border border-white/10">
-                    <img
-                      src={img}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex justify-between items-center mt-1 text-sm">
-                    <span className="truncate">{img}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeImage(idx)}
-                      className="text-[#FF6B4A] ml-2"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
-              ))}
+              {images.length > 0 && (
+  <div className="w-28">
+    <div className="w-28 h-20 rounded overflow-hidden bg-[#222] border border-white/10">
+      <img
+        src={getPublicUrl(images[0])}
+        className="w-full h-full object-cover"
+      />
+    </div>
+    <button
+      type="button"
+      onClick={removeImage}
+      className="text-[#FF6B4A] text-sm mt-1"
+    >
+      Удалить
+    </button>
+  </div>
+)}
+
             </div>
           </div>
 
-          {/* Published date */}
           <div>
-            <label className="block mb-1 text-customwhite">Дата публикации</label>
+            <label className="block mb-1">Дата публикации</label>
             <input
               type="date"
               value={publishedDate}
               onChange={(e) => setPublishedDate(e.target.value)}
               className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
-              required
             />
           </div>
 
-          {/* Buttons */}
-          <div className="flex justify-end gap-3 mt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
-            >
+          <div className="flex justify-end gap-3">
+            <button type="button" onClick={onClose} className="bg-gray-600 px-4 py-2 rounded">
               Отмена
             </button>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow disabled:opacity-50"
-            >
+            <button type="submit" disabled={loading} className="bg-customyellow text-black px-4 py-2 rounded">
               Создать
             </button>
           </div>

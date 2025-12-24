@@ -31,6 +31,13 @@ export interface UpdateTeacherDto {
   audioUrl?: string;
 }
 
+interface UploadResponse {
+  filename: string;
+}
+
+const getPublicUrl = (filename: string) =>
+  `http://81.177.216.68:3000/api/uploads/${filename}`;
+
 export class TeachersFrontendService {
   constructor(private readonly http: HttpClient) {}
 
@@ -43,7 +50,9 @@ export class TeachersFrontendService {
   }
 
   findOne<T = TeacherDto>(teacherId: string) {
-    return this.http.get<T>(`/teachers/${teacherId}`, { authenticate: false });
+    return this.http.get<T>(`/teachers/${teacherId}`, {
+      authenticate: false,
+    });
   }
 
   update<T = unknown>(teacherId: string, payload: UpdateTeacherDto) {
@@ -54,23 +63,43 @@ export class TeachersFrontendService {
     return this.http.delete<T>(`/teachers/${teacherId}`);
   }
 
-  // ========= 🔥 ДОБАВЛЕНО: загрузка изображений =========
-uploadTempImage<T = { url: string }>(file: File) {
-  const fd = new FormData();
-  fd.append('file', file);
+  // ================== UPLOAD IMAGE ==================
+  async uploadTempImage(file: File): Promise<{ url: string }> {
+    const fd = new FormData();
+    fd.append('file', file);
 
-  return this.http.post<T>('/upload/image', fd, {
-    authenticate: true,
-  });
-}
+    const res = await this.http.post<UploadResponse>(
+      '/upload/image',
+      fd,
+      { authenticate: true },
+    );
 
-uploadTempAudio<T = { url: string }>(file: File) {
-  const fd = new FormData();
-  fd.append('file', file);
+    if (!res?.filename) {
+      throw new Error('Upload image failed: filename not returned');
+    }
 
-  return this.http.post<T>('/upload/audio', fd, {
-    authenticate: true,
-  });
-}
+    return {
+      url: getPublicUrl(res.filename),
+    };
+  }
 
+  // ================== UPLOAD AUDIO ==================
+  async uploadTempAudio(file: File): Promise<{ url: string }> {
+    const fd = new FormData();
+    fd.append('file', file);
+
+    const res = await this.http.post<UploadResponse>(
+      '/upload/audio',
+      fd,
+      { authenticate: true },
+    );
+
+    if (!res?.filename) {
+      throw new Error('Upload audio failed: filename not returned');
+    }
+
+    return {
+      url: getPublicUrl(res.filename),
+    };
+  }
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Client } from '../../services/httpClient';
 import { NewsFrontendService } from '../../services/news.service';
+import { getPublicUrl } from '../../utils/publicUrl';
 const NewsCreateModal = lazy(() => import('./NewsCreateModal'));
 const NewsEditModal = lazy (() => import('./NewsEditModal'));
 
@@ -79,12 +80,7 @@ export default function NewsManager() {
             >
               <div className="w-28 h-20 flex-shrink-0 overflow-hidden rounded">
                 <img
-                  src={
-                    n.images?.[0] ||
-                    n.imageUrl ||
-                    'https://via.placeholder.com/160x120'
-                  }
-                  alt={n.title}
+                  src={getPublicUrl(n.imageUrl || n.images?.[0])}
                   className="w-full h-full object-cover"
                 />
               </div>

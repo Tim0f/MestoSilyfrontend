@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { getPublicUrl } from '../utils/publicUrl'
+
 import Zerno from "../assets/svg/Zerno.svg";
 
 import { ProductsFrontendService } from "../services/products.service";
@@ -174,7 +176,7 @@ export default function BazarPage() {
 
       <img
 
-        src={item.imageUrl}
+        src={getPublicUrl(item.imageUrl)}
 
         className="w-[387px] h-[200px] object-cover"
 

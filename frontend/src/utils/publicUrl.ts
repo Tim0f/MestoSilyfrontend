@@ -1,20 +1,27 @@
-export function getPublicUrl(path: string | null | undefined): string {
+export function getPublicUrl(path?: string | null) {
   if (!path) return '';
 
-  // blob preview
+  // file preview
   if (path.startsWith('blob:')) return path;
 
-  // data:image/*
-  if (path.startsWith('data:')) return path;
+  // already correct
+  if (path.includes('/api/uploads/')) return path;
 
-  // если backend уже вернул абсолютный URL — НЕ ТРОГАЕМ
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path;
-  }
+  const rawBase =
+    import.meta.env.VITE_API_URL ??
+    import.meta.env.VITE_ADMIN_API_URL ??
+    'http://localhost:3000';
 
-  // ⚠️ ВАЖНО: берём origin БЕЗ /api
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const origin = apiUrl.replace(/\/api\/?$/, '');
+  // ❗ УБИРАЕМ /api В КОНЦЕ
+  const base = rawBase.replace(/\/api$/, '');
 
-  return `${origin}${path.startsWith('/') ? path : `/${path}`}`;
+  // backend may return:
+  // - uploads/xxx.jpg
+  // - /uploads/xxx.jpg
+  // - http://host/uploads/xxx.jpg
+  const clean = path
+    .replace(/^https?:\/\/[^/]+/, '')
+    .replace(/^\/?uploads\//, '');
+
+  return `${base}/api/uploads/${clean}`;
 }

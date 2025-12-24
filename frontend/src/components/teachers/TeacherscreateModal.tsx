@@ -42,9 +42,10 @@ export default function TeacherCreateModal({ isOpen, onClose }: Props) {
       const uploaded = await teachersService.uploadTempImage(file);
 
       if (uploaded?.url) {
-        update('photoUrl', uploaded.url);
-        setPhotoPreview(uploaded.url);
-      }
+  update('photoUrl', uploaded.url);
+  setPhotoPreview(uploaded.url ?? null);
+}
+
     } catch (err) {
       console.error(err);
       alert('Ошибка загрузки фото');
@@ -62,9 +63,10 @@ export default function TeacherCreateModal({ isOpen, onClose }: Props) {
       const uploaded = await teachersService.uploadTempAudio(file);
 
       if (uploaded?.url) {
-        update('audioUrl', uploaded.url);
-        setAudioPreview(uploaded.url);
-      }
+  update('audioUrl', uploaded.url);
+  setAudioPreview(uploaded.url ?? null);
+}
+
     } catch (err) {
       console.error(err);
       alert('Ошибка загрузки аудио');

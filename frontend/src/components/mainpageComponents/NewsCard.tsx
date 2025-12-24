@@ -1,4 +1,4 @@
-
+import { getPublicUrl } from '../../utils/publicUrl';
 type NewsCardProps = {
   title: string
   content: string
@@ -30,8 +30,8 @@ export default function NewsCard({
   </p>
 
   <img
-    src={imageSrc}
-    alt={imageAlt}
+    src={getPublicUrl(imageSrc)}
+    alt={getPublicUrl(imageAlt)}
     className="w-[549px] h-[263px] object-cover mt-auto rounded-lg"
   />
 </div>

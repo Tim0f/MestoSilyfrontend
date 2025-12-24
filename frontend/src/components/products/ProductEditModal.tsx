@@ -38,21 +38,20 @@ export default function ProductEditModal({ isOpen, onClose, product }: Props) {
   const update = (k: keyof UpdateProductDto, v: any) =>
     setForm((prev) => ({ ...prev, [k]: v }));
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files?.length) return;
+const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (!e.target.files?.length) return;
 
-    setUploading(true);
-    const file = e.target.files[0];
+  setUploading(true);
+  const file = e.target.files[0];
 
-    try {
-      const res = await uploadService.image<{ filename: string }>(file);
-      const url = uploadService.getFileUrl(res.filename);
+  try {
+    const res = await uploadService.image(file);
+    update("imageUrl", res.filename);
+  } finally {
+    setUploading(false);
+  }
+};
 
-      update("imageUrl", url);
-    } finally {
-      setUploading(false);
-    }
-  };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();

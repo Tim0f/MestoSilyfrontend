@@ -1,46 +1,43 @@
-
 import { HttpClient } from './httpClient';
-
 import { ensureFormData, type UploadInput } from './fileUpload';
 
-  
+type UploadResponse = {
+  filename?: string;
+  url?: string;
+};
 
 export class UploadFrontendService {
+  constructor(private readonly http: HttpClient) {}
 
-  constructor(private readonly http: HttpClient) {}
+  private extractFilename(res: UploadResponse): string {
+    const value = res.filename ?? res.url;
+    if (!value) {
+      throw new Error('Upload: filename not returned');
+    }
 
-  
+    // если пришло /api/uploads/abc.jpg → abc.jpg
+    return value.split('/').pop()!;
+  }
 
-  image<T = unknown>(file: UploadInput) {
+  async image(file: UploadInput): Promise<{ filename: string }> {
+    const res = await this.http.post<UploadResponse>(
+      '/upload/image',
+      ensureFormData(file),
+    );
 
-    return this.http.post<T>('/upload/image', ensureFormData(file));
+    return {
+      filename: this.extractFilename(res),
+    };
+  }
 
-  }
+  async audio(file: UploadInput): Promise<{ filename: string }> {
+    const res = await this.http.post<UploadResponse>(
+      '/upload/audio',
+      ensureFormData(file),
+    );
 
-  
-
-  video<T = unknown>(file: UploadInput) {
-
-    return this.http.post<T>('/upload/video', ensureFormData(file));
-
-  }
-
-  
-
-  // optional helper: server may expose file url builder; if not, you can use returned filename from upload
-
-  getFileUrl(filename: string) {
-
-    const base =
-
-      (import.meta.env.VITE_ADMIN_API_URL as string | undefined) ??
-
-      (import.meta.env.VITE_API_URL as string | undefined) ??
-
-      'http://localhost:3000';
-
-    return `${base}/uploads/${filename}`;
-
-  }
-
+    return {
+      filename: this.extractFilename(res),
+    };
+  }
 }

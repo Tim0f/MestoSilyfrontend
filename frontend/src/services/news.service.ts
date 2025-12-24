@@ -15,9 +15,7 @@ export interface UpdateNewsDto {
   images?: string[];
   publishedAt?: string;
   createdBy?: string;
-  imageUrl?: string;
 }
-
 export class NewsFrontendService {
   constructor(private readonly http: HttpClient) {}
 
@@ -54,18 +52,17 @@ export class NewsFrontendService {
     return this.http.delete<T>(`/news/${id}`);
   }
 
-  /**
-   * Загрузка изображения ПЕРЕД созданием новости.
-   * Backend должен вернуть: { url: string }
-   */
-  uploadTempImage<T = { url: string }>(file: UploadInput) {
-    return this.http.post<T>('/upload/image', ensureFormData(file));
+  /** upload ДО создания */
+  uploadTempImage(file: UploadInput): Promise<string> {
+    return this.http
+      .post<{ url: string }>('/upload/image', ensureFormData(file))
+      .then(res => res.url);
   }
 
-  /**
-   * Загрузка изображения к существующей новости.
-   */
-  uploadImage<T = unknown>(id: string, file: UploadInput) {
-    return this.http.patch<T>(`/news/${id}/image`, ensureFormData(file));
+  /** upload ДЛЯ существующей новости (опционально) */
+  uploadImage(id: string, file: UploadInput): Promise<string> {
+    return this.http
+      .patch<{ url: string }>(`/news/${id}/image`, ensureFormData(file))
+      .then(res => res.url);
   }
 }

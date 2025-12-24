@@ -136,27 +136,33 @@ export default function HomePage() {
     return () => clearTimeout(timeout)
   }, [location.hash])
 
-  async function loadSections() {
-    try {
-      const api = await sectionsService.findAll<any[]>()
-      setSectionsDynamic(
-        api.length
-          ? api.map((s) => ({
-              id: String(s.id),
-              title: s.name,
-              description: s.description,
-              teacher: s.teachers?.[0]
-                ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
-                : 'Тренер не указан',
-              price: s.price ? `${s.price}₽` : '',
-              iconUrl: s.iconUrl ?? swordIcon,
-            }))
-          : sectionsFallback
-      )
-    } catch {
-      setSectionsDynamic(sectionsFallback)
-    }
+async function loadSections() {
+  try {
+    const api = await sectionsService.findAll<any[]>()
+
+    setSectionsDynamic(
+      api.length
+        ? api.map((s) => ({
+            id: String(s.id),
+            title: s.name,
+            description: s.description,
+            teacher: s.teachers?.[0]
+              ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
+              : 'Тренер не указан',
+
+            // 🔥 ВОТ ЭТОГО НЕ ХВАТАЛО
+            teacherPhotoUrl: s.teachers?.[0]?.photoUrl,
+
+            price: s.price ? `${s.price}₽` : '',
+            iconUrl: s.iconUrl ?? swordIcon,
+          }))
+        : sectionsFallback
+    )
+  } catch {
+    setSectionsDynamic(sectionsFallback)
   }
+}
+
 
   async function loadPartners() {
     try {

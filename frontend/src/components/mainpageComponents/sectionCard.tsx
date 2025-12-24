@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
+import { getPublicUrl } from '../../utils/publicUrl'
 
 export type ShowcaseSection = {
   id: string
   title: string
   description: string
   teacher: string
+  teacherPhotoUrl?: string
   price?: string
   iconUrl: string
   color?: string
@@ -25,20 +27,27 @@ export default function SectionCard({
 }: SectionCardProps) {
   const expanded = isActive || isDefaultActive
 
+  const teacherImageSrc = tile.teacherPhotoUrl
+    ? tile.teacherPhotoUrl.startsWith('http')
+      ? tile.teacherPhotoUrl
+      : getPublicUrl(tile.teacherPhotoUrl)
+    : null
+
   return (
     <div
       onMouseEnter={onActivate}
       onFocus={onActivate}
       tabIndex={0}
-      className={`relative flex-shrink-0 h-[550px]' transition-all duration-500 ease-out
+      className={`relative flex-shrink-0 h-[550px] transition-all duration-500 ease-out
         overflow-hidden group
         ${expanded ? 'w-[570px]' : 'w-[287px]'}`}
     >
+      {/* Текстурная рамка */}
       <div
         aria-hidden="true"
         className="absolute inset-0 z-20"
         style={{
-          backgroundImage: 'url(/svg/texturedBorder.svg)', // ← ЕДИНСТВЕННОЕ ИЗМЕНЕНИЕ
+          backgroundImage: 'url(/svg/texturedBorder.svg)',
           backgroundSize: 'cover',
           height: '530px',
           width: '550px',
@@ -47,13 +56,14 @@ export default function SectionCard({
       />
 
       <div className="relative z-30 h-full w-full flex">
+        {/* Левая иконка */}
         <div className="w-[200px] flex-none flex items-center justify-center px-6">
           <div
-            aria-hidden
+            aria-hidden="true"
             className="w-[180px] h-[500px] select-none pointer-events-none"
             style={{
-              WebkitMaskImage: `url(${tile.iconUrl})`,
-              maskImage: `url(${tile.iconUrl})`,
+              WebkitMaskImage: `url(${getPublicUrl(tile.iconUrl)})`,
+              maskImage: `url(${getPublicUrl(tile.iconUrl)})`,
               WebkitMaskSize: 'contain',
               maskSize: 'contain',
               WebkitMaskRepeat: 'no-repeat',
@@ -63,9 +73,10 @@ export default function SectionCard({
           />
         </div>
 
+        {/* Контент */}
         <div className="flex-1 p-6 flex flex-col">
           {expanded && (
-            <div className="flex flex-col w-[300px] h-[530px]]">
+            <div className="flex flex-col w-[300px] h-[530px]">
               <h3 className="text-h2 font-h2 text-customyellow drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]">
                 {tile.title}
               </h3>
@@ -74,15 +85,28 @@ export default function SectionCard({
                 {tile.description}
               </p>
 
+              {/* Учитель */}
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-full bg-customyellow/60 border border-customyellow/30" />
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-customyellow/30 bg-customyellow/60 flex items-center justify-center">
+                  {teacherImageSrc ? (
+                    <img
+                      src={teacherImageSrc}
+                      alt={tile.teacher}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : null}
+                </div>
+
                 <div>
                   <div className="text-customyellow font-p">Учитель:</div>
-                  <div className="text-customwhite font-p">{tile.teacher}</div>
+                  <div className="text-customwhite font-p">
+                    {tile.teacher}
+                  </div>
                 </div>
               </div>
 
-              <div className="mt-auto">
+              {/* Низ карточки */}
+              <div className="">
                 {tile.price && (
                   <div className="text-h2 font-h2 text-customwhite mb-4">
                     {tile.price}

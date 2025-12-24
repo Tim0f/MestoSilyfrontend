@@ -24,6 +24,18 @@ const teachersService = new TeachersFrontendService(client);
 export default function SectionEditModal({ id, isOpen, onClose }: Props) {
   const [teachers, setTeachers] = useState<TeacherDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const resolvePreviewSrc = (value: string | null) => {
+  if (!value) return undefined;
+
+  // blob URL — отдаём как есть
+  if (value.startsWith("blob:")) {
+    return value;
+  }
+
+  // backend путь — нормализуем
+  return getPublicUrl(value);
+};
+
 
   const [form, setForm] = useState({
     name: "",
@@ -155,7 +167,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
 
           {imagePreview && (
             <img
-              src={getPublicUrl(imagePreview)}
+              src={resolvePreviewSrc(imagePreview)}
               className="w-32 h-32 rounded mb-2 object-cover border border-white/20"
               alt=""
             />
@@ -176,7 +188,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
 
           {iconPreview && (
             <img
-              src={getPublicUrl(iconPreview)}
+              src={resolvePreviewSrc(iconPreview)}
               className="w-20 h-20 rounded mb-2 object-cover border border-white/20"
               alt=""
             />

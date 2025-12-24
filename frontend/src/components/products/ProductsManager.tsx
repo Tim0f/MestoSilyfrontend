@@ -1,5 +1,6 @@
 import { useEffect, useState, lazy, Suspense } from 'react';
 import { Client } from '../../services/httpClient';
+import { getPublicUrl } from '../../utils/publicUrl'
 import { ProductsFrontendService } from '../../services/products.service';
 const ProductCreateModal = lazy(() => import('./ProductCreateModal'));
 const ProductEditModal = lazy(() => import('./ProductEditModal'));
@@ -55,7 +56,7 @@ export default function ProductsManager() {
             >
               <div className="flex items-center gap-4">
                 <img
-                  src={p.imageUrl}
+                  src={getPublicUrl(p.imageUrl)}
                   alt={p.name}
                   className="w-20 h-20 object-cover rounded"
                 />
