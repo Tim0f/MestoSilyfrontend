@@ -40,6 +40,9 @@ const newsService = new NewsFrontendService(client)
 export default function HomePage() {
   const location = useLocation()
 
+
+
+  // ================= STATE =================
   const [activeTileId, setActiveTileId] = useState<string>('fencing')
   const [newsRevealed, setNewsRevealed] = useState(false)
   const [currentNewsPage, setCurrentNewsPage] = useState(0)
@@ -50,48 +53,14 @@ export default function HomePage() {
 
   const [news, setNews] = useState<any[]>([])
 
+  // ================= SERVICES =================
   const sectionsFallback: ShowcaseSection[] = useMemo(
     () => [
-      {
-        id: 'fencing',
-        title: 'Актерское фехтование',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: swordIcon,
-      },
-      {
-        id: 'archery',
-        title: 'Лучная стрельба',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: arrowIcon,
-      },
-      {
-        id: 'dragon',
-        title: 'Фэнтези клуб',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: dragonIcon,
-      },
-      {
-        id: 'theatre',
-        title: 'Театр',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: masksIcon,
-      },
-      {
-        id: 'dance',
-        title: 'Пластика и танец',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: womenIcon,
-      },
+      { id: 'fencing', title: 'Актерское фехтование', description: 'Откройте для себя искусство владения клинком.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: swordIcon },
+      { id: 'archery', title: 'Лучная стрельба', description: 'Откройте для себя искусство владения клинком.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: arrowIcon },
+      { id: 'dragon', title: 'Фэнтези клуб', description: 'Откройте для себя искусство владения клинком.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: dragonIcon },
+      { id: 'theatre', title: 'Театр', description: 'Откройте для себя искусство владения клинком.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: masksIcon },
+      { id: 'dance', title: 'Пластика и танец', description: 'Откройте для себя искусство владения клинком.', teacher: 'Иван Иванович Иванов', price: '1000₽/час', iconUrl: womenIcon },
     ],
     []
   )
@@ -108,6 +77,7 @@ export default function HomePage() {
     []
   )
 
+  // ================= EFFECTS =================
   useEffect(() => {
     loadSections()
     loadPartners()
@@ -118,7 +88,6 @@ export default function HomePage() {
     return () => window.clearTimeout(id)
   }, [])
 
-  // 🔥 ПЛАВНЫЙ СКРОЛЛ ПО HASH
   useEffect(() => {
     if (!location.hash) return
 
@@ -127,15 +96,13 @@ export default function HomePage() {
     if (!element) return
 
     const timeout = setTimeout(() => {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 100)
 
     return () => clearTimeout(timeout)
   }, [location.hash])
 
+  // ================= LOADERS =================
   async function loadSections() {
     try {
       const api = await sectionsService.findAll<any[]>()
@@ -205,18 +172,22 @@ export default function HomePage() {
     }))
   }, [teachersDynamic])
 
+  // ================= UI =================
   return (
-    <div className="bg-customblack min-h-screen">
+    <div className="bg-white dark:bg-customblack min-h-screen transition-colors duration-300">
+      
 
-      <section id="home">
+
+
+      <section id="home" className="bg-white dark:bg-customblack transition-colors duration-300">
         <HeadBlock />
       </section>
 
-      <section id="about">
+      <section id="about" className="bg-white dark:bg-customblack transition-colors duration-300">
         <AboutBlock />
       </section>
 
-      <section id="sections">
+      <section id="sections" className="bg-white dark:bg-customblack transition-colors duration-300">
         <SectionSlider
           sections={sectionsDynamic ?? sectionsFallback}
           activeId={activeTileId}
@@ -225,7 +196,7 @@ export default function HomePage() {
         />
       </section>
 
-      <section id="news">
+      <section id="news" className="bg-white dark:bg-customblack transition-colors duration-300">
         <NewsSlider
           news={news}
           fallbackImage={newsFallbackImg}
@@ -236,18 +207,18 @@ export default function HomePage() {
         />
       </section>
 
-      <section id="team" className="py-20 bg-customblack">
+      <section id="team" className="py-20 bg-white dark:bg-customblack transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
+          <h2 className="text-h1 font-h1 text-black dark:text-customyellow text-center mb-16">
             КОМАНДА
           </h2>
           <TeamSlider teamMembers={teamMembers} interval={5000} />
         </div>
       </section>
 
-      <section id="partners" className="py-20 bg-customblack">
+      <section id="partners" className="py-20 bg-white dark:bg-customblack transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
+          <h2 className="text-h1 font-h1 text-black dark:text-customyellow text-center mb-16">
             ПАРТНЕРЫ
           </h2>
           <PartnerSlider partners={partnersDynamic ?? partnersFallback} />

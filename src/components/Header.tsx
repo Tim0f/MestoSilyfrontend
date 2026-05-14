@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { LogOut } from "lucide-react";
 
 import Zerno from "../assets/svg/Zerno.svg";
@@ -10,6 +11,8 @@ import ProfileIcon from "../assets/svg/ProfileIcon.svg";
 
 export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();
+  const { theme, toggleTheme } = useTheme(); // ✅ ДОБАВИЛИ
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -31,7 +34,13 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-customgrey backdrop-blur-sm text-customyellow fixed top-0 left-0 right-0 z-50 font-p text-p">
+    <header  className={`
+      fixed top-0 left-0 right-0 z-50 font-p text-p
+         transition-colors duration-300
+         ${theme === "dark"
+           ? "bg-customgrey text-customyellow"
+           : "bg-white text-black"}
+       `}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
 
@@ -39,45 +48,27 @@ export default function Header() {
           <nav className="hidden md:flex items-center gap-8">
             {!isAuthenticated ? (
               <>
-                <Link to="/#home" className="hover:text-primary-400 transition">
-                  Главная
-                </Link>
-                <Link to="/#about" className="hover:text-primary-400 transition">
-                  О нас
-                </Link>
-                <Link to="/#sections" className="hover:text-primary-400 transition">
-                  Секции
-                </Link>
-                <Link to="/#news" className="hover:text-primary-400 transition">
-                  Новости
-                </Link>
-                <Link to="/#team" className="hover:text-primary-400 transition">
-                  Команда
-                </Link>
-                <Link to="/#partners" className="hover:text-primary-400 transition">
-                  Партнеры
-                </Link>
+                <Link to="/#home" className="hover:text-primary-400 transition">Главная</Link>
+                <Link to="/#about" className="hover:text-primary-400 transition">О нас</Link>
+                <Link to="/#sections" className="hover:text-primary-400 transition">Секции</Link>
+                <Link to="/#news" className="hover:text-primary-400 transition">Новости</Link>
+                <Link to="/#team" className="hover:text-primary-400 transition">Команда</Link>
+                <Link to="/#partners" className="hover:text-primary-400 transition">Партнеры</Link>
               </>
             ) : (
               <>
-                <Link to="/" className="hover:text-primary-400 transition">
-                  Главная
-                </Link>
-                <Link to="/sections" className="hover:text-primary-400 transition">
-                  Секции
-                </Link>
-                <Link to="/schedule" className="hover:text-primary-400 transition">
-                  Расписание
-                </Link>
-                <Link to="/chats" className="hover:text-primary-400 transition">
-                  Чат
-                </Link>
+                <Link to="/" className="hover:text-primary-400 transition">Главная</Link>
+                <Link to="/sections" className="hover:text-primary-400 transition">Секции</Link>
+                <Link to="/schedule" className="hover:text-primary-400 transition">Расписание</Link>
+                <Link to="/chats" className="hover:text-primary-400 transition">Чат</Link>
               </>
             )}
           </nav>
 
           {/* Правая часть */}
           <div className="flex items-center gap-4">
+
+
             {!isAuthenticated ? (
               <Link
                 to="/login"
@@ -135,6 +126,7 @@ export default function Header() {
                 </div>
               </>
             )}
+
           </div>
 
         </div>

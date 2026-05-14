@@ -15,7 +15,14 @@ type PartnerSliderProps = {
 
 export default function PartnerSlider({ partners, className = '' }: PartnerSliderProps) {
   return (
-    <div className={`flex flex-wrap justify-center items-center gap-10 ${className}`}>
+    <div
+      className={`
+        flex flex-wrap justify-center items-center gap-10
+        text-black dark:text-customyellow
+        transition-colors duration-300
+        ${className}
+      `}
+    >
       {partners.map((partner) => (
         <PartnerCard
           key={partner.id}

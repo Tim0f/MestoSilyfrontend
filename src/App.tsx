@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext'
 import ScrollToTop from './components/ScrollToTop'
 import RequireAuth from './guards/RequireAuth'
 import RequireAdmin from './guards/RequireAdmin'
+import { ThemeProvider } from './context/ThemeContext'
 
 const AdminRoutes = lazy(() => import('./AdminRoutes'))
 
@@ -23,6 +24,7 @@ const RegisterPage = lazy(() => import('./pages/RegisterPage'))
 
 function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <Router>
         <ScrollToTop/>
@@ -70,6 +72,7 @@ function App() {
         </Suspense>
       </Router>
     </AuthProvider>
+    </ThemeProvider>
   )
 }
 
