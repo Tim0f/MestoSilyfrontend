@@ -301,7 +301,7 @@ export default function ChatsPage(): JSX.Element {
 
   return (
 
-    <div className="min-h-screen bg-customblack text-white flex items-top justify-center ">
+    <div className="min-h-screen bg-customblack text-white flex items-top justify-center pt-16">
 
       <div className="relative w-full ">
 

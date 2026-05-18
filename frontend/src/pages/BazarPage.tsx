@@ -104,7 +104,7 @@ export default function BazarPage() {
 
     return (
 
-      <div className="w-full min-h-screen bg-customblack text-white p-6">
+      <div className="w-full min-h-screen bg-customblack text-white p-6 pt-16">
 
         {/* Заголовок */}
 

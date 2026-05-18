@@ -21,6 +21,7 @@ const SectionsPage = lazy(() => import('./pages/SectionsPage'))
 const BazarPage = lazy(() => import('./pages/BazarPage'))
 const LoginPage = lazy(() => import('./pages/LoginPage'))
 const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+const RequestPage = lazy(() => import('./pages/RequestPage'))
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="sections" element={<SectionsPage />} />
                 <Route path="bazar" element={<BazarPage />} />
+                <Route path="requests" element={<RequestPage />} />
               </Route>
             </Route>
 
