@@ -83,25 +83,6 @@ const fallbackSections: Section[] = [
   },
 ];
 
-/* ===================== 🔥 URL NORMALIZER ===================== */
-
-const normalizePublicUrl = (value?: string) => {
-  if (!value) return undefined;
-
-  // уже абсолютный
-  if (value.startsWith("http://") || value.startsWith("https://")) {
-    return value;
-  }
-
-  // /api/uploads/...
-  if (value.startsWith("/api/")) {
-    return `http://81.177.216.68:3000${value}`;
-  }
-
-  // просто filename
-  return `http://81.177.216.68:3000/api/uploads/${value}`;
-};
-
 /* ============================================================ */
 
 export default function SectionsPage() {
