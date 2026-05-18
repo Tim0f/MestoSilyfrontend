@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 
 import TeamSlider from "../components/mainpageComponents/TeamSlider";
+import { getPublicUrl } from '../utils/publicUrl';
 
 import swordImage from "../assets/svg/sword.svg";
 import arrowImage from "../assets/svg/arrow.svg";
@@ -113,39 +114,31 @@ export default function SectionsPage() {
     loadSections();
   }, []);
 
-  const loadSections = async () => {
-    try {
-      const res = await sectionsService.findAll<Section[]>();
-
-      if (Array.isArray(res) && res.length > 0) {
-        setSections(
-          res.map((s) => {
-            const iconUrl =
-              normalizePublicUrl(s.iconUrl) ?? swordImage;
-
-            const imageUrl =
-              normalizePublicUrl(s.imageUrl) ??
-              normalizePublicUrl(s.iconUrl) ??
-              swordImage;
-
-            return {
-              ...s,
-              iconUrl,
-              imageUrl,
-              teachers: s.teachers ?? [],
-            };
-          })
-        );
-      } else {
-        setSections(fallbackSections);
-      }
-    } catch (e) {
-      console.error("Ошибка загрузки секций:", e);
+const loadSections = async () => {
+  try {
+    const res = await sectionsService.findAll<Section[]>();
+    if (Array.isArray(res) && res.length > 0) {
+      setSections(
+        res.map((s) => {
+          const iconUrl = getPublicUrl(s.iconUrl) || swordImage;
+          const imageUrl = getPublicUrl(s.imageUrl) || swordImage;
+          return {
+            ...s,
+            iconUrl,
+            imageUrl,
+            teachers: s.teachers ?? [],
+          };
+        })
+      );
+    } else {
       setSections(fallbackSections);
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (e) {
+    setSections(fallbackSections);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const prevSection = () => {
     setDirection(-1);
@@ -218,7 +211,7 @@ export default function SectionsPage() {
                 maskRepeat: "no-repeat",
                 WebkitMaskPosition: "center",
                 maskPosition: "center",
-                backgroundColor: "#F4C884",
+                backgroundColor: 'rgb(var(--color-customyellow))',
               }}
             />
 

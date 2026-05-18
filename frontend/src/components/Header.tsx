@@ -102,7 +102,22 @@ export default function Header() {
                     {user?.avatarUrl ? (
                       <img src={user.avatarUrl} className="w-full h-full object-cover" />
                     ) : (
-                      <img src={ProfileIcon} className="w-6 h-6" />
+                      <div 
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          backgroundColor: 'rgb(var(--color-customyellow))',
+                          maskImage: `url(${ProfileIcon})`,
+                          maskSize: 'contain',
+                          maskRepeat: 'no-repeat',
+                          maskPosition: 'center',
+                          WebkitMaskImage: `url(${ProfileIcon})`,
+                          WebkitMaskSize: 'contain',
+                          WebkitMaskRepeat: 'no-repeat',
+                          WebkitMaskPosition: 'center',
+                        }}
+                      />
+                      
                     )}
                   </button>
 

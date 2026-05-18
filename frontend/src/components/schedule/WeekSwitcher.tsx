@@ -71,7 +71,7 @@ export default function WeekSwitcher({
 
       <div className="flex items-center gap-[20px]">
 
-        <span className="text-p font-p text-white w-[243px]">
+        <span className="text-p font-p text-customwhite w-[243px]">
 
           Кол-во бесплатных посещений:
 

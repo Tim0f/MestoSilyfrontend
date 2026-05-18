@@ -31,11 +31,11 @@ export default function AnimatedSectionContent({
         transition={{ duration: 0.5 }}
         className="flex flex-col items-center"
       >
-        <h2 className="text-3xl text-white font-black mb-3 uppercase tracking-wide">
+        <h2 className="text-3xl text-customwhite font-black mb-3 uppercase tracking-wide">
           {name}
         </h2>
 
-        <p className="text-white mb-5 leading-relaxed max-w-md">
+        <p className="text-customwhite mb-5 leading-relaxed max-w-md">
           {description}
         </p>
 

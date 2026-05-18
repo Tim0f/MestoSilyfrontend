@@ -56,13 +56,20 @@ export default {
  plugins: [
   plugin(({ addComponents }) => {
   addComponents({
-    '.textured-border': {
-      border: '20px solid transparent',
-      borderImageSource: "url('/src/assets/svg/texturedBorder.svg')",
-      borderImageSlice: '15',
-      borderImageRepeat: 'stretch',
-      borderRadius: '1rem',
-    },
+'.textured-border': {
+  position: 'relative',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    inset: '-20px', // подбираем под border-width
+    borderRadius: '1rem',
+    backgroundColor: 'rgb(var(--color-customyellow))',
+    maskImage: "url('/src/assets/svg/texturedBorder.svg')",
+    maskSize: '100% 100%',
+    maskRepeat: 'no-repeat',
+    zIndex: '-1',
+  }
+}
     
   })
 }),
@@ -81,7 +88,7 @@ plugin(({ addUtilities }) => {
       position: 'absolute',
       inset: '0',
       borderRadius: '9999px',
-      backgroundColor: '#F5C78B',
+      backgroundColor: 'rgb(var(--color-customyellow))',
 
       WebkitMaskImage: "url('/src/assets/svg/texturedRound.svg')",
       WebkitMaskRepeat: 'no-repeat',

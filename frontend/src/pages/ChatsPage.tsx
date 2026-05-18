@@ -385,9 +385,9 @@ export default function ChatsPage(): JSX.Element {
 
             {/* RIGHT */}
 
-            <div className="flex-1 flex flex-col bg-[#2f2929]">
+            <div className="flex-1 flex flex-col bg-customblack">
 
-              <div className="px-6 py-4 flex items-center justify-between border-b border-[#E0B26F]/20">
+              <div className="px-6 py-4 flex items-center justify-between border-b border-customyellow/20">
 
                 <div className="flex items-center gap-4">
 
@@ -483,9 +483,9 @@ export default function ChatsPage(): JSX.Element {
 
                                 isMine
 
-                                  ? "bg-[#E0B26F] text-customblack ml-auto"
+                                  ? "bg-customyellow text-customblack ml-auto"
 
-                                  : "bg-[#F7C985] text-[#3A3333]"
+                                  : "bg-customyellow/70 text-customwhite"
 
                               }`}
 
@@ -495,7 +495,7 @@ export default function ChatsPage(): JSX.Element {
 
   
 
-                              <div className="text-right text-xs text-white/60 mt-2">
+                              <div className="text-right text-xs text-customwhite/60 mt-2">
 
                                 {new Date(m.createdAt).toLocaleTimeString("ru-RU", {
 
@@ -525,7 +525,7 @@ export default function ChatsPage(): JSX.Element {
 
                 {typingText && (
 
-                  <div className="text-white/60 italic mt-4">{typingText}</div>
+                  <div className="text-customwhite/60 italic mt-4">{typingText}</div>
 
                 )}
 
@@ -549,11 +549,11 @@ export default function ChatsPage(): JSX.Element {
 
                     placeholder="Напишите сообщение..."
 
-                    className="flex-1 bg-[#3a3434] text-white rounded-full px-6 py-4 outline-none placeholder-white/40"
+                    className="flex-1 bg-customgrey text-white rounded-full px-6 py-4 outline-none placeholder-customwhite/40"
 
                   />
 
-                  <button type="submit" className="p-3 rounded-full bg-[#E0B26F]">
+                  <button type="submit" className="p-3 rounded-full bg-customyellow">
 
                     <Send size={20} />
 

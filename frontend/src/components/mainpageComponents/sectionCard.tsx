@@ -42,18 +42,21 @@ export default function SectionCard({
         overflow-hidden group
         ${expanded ? 'w-[570px]' : 'w-[287px]'}`}
     >
-      {/* Текстурная рамка */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 z-20"
-        style={{
-          backgroundImage: 'url(/svg/texturedBorder.svg)',
-          backgroundSize: 'cover',
-          height: '530px',
-          width: '550px',
-          backgroundRepeat: 'no-repeat',
-        }}
-      />
+    <div
+  aria-hidden="true"
+  className="absolute inset-0 z-20"
+  style={{
+    height: '530px',
+    width: '550px',
+    backgroundColor: 'rgb(var(--color-customyellow))',  // цвет из темы
+    WebkitMaskImage: 'url(/svg/texturedBorder.svg)',
+    WebkitMaskSize: 'cover',
+    WebkitMaskRepeat: 'no-repeat',
+    maskImage: 'url(/svg/texturedBorder.svg)',
+    maskSize: 'cover',
+    maskRepeat: 'no-repeat',
+  }}
+/>
 
       <div className="relative z-30 h-full w-full flex">
         {/* Левая иконка */}
@@ -68,7 +71,7 @@ export default function SectionCard({
               maskSize: 'contain',
               WebkitMaskRepeat: 'no-repeat',
               maskRepeat: 'no-repeat',
-              backgroundColor: '#F5C78B',
+              backgroundColor: 'rgb(var(--color-customyellow))',
             }}
           />
         </div>
@@ -115,7 +118,7 @@ export default function SectionCard({
 
                 <Link
                   to="/schedule"
-                  className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-p transition"
+                  className="bg-customyellow hover:bg-customyellow/70 text-white px-6 py-3 rounded-lg font-p transition"
                 >
                   записаться
                 </Link>

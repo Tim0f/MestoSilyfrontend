@@ -82,7 +82,7 @@ export default function TeamSlider({
   }
 
   if (!teamMembers.length) {
-    return <div className="text-white text-center mt-10">Нет данных</div>
+    return <div className="text-customwhite text-center mt-10">Нет данных</div>
   }
 
   return (
