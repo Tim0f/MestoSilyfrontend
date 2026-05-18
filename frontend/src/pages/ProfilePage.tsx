@@ -151,34 +151,34 @@ export default function ProfilePage() {
 
       {/* ACHIEVEMENTS FILTER */}
       <div className="flex items-center justify-center flex-col">
-        <h2 className="text-[52px] font-h1 text-[#F6C98F] mt-8 tracking-wide">ДОСТИЖЕНИЯ</h2>
+        <h2 className="text-[52px] font-h1 text-customyellow mt-8 tracking-wide">ДОСТИЖЕНИЯ</h2>
 
         <div className="flex flex-row gap-4 mt-6 relative items-center">
           {/* Новая кнопка "Получить достижение" */}
           <button
             onClick={() => setModalOpen(true)}
-            className="bg-[#F6C98F] text-black font-h2 px-6 py-2 rounded-xl hover:brightness-90"
+            className="bg-customyellow text-black font-h2 px-6 py-2 rounded-xl hover:brightness-90"
           >
             Получить достижение
           </button>
 
           <button onClick={() => { setActiveTab("general"); setActiveSection("general"); }} className="relative">
             <LogoSvg width={233} height={81} className={`z-10 ${activeTab === "general" ? "fill-customyellow" : " fill-customyellow"}`} />
-            <span className={`absolute inset-0 flex items-center justify-center z-20 font-h1 text-2xl ${activeTab === "general" ? "text-customblack" : "text-[#F6C98F]"}`}>Общие</span>
+            <span className={`absolute inset-0 flex items-center justify-center z-20 font-h1 text-2xl ${activeTab === "general" ? "text-customblack" : "text-customyellow"}`}>Общие</span>
           </button>
 
           <div className="relative">
             <button onClick={() => { setActiveTab("sections"); setOpenDropdown(!openDropdown); }} className="relative">
               <LogoSvg width={233} height={81} className={`z-10 ${activeTab === "sections" ? "" : " fill-customblack stroke-customyellow"}`} />
-              <span className={`absolute inset-0 flex items-center justify-center z-20 font-h1 text-2xl ${activeTab === "sections" ? "text-customblack" : "text-[#F6C98F]"}`}>Секции</span>
+              <span className={`absolute inset-0 flex items-center justify-center z-20 font-h1 text-2xl ${activeTab === "sections" ? "text-customblack" : "text-customyellow"}`}>Секции</span>
               <span className={`absolute right-6 top-1/2 -translate-y-1/2 text-xl z-30 transition-transform ${openDropdown ? "rotate-180" : ""}`}>▼</span>
             </button>
 
             {openDropdown && (
-              <div className="absolute left-0 top-[100%] mt-2 w-[233px] bg-customblack border border-[#F6C98F] rounded-xl p-6 space-y-5 z-20">
+              <div className="absolute left-0 top-[100%] mt-2 w-[233px] bg-customblack border border-customyellow rounded-xl p-6 space-y-5 z-20">
                 {sections.map((sec) => (
                   <div key={sec.id} className="flex items-center gap-4 cursor-pointer" onClick={() => { setActiveSection(sec.id); setOpenDropdown(false); }}>
-                    <div className={`w-7 h-7 rounded-full border-2 border-[#F6C98F] ${activeSection === sec.id ? "bg-[#F6C98F]" : ""}`}></div>
+                    <div className={`w-7 h-7 rounded-full border-2 border-customyellow ${activeSection === sec.id ? "bg-customyellow" : ""}`}></div>
                     <p className="font-h1 text-2xl">{sec.name}</p>
                   </div>
                 ))}
@@ -196,13 +196,13 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <img src={a.iconUrl} className="w-12 h-12" />
               <div className="flex flex-col">
-                <h3 className="font-h1 text-2xl text-[#F6C98F] leading-none">{a.name}</h3>
+                <h3 className="font-h1 text-2xl text-customyellow leading-none">{a.name}</h3>
                 <p className="text-base text-[#E8E1DC] mt-1">{a.description}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               {a.isActive ? (
-                <button className="bg-[#F6C98F] text-black font-h2 px-6 py-2 rounded-xl shadow hover:brightness-90 text-sm">получить</button>
+                <button className="bg-customyellow text-black font-h2 px-6 py-2 rounded-xl shadow hover:brightness-90 text-sm">получить</button>
               ) : (
                 <div className="bg-[#403B36] text-[#8E857F] font-h2 px-6 py-2 rounded-xl text-sm">получено</div>
               )}

@@ -230,7 +230,7 @@ export default function BazarPage() {
 
       onClick={() => buy(item.id)}
 
-      className="mt-auto w-full bg-[#f6c98f] text-black font-p py-2 text-center hover:brightness-90 cursor-pointer"
+      className="mt-auto w-full bg-customyellow text-black font-p py-2 text-center hover:brightness-90 cursor-pointer"
 
     >
 

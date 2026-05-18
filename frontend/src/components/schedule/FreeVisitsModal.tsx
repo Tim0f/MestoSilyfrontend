@@ -243,7 +243,7 @@ await freeVisitsService.purchaseFreeVisits(1);
 
   return (
 
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-customblack/70">
 
       <div className="relative w-[95vw] max-w-[1600px] max-h-[85vh] text-white overflow-hidden">
 

@@ -9,10 +9,10 @@ export default {
   theme: {
     extend: {
       colors: {
-        customyellow: '#F5C78B',
-        customgrey: '#464042',
-        customwhite: '#FEFAF3',
-        customblack: '#2D282A',
+      customyellow: 'rgb(var(--color-customyellow) / <alpha-value>)',
+      customgrey:   'rgb(var(--color-customgrey) / <alpha-value>)',
+      customwhite:  'rgb(var(--color-customwhite) / <alpha-value>)',
+      customblack:  'rgb(var(--color-customblack) / <alpha-value>)',
         primary: {
           1: '#F5C78B',
           2: '#FEFAF3',

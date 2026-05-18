@@ -23,3 +23,27 @@
         font-style: normal;
         font-display: swap;
       }
+
+      /* Светлая тема (по умолчанию) */
+:root {
+  --color-customyellow: 245 199 139;   /* #F5C78B */
+  --color-customgrey:   70 64 66;
+  --color-customwhite:  254 250 243;
+  --color-customblack:  45 40 42;
+}
+
+/* Тёмная тема — сработает, когда ThemeProvider добавит класс "dark" на html 
+html.dark {
+  --color-customyellow: #5E5455;  
+  --color-customgrey:   #5E5455;
+  --color-customwhite:  #464042;
+  --color-customblack: #FEFAF3 ;
+}
+  */
+
+html.dark {
+  --color-customyellow: 94 84 85;
+  --color-customgrey:    254 250 243;
+  --color-customwhite:  70 64 66;
+  --color-customblack:  254 250 243;
+}

@@ -21,13 +21,13 @@ const AchievementCodeModal: FC<AchievementCodeModalProps> = ({
     <div className="fixed inset-0 flex items-center justify-center bg-black z-50">
       <div className="bg-customblack p-6 rounded-xl w-96 relative">
         <button
-          className="absolute top-2 right-2 text-[#F6C98F] font-bold"
+          className="absolute top-2 right-2 text-customyellow font-bold"
           onClick={onClose}
         >
           ×
         </button>
 
-        <h2 className="text-2xl font-h1 mb-4 text-[#F6C98F]">
+        <h2 className="text-2xl font-h1 mb-4 text-customyellow">
           Введите код достижения
         </h2>
 
@@ -41,7 +41,7 @@ const AchievementCodeModal: FC<AchievementCodeModalProps> = ({
 
         <button
           onClick={onSubmit}
-          className="bg-[#F6C98F] text-black px-6 py-2 rounded-xl hover:brightness-90"
+          className="bg-customyellow text-black px-6 py-2 rounded-xl hover:brightness-90"
         >
           Получить
         </button>

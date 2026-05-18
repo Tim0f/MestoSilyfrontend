@@ -26,10 +26,10 @@ export default function Footer() {
         <div className="flex flex-col items-end text-right gap-6">
 
           <div className="flex items-center gap-6">
-            <Send className="w-10 h-10 text-[#F4C884] rotate-[-15deg] cursor-pointer" />
+            <Send className="w-10 h-10 text-customyellow rotate-[-15deg] cursor-pointer" />
           </div>
 
-          <div className="flex flex-col gap-1 text-[#F4C884] text-xl">
+          <div className="flex flex-col gap-1 text-customyellow text-xl">
             <a href="mailto:mestosily@gmail.com" className="hover:opacity-70">
               mestosily@gmail.com
             </a>

@@ -143,9 +143,9 @@ export default function WeekSwitcher({
 
                     isActive
 
-                      ? "fill-customblack"
+                      ? "fill-customblack text-customwhite "
 
-                      : "fill-customyellow"
+                      : "fill-customyellow text-customblack"
 
                   } stroke-customyellow`}
 
@@ -177,7 +177,7 @@ export default function WeekSwitcher({
 
         {/* ===== НАВИГАЦИЯ ПО НЕДЕЛЯМ ===== */}
 
-        <div className="flex items-center gap-[16px] text-[#F4C884]">
+        <div className="flex items-center gap-[16px] text-customyellow">
 
           <button onClick={onPrevWeek} className="text-[30px]">
 
