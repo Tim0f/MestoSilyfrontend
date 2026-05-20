@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
-import { LogOut, Sun, Moon } from "lucide-react";
+import { LogOut, Sun, Moon, Menu } from "lucide-react";
 
 import Zerno from "../assets/svg/Zerno.svg?react";
 import ProfileUp from "../assets/svg/profile_up.svg";
@@ -13,14 +13,17 @@ export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // ✅ РАЗДЕЛИЛИ СОСТОЯНИЯ
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+
   const menuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
+        setIsProfileMenuOpen(false);
       }
     };
 
@@ -36,139 +39,125 @@ export default function Header() {
   return (
     <header className="bg-customgrey backdrop-blur-sm text-customyellow fixed top-0 left-0 right-0 z-50 font-p text-p border-b border-[#8B6A3E]">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 relative">
 
-          {/* Навигация */}
+          {/* ✅ БУРГЕР */}
+          <button
+            onClick={() => setIsMobileMenuOpen(p => !p)}
+            className="md:hidden absolute left-4 z-50 text-customyellow"
+          >
+            <Menu size={28} />
+          </button>
+
+          {/* Навигация (десктоп) */}
           <nav className="hidden md:flex items-center gap-8">
             {!isAuthenticated ? (
               <>
-                <Link to="/#home" className="hover:text-primary-400 transition">Главная</Link>
-                <Link to="/#about" className="hover:text-primary-400 transition">О нас</Link>
-                <Link to="/#sections" className="hover:text-primary-400 transition">Секции</Link>
-                <Link to="/#news" className="hover:text-primary-400 transition">Новости</Link>
-                <Link to="/#team" className="hover:text-primary-400 transition">Команда</Link>
-                <Link to="/#partners" className="hover:text-primary-400 transition">Партнеры</Link>
+                <Link to="/#home">Главная</Link>
+                <Link to="/#about">О нас</Link>
+                <Link to="/#sections">Секции</Link>
+                <Link to="/#news">Новости</Link>
+                <Link to="/#team">Команда</Link>
+                <Link to="/#partners">Партнеры</Link>
               </>
             ) : (
               <>
-                <Link to="/" className="hover:text-primary-400 transition">Главная</Link>
-                <Link to="/sections" className="hover:text-primary-400 transition">Секции</Link>
-                <Link to="/schedule" className="hover:text-primary-400 transition">Расписание</Link>
-                <Link to="/bazar" className="hover:text-primary-400 transition">Базар</Link>
-                <Link to="/chats" className="hover:text-primary-400 transition">Чаты</Link>
-                <Link to="/requests" className="hover:text-primary-400 transition">Заявки</Link>
+                <Link to="/">Главная</Link>
+                <Link to="/sections">Секции</Link>
+                <Link to="/schedule">Расписание</Link>
+                <Link to="/bazar">Базар</Link>
+                <Link to="/chats">Чаты</Link>
+                <Link to="/requests">Заявки</Link>
               </>
             )}
           </nav>
-          
 
           {/* Правая часть */}
-          <div className="flex items-center ml-auto gap-6">
+          <div className="flex items-center ml-auto gap-3 md:gap-6">
 
-            {/* Переключатель темы */}
+            {/* Toggle темы */}
             <button
-        onClick={toggleTheme}
-        className="
-          fixed top-4 left-1/2 -translate-x-1/2 z-[100]
-          w-[78px] h-[34px]
-          rounded-full
-          border border-[#464042]
-          bg-white dark:bg-[#464042]
-          transition-all duration-300
-          flex items-center
-          px-1
-        "
-      >
-        <div
-          className={`
-            w-[26px] h-[26px]
-            rounded-full
-            flex items-center justify-center
-            transition-all duration-300
-            bg-[#464042] dark:bg-[#D9D9D9]
-            ${theme === 'dark' ? 'translate-x-[42px]' : 'translate-x-0'}
-          `}
-        >
-          {theme === 'dark' ? (
-            <Sun size={14} className="text-black" />
-          ) : (
-            <Moon size={14} className="text-white" />
-          )}
-        </div>
-      </button>
+              onClick={toggleTheme}
+              className="
+  w-[70px] h-[32px] md:w-[78px] md:h-[34px]
+  rounded-full border border-[#464042]
+  bg-white dark:bg-[#464042]
+  flex items-center px-1
+"
+            >
+              <div
+                className={`
+                  w-[24px] h-[24px] md:w-[26px] md:h-[26px]
+                  rounded-full flex items-center justify-center
+                  bg-[#464042] dark:bg-[#D9D9D9]
+                  ${theme === 'dark' ? 'translate-x-[36px] md:translate-x-[42px]' : 'translate-x-0'}
+                `}
+              >
+                {theme === 'dark' ? (
+                  <Sun size={12} className="text-black" />
+                ) : (
+                  <Moon size={12} className="text-white" />
+                )}
+              </div>
+            </button>
 
             {!isAuthenticated ? (
               <Link
                 to="/login"
-                className="px-4 py-2 border border-primary-900 rounded-lg hover:bg-primary-600 hover:text-white transition"
+                className="px-3 py-1 md:px-4 md:py-2 border border-primary-900 rounded-lg hover:bg-primary-600 hover:text-white transition text-sm md:text-base"
               >
                 Вход
               </Link>
             ) : (
               <>
-                <Link to="/shop" className="hover:text-primary-400 transition">
-                  <span className="font-h2 text-primary-300 flex items-center gap-1">
+                <Link to="/shop">
+                  <span className="font-h2 text-primary-300 flex items-center gap-1 text-sm md:text-base">
                     {user?.totalGrains}
-                    <Zerno className="w-[20px] text-customyellow" />
+                    <Zerno className="w-[16px] md:w-[20px]" />
                   </span>
                 </Link>
 
+                {/* PROFILE */}
                 <div className="relative" ref={menuRef}>
                   <button
-                    onClick={() => setIsMenuOpen((p) => !p)}
-                    className="w-10 h-10 rounded-full bg-customgrey flex items-center justify-center overflow-hidden"
+                    onClick={() => setIsProfileMenuOpen(p => !p)}
+                    className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden"
                   >
                     {user?.avatarUrl ? (
-                      <img
-                        src={user.avatarUrl}
-                        className="w-full h-full object-cover"
-                        alt="avatar"
-                      />
+                      <img src={user.avatarUrl} className="w-full h-full object-cover" />
                     ) : (
                       <div
                         style={{
-                          width: "24px",
-                          height: "24px",
+                          width: "20px",
+                          height: "20px",
                           backgroundColor: "rgb(var(--color-customyellow))",
                           maskImage: `url(${ProfileIcon})`,
                           maskSize: "contain",
                           maskRepeat: "no-repeat",
                           maskPosition: "center",
-                          WebkitMaskImage: `url(${ProfileIcon})`,
-                          WebkitMaskSize: "contain",
-                          WebkitMaskRepeat: "no-repeat",
-                          WebkitMaskPosition: "center",
                         }}
                       />
                     )}
                   </button>
 
-                  {isMenuOpen && (
-                    <div className="absolute right-0 w-[210px] select-none">
-                      <div className="relative w-full h-[120px]">
-                        <img src={ProfileUp} className="absolute w-full h-full" alt="" />
-                        <Link
-                          to="/profile"
-                          onClick={() => setIsMenuOpen(false)}
-                          className="absolute inset-0 flex items-center justify-between px-4 z-10"
-                        >
-                          <span className="text-[22px] font-h1">Профиль</span>
-                          <img src={ProfileIcon} className="w-7 h-7" alt="" />
+                  {isProfileMenuOpen && (
+                    <div className="absolute right-0 w-[180px] md:w-[210px]">
+                      <div className="relative w-full h-[100px] md:h-[120px]">
+                        <img src={ProfileUp} className="absolute w-full h-full" />
+                        <Link to="/profile" className="absolute inset-0 flex items-center justify-between px-4">
+                          <span className="text-[18px] md:text-[22px]">Профиль</span>
+                          <img src={ProfileIcon} className="w-6 h-6 md:w-7 md:h-7" />
                         </Link>
                       </div>
 
-                      <div className="relative w-full h-[120px] -mt-[40px]">
-                        <img
-                          src={ProfileDown}
-                          className="absolute w-full h-full rotate-180"
-                          alt=""
-                        />
+                      <div className="relative w-full h-[100px] md:h-[120px] -mt-[30px] md:-mt-[40px]">
+                        <img src={ProfileDown} className="absolute w-full h-full rotate-180" />
                         <button
                           onClick={handleLogout}
-                          className="absolute inset-0 flex items-center justify-between px-4 z-10 text-black"
+                          className="absolute inset-0 flex items-center justify-between px-4"
                         >
-                          <span className="text-[22px] font-h1">Выйти</span>
-                          <LogOut className="w-7 h-7" />
+                          <span className="text-[18px] md:text-[22px]">Выйти</span>
+                          <LogOut className="w-6 h-6 md:w-7 md:h-7" />
                         </button>
                       </div>
                     </div>
@@ -177,8 +166,20 @@ export default function Header() {
               </>
             )}
           </div>
-
         </div>
+
+        {/* ✅ МОБИЛЬНОЕ МЕНЮ */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden flex flex-col gap-4 py-4">
+            <Link to="/#home">Главная</Link>
+            <Link to="/#about">О нас</Link>
+            <Link to="/#sections">Секции</Link>
+            <Link to="/#news">Новости</Link>
+            <Link to="/#team">Команда</Link>
+            <Link to="/#partners">Партнеры</Link>
+          </div>
+        )}
+
       </div>
     </header>
   );

@@ -31,7 +31,7 @@ export default function AboutBlock() {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative hidden sm:block">
             <img src={aboutImage} alt="Наша команда" className="w-full h-auto object-cover"
             style={{            
               maskImage: `url(${Mask2})`,

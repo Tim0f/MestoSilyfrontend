@@ -17,7 +17,7 @@ export default function NewsCard({
 }: NewsCardProps) {
   return (
 <div
-  className={`w-[597px] h-[529px] textured-border bg-customblack rounded-2xl p-8 transition-all duration-700 ${
+  className={`w-full md:w-[597px] h-[529px] textured-border bg-customblack rounded-2xl p-8 transition-all duration-700 ${
     isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
   }`}
 >
