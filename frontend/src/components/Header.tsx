@@ -13,7 +13,6 @@ export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
-  // ✅ РАЗДЕЛИЛИ СОСТОЯНИЯ
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
@@ -36,14 +35,15 @@ export default function Header() {
     navigate("/");
   };
 
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <header className="bg-customgrey backdrop-blur-sm text-customyellow fixed top-0 left-0 right-0 z-50 font-p text-p border-b border-[#8B6A3E]">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 relative">
-
-          {/* ✅ БУРГЕР */}
+          {/* Бургер (только на мобильных) */}
           <button
-            onClick={() => setIsMobileMenuOpen(p => !p)}
+            onClick={() => setIsMobileMenuOpen((p) => !p)}
             className="md:hidden absolute left-4 z-50 text-customyellow"
           >
             <Menu size={28} />
@@ -74,26 +74,26 @@ export default function Header() {
 
           {/* Правая часть */}
           <div className="flex items-center ml-auto gap-3 md:gap-6">
-
-            {/* Toggle темы */}
+            {/* Переключатель темы (виден только на десктопе) */}
             <button
               onClick={toggleTheme}
               className="
-  w-[70px] h-[32px] md:w-[78px] md:h-[34px]
-  rounded-full border border-[#464042]
-  bg-white dark:bg-[#464042]
-  flex items-center px-1
-"
+                hidden md:flex
+                w-[70px] h-[32px] md:w-[78px] md:h-[34px]
+                rounded-full border border-[#464042]
+                bg-white dark:bg-[#464042]
+                items-center px-1
+              "
             >
               <div
                 className={`
                   w-[24px] h-[24px] md:w-[26px] md:h-[26px]
                   rounded-full flex items-center justify-center
                   bg-[#464042] dark:bg-[#D9D9D9]
-                  ${theme === 'dark' ? 'translate-x-[36px] md:translate-x-[42px]' : 'translate-x-0'}
+                  ${theme === "dark" ? "translate-x-[36px] md:translate-x-[42px]" : "translate-x-0"}
                 `}
               >
-                {theme === 'dark' ? (
+                {theme === "dark" ? (
                   <Sun size={12} className="text-black" />
                 ) : (
                   <Moon size={12} className="text-white" />
@@ -117,10 +117,10 @@ export default function Header() {
                   </span>
                 </Link>
 
-                {/* PROFILE */}
+                {/* Профиль */}
                 <div className="relative" ref={menuRef}>
                   <button
-                    onClick={() => setIsProfileMenuOpen(p => !p)}
+                    onClick={() => setIsProfileMenuOpen((p) => !p)}
                     className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden"
                   >
                     {user?.avatarUrl ? (
@@ -168,18 +168,56 @@ export default function Header() {
           </div>
         </div>
 
-        {/* ✅ МОБИЛЬНОЕ МЕНЮ */}
+        {/* Мобильное меню (бургер) */}
         {isMobileMenuOpen && (
           <div className="md:hidden flex flex-col gap-4 py-4">
-            <Link to="/#home">Главная</Link>
-            <Link to="/#about">О нас</Link>
-            <Link to="/#sections">Секции</Link>
-            <Link to="/#news">Новости</Link>
-            <Link to="/#team">Команда</Link>
-            <Link to="/#partners">Партнеры</Link>
+            {!isAuthenticated ? (
+              <>
+                <Link to="/#home" onClick={closeMobileMenu}>Главная</Link>
+                <Link to="/#about" onClick={closeMobileMenu}>О нас</Link>
+                <Link to="/#sections" onClick={closeMobileMenu}>Секции</Link>
+                <Link to="/#news" onClick={closeMobileMenu}>Новости</Link>
+                <Link to="/#team" onClick={closeMobileMenu}>Команда</Link>
+                <Link to="/#partners" onClick={closeMobileMenu}>Партнеры</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/" onClick={closeMobileMenu}>Главная</Link>
+                <Link to="/sections" onClick={closeMobileMenu}>Секции</Link>
+                <Link to="/schedule" onClick={closeMobileMenu}>Расписание</Link>
+                <Link to="/bazar" onClick={closeMobileMenu}>Базар</Link>
+                <Link to="/chats" onClick={closeMobileMenu}>Чаты</Link>
+                <Link to="/requests" onClick={closeMobileMenu}>Заявки</Link>
+              </>
+            )}
+
+            {/* Переключатель темы внутри бургера */}
+            <button
+              onClick={toggleTheme}
+              className="
+                w-[70px] h-[32px]
+                rounded-full border border-[#464042]
+                bg-white dark:bg-[#464042]
+                flex items-center px-1 self-start
+              "
+            >
+              <div
+                className={`
+                  w-[24px] h-[24px]
+                  rounded-full flex items-center justify-center
+                  bg-[#464042] dark:bg-[#D9D9D9]
+                  ${theme === "dark" ? "translate-x-[36px]" : "translate-x-0"}
+                `}
+              >
+                {theme === "dark" ? (
+                  <Sun size={12} className="text-black" />
+                ) : (
+                  <Moon size={12} className="text-white" />
+                )}
+              </div>
+            </button>
           </div>
         )}
-
       </div>
     </header>
   );
