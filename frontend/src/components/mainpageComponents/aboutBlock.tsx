@@ -19,16 +19,19 @@ export default function AboutBlock() {
               «Место Силы» — это сообщество единомышленников, где каждый найдет занятие по душе.
               Мы создаем пространство для творчества, спорта и общения.
             </p>
-            <div className="flex justify-between gap-8">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <div className="flex justify-center items-center text-h1 font-h1 text-customyellow mb-2">
-                    {stat.value}
-                  </div>
-                  <p className="text-customyellow font-p text-p">{stat.label}</p>
-                </div>
-              ))}
-            </div>
+<div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+  {stats.map((stat) => (
+    <div key={stat.label} className="text-center">
+      <div className="flex justify-center items-center text-h1 font-h1 text-customyellow mb-2">
+        {stat.value}
+      </div>
+
+      <p className="text-customyellow font-p text-p">
+        {stat.label}
+      </p>
+    </div>
+  ))}
+</div>
           </div>
 
           <div className="relative hidden sm:block">
