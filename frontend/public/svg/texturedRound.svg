@@ -1,0 +1,51 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 603 603"
+>
+  <circle
+    cx="301.5"
+    cy="301.5"
+    r="290"
+    fill="none"
+    stroke="#F4C884"
+    stroke-width="4"
+    filter="url(#wobble)"
+  />
+
+  <defs>
+    <filter
+      id="wobble"
+      x="-25%"
+      y="-25%"
+      width="150%"
+      height="150%"
+      filterUnits="userSpaceOnUse"
+      color-interpolation-filters="sRGB"
+    >
+      <!-- МЯГКИЙ ЖИВОЙ ШУМ -->
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.025"
+        numOctaves="2"
+        seed="2723"
+        result="noise"
+      />
+
+      <!-- ЛЁГКО СГЛАЖИВАЕМ -->
+      <feGaussianBlur
+        in="noise"
+        stdDeviation="2.5"
+        result="softNoise"
+      />
+
+      <!-- ИСКАЖАЕМ САМУ ЛИНИЮ -->
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="softNoise"
+        scale="26"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      />
+    </filter>
+  </defs>
+</svg>

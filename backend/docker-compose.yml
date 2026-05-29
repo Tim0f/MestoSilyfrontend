@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: mesto_sily_redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: mesto_sily_backend
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    depends_on:
+      - redis
+    environment:
+      NODE_ENV: production
+      # Подключаемся к уже установленному Postgres на хосте
+      DATABASE_URL: postgresql://mesto_sily_user:mesto_sily_postgres@host.docker.internal:5432/mesto_sily
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      JWT_EXPIRES_IN: 7d
+      PORT: 3000
+    volumes:
+      - ./uploads:/app/uploads
+volumes:
+  redis_data:
