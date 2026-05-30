@@ -102,10 +102,19 @@ export class GrainsService {
 
   async transferGrains(
     fromUserId: string,
-    toUserId: string,
+    toUserId: string | undefined,
+    toUserEmail: string | undefined,
     amount: number,
     message?: string,
   ) {
+    if (!toUserId && !toUserEmail) {
+      throw new BadRequestException('Укажите ID или email получателя');
+    }
+
+    if (toUserId && toUserEmail) {
+      throw new BadRequestException('Укажите либо ID, либо email получателя, не оба');
+    }
+
     const fromUser = await this.prisma.user.findUnique({
       where: { id: fromUserId },
     });
@@ -114,7 +123,7 @@ export class GrainsService {
     }
 
     const toUser = await this.prisma.user.findUnique({
-      where: { id: toUserId },
+      where: toUserId ? { id: toUserId } : { email: toUserEmail },
     });
     if (!toUser) {
       throw new NotFoundException('Получатель не найден');

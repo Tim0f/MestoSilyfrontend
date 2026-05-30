@@ -1,26 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, Min, IsNotEmpty } from 'class-validator';
+import { IsInt, IsOptional, IsString, Min, IsEmail } from 'class-validator';
 
 export class TransferGrainsDto {
   @ApiProperty({
-    description: 'ID пользователя-получателя',
-    example: 'clxxxxxxxxxxxxxxxx',
+    description: 'ID получателя (можно указать вместо email)',
+    required: false,
   })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  toUserId: string;
+  toUserId?: string;
+
+  @ApiProperty({
+    description: 'Email получателя (можно указать вместо ID)',
+    required: false,
+  })
+  @IsOptional()
+  @IsEmail()
+  toUserEmail?: string;
 
   @ApiProperty({
     description: 'Количество зерен для перевода',
     example: 50,
-    minimum: 1,
   })
   @IsInt()
   @Min(1)
   amount: number;
 
   @ApiProperty({
-    description: 'Сообщение к переводу (необязательно)',
+    description: 'Сообщение (необязательно)',
     required: false,
   })
   @IsOptional()

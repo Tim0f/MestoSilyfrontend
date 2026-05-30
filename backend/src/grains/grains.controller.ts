@@ -52,18 +52,13 @@ export class GrainsController {
   }
 
   @Post('transfer')
-  @ApiOperation({
-    summary: 'Перевести зерна другому пользователю',
-    description:
-      'Списывает зерна с баланса текущего пользователя и начисляет получателю. Требуется JWT.',
-  })
-  @ApiResponse({ status: 201, description: 'Зерна успешно переведены' })
-  @ApiResponse({ status: 400, description: 'Недостаточно зерен или неверные данные' })
-  @ApiResponse({ status: 404, description: 'Получатель не найден' })
+  @ApiOperation({ summary: 'Перевести зерна другому пользователю' })
+  @ApiResponse({ status: 201, description: 'Зерна переведены' })
   transferGrains(@Body() transferGrainsDto: TransferGrainsDto, @Request() req) {
     return this.grainsService.transferGrains(
       req.user.userId,
       transferGrainsDto.toUserId,
+      transferGrainsDto.toUserEmail,
       transferGrainsDto.amount,
       transferGrainsDto.message,
     );
