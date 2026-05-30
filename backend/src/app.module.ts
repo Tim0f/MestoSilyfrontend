@@ -20,7 +20,9 @@ import { UploadModule } from './upload/upload.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { PartnersModule } from './partners/partners.module';
 import { FreeVisitsModule } from './free-visits/free-visits.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { EnrollmentsModule } from './enrollments/enrollments.module';
+import { ProposalsModule } from './proposals/proposals.module';
 
 @Module({
   imports: [
@@ -58,6 +60,8 @@ import { EnrollmentsModule } from './enrollments/enrollments.module';
     PartnersModule,
     FreeVisitsModule,
     EnrollmentsModule,
+    NotificationsModule,
+    ProposalsModule,
   ],
 })
 export class AppModule {}

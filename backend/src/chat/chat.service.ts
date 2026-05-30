@@ -10,6 +10,14 @@ export class ChatService {
       include: {
         section: true,
         event: true,
+        proposal: {
+          select: {
+            id: true,
+            title: true,
+            type: true,
+            status: true,
+          },
+        },
         participants: {
           include: {
             user: {
@@ -37,6 +45,14 @@ export class ChatService {
       include: {
         section: true,
         event: true,
+        proposal: {
+          select: {
+            id: true,
+            title: true,
+            type: true,
+            status: true,
+          },
+        },
         participants: {
           include: {
             user: {
@@ -147,6 +163,14 @@ export class ChatService {
       include: {
         section: true,
         event: true,
+        proposal: {
+          select: {
+            id: true,
+            title: true,
+            type: true,
+            status: true,
+          },
+        },
         participants: {
           include: {
             user: {
@@ -169,7 +193,11 @@ export class ChatService {
     return chat;
   }
 
-  async createChat(type: 'SUPPORT' | 'SECTION' | 'EVENT', sectionId?: string, eventId?: string) {
+  async createChat(
+    type: 'SUPPORT' | 'SECTION' | 'EVENT' | 'PROPOSAL',
+    sectionId?: string,
+    eventId?: string,
+  ) {
     return this.prisma.chat.create({
       data: {
         type,
@@ -186,7 +214,7 @@ export class ChatService {
 
   async updateChat(
     id: string,
-    data: { type?: 'SUPPORT' | 'SECTION' | 'EVENT'; sectionId?: string; eventId?: string },
+    data: { type?: 'SUPPORT' | 'SECTION' | 'EVENT' | 'PROPOSAL'; sectionId?: string; eventId?: string },
   ) {
     const chat = await this.prisma.chat.findUnique({
       where: { id },
@@ -202,6 +230,14 @@ export class ChatService {
       include: {
         section: true,
         event: true,
+        proposal: {
+          select: {
+            id: true,
+            title: true,
+            type: true,
+            status: true,
+          },
+        },
         participants: {
           include: {
             user: {

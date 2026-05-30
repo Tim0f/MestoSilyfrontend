@@ -33,6 +33,9 @@ model User {
   sentGrainTransfers     GrainTransfer[]     @relation("SentTransfers")
   receivedGrainTransfers GrainTransfer[]     @relation("ReceivedTransfers")
   freeVisits             FreeVisit[]
+  proposals              Proposal[]          @relation("UserProposals")
+  reviewedProposals      Proposal[]          @relation("ReviewedProposals")
+  notifications          Notification[]
 
   @@map("users")
 }
@@ -324,12 +327,56 @@ model Chat {
 
   section      Section?          @relation(fields: [sectionId], references: [id], onDelete: SetNull)
   event        Event?            @relation(fields: [eventId], references: [id], onDelete: SetNull)
+  proposal     Proposal?
   participants ChatParticipant[]
   messages     ChatMessage[]
 
   @@index([sectionId])
   @@index([eventId])
   @@map("chats")
+}
+
+model Proposal {
+  id            String         @id @default(cuid())
+  userId        String
+  type          ProposalType
+  title         String
+  description   String
+  wantsToLead   Boolean        @default(false)
+  status        ProposalStatus @default(PENDING)
+  reviewedById  String?
+  reviewComment String?
+  chatId        String?        @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  reviewedAt    DateTime?
+
+  user         User           @relation("UserProposals", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy   User?          @relation("ReviewedProposals", fields: [reviewedById], references: [id], onDelete: SetNull)
+  chat         Chat?          @relation(fields: [chatId], references: [id], onDelete: SetNull)
+  notifications Notification[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("proposals")
+}
+
+model Notification {
+  id         String           @id @default(cuid())
+  userId     String
+  type       NotificationType
+  title      String
+  message    String
+  proposalId String?
+  isRead     Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proposal Proposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([userId, isRead])
+  @@map("notifications")
 }
 
 model ChatParticipant {
@@ -440,4 +487,22 @@ enum ChatType {
   SUPPORT
   SECTION
   EVENT
+  PROPOSAL
+}
+
+enum ProposalType {
+  SECTION
+  EVENT
+}
+
+enum ProposalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum NotificationType {
+  PROPOSAL_APPROVED
+  PROPOSAL_REJECTED
+  GENERAL
 }

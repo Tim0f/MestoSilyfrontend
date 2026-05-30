@@ -77,7 +77,7 @@ export class ChatController {
     schema: {
       type: 'object',
       properties: {
-        type: { enum: ['SUPPORT', 'SECTION', 'EVENT'] },
+        type: { enum: ['SUPPORT', 'SECTION', 'EVENT', 'PROPOSAL'] },
         sectionId: { type: 'string', nullable: true },
         eventId: { type: 'string', nullable: true },
       },
@@ -96,7 +96,7 @@ export class ChatController {
     schema: {
       type: 'object',
       properties: {
-        type: { enum: ['SUPPORT', 'SECTION', 'EVENT'], nullable: true },
+        type: { enum: ['SUPPORT', 'SECTION', 'EVENT', 'PROPOSAL'], nullable: true },
         sectionId: { type: 'string', nullable: true },
         eventId: { type: 'string', nullable: true },
       },
