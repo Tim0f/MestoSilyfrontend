@@ -1,7 +1,7 @@
 // src/pages/ChatsPage.tsx
 
 import React, { useEffect, useRef, useState } from "react";
-import { Send, MoreVertical } from "lucide-react";
+import { Send, MoreVertical, ArrowLeft } from "lucide-react";
 import axios from "axios";
 
 import texturedBorder from "../assets/svg/texturedBorder.svg";
@@ -55,6 +55,9 @@ export default function ChatsPage(): JSX.Element {
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [loadingConnection, setLoadingConnection] = useState(true);
   const [firstUnreadId, setFirstUnreadId] = useState<string | null>(null);
+
+  // адаптив: показывать ли список чатов на мобильных
+  const [showChatList, setShowChatList] = useState(true);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);
@@ -281,7 +284,6 @@ export default function ChatsPage(): JSX.Element {
     if (autoScroll) scrollToBottomSmooth();
   }, [messages]);
 
-  
   const typingText = (() => {
     const activeUsers = Object.entries(typingUsers)
       .filter(([, isTyping]) => isTyping)
@@ -297,282 +299,160 @@ export default function ChatsPage(): JSX.Element {
     } печатают…`;
   })();
 
-
-
-  return (
-
-    <div className="min-h-screen bg-customblack text-white flex items-top justify-center pt-16">
-
-      <div className="relative w-full ">
-
-        <div
-
-          className="pointer-events-none absolute inset-0 z-50"
-
-          style={{ ["--tw-url" as any]: `url(${texturedBorder})` }}
-
-        />
-
-  
-
-        <div className="bg-transparent rounded-xl overflow-hidden shadow-lg" style={{ height: "78vh" }}>
-
-          <div className="flex h-full">
-
-            {/* LEFT */}
-
-            <div className="w-1/3 bg-[#3A3333] flex flex-col">
-
-              <div className="px-6 py-6">
-
-                <h2 className="text-4xl font-bold">ЧАТЫ</h2>
-
-              </div>
-
-              <div className="border-t border-b border-[#E0B26F]/20 mx-4" />
-
-  
-
-              <div className="overflow-y-auto px-4 py-4 space-y-3 flex-1">
-
-                {chats.length === 0 ? (
-
-                  <div className="text-white/50 text-center">Чатов нет</div>
-
-                ) : (
-
-                  chats.map((c: ChatItem) => (
-
-                    <button
-
-                      key={c.id}
-
-                      onClick={() => setSelectedChatId(String(c.id))}
-
-                      className={`w-full flex items-center gap-4 p-4 rounded-md text-left ${
-
-                        selectedChatId === c.id ? "bg-[#352e2e]" : "bg-transparent"
-
-                      }`}
-
-                    >
-
-                      <Avatar src={getChatAvatar(c)} size={56} />
-
-                      <div className="flex-1">
-
-                        <div className="font-bold text-lg">{getChatName(c)}</div>
-
-                        <div className="text-sm text-white/70 mt-1">
-
-                          Сообщений: {c._count?.messages ?? 0}
-
-                        </div>
-
-                      </div>
-
-                    </button>
-
-                  ))
-
-                )}
-
-              </div>
-
-            </div>
-
-  
-
-            {/* RIGHT */}
-
-            <div className="flex-1 flex flex-col bg-customblack">
-
-              <div className="px-6 py-4 flex items-center justify-between border-b border-customyellow/20">
-
-                <div className="flex items-center gap-4">
-
-                  <Avatar
-
-                    size={56}
-
-                    src={getChatAvatar(chats.find((c) => c.id === selectedChatId) ?? undefined)}
-
-                  />
-
-                  <div className="text-2xl font-bold">
-
-                    {getChatName(chats.find((c) => c.id === selectedChatId) ?? undefined)}
-
-                  </div>
-
-                </div>
-
-                <MoreVertical size={20} />
-
-              </div>
-
-  
-
-              <div
-
-                ref={containerRef}
-
-                onScroll={handleScroll}
-
-                className="flex-1 overflow-y-auto px-8 py-8"
-
-              >
-
-                {loadingConnection ? (
-
-                  <div className="text-center text-white/60 mt-10">Подключение к чату…</div>
-
-                ) : loadingMessages ? (
-
-                  <div className="text-center text-white/60 mt-10">Загрузка сообщений…</div>
-
-                ) : messages.length === 0 ? (
-
-                  <div className="text-center text-white/60 mt-10">Нет сообщений</div>
-
-                ) : (
-
-                  <div className="space-y-6">
-
-                    {messages.map((m) => {
-
-                      const isMine = m.author?.id === userId;
-
-                      const isFirstUnread = m.id === firstUnreadId;
-
-  
-
-                      return (
-
-                        <div
-
-                          key={m.id}
-
-                          ref={isFirstUnread ? firstUnreadRef : null}
-
-                          className={`flex  items-end gap-4 ${isMine ? "justify-end" : "justify-start"}`}
-
-                        >
-
-                          {!isMine && <Avatar size={44} />}
-
-  
-
-                          <div className={`max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
-
-                            {!isMine && (
-
-                              <div className="text-xs text-[#E0B26F] mb-1">
-
-                                {m.author?.firstName ?? "Пользователь"}
-
-                              </div>
-
-                            )}
-
-  
-
-                            <div
-
-                              className={`p-4 w-auro max-w-[640px] rounded-2xl break-words ${
-
-                                isMine
-
-                                  ? "bg-customyellow text-customblack ml-auto"
-
-                                  : "bg-customyellow/70 text-customwhite"
-
-                              }`}
-
-                            >
-
-                              {m.content}
-
-  
-
-                              <div className="text-right text-xs text-customwhite/60 mt-2">
-
-                                {new Date(m.createdAt).toLocaleTimeString("ru-RU", {
-
-                                  hour: "2-digit",
-
-                                  minute: "2-digit",
-
-                                })}
-
-                              </div>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                      );
-
-                    })}
-
-                  </div>
-
-                )}
-
-  
-
-                {typingText && (
-
-                  <div className="text-customwhite/60 italic mt-4">{typingText}</div>
-
-                )}
-
-  
-
-                <div ref={endRef} />
-
-              </div>
-
-  
-
-              <div className="px-8 py-6 border-t border-[#E0B26F]/20">
-
-                <form onSubmit={sendMessage} className="flex items-center gap-4">
-
-                  <input
-
-                    value={newMessage}
-
-                    onChange={(e) => onTypingChange(e.target.value)}
-
-                    placeholder="Напишите сообщение..."
-
-                    className="flex-1 bg-customgrey text-white rounded-full px-6 py-4 outline-none placeholder-customwhite/40"
-
-                  />
-
-                  <button type="submit" className="p-3 rounded-full bg-customyellow">
-
-                    <Send size={20} />
-
-                  </button>
-
-                </form>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  );
-
+  return (
+    <div className="min-h-screen bg-customblack text-white flex items-top justify-center pt-4 md:pt-16">
+      <div className="relative w-full">
+        <div
+          className="pointer-events-none absolute inset-0 z-50"
+          style={{ ["--tw-url" as any]: `url(${texturedBorder})` }}
+        />
+
+        <div className="bg-transparent rounded-xl overflow-hidden shadow-lg h-screen md:h-[78vh]">
+          <div className="flex h-full">
+            {/* LEFT PANEL — список чатов */}
+            <div
+              className={`${
+                showChatList ? "flex" : "hidden"
+              } md:flex w-full md:w-1/3 bg-[#3A3333] flex-col`}
+            >
+              <div className="px-4 md:px-6 py-4 md:py-6">
+                <h2 className="text-2xl md:text-4xl font-bold">ЧАТЫ</h2>
+              </div>
+              <div className="border-t border-b border-[#E0B26F]/20 mx-4" />
+
+              <div className="overflow-y-auto px-4 py-4 space-y-3 flex-1">
+                {chats.length === 0 ? (
+                  <div className="text-white/50 text-center">Чатов нет</div>
+                ) : (
+                  chats.map((c: ChatItem) => (
+                    <button
+                      key={c.id}
+                      onClick={() => {
+                        setSelectedChatId(String(c.id));
+                        setShowChatList(false); // на мобильных скрываем список
+                      }}
+                      className={`w-full flex items-center gap-4 p-4 rounded-md text-left ${
+                        selectedChatId === c.id ? "bg-[#352e2e]" : "bg-transparent"
+                      }`}
+                    >
+                      <Avatar src={getChatAvatar(c)} size={44} />
+                      <div className="flex-1">
+                        <div className="font-bold text-base md:text-lg">{getChatName(c)}</div>
+                        <div className="text-sm text-white/70 mt-1">
+                          Сообщений: {c._count?.messages ?? 0}
+                        </div>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* RIGHT PANEL — переписка */}
+            <div
+              className={`${
+                !showChatList ? "flex" : "hidden"
+              } md:flex flex-1 flex-col bg-customblack`}
+            >
+              <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-customyellow/20">
+                <div className="flex items-center gap-3 md:gap-4">
+                  {/* Кнопка назад (только мобильные) */}
+                  <button
+                    onClick={() => setShowChatList(true)}
+                    className="md:hidden p-1 -ml-2"
+                  >
+                    <ArrowLeft size={24} />
+                  </button>
+                  <Avatar
+                    size={44}
+                    src={getChatAvatar(chats.find((c) => c.id === selectedChatId) ?? undefined)}
+                  />
+                  <div className="text-lg md:text-2xl font-bold">
+                    {getChatName(chats.find((c) => c.id === selectedChatId) ?? undefined)}
+                  </div>
+                </div>
+                <MoreVertical size={20} />
+              </div>
+
+              <div
+                ref={containerRef}
+                onScroll={handleScroll}
+                className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-8"
+              >
+                {loadingConnection ? (
+                  <div className="text-center text-white/60 mt-10">Подключение к чату…</div>
+                ) : loadingMessages ? (
+                  <div className="text-center text-white/60 mt-10">Загрузка сообщений…</div>
+                ) : messages.length === 0 ? (
+                  <div className="text-center text-white/60 mt-10">Нет сообщений</div>
+                ) : (
+                  <div className="space-y-4 md:space-y-6">
+                    {messages.map((m) => {
+                      const isMine = m.author?.id === userId;
+                      const isFirstUnread = m.id === firstUnreadId;
+
+                      return (
+                        <div
+                          key={m.id}
+                          ref={isFirstUnread ? firstUnreadRef : null}
+                          className={`flex items-end gap-2 md:gap-4 ${isMine ? "justify-end" : "justify-start"}`}
+                        >
+                          {!isMine && <Avatar size={36} />}
+
+                          <div className={`max-w-[85%] md:max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
+                            {!isMine && (
+                              <div className="text-xs text-[#E0B26F] mb-1">
+                                {m.author?.firstName ?? "Пользователь"}
+                              </div>
+                            )}
+
+                            <div
+                              className={`p-3 md:p-4 max-w-full md:max-w-[640px] rounded-2xl break-words ${
+                                isMine
+                                  ? "bg-customyellow text-customblack ml-auto"
+                                  : "bg-customyellow/70 text-customwhite"
+                              }`}
+                            >
+                              {m.content}
+
+                              <div className="text-right text-xs text-customwhite/60 mt-2">
+                                {new Date(m.createdAt).toLocaleTimeString("ru-RU", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {typingText && (
+                  <div className="text-customwhite/60 italic mt-4">{typingText}</div>
+                )}
+
+                <div ref={endRef} />
+              </div>
+
+              <div className="px-4 md:px-8 py-4 md:py-6 border-t border-[#E0B26F]/20">
+                <form onSubmit={sendMessage} className="flex items-center gap-3 md:gap-4">
+                  <input
+                    value={newMessage}
+                    onChange={(e) => onTypingChange(e.target.value)}
+                    placeholder="Напишите сообщение..."
+                    className="flex-1 bg-customgrey text-white rounded-full px-4 md:px-6 py-3 md:py-4 outline-none placeholder-customwhite/40 text-sm md:text-base"
+                  />
+                  <button type="submit" className="p-3 rounded-full bg-customyellow">
+                    <Send size={20} />
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -1,3 +1,4 @@
+// SessionCard.tsx
 import { getPublicUrl } from "../../utils/publicUrl";
 import Parkur from "../../assets/svg/parkur.svg";
 
@@ -62,18 +63,18 @@ export default function SessionCard({
 
   return (
     <div
-      className={`relative h-[604px] w-[597px] overflow-hidden ${
-        !isEnrolled ? "textured-border" : ""
-      }`}
+      className={`relative w-full max-w-[597px] h-auto md:h-[604px] md:w-[597px] overflow-hidden ${
+        theme.bg
+      } ${!isEnrolled ? "textured-border" : ""}`}
     >
-      {/* Фон */}
-      <div className={`absolute inset-0 ${theme.bg}`} />
+      {/* Фон (скрыт на мобильных, т.к. используется фон родителя) */}
+      <div className={`hidden md:block absolute inset-0 ${theme.bg}`} />
 
-      <div className="relative z-10 flex h-full w-full">
+      <div className="relative z-10 flex flex-col md:flex-row h-full w-full">
         {/* Левая часть — иконка */}
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="w-full md:w-1/2 flex items-center justify-center py-6 md:py-0">
           <div
-            className="w-[220px] h-[480px]"
+            className="w-[150px] h-[300px] md:w-[220px] md:h-[480px]"
             style={{
               WebkitMaskImage: `url(${iconUrl})`,
               maskImage: `url(${iconUrl})`,
@@ -86,26 +87,26 @@ export default function SessionCard({
         </div>
 
         {/* Правая часть — контент */}
-        <div className="w-1/2 flex flex-col pr-6">
+        <div className="w-full md:w-1/2 flex flex-col px-6 md:pr-6 pb-6 md:pb-0">
           {/* Время */}
-          <span className={`text-h1 font-h1 ${theme.accent}`}>
+          <span className={`text-2xl md:text-h1 font-h1 ${theme.accent}`}>
             {session.startsAt}
           </span>
 
           {/* Длительность */}
-          <span className={`text-p font-p mt-1 ${theme.mutedText}`}>
+          <span className={`text-sm md:text-p font-p mt-1 ${theme.mutedText}`}>
             длительность {duration}
           </span>
 
           {/* Название секции */}
-          <h3 className={`text-h2 font-h2 mt-3 ${theme.text}`}>
+          <h3 className={`text-xl md:text-h2 font-h2 mt-2 md:mt-3 ${theme.text}`}>
             {session.section.name}
           </h3>
 
           {/* Описание */}
           {session.description && (
             <p
-              className={`text-p font-p mt-2 line-clamp-4 ${theme.text}`}
+              className={`text-sm md:text-p font-p mt-2 line-clamp-4 ${theme.text}`}
             >
               {session.description}
             </p>
@@ -122,7 +123,7 @@ export default function SessionCard({
                 />
               )}
 
-              <div className="text-p font-p leading-tight">
+              <div className="text-sm md:text-p font-p leading-tight">
                 {[session.teacher.lastName, session.teacher.firstName, session.teacher.middleName]
                   .filter(Boolean)
                   .join(" ")}
@@ -131,25 +132,25 @@ export default function SessionCard({
           )}
 
           {/* Цена */}
-          <div className={`mt-4 text-h2 font-h2 ${theme.text}`}>
+          <div className={`mt-3 md:mt-4 text-xl md:text-h2 font-h2 ${theme.text}`}>
             {price} ₽
           </div>
 
           {/* Кнопка / статус */}
           <div
-            className={`mt-auto p-[10px] ${
-              !isEnrolled ? "mb-[40px]" : ""
+            className={`mt-auto pt-4 md:p-[10px] ${
+              !isEnrolled ? "md:mb-[40px]" : ""
             }`}
           >
             {!isEnrolled ? (
               <button
                 onClick={onEnroll}
-                className={`${theme.button} px-6 py-4 text-p font-p`}
+                className={`${theme.button} w-full md:w-auto px-6 py-4 text-p font-p`}
               >
                 записаться
               </button>
             ) : (
-              <div className="px-6 py-6 bg-customblack text-customyellow text-center w-[213px] h-[73px] text-p font-p">
+              <div className="px-6 py-6 bg-customblack text-customyellow text-center w-full md:w-[213px] h-auto md:h-[73px] text-p font-p">
                 записан(а)
               </div>
             )}
