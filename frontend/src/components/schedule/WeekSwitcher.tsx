@@ -16,6 +16,9 @@ interface Props {
 const formatDate = (d: Date) =>
   d.toLocaleDateString("ru-RU", { day: "numeric", month: "numeric" });
 
+const formatFullDate = (d: Date) =>
+  d.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+
 /* ================= COMPONENT ================= */
 export default function WeekSwitcher({
   weekDates,
@@ -28,15 +31,26 @@ export default function WeekSwitcher({
 }: Props) {
   if (!weekDates?.length) return null;
 
+  // Переключение на предыдущий / следующий день (только для мобильной версии)
+  const goPrevDay = () => {
+    const prev = new Date(selectedDate);
+    prev.setDate(prev.getDate() - 1);
+    onSelect(prev);
+  };
+
+  const goNextDay = () => {
+    const next = new Date(selectedDate);
+    next.setDate(next.getDate() + 1);
+    onSelect(next);
+  };
+
   return (
-    <div className="flex justify-center flex-col md:flex-row items-start md:items-center gap-[20px] md:gap-[40px] mt-4 md:mt-6 w-full">
-      {/* ===== БЕСПЛАТНЫЕ ПОСЕЩЕНИЯ ===== */}
+    <div className="flex justify-center flex-col md:flex-row items-center gap-[20px] md:gap-[40px] mt-4 md:mt-6 w-full">
+      {/* ===== БЕСПЛАТНЫЕ ПОСЕЩЕНИЯ (общий блок) ===== */}
       <div className="flex items-center gap-[10px] md:gap-[20px]">
         <span className="text-p font-p text-customwhite w-auto md:w-[243px]">
           Кол-во бесплатных посещений:
         </span>
-
-  
 
         <button
           onClick={onOpenFreeVisits}
@@ -50,8 +64,8 @@ export default function WeekSwitcher({
         </button>
       </div>
 
-      {/* ===== ДНИ НЕДЕЛИ ===== */}
-      <div className="flex items-start md:items-center gap-[16px] md:gap-[28px] flex-wrap">
+      {/* ===== ДЕСКТОПНАЯ ВЕРСИЯ (7 дней + навигация по неделям) ===== */}
+      <div className="hidden md:flex items-center gap-[16px] md:gap-[28px] flex-wrap">
         <div className="flex gap-[8px] md:gap-[18px] flex-wrap">
           {weekDates.map((date, i) => {
             const isActive =
@@ -60,70 +74,56 @@ export default function WeekSwitcher({
               weekday: "short",
             });
 
-            return (
+            return (
+              <button
+                key={i}
+                onClick={() => onSelect(date)}
+                className="w-[95px] h-[85px] flex flex-col justify-center items-center"
+              >
+                <Border2
+                  className={`${
+                    isActive
+                      ? "fill-customblack text-customwhite"
+                      : "fill-customyellow text-customblack"
+                  } stroke-customyellow`}
+                >
+                  <span className="text-[26px] font-h1 text-customblack leading-none">
+                    {date.getDate()}
+                  </span>
+                  <span className="text-[15px] mt-[3px] uppercase">
+                    {dayName}
+                  </span>
+                </Border2>
+              </button>
+            );
+          })}
+        </div>
 
-              <button
-
-                key={i}
-
-                onClick={() => onSelect(date)}
-
-                className="w-[95px] h-[85px] flex flex-col justify-center items-center"
-
-              >
-
-                <Border2
-
-                  className={`${
-
-                    isActive
-
-                      ? "fill-customblack text-customwhite "
-
-                      : "fill-customyellow text-customblack"
-
-                  } stroke-customyellow`}
-
-                >
-
-                  <span className="text-[26px] font-h1 text-customblack leading-none">
-
-                    {date.getDate()}
-
-                  </span>
-
-                  <span className="text-[15px] mt-[3px] uppercase">
-
-                    {dayName}
-
-                  </span>
-
-                </Border2>
-
-              </button>
-
-            );
-
-          })}
-
-        </div>
-
-  
-
-        {/* ===== НАВИГАЦИЯ ПО НЕДЕЛЯМ ===== */}
+        {/* Навигация по неделям (десктоп) */}
         <div className="flex items-center gap-[8px] md:gap-[16px] text-customyellow flex-wrap">
           <button onClick={onPrevWeek} className="text-[24px] md:text-[30px]">
             &lt;
           </button>
-
           <span className="text-[16px] md:text-[20px]">
             {formatDate(weekDates[0])} – {formatDate(weekDates[6])}
           </span>
-
           <button onClick={onNextWeek} className="text-[24px] md:text-[30px]">
             &gt;
           </button>
         </div>
+      </div>
+
+      {/* ===== МОБИЛЬНАЯ ВЕРСИЯ (только стрелки + текстовая дата, по центру) ===== */}
+      <div className="flex md:hidden items-center justify-center gap-4 text-customyellow w-full">
+        <button onClick={goPrevDay} className="text-[24px]">
+          &lt;
+        </button>
+        <span className="text-[16px] font-medium">
+          {formatFullDate(selectedDate)}
+        </span>
+        <button onClick={goNextDay} className="text-[24px]">
+          &gt;
+        </button>
       </div>
     </div>
   );
