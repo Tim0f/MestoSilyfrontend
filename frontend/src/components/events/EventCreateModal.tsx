@@ -110,7 +110,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
               type="text"
               value={form.name}
               onChange={(e) => handleChange('name', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               required
             />
           </div>
@@ -122,7 +122,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
               type="text"
               value={form.title}
               onChange={(e) => handleChange('title', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               required
             />
           </div>
@@ -133,7 +133,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             <textarea
               value={form.description}
               onChange={(e) => handleChange('description', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               rows={3}
               required
             />
@@ -146,7 +146,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
               type="date"
               value={form.date}
               onChange={(e) => handleChange('date', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               required
             />
           </div>
@@ -159,7 +159,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
                 type="time"
                 value={form.startTime}
                 onChange={(e) => handleChange('startTime', e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+                className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
                 required
               />
             </div>
@@ -169,7 +169,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
                 type="time"
                 value={form.endTime}
                 onChange={(e) => handleChange('endTime', e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+                className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
                 required
               />
             </div>
@@ -182,7 +182,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
               type="number"
               value={form.price}
               onChange={(e) => handleChange('price', Number(e.target.value))}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               required
             />
           </div>
@@ -196,7 +196,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
               onChange={(e) =>
                 handleChange('maxParticipants', Number(e.target.value))
               }
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               required
             />
           </div>
@@ -208,7 +208,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
               type="color"
               value={form.textColor}
               onChange={(e) => handleChange('textColor', e.target.value)}
-              className="w-full h-10 bg-[#222] border border-customwhite/10 rounded"
+              className="w-full h-10 bg-customblack border border-customwhite/10 rounded"
             />
           </div>
 
@@ -243,7 +243,7 @@ export default function EventCreateModal({ isOpen, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey"
             >
               Отмена
             </button>

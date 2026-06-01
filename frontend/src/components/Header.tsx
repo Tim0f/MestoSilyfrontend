@@ -38,7 +38,7 @@ export default function Header() {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className="bg-customgrey backdrop-blur-sm text-customyellow fixed top-0 left-0 right-0 z-50 font-p text-p border-b border-[#8B6A3E]">
+    <header className="bg-customgrey backdrop-blur-sm text-customyellow fixed top-0 left-0 right-0 z-50 font-p text-p border-b border-customyellow">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 relative">
           {/* Бургер (только на мобильных) */}
@@ -80,8 +80,8 @@ export default function Header() {
               className="
                 hidden md:flex
                 w-[70px] h-[32px] md:w-[78px] md:h-[34px]
-                rounded-full border border-[#464042]
-                bg-customwhite dark:bg-[#464042]
+                rounded-full border border-customgrey
+                bg-customwhite dark:bg-customgrey
                 items-center px-1
               "
             >
@@ -89,7 +89,7 @@ export default function Header() {
                 className={`
                   w-[24px] h-[24px] md:w-[26px] md:h-[26px]
                   rounded-full flex items-center justify-center
-                  bg-[#464042] dark:bg-[#D9D9D9]
+                  bg-customgrey dark:bg-customwhite
                   ${theme === "dark" ? "translate-x-[36px] md:translate-x-[42px]" : "translate-x-0"}
                 `}
               >

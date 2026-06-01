@@ -91,7 +91,7 @@ export default function PartnerCreateModal({ isOpen, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -101,7 +101,7 @@ export default function PartnerCreateModal({ isOpen, onClose }: Props) {
               type="file"
               accept="image/*"
               onChange={handleFile}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
             {preview && (
               <img
@@ -119,7 +119,7 @@ export default function PartnerCreateModal({ isOpen, onClose }: Props) {
               value={link}
               onChange={(e) => setLink(e.target.value)}
               required
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -128,7 +128,7 @@ export default function PartnerCreateModal({ isOpen, onClose }: Props) {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 disabled:opacity-50"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey disabled:opacity-50"
             >
               Отмена
             </button>

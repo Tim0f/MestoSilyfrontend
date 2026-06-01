@@ -107,7 +107,7 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
               value={form.name}
               onChange={(e) => update("name", e.target.value)}
               required
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
               onChange={(e) => update("description", e.target.value)}
               rows={3}
               required
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -130,7 +130,7 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
               onChange={(e) => update("price", Number(e.target.value))}
               min={0}
               required
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -141,10 +141,10 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
 
-            {uploading && <p className="text-yellow-400 mt-1">Загрузка...</p>}
+            {uploading && <p className="text-customyellow mt-1">Загрузка...</p>}
 
             {preview && (
               <img
@@ -169,7 +169,7 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
               type="button"
               onClick={onClose}
               disabled={loading || uploading}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 disabled:opacity-50"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey disabled:opacity-50"
             >
               Отмена
             </button>

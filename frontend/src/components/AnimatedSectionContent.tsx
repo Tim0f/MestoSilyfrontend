@@ -39,7 +39,7 @@ export default function AnimatedSectionContent({
           {description}
         </p>
 
-        <button className="mt-6 px-10 py-3 bg-customyellow text-[#2b2422] rounded-lg font-h2 hover:bg-[#eab97c] transition">
+        <button className="mt-6 px-10 py-3 bg-customyellow text-customgrey rounded-lg font-h2 hover:bg-customyellow transition">
           записаться
         </button>
       </motion.div>

@@ -88,7 +88,7 @@ export default function LessonsList({ onEdit, sectionId }: Props) {
             </p>
 
             {/* Учитель */}
-            <p className="text-gray-400 text-sm">
+            <p className="text-customgrey text-sm">
               Учитель:{' '}
               {lesson.teacher
                 ? `${lesson.teacher.lastName} ${lesson.teacher.firstName}`
@@ -97,33 +97,33 @@ export default function LessonsList({ onEdit, sectionId }: Props) {
 
             {/* Дата */}
             {lesson.date && (
-              <p className="text-gray-400 text-sm">Дата: {lesson.date}</p>
+              <p className="text-customgrey text-sm">Дата: {lesson.date}</p>
             )}
 
             {/* Время */}
             {(lesson.startsAt || lesson.endsAt) && (
-              <p className="text-gray-400 text-sm">
+              <p className="text-customgrey text-sm">
                 {lesson.startsAt ?? '—'} — {lesson.endsAt ?? '—'}
               </p>
             )}
 
             {/* Локация */}
             {lesson.location && (
-              <p className="text-gray-500 text-sm">
+              <p className="text-customgrey text-sm">
                 Локация: {lesson.location}
               </p>
             )}
 
             {/* Вместимость */}
             {lesson.capacity !== undefined && (
-              <p className="text-gray-500 text-sm">
+              <p className="text-customgrey text-sm">
                 Вместимость: {lesson.capacity}
               </p>
             )}
 
             {/* Описание */}
             {lesson.description && (
-              <p className="text-gray-500 text-sm whitespace-pre-line">
+              <p className="text-customgrey text-sm whitespace-pre-line">
                 Описание: {lesson.description}
               </p>
             )}
@@ -148,7 +148,7 @@ export default function LessonsList({ onEdit, sectionId }: Props) {
       ))}
 
       {!lessons.length && (
-        <p className="text-gray-400 p-4 text-center">Уроков нет</p>
+        <p className="text-customgrey p-4 text-center">Уроков нет</p>
       )}
     </div>
   );

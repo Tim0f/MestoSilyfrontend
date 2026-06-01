@@ -91,7 +91,7 @@ export default function GrainsTransferModal({ isOpen, onClose, onUpdated }: Prop
     setToUserId(e.target.value);
     setToUserEmail(''); // чтобы не было конфликта
   }}
-  className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+  className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
 >
   <option value="">Выберите пользователя</option>
   {users.map((u) => (
@@ -107,22 +107,22 @@ export default function GrainsTransferModal({ isOpen, onClose, onUpdated }: Prop
 
           <div>
             <label className="block mb-1 text-customwhite">Email получателя (опционально)</label>
-            <input value={toUserEmail} onChange={(e) => setToUserEmail(e.target.value)} className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10" />
+            <input value={toUserEmail} onChange={(e) => setToUserEmail(e.target.value)} className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10" />
             <div className="text-sm text-gray-400 mt-1">Укажите либо ID, либо Email</div>
           </div>
 
           <div>
             <label className="block mb-1 text-customwhite">Сумма</label>
-            <input type="number" min={1} value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10" />
+            <input type="number" min={1} value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10" />
           </div>
 
           <div>
             <label className="block mb-1 text-customwhite">Сообщение (опционально)</label>
-            <input value={message} onChange={(e) => setMessage(e.target.value)} className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10" />
+            <input value={message} onChange={(e) => setMessage(e.target.value)} className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10" />
           </div>
 
           <div className="flex justify-end gap-3 pt-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded">Отмена</button>
+            <button type="button" onClick={onClose} className="px-4 py-2 bg-customgrey rounded">Отмена</button>
             <button type="submit" disabled={loading} className="px-4 py-2 bg-customyellow text-customblack rounded">Перевести</button>
           </div>
         </form>

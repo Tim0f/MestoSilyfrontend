@@ -137,7 +137,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
               type="text"
               value={form.lastName || ''}
               onChange={(e) => update('lastName', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
               required
             />
           </div>
@@ -148,7 +148,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
               type="text"
               value={form.firstName || ''}
               onChange={(e) => update('firstName', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
               required
             />
           </div>
@@ -159,7 +159,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
               type="text"
               value={form.middleName || ''}
               onChange={(e) => update('middleName', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
             />
           </div>
 
@@ -169,7 +169,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
               type="text"
               value={form.phone || ''}
               onChange={(e) => update('phone', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
             />
           </div>
 
@@ -179,7 +179,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
               type="text"
               value={form.role || ''}
               onChange={(e) => update('role', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
             />
           </div>
 
@@ -202,7 +202,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
               disabled={loading}
               className="text-sm"
             />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-customgrey mt-1">
               Оставьте пустым, чтобы не менять текущее фото
             </p>
           </div>
@@ -221,7 +221,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
               disabled={loading}
               className="text-sm"
             />
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-customgrey mt-1">
               Оставьте пустым, чтобы не менять текущую аудиозапись
             </p>
           </div>
@@ -231,7 +231,7 @@ export default function TeacherEditModal({ isOpen, onClose, teacher }: Props) {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 disabled:opacity-50"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey disabled:opacity-50"
             >
               Отмена
             </button>

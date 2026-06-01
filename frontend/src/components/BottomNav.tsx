@@ -55,7 +55,7 @@ export default function BottomNav() {
           <img
             src={profileImage}
             alt="Profile"
-            className="h-14 w-14 rounded-full border-2 border-[#D7B176] object-cover"
+            className="h-14 w-14 rounded-full border-2 border-customyellow object-cover"
           />
         </NavLink>
       </div>

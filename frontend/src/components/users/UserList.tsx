@@ -74,9 +74,9 @@ export default function UsersList({ onEdit }: Props) {
             <p className="text-lg font-semibold">
               {user.firstName} {user.lastName}
             </p>
-            <p className="text-gray-400 text-sm">{user.email}</p>
-            <p className="text-gray-400 text-sm">Роль: {user.role}</p>
-            <p className="text-gray-400 text-sm">
+            <p className="text-customgrey text-sm">{user.email}</p>
+            <p className="text-customgrey text-sm">Роль: {user.role}</p>
+            <p className="text-customgrey text-sm">
               Статус: {user.isActive ? 'Активен' : 'Неактивен'}
             </p>
           </div>

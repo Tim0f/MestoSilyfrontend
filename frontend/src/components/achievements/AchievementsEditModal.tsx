@@ -81,7 +81,7 @@ const uploadIcon = async (file: File) => {
               type="text"
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -90,7 +90,7 @@ const uploadIcon = async (file: File) => {
             <textarea
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
               rows={3}
             />
           </div>
@@ -104,7 +104,7 @@ const uploadIcon = async (file: File) => {
       <img
         src={form.iconUrl}
         alt="icon preview"
-        className="w-16 h-16 object-contain rounded bg-[#111]"
+        className="w-16 h-16 object-contain rounded bg-customblack"
       />
     </div>
   )}
@@ -117,7 +117,7 @@ const uploadIcon = async (file: File) => {
       const file = e.target.files?.[0];
       if (file) uploadIcon(file);
     }}
-    className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+    className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
   />
 
   {uploadingIcon && (
@@ -127,7 +127,7 @@ const uploadIcon = async (file: File) => {
   )}
 
   {form.iconUrl && !uploadingIcon && (
-    <p className="text-xs text-gray-400 mt-1">
+    <p className="text-xs text-customgrey mt-1">
       Выберите файл, чтобы заменить текущую иконку
     </p>
   )}
@@ -140,7 +140,7 @@ const uploadIcon = async (file: File) => {
               type="number"
               value={form.rewardGrains}
               onChange={(e) => update('rewardGrains', Number(e.target.value))}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -149,7 +149,7 @@ const uploadIcon = async (file: File) => {
 <select
   value={form.sectionId ?? ""}
   onChange={(e) => update('sectionId', e.target.value)}
-  className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+  className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
 >
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -174,7 +174,7 @@ const uploadIcon = async (file: File) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey"
             >
               Отмена
             </button>

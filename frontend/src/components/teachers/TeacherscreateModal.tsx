@@ -127,7 +127,7 @@ const payload: CreateTeacherDto = {
               type="text"
               value={form.lastName}
               onChange={(e) => update('lastName', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
               required
             />
           </div>
@@ -138,7 +138,7 @@ const payload: CreateTeacherDto = {
               type="text"
               value={form.firstName}
               onChange={(e) => update('firstName', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
               required
             />
           </div>
@@ -149,7 +149,7 @@ const payload: CreateTeacherDto = {
               type="text"
               value={form.middleName}
               onChange={(e) => update('middleName', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
             />
           </div>
 
@@ -159,7 +159,7 @@ const payload: CreateTeacherDto = {
               type="text"
               value={form.phone}
               onChange={(e) => update('phone', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
             />
           </div>
 
@@ -169,7 +169,7 @@ const payload: CreateTeacherDto = {
               type="text"
               value={form.role}
               onChange={(e) => update('role', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
               placeholder="Например: тренер, наставник…"
             />
           </div>
@@ -180,7 +180,7 @@ const payload: CreateTeacherDto = {
               type="file"
               accept="image/*"
               onChange={handlePhotoChange}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
             />
             {photoPreview && (
               <img
@@ -197,7 +197,7 @@ const payload: CreateTeacherDto = {
               type="file"
               accept="audio/*"
               onChange={handleAudioChange}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
             />
             {audioPreview && (
               <audio controls className="mt-3 w-full">
@@ -211,7 +211,7 @@ const payload: CreateTeacherDto = {
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 disabled:opacity-50"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey disabled:opacity-50"
             >
               Отмена
             </button>

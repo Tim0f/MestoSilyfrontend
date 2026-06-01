@@ -110,7 +110,7 @@ export default function SectionCreateModal({ isOpen, onClose }: Props) {
         {error && <div className="text-red-500">{error}</div>}
 
         <input
-          className="w-full bg-[#222] rounded px-3 py-2"
+          className="w-full bg-customblack rounded px-3 py-2"
           placeholder="Название"
           value={form.name}
           onChange={(e) => handleChange('name', e.target.value)}
@@ -118,7 +118,7 @@ export default function SectionCreateModal({ isOpen, onClose }: Props) {
         />
 
         <textarea
-          className="w-full bg-[#222] rounded px-3 py-2"
+          className="w-full bg-customblack rounded px-3 py-2"
           placeholder="Описание"
           value={form.description}
           onChange={(e) => handleChange('description', e.target.value)}
@@ -131,7 +131,7 @@ export default function SectionCreateModal({ isOpen, onClose }: Props) {
               key={t.id}
               type="button"
               onClick={() => selectTeacher(t.id)}
-              className="flex items-center gap-2 p-2 bg-[#222] rounded"
+              className="flex items-center gap-2 p-2 bg-customblack rounded"
             >
               {t.photoUrl && (
                 <img

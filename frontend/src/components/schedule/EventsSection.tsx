@@ -5,7 +5,7 @@ export default function EventsSection({ events, enrolledEventIds, onRegister }: 
   if (!events.length) return null;
 
   return (
-    <div className="mt-[60px] md:mt-[120px]">
+    <div className="flex justify-center mt-[60px] md:mt-[120px]">
       {events.map((e: any) => (
         <EventCard
           key={e.id}

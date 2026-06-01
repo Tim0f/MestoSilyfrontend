@@ -105,7 +105,7 @@ const handleFileUpload = async (file: File | null) => {
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -115,7 +115,7 @@ const handleFileUpload = async (file: File | null) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={6}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -130,7 +130,7 @@ const handleFileUpload = async (file: File | null) => {
             <div className="flex flex-wrap gap-3 mt-4">
               {images.length > 0 && (
   <div className="w-28">
-    <div className="w-28 h-20 rounded overflow-hidden bg-[#222] border border-customwhite/10">
+    <div className="w-28 h-20 rounded overflow-hidden bg-customblack border border-customwhite/10">
       <img
         src={getPublicUrl(images[0])}
         className="w-full h-full object-cover"
@@ -155,12 +155,12 @@ const handleFileUpload = async (file: File | null) => {
               type="date"
               value={publishedDate}
               onChange={(e) => setPublishedDate(e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="bg-gray-600 px-4 py-2 rounded">
+            <button type="button" onClick={onClose} className="bg-customgrey px-4 py-2 rounded">
               Отмена
             </button>
             <button type="submit" disabled={loading} className="bg-customyellow text-customblack px-4 py-2 rounded">

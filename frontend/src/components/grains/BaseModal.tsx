@@ -17,7 +17,7 @@ export function BaseModal({ isOpen, title, onClose, children }: Props) {
           <h2 className="text-xl font-bold">{title}</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-customwhite text-xl"
+            className="text-customgrey hover:text-customwhite text-xl"
           >
             ✕
           </button>

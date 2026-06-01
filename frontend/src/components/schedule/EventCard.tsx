@@ -2,7 +2,7 @@
 export default function EventCard({ event, isEnrolled, onClick }: any) {
   return (
     <div
-      className="relative h-[250px] md:h-[300px] bg-cover bg-center mb-6 md:mb-10"
+      className="relative flex justify-center h-[250px] md:h-[300px] bg-cover bg-center mb-6 md:mb-10"
       style={{ backgroundImage: `url(${event.imageUrl})` }}
     >
       <div className="absolute inset-0 bg-customblack/50" />
