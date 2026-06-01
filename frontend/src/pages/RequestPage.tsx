@@ -1,106 +1,146 @@
+// RequestPage.tsx
 import { useEffect, useState } from 'react'
-
-
-import uploadIcon from '../assets/svg/upload.svg' // добавь иконку
 import { Client } from '../services/httpClient'
-import { RequestsFrontendService } from '../services/requests.service'
+import {
+  ProposalsFrontendService,
+  ProposalStatus,
+  ProposalType,
+} from '../services/proposal.service'
 
-type RequestItem = {
+type ProposalItem = {
   id: string
   title: string
-  status: 'approved' | 'rejected' | 'pending'
+  status: ProposalStatus
   reason?: string
 }
 
 const client = Client
-const requestService = new RequestsFrontendService(client)
+const proposalsService = new ProposalsFrontendService(client)
 
 export default function RequestPage() {
-  const [requests, setRequests] = useState<RequestItem[]>([])
-  
+  const [proposals, setProposals] = useState<ProposalItem[]>([])
+  const [errors, setErrors] = useState<string[]>([])
 
   const [form, setForm] = useState({
-    username: '',
+    type: ProposalType.SECTION,
     title: '',
     description: '',
-    file: null as File | null,
+    wantsToLead: false,
   })
 
   useEffect(() => {
-    loadRequests()
+    loadProposals()
   }, [])
 
-  async function loadRequests() {
+  async function loadProposals() {
     try {
-      const api = await requestService.findAll<any[]>()
-
-      setRequests(
+      const api = await proposalsService.getMyProposals<any[]>()
+      setProposals(
         api.map((r: any) => ({
           id: r.id,
           title: r.title,
           status: r.status,
-          reason: r.reason,
+          reason: r.reviewComment,
         }))
       )
     } catch {
-      // fallback
-      setRequests([
+      // fallback – демо-данные
+      setProposals([
         {
           id: '1',
           title: 'Рынок рабов',
-          status: 'approved',
+          status: ProposalStatus.APPROVED,
         },
         {
           id: '2',
           title: 'Продажа Тимофея',
-          status: 'rejected',
+          status: ProposalStatus.REJECTED,
           reason: 'На рынке рабов продаются только люди',
         },
       ])
     }
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files?.[0]) {
-      setForm({ ...form, file: e.target.files[0] })
+  function handleWantsToLeadChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, wantsToLead: e.target.checked })
+  }
+
+  function validateForm(): string[] {
+    const errs: string[] = []
+    if (form.title.trim().length < 3) {
+      errs.push('Название должно содержать минимум 3 символа')
     }
+    if (form.description.trim().length < 10) {
+      errs.push('Описание должно содержать минимум 10 символов')
+    }
+    return errs
   }
 
   async function handleSubmit() {
+    const validationErrors = validateForm()
+    if (validationErrors.length) {
+      setErrors(validationErrors)
+      return
+    }
+    setErrors([])
+
     try {
-      await requestService.create(form)
-      loadRequests()
-    } catch (e) {
-      console.error(e)
+      // Важно: убеждаемся, что wantsToLead – именно boolean
+      await proposalsService.create({
+        ...form,
+        wantsToLead: Boolean(form.wantsToLead),
+      })
+      // Сброс формы после успешной отправки
+      setForm({
+        type: ProposalType.SECTION,
+        title: '',
+        description: '',
+        wantsToLead: false,
+      })
+      loadProposals()
+    } catch (err: any) {
+      console.error(err)
+      // Попытка прочитать тело ответа, если оно есть
+      if (err?.response?.json) {
+        try {
+          const body = await err.response.json()
+          console.log('Ошибка сервера:', body)
+        } catch (_) {}
+      }
     }
   }
 
   return (
     <div className="bg-customblack min-h-screen text-customyellow p-10 pt-16">
       <div className="grid grid-cols-2 gap-10">
-
-        {/* ЛЕВАЯ ЧАСТЬ */}
+        {/* Левая часть – форма */}
         <div>
           <h1 className="text-h1 font-h1 mb-6">ПОДАТЬ ЗАЯВКУ</h1>
 
           <div className="border border-customyellow p-6 space-y-4">
             <p className="text-sm opacity-70">Форма подачи заявки</p>
 
-            <input
-              name="username"
-              placeholder="Имя пользователя"
+            <select
+              name="type"
               className="w-full bg-transparent border p-3"
+              value={form.type}
               onChange={handleChange}
-            />
+            >
+              <option value={ProposalType.SECTION}>Секция</option>
+              <option value={ProposalType.EVENT}>Мероприятие</option>
+            </select>
 
             <input
               name="title"
               placeholder="Название заявки"
               className="w-full bg-transparent border p-3"
+              value={form.title}
               onChange={handleChange}
             />
 
@@ -108,14 +148,27 @@ export default function RequestPage() {
               name="description"
               placeholder="Описание заявки"
               className="w-full bg-transparent border p-3 h-32"
+              value={form.description}
               onChange={handleChange}
             />
 
-            <label className="flex items-center justify-between border p-3 cursor-pointer">
-              <span>Загрузить фото</span>
-              <img src={uploadIcon} className="w-5" />
-              <input type="file" hidden onChange={handleFile} />
+            <label className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.wantsToLead}
+                onChange={handleWantsToLeadChange}
+              />
+              <span>Хочу быть ведущим</span>
             </label>
+
+            {/* Блок ошибок валидации */}
+            {errors.length > 0 && (
+              <div className="text-red-400 text-sm space-y-1">
+                {errors.map((err, idx) => (
+                  <p key={idx}>⚠ {err}</p>
+                ))}
+              </div>
+            )}
 
             <button
               onClick={handleSubmit}
@@ -126,37 +179,33 @@ export default function RequestPage() {
           </div>
         </div>
 
-        {/* ПРАВАЯ ЧАСТЬ */}
+        {/* Правая часть – статус заявок */}
         <div>
           <h1 className="text-h1 font-h1 mb-6">СТАТУС ЗАЯВКИ</h1>
 
           <div className="space-y-6">
-            {requests.map((r) => (
-              <div
-                key={r.id}
-                className="bg-customyellow text-customblack p-6"
-              >
+            {proposals.map((p) => (
+              <div key={p.id} className="bg-customyellow text-customblack p-6">
                 <p className="font-bold">Название заявки:</p>
-                <p className="mb-2">{r.title}</p>
+                <p className="mb-2">{p.title}</p>
 
                 <p className="font-bold">Статус:</p>
                 <p className="mb-2">
-                  {r.status === 'approved' && 'Одобрена'}
-                  {r.status === 'rejected' && 'Отклонена'}
-                  {r.status === 'pending' && 'На рассмотрении'}
+                  {p.status === ProposalStatus.APPROVED && 'Одобрена'}
+                  {p.status === ProposalStatus.REJECTED && 'Отклонена'}
+                  {p.status === ProposalStatus.PENDING && 'На рассмотрении'}
                 </p>
 
-                {r.reason && (
+                {p.reason && (
                   <>
                     <p className="font-bold">Причина:</p>
-                    <p>{r.reason}</p>
+                    <p>{p.reason}</p>
                   </>
                 )}
               </div>
             ))}
           </div>
         </div>
-
       </div>
     </div>
   )

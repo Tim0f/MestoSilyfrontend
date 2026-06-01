@@ -10,26 +10,32 @@ type CardProps = {
 export default function TeamCard({ Image, name, position }: CardProps) {
   return (
     <div className="p-4 md:p-6 w-full max-w-[590px] flex flex-col items-center text-customwhite">
-      <div className="relative w-full aspect-square md:w-[590px] md:h-[590px] rounded-full flex items-center justify-center mb-6">
+      <div className="relative w-full aspect-square md:w-[590px] md:h-[590px] mb-6">
+        {/* Фото */}
+        <div className="absolute inset-0 z-10 flex items-center justify-center">
+          <div className="w-[85%] aspect-square md:w-[537px] md:h-[537px] rounded-full overflow-hidden">
+            <img
+              src={Image}
+              alt={name}
+              className="object-cover w-full h-full"
+            />
+          </div>
+        </div>
+
+        {/* Рваная рамка с динамическим цветом */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-20"
+          className="absolute inset-0 z-20"
           style={{
-            backgroundImage: 'url(/svg/texturedRound.svg)',
-            backgroundSize: '100% 100%',
-            backgroundRepeat: 'no-repeat',
+            backgroundColor: 'rgb(var(--color-customyellow))',
+            WebkitMaskImage: 'url(/svg/texturedRound.svg)',
+            WebkitMaskSize: '100% 100%',
+            WebkitMaskRepeat: 'no-repeat',
+            maskImage: 'url(/svg/texturedRound.svg)',
+            maskSize: '100% 100%',
+            maskRepeat: 'no-repeat',
           }}
         />
-
-        <div className="absolute inset-0 z-10 rounded-full" />
-
-        <div className="relative z-30 w-[85%] aspect-square md:w-[537px] md:h-[537px] rounded-full overflow-hidden">
-          <img
-            src={Image}
-            alt={name}
-            className="object-cover w-full h-full"
-          />
-        </div>
       </div>
 
       <div className="text-sm md:text-p font-p text-center">{position}</div>

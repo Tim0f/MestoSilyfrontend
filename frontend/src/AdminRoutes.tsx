@@ -17,6 +17,8 @@ const TeachersPage = lazy(() => import('./pages/teachers'))
 const ChatManagementPage = lazy(() => import('./pages/ChatManager'))
 const AdminOrdersPage = lazy(() => import('./pages/AdminOrdersPage'))
 const AdminEnrollmentsPage = lazy(() => import('./pages/AdminEnrollmentsPage'))
+import AdminProposalsPage from './pages/AdminProposalsPage';
+// const AdminProposalsPage = lazy(() => import('./pages/AdminProposalsPage'))
 
 export default function AdminRoutes() {
   return (
@@ -150,6 +152,16 @@ export default function AdminRoutes() {
           element={
             <Suspense fallback={null}>
               <AdminEnrollmentsPage />
+            </Suspense>
+          }
+        />
+
+
+        <Route
+          path="proposals"
+          element={
+            <Suspense fallback={null}>
+              <AdminProposalsPage />
             </Suspense>
           }
         />

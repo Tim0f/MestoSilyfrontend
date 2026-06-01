@@ -99,6 +99,12 @@ export default function AdminDashboardPage() {
       link: "payments",
       description: "Управление платежами",
     },
+        {
+      title: "Заявки",
+      icon: Users,
+      link: "proposals",
+      description: "Управление заявками",
+    },
   ];
 
   return (
