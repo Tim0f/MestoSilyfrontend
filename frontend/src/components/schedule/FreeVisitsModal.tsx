@@ -117,13 +117,11 @@ export default function FreeVisitsModal({ onClose }: Props) {
 
   /* ================= UI ================= */
 
-  return (
-
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-customblack/70">
-
-      <div className="relative w-[95vw] max-w-[1600px] max-h-[85vh] text-white overflow-hidden">
-
   
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-customblack/70">
+      <div className="relative w-[95vw] max-w-[1600px] max-h-[85vh] text-white overflow-hidden">
 
         {/* рамка */}
         <img
@@ -155,66 +153,42 @@ export default function FreeVisitsModal({ onClose }: Props) {
 
           <div className="flex flex-wrap justify-center gap-[32px]">
 
-            {/* ПРОБНОЕ */}
-
-            <div className="w-[300px] min-h-[450px] bg-customyellow text-black p-[32px] flex flex-col justify-between">
-
-              <div>
-
-                <h3 className="text-[36px] font-h1">1 занятие</h3>
-
-                <p className="text-[16px] mt-[16px] leading-[20px]">
-
-                  Откройте для себя искусство владения клинком.
-
-                  От базовых стоек до изящных атак.
-
-                </p>
-
-              </div>
-
   
+  
+
+            {/* ПРОБНОЕ */}
+            <div className="w-full sm:w-[300px] min-h-[450px] bg-customyellow text-black p-[24px] md:p-[32px] flex flex-col justify-between">
+              <div>
+                <h3 className="text-[28px] md:text-[36px] font-h1">1 занятие</h3>
+                <p className="text-[14px] md:text-[16px] mt-[12px] md:mt-[16px] leading-[20px]">
+                  Откройте для себя искусство владения клинком.
+                  От базовых стоек до изящных атак.
+                </p>
+              </div>
 
               <div className="flex items-center gap-[12px]">
                 <span className="text-[48px] md:text-[64px] font-h1 leading-none">12</span>
                 <img src={Zerno} alt="" className="w-[32px] h-[32px] md:w-[40px] md:h-[40px]" />
               </div>
 
-              <div>
-
-                <button
-
-                  onClick={handleBuyWithGrains}
-
-                  disabled={isLoading}
-
-                  className="bg-black text-customyellow text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
-
-                  style={{
-
-                    WebkitMaskImage: `url(${btnFrame})`,
-
-                    maskImage: `url(${btnFrame})`,
-
-                    WebkitMaskSize: "100% 100%",
-
-                    padding: "18px 48px",
-
-                  }}
-
-                >
-
-                  {isLoading ? "Подождите..." : "Оплатить"}
-
-                </button>
-
   
 
-              </div>
-
-            </div>
-
-  
+              <div>
+                <button
+                  onClick={handleBuyWithGrains}
+                  disabled={isLoading}
+                  className="bg-black text-customyellow text-[16px] md:text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
+                  style={{
+                    WebkitMaskImage: `url(${btnFrame})`,
+                    maskImage: `url(${btnFrame})`,
+                    WebkitMaskSize: "100% 100%",
+                    padding: "18px 48px",
+                  }}
+                >
+                  {isLoading ? "Подождите..." : "Оплатить"}
+                </button>
+              </div>
+            </div>
 
             {/* 1 ЗАНЯТИЕ */}
             <div className="w-full sm:w-[300px] min-h-[450px] border-2 border-customyellow p-[24px] md:p-[32px] flex flex-col justify-between">
@@ -228,35 +202,20 @@ export default function FreeVisitsModal({ onClose }: Props) {
 
               <div className="text-[44px] md:text-[56px] font-h1 text-customyellow">1100₽</div>
 
-              <button
-
-                onClick={() => handleBuyPaid(1)}
-
-                disabled={isLoading}
-
-                className="bg-customyellow text-black text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
-
-                style={{
-
-                  WebkitMaskImage: `url(${btnFrame})`,
-
-                  maskImage: `url(${btnFrame})`,
-
-                  WebkitMaskSize: "100% 100%",
-
-                  padding: "18px 48px",
-
-                }}
-
-              >
-
-                Оплатить
-
-              </button>
-
-            </div>
-
-  
+              <button
+                onClick={() => handleBuyPaid(1)}
+                disabled={isLoading}
+                className="bg-customyellow text-black text-[16px] md:text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
+                style={{
+                  WebkitMaskImage: `url(${btnFrame})`,
+                  maskImage: `url(${btnFrame})`,
+                  WebkitMaskSize: "100% 100%",
+                  padding: "18px 48px",
+                }}
+              >
+                Оплатить
+              </button>
+            </div>
 
             {/* 5 ЗАНЯТИЙ */}
             <div className="w-full sm:w-[300px] min-h-[450px] border-2 border-customyellow p-[24px] md:p-[32px] flex flex-col justify-between">
@@ -270,35 +229,20 @@ export default function FreeVisitsModal({ onClose }: Props) {
 
               <div className="text-[44px] md:text-[56px] font-h1 text-customyellow">4950₽</div>
 
-              <button
-
-                onClick={() => handleBuyPaid(5)}
-
-                disabled={isLoading}
-
-                className="bg-customyellow text-black text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
-
-                style={{
-
-                  WebkitMaskImage: `url(${btnFrame})`,
-
-                  maskImage: `url(${btnFrame})`,
-
-                  WebkitMaskSize: "100% 100%",
-
-                  padding: "18px 48px",
-
-                }}
-
-              >
-
-                Оплатить
-
-              </button>
-
-            </div>
-
-  
+              <button
+                onClick={() => handleBuyPaid(5)}
+                disabled={isLoading}
+                className="bg-customyellow text-black text-[16px] md:text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
+                style={{
+                  WebkitMaskImage: `url(${btnFrame})`,
+                  maskImage: `url(${btnFrame})`,
+                  WebkitMaskSize: "100% 100%",
+                  padding: "18px 48px",
+                }}
+              >
+                Оплатить
+              </button>
+            </div>
 
             {/* 10 ЗАНЯТИЙ */}
             <div className="w-full sm:w-[300px] min-h-[450px] border-2 border-customyellow p-[24px] md:p-[32px] flex flex-col justify-between">
@@ -312,37 +256,20 @@ export default function FreeVisitsModal({ onClose }: Props) {
 
               <div className="text-[44px] md:text-[56px] font-h1 text-customyellow">9900₽</div>
 
-              <button
-
-                onClick={() => handleBuyPaid(10)}
-
-                disabled={isLoading}
-
-                className="bg-customyellow text-black text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
-
-                style={{
-
-                  WebkitMaskImage: `url(${btnFrame})`,
-
-                  maskImage: `url(${btnFrame})`,
-
-                  WebkitMaskSize: "100% 100%",
-
-                  padding: "18px 48px",
-
-                }}
-
-              >
-
-                Оплатить
-
-              </button>
-
-            </div>
-
-  
-
-          </div>
+              <button
+                onClick={() => handleBuyPaid(10)}
+                disabled={isLoading}
+                className="bg-customyellow text-black text-[16px] md:text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
+                style={{
+                  WebkitMaskImage: `url(${btnFrame})`,
+                  maskImage: `url(${btnFrame})`,
+                  WebkitMaskSize: "100% 100%",
+                  padding: "18px 48px",
+                }}
+              >
+                Оплатить
+              </button>
+            </div>
 
           </div>
         </div>
