@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Client } from "../../services/httpClient";
 import {
   ProductsFrontendService,
   type CreateProductDto,
 } from "../../services/products.service";
 import { UploadFrontendService } from "../../services/upload.service";
+import { getPublicUrl } from "../../utils/publicUrl";
 
 interface Props {
   isOpen: boolean;
@@ -12,7 +13,6 @@ interface Props {
 }
 
 const client = Client;
-
 const productsService = new ProductsFrontendService(client);
 const uploadService = new UploadFrontendService(client);
 
@@ -25,31 +25,65 @@ export default function ProductCreateModal({ isOpen, onClose }: Props) {
     isActive: true,
   });
 
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Сброс при открытии
+  useEffect(() => {
+    if (isOpen) {
+      setForm({
+        name: "",
+        description: "",
+        price: 0,
+        imageUrl: "",
+        isActive: true,
+      });
+      setFile(null);
+      setPreview("");
+      setError(null);
+    }
+  }, [isOpen]);
 
   const update = (k: keyof CreateProductDto, v: any) =>
     setForm((prev) => ({ ...prev, [k]: v }));
 
-const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (!e.target.files?.length) return;
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
 
-  setUploading(true);
-  const file = e.target.files[0];
+    setFile(selectedFile);
+    setPreview(URL.createObjectURL(selectedFile)); // локальное превью
+    setError(null);
 
-  try {
-    const res = await uploadService.image(file);
-    update("imageUrl", res.filename);
-  } finally {
-    setUploading(false);
-  }
-};
-
-
+    setUploading(true);
+    try {
+      const { filename } = await uploadService.image(selectedFile);
+      update("imageUrl", getPublicUrl(filename)); // сохраняем полный URL
+    } catch (err: any) {
+      setError(err?.message || "Ошибка загрузки изображения");
+      setFile(null);
+      setPreview("");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await productsService.create(form);
-    onClose();
+    setLoading(true);
+    setError(null);
+
+    try {
+      await productsService.create(form);
+      onClose();
+    } catch (err: any) {
+      setError(err?.message || "Ошибка создания товара");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -60,6 +94,12 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         <h2 className="text-xl font-bold mb-4">Создать товар</h2>
 
         <form onSubmit={submit} className="space-y-4">
+          {error && (
+            <div className="bg-red-500/20 border border-red-500 text-red-300 rounded px-3 py-2 text-sm">
+              {error}
+            </div>
+          )}
+
           <div>
             <label className="block mb-1 text-customwhite">Название</label>
             <input
@@ -106,9 +146,9 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
             {uploading && <p className="text-yellow-400 mt-1">Загрузка...</p>}
 
-            {form.imageUrl && (
+            {preview && (
               <img
-                src={form.imageUrl}
+                src={preview}
                 alt="preview"
                 className="mt-2 w-32 h-32 object-cover rounded border border-customwhite/20"
               />
@@ -128,17 +168,18 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+              disabled={loading || uploading}
+              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 disabled:opacity-50"
             >
               Отмена
             </button>
 
             <button
               type="submit"
-              className="px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow"
-              disabled={uploading}
+              disabled={uploading || loading}
+              className="px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow disabled:opacity-50"
             >
-              Создать
+              {loading ? "Создание..." : "Создать"}
             </button>
           </div>
         </form>
