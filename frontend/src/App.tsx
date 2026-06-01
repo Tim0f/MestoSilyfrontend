@@ -8,6 +8,7 @@ import RequireAuth from './guards/RequireAuth'
 import RequireAdmin from './guards/RequireAdmin'
 import { ThemeProvider } from './context/ThemeContext'
 
+
 const AdminRoutes = lazy(() => import('./AdminRoutes'))
 
 // ===== Public pages =====

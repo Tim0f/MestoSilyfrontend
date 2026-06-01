@@ -1,3 +1,4 @@
+// TeamSlider.tsx
 import { useState, useEffect, useRef } from 'react'
 import TeamCard from './TeamCard'
 
@@ -17,7 +18,16 @@ export default function TeamSlider({
   const [centerIndex, setCenterIndex] = useState(0)
   const [isAudioPlaying, setIsAudioPlaying] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
+  // следим за шириной экрана для адаптивных смещений
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const isMobile = windowWidth < 768
 
   // авто-переключение
   useEffect(() => {
@@ -58,21 +68,27 @@ export default function TeamSlider({
     let filter = 'none'
     let zIndex = 1
 
+    // адаптивные смещения и масштаб
+    const translateRight = isMobile ? 120 : 350
+    const translateLeft = isMobile ? -120 : -350
+    const sideScale = isMobile ? 0.9 : 0.8
+    const hiddenScale = 0.6
+
     if (offset === 0) {
       transform = 'translateX(0) scale(1)'
       zIndex = 10
     } else if (offset === 1 || offset === -total + 1) {
-      transform = 'translateX(350px) scale(0.8)'
+      transform = `translateX(${translateRight}px) scale(${sideScale})`
       opacity = 0.5
       filter = 'blur(5px)'
       zIndex = 5
     } else if (offset === total - 1 || offset === -1) {
-      transform = 'translateX(-350px) scale(0.8)'
+      transform = `translateX(${translateLeft}px) scale(${sideScale})`
       opacity = 0.5
       filter = 'blur(5px)'
       zIndex = 5
     } else {
-      transform = 'scale(0.6)'
+      transform = `scale(${hiddenScale})`
       opacity = 0
       filter = 'blur(10px)'
       zIndex = 0
@@ -86,9 +102,8 @@ export default function TeamSlider({
   }
 
   return (
-    <div className="relative flex flex-col items-center w-full mt-20">
-      <div className="relative flex justify-center items-center w-full h-[700px]">
-
+    <div className="relative flex flex-col items-center w-full mt-10 md:mt-20">
+      <div className="relative flex justify-center items-center w-full h-[500px] md:h-[700px]">
         {teamMembers.map((member, index) => (
           <div
             key={member.id}
@@ -96,28 +111,26 @@ export default function TeamSlider({
             style={{ ...getPositionStyle(index), willChange: 'transform, opacity, filter' }}
           >
             <TeamCard
-  Image={member.Image ?? ""}
-  name={member.name}
-  position={member.position ?? ""}
-  audiosrc={member.audiosrc ?? ""}
-  onPlayChange={handleAudioState}
-/>
-
+              Image={member.Image ?? ""}
+              name={member.name}
+              position={member.position ?? ""}
+              audiosrc={member.audiosrc ?? ""}
+              onPlayChange={handleAudioState}
+            />
           </div>
         ))}
-
       </div>
 
-      <div className="flex justify-center mt-10 gap-3">
+      <div className="flex justify-center mt-6 md:mt-10 gap-2 md:gap-3">
         {teamMembers.map((_, idx) => (
           <button
             key={idx}
             onClick={() => handleDotClick(idx)}
-            className={`w-4 h-4 rounded-full border-2 border-customyellow transition-all duration-300 ${
-            idx === centerIndex
-              ? 'bg-customyellow scale-125 shadow-[0_0_10px_customyellow]'
-              : 'bg-transparent hover:bg-customyellow/40'
-          }`}
+            className={`w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-customyellow transition-all duration-300 ${
+              idx === centerIndex
+                ? 'bg-customyellow scale-125 shadow-[0_0_10px_customyellow]'
+                : 'bg-transparent hover:bg-customyellow/40'
+            }`}
           />
         ))}
       </div>
