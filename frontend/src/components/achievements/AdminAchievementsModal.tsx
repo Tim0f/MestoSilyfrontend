@@ -92,7 +92,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
     <div className="fixed inset-0 bg-customblack/60 flex items-center justify-center z-[999]">
 
-      <div className="bg-customblack text-customwhite w-full max-w-xl rounded-2xl p-6 shadow-xl border border-[#E0B26F]/30">
+      <div className="bg-customblack text-customwhite w-full max-w-xl rounded-2xl p-6 shadow-xl border border-customyellow/30">
 
         <div className="flex justify-between items-center mb-4">
 
@@ -124,7 +124,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
           placeholder="Поиск ачивки..."
 
-          className="w-full bg-[#3A3333] text-customwhite rounded-lg px-4 py-3 mb-4 outline-none placeholder-customwhite/40"
+          className="w-full bg-customblack text-customwhite rounded-lg px-4 py-3 mb-4 outline-none placeholder-customwhite/40"
 
         />
 
@@ -152,7 +152,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
                 onClick={() => setSelected(a)}
 
-                className="w-full text-left bg-[#3A3333] hover:bg-[#4A4141] rounded-lg px-4 py-3 transition"
+                className="w-full text-left bg-customblack hover:bg-customgrey rounded-lg px-4 py-3 transition"
 
               >
 
@@ -172,7 +172,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
         {selected && (
 
-          <div className="mt-6 bg-[#3A3333] rounded-xl p-4 border border-[#E0B26F]/40">
+          <div className="mt-6 bg-customblack rounded-xl p-4 border border-customyellow/40">
 
             <div className="text-lg font-semibold mb-2">{selected.name}</div>
 
@@ -180,7 +180,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
   
 
-            <div className="bg-customblack/30 rounded-lg p-3 font-mono text-[#E0B26F] text-lg tracking-wide">
+            <div className="bg-customblack/30 rounded-lg p-3 font-mono text-customyellow text-lg tracking-wide">
 
               {selected.code}
 
@@ -190,7 +190,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
             <button
 
-              className="mt-4 bg-[#E0B26F] text-customblack font-semibold px-4 py-2 rounded-xl hover:bg-[#d0a25f] transition"
+              className="mt-4 bg-customyellow text-customblack font-semibold px-4 py-2 rounded-xl hover:bg-customyellow transition"
 
               onClick={() => navigator.clipboard.writeText(selected.code)}
 

@@ -125,7 +125,7 @@ const uploadIcon = async (file: File) => {
               type="text"
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -134,7 +134,7 @@ const uploadIcon = async (file: File) => {
             <textarea
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
               rows={3}
             />
           </div>
@@ -149,7 +149,7 @@ const uploadIcon = async (file: File) => {
       const file = e.target.files?.[0];
       if (file) uploadIcon(file);
     }}
-    className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+    className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
   />
 
   {uploadingIcon && (
@@ -160,7 +160,7 @@ const uploadIcon = async (file: File) => {
     <img
       src={form.iconUrl}
       alt="icon preview"
-      className="mt-2 w-16 h-16 object-contain rounded bg-[#111]"
+      className="mt-2 w-16 h-16 object-contain rounded bg-customblack" 
     />
   )}
 </div>
@@ -172,7 +172,7 @@ const uploadIcon = async (file: File) => {
               type="number"
               value={form.rewardGrains}
               onChange={(e) => update('rewardGrains', Number(e.target.value))}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -181,7 +181,7 @@ const uploadIcon = async (file: File) => {
             <select
               value={form.sectionId ?? ''}
               onChange={(e) => update('sectionId', e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             >
               <option value="">Выберите раздел</option>
               {sections.map((s) => (
@@ -204,13 +204,13 @@ const uploadIcon = async (file: File) => {
           </div>
 
           {checking && (
-            <div className="p-2 rounded bg-[#1b1b1b] text-customyellow text-sm">
+            <div className="p-2 rounded bg-customblack text-customyellow text-sm">
               Проверяем уникальность кода...
             </div>
           )}
 
           {generatedCode && (
-            <div className="p-3 rounded bg-[#1b1b1b] border border-customwhite/10">
+            <div className="p-3 rounded bg-customblack border border-customwhite/10">
               <p className="text-sm text-customwhite">Сгенерированный уникальный код:</p>
               <p className="font-bold text-customyellow text-lg">{generatedCode}</p>
             </div>
@@ -220,7 +220,7 @@ const uploadIcon = async (file: File) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey"
               disabled={creating || checking}
             >
               Отмена

@@ -80,7 +80,7 @@ export default function GrainManager() {
       <h1 className="text-2xl font-bold mb-4">Управление зернами</h1>
 
       <input
-        className="px-3 py-2 bg-[#222] rounded border border-customwhite/10 w-full mb-4"
+        className="px-3 py-2 bg-customblack rounded border border-customwhite/10 w-full mb-4"
         placeholder="Поиск пользователя..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -96,7 +96,7 @@ export default function GrainManager() {
               <div className="font-bold text-lg">
                 {user.firstName} {user.lastName}
               </div>
-              <div className="text-gray-400 text-sm">{user.email}</div>
+              <div className="text-customgrey text-sm">{user.email}</div>
             </div>
 
             <div className="flex gap-2">

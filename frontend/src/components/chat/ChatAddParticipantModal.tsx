@@ -61,7 +61,7 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               placeholder="cmi..."
-              className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
+              className="w-full bg-customblack px-3 py-2 rounded border border-customwhite/10"
             />
           </div>
 
@@ -71,12 +71,12 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
               placeholder="user@example.com"
-              className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
+              className="w-full bg-customblack px-3 py-2 rounded border border-customwhite/10"
             />
           </div>
 
           <div className="flex justify-end gap-3 mt-4">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded">
+            <button type="button" onClick={onClose} className="px-4 py-2 bg-customgrey rounded">
               Отмена
             </button>
 

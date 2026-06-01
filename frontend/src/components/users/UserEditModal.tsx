@@ -88,7 +88,7 @@ export default function UserEditModal({ id, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Имя</label>
             <input
               type="text"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               value={form.firstName || ''}
               onChange={(e) => handleChange('firstName', e.target.value)}
               required
@@ -99,7 +99,7 @@ export default function UserEditModal({ id, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Фамилия</label>
             <input
               type="text"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               value={form.lastName || ''}
               onChange={(e) => handleChange('lastName', e.target.value)}
               required
@@ -110,7 +110,7 @@ export default function UserEditModal({ id, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Телефон</label>
             <input
               type="text"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               value={form.phone || ''}
               onChange={(e) => handleChange('phone', e.target.value)}
             />
@@ -120,7 +120,7 @@ export default function UserEditModal({ id, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Дата рождения</label>
             <input
               type="date"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               value={form.dateOfBirth || ''}
               onChange={(e) => handleChange('dateOfBirth', e.target.value)}
             />
@@ -138,7 +138,7 @@ export default function UserEditModal({ id, onClose }: Props) {
           <div>
             <label className="block mb-1 text-customwhite">Роль</label>
             <select
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10"
               value={form.role || 'USER'}
               onChange={(e) => handleChange('role', e.target.value as any)}
             >
@@ -152,7 +152,7 @@ export default function UserEditModal({ id, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey"
             >
               Отмена
             </button>

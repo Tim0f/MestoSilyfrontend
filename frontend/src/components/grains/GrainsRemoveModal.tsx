@@ -63,7 +63,7 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
               min={1}
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
               required
             />
           </div>
@@ -73,12 +73,12 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
             <input
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
+              className="w-full bg-customblack border border-customwhite/10 px-3 py-2 rounded"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500">
+            <button type="button" onClick={onClose} className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey">
               Отмена
             </button>
             <button type="submit" disabled={loading} className="px-4 py-2 bg-[#D9534F] text-customblack rounded hover:bg-red-500">

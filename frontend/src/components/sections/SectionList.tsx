@@ -54,9 +54,9 @@ export default function SectionsList({ onEdit }: Props) {
         <div key={s.id} className="p-4 flex items-center justify-between hover:bg-customwhite/5">
           <div>
             <p className="text-lg font-medium">{s.name}</p>
-            <p className="text-gray-400 text-sm">Возраст: {s.ageMin}–{s.ageMax}</p>
-            <p className="text-gray-500 text-sm">Максимум участников: {s.maxParticipants}</p>
-            <p className="text-gray-500 text-sm">Активна: {s.isActive ? 'Да' : 'Нет'}</p>
+            <p className="text-customgrey text-sm">Возраст: {s.ageMin}–{s.ageMax}</p>
+            <p className="text-customgrey text-sm">Максимум участников: {s.maxParticipants}</p>
+            <p className="text-customgrey text-sm">Активна: {s.isActive ? 'Да' : 'Нет'}</p>
           </div>
 
           <div className="flex gap-4">
@@ -78,7 +78,7 @@ export default function SectionsList({ onEdit }: Props) {
       ))}
 
       {!sections.length && (
-        <p className="text-gray-400 p-4 text-center">Секций нет</p>
+        <p className="text-customgrey p-4 text-center">Секций нет</p>
       )}
     </div>
   );

@@ -48,10 +48,10 @@ export default function GrainsAddModal({ isOpen, onClose, userId, onUpdated }: P
         {error && <div className="text-[#FF6B4A] mb-2">{error}</div>}
 
         <form onSubmit={submit} className="space-y-3">
-          <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10" placeholder="Количество" required />
-          <input value={reason} onChange={(e) => setReason(e.target.value)} className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10" placeholder="Причина (опционально)" />
+          <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10" placeholder="Количество" required />
+          <input value={reason} onChange={(e) => setReason(e.target.value)} className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10" placeholder="Причина (опционально)" />
           <div className="flex justify-end gap-3 pt-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded">Отмена</button>
+            <button type="button" onClick={onClose} className="px-4 py-2 bg-customgrey rounded">Отмена</button>
             <button type="submit" disabled={loading} className="px-4 py-2 bg-green-500 text-customblack rounded">Начислить</button>
           </div>
         </form>

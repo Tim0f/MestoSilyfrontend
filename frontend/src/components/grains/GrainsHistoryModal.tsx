@@ -49,13 +49,13 @@ export default function GrainsHistoryModal({ isOpen, onClose, userId }: Props) {
 
         {loading && <p>Загрузка...</p>}
 
-        {!loading && history.length === 0 && <p className="text-gray-500">Нет данных</p>}
+        {!loading && history.length === 0 && <p className="text-customgrey">Нет данных</p>}
 
         <div className="space-y-3">
           {history.map((h) => (
             <div
               key={h.id}
-              className="border border-customwhite/10 p-3 rounded bg-[#222]"
+              className="border border-customwhite/10 p-3 rounded bg-customblack"
             >
               <div className="font-semibold">
                 {h.amount > 0 ? '+' : ''}
@@ -70,7 +70,7 @@ export default function GrainsHistoryModal({ isOpen, onClose, userId }: Props) {
         </div>
 
         <button
-          className="mt-6 px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
+          className="mt-6 px-4 py-2 bg-customgrey rounded hover:bg-customgrey"
           onClick={onClose}
         >
           Закрыть

@@ -84,7 +84,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
           <div>
             <label className="block mb-1 text-customwhite">Секция</label>
             <select
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
               value={form.sectionId}
               onChange={(e) => handleChange('sectionId', e.target.value)}
               required
@@ -101,7 +101,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
           <div>
             <label className="block mb-1 text-customwhite">Учитель</label>
             <select
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
               value={form.teacherId}
               onChange={(e) => handleChange('teacherId', e.target.value)}
               required
@@ -119,7 +119,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Дата</label>
             <input
               type="date"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
               value={form.date}
               onChange={(e) => handleChange('date', e.target.value)}
               required
@@ -130,7 +130,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Начало</label>
             <input
               type="time"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
               value={form.startsAt}
               onChange={(e) => handleChange('startsAt', e.target.value)}
               required
@@ -141,7 +141,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Окончание</label>
             <input
               type="time"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
               value={form.endsAt}
               onChange={(e) => handleChange('endsAt', e.target.value)}
               required
@@ -152,7 +152,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Локация</label>
             <input
               type="text"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
               value={form.location}
               onChange={(e) => handleChange('location', e.target.value)}
               required
@@ -163,7 +163,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Вместимость</label>
             <input
               type="number"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
               value={form.capacity}
               onChange={(e) => handleChange('capacity', Number(e.target.value))}
               required
@@ -173,7 +173,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
           <div>
             <label className="block mb-1 text-customwhite">Описание</label>
             <textarea
-              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+              className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
               value={form.description}
               onChange={(e) => handleChange('description', e.target.value)}
             />
@@ -183,7 +183,7 @@ export default function LessonCreateModal({ isOpen, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey"
             >
               Отмена
             </button>

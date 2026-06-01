@@ -112,14 +112,14 @@ const onFileChange = async (
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full bg-[#222] px-3 py-2 rounded"
+            className="w-full bg-customblack px-3 py-2 rounded"
           />
 
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={5}
-            className="w-full bg-[#222] px-3 py-2 rounded"
+            className="w-full bg-customblack px-3 py-2 rounded"
           />
 
           {/* КАРТИНКА */}
@@ -152,14 +152,14 @@ const onFileChange = async (
             type="date"
             value={publishedDate}
             onChange={(e) => setPublishedDate(e.target.value)}
-            className="bg-[#222] px-3 py-2 rounded"
+            className="bg-customblack px-3 py-2 rounded"
           />
 
           <div className="flex justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-600 px-4 py-2 rounded"
+              className="bg-customgrey px-4 py-2 rounded"
             >
               Отмена
             </button>

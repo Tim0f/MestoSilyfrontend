@@ -83,7 +83,7 @@ export default function AchievementsManager() {
       </div>
 
       {loading ? (
-        <p className="text-gray-400">Загрузка...</p>
+        <p className="text-customgrey">Загрузка...</p>
       ) : (
         <div className="space-y-4">
           {achievements.map((a) => (
@@ -93,7 +93,7 @@ export default function AchievementsManager() {
             >
               <div>
                 <h2 className="text-xl font-semibold">{a.name}</h2>
-                <p className="text-gray-400">{a.description}</p>
+                <p className="text-customgrey">{a.description}</p>
 
                 <p className="text-customwhite mt-2">
                   Раздел: <span className="text-customwhite">{getSectionName(a.sectionId)}</span>

@@ -84,7 +84,7 @@ export default function ProposalReviewModal({ id, onClose }: Props) {
       <div className="fixed inset-0 bg-customblack/60 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-customgrey p-6 rounded text-customwhite">
           <p className="text-[#FF6B4A]">{error}</p>
-          <button onClick={onClose} className="mt-4 px-4 py-2 bg-gray-600 rounded">
+          <button onClick={onClose} className="mt-4 px-4 py-2 bg-customgrey rounded">
             Закрыть
           </button>
         </div>
@@ -189,7 +189,7 @@ export default function ProposalReviewModal({ id, onClose }: Props) {
                 Причина отклонения (обязательно)
               </label>
               <textarea
-                className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+                className="w-full px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
                 rows={3}
                 value={reviewComment}
                 onChange={(e) => setReviewComment(e.target.value)}
@@ -202,7 +202,7 @@ export default function ProposalReviewModal({ id, onClose }: Props) {
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 text-customwhite"
+            className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey text-customwhite"
           >
             Закрыть
           </button>

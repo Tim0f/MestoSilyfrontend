@@ -13,9 +13,9 @@ interface EmptyStateProps {
 export default function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
   return (
     <div className="text-center py-12">
-      <Icon size={64} className="mx-auto text-gray-400 mb-4" />
-      <h3 className="text-xl font-h2 text-gray-900 mb-2">{title}</h3>
-      {description && <p className="text-gray-600 mb-6">{description}</p>}
+      <Icon size={64} className="mx-auto text-customgrey mb-4" />
+      <h3 className="text-xl font-h2 text-customblack mb-2">{title}</h3>
+      {description && <p className="text-customgrey mb-6">{description}</p>}
       {action && (
         <button
           onClick={action.onClick}

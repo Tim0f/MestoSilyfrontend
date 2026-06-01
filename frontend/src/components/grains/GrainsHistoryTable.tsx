@@ -15,7 +15,7 @@ export function GrainsHistoryTable({ history }: Props) {
   return (
     <table className="w-full border border-customwhite/10 text-left">
       <thead>
-        <tr className="bg-[#222]">
+        <tr className="bg-customblack">
           <th className="px-3 py-2">Дата</th>
           <th className="px-3 py-2">Тип</th>
           <th className="px-3 py-2">Сумма</th>

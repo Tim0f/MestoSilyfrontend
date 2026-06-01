@@ -40,7 +40,7 @@ export default function ChatCreateModal({
           <div>
             <label className="block mb-1">Тип чата</label>
             <select
-              className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
+              className="w-full bg-customblack px-3 py-2 rounded border border-customwhite/10"
               value={type}
               onChange={(e) => setType(e.target.value as any)}
             >
@@ -57,7 +57,7 @@ export default function ChatCreateModal({
               <select
                 value={sectionId}
                 onChange={(e) => setSectionId(e.target.value)}
-                className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
+                className="w-full bg-customblack px-3 py-2 rounded border border-customwhite/10"
               >
                 <option value="">Выберите секцию</option>
                 {sections.map((s: any) => (
@@ -74,7 +74,7 @@ export default function ChatCreateModal({
               <select
                 value={eventId}
                 onChange={(e) => setEventId(e.target.value)}
-                className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
+                className="w-full bg-customblack px-3 py-2 rounded border border-customwhite/10"
               >
                 <option value="">Выберите событие</option>
                 {events.map((ev: any) => (
@@ -88,7 +88,7 @@ export default function ChatCreateModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded"
+              className="px-4 py-2 bg-customgrey rounded"
             >
               Отмена
             </button>

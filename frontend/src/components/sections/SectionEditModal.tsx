@@ -144,7 +144,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
         <div>
           <label className="block mb-1">Название</label>
           <input
-            className="w-full bg-[#222] rounded px-3 py-2"
+            className="w-full bg-customblack rounded px-3 py-2"
             value={form.name}
             onChange={(e) => handleChange("name", e.target.value)}
           />
@@ -154,7 +154,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
         <div>
           <label className="block mb-1">Описание</label>
           <textarea
-            className="w-full bg-[#222] rounded px-3 py-2"
+            className="w-full bg-customblack rounded px-3 py-2"
             rows={3}
             value={form.description}
             onChange={(e) => handleChange("description", e.target.value)}
@@ -207,7 +207,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
         <div>
           <label className="block mb-1">Ссылка на Google Drive галерею</label>
           <input
-            className="w-full bg-[#222] rounded px-3 py-2"
+            className="w-full bg-customblack rounded px-3 py-2"
             value={form.galleryDriveUrl}
             onChange={(e) =>
               handleChange("galleryDriveUrl", e.target.value)
@@ -231,19 +231,19 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
         <div className="grid grid-cols-3 gap-2">
           <input
             type="number"
-            className="bg-[#222] rounded px-3 py-2"
+            className="bg-customblack rounded px-3 py-2"
             value={form.ageMin}
             onChange={(e) => handleChange("ageMin", Number(e.target.value))}
           />
           <input
             type="number"
-            className="bg-[#222] rounded px-3 py-2"
+            className="bg-customblack rounded px-3 py-2"
             value={form.ageMax}
             onChange={(e) => handleChange("ageMax", Number(e.target.value))}
           />
           <input
             type="number"
-            className="bg-[#222] rounded px-3 py-2"
+            className="bg-customblack rounded px-3 py-2"
             value={form.maxParticipants}
             onChange={(e) =>
               handleChange("maxParticipants", Number(e.target.value))
@@ -263,7 +263,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
                 className={`flex items-center gap-3 p-2 rounded border ${
                   form.teacherIds[0] === t.id
                     ? "border-customyellow bg-customyellow/20"
-                    : "border-customwhite/10 bg-[#222]"
+                    : "border-customwhite/10 bg-customblack"
                 }`}
               >
                 <img

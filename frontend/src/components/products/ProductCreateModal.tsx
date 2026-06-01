@@ -67,7 +67,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               value={form.name}
               onChange={(e) => update("name", e.target.value)}
               required
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -78,7 +78,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               onChange={(e) => update("description", e.target.value)}
               rows={3}
               required
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -90,7 +90,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               onChange={(e) => update("price", Number(e.target.value))}
               min={0}
               required
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -101,10 +101,10 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
-              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
             />
 
-            {uploading && <p className="text-yellow-400 mt-1">Загрузка...</p>}
+            {uploading && <p className="text-customyellow mt-1">Загрузка...</p>}
 
             {form.imageUrl && (
               <img
@@ -128,7 +128,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500"
+              className="px-4 py-2 bg-customgrey rounded hover:bg-customgrey"
             >
               Отмена
             </button>

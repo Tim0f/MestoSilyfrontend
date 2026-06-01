@@ -72,13 +72,13 @@ export default function EventsList({ onEdit }: Props) {
         >
           <div className="space-y-1">
             <p className="text-lg font-semibold">{ev.title}</p>
-            <p className="text-gray-400 text-sm">{ev.description}</p>
-            <p className="text-gray-400 text-sm">Дата: {ev.date}</p>
-            <p className="text-gray-400 text-sm">
+            <p className="text-customgrey text-sm">{ev.description}</p>
+            <p className="text-customgrey text-sm">Дата: {ev.date}</p>
+            <p className="text-customgrey text-sm">
               Время: {ev.startTime} — {ev.endTime}
             </p>
-            <p className="text-gray-500 text-sm">Цена: {ev.price}зерен</p>
-            <p className="text-gray-500 text-sm">Максимум участников: {ev.maxParticipants}</p>
+            <p className="text-customgrey text-sm">Цена: {ev.price}зерен</p>
+            <p className="text-customgrey text-sm">Максимум участников: {ev.maxParticipants}</p>
           </div>
 
           <div className="flex gap-3">
@@ -100,7 +100,7 @@ export default function EventsList({ onEdit }: Props) {
       ))}
 
       {!events.length && (
-        <p className="text-gray-400 p-4 text-center">Событий пока нет</p>
+        <p className="text-customgrey p-4 text-center">Событий пока нет</p>
       )}
     </div>
   );

@@ -16,7 +16,7 @@ export default function TeacherPickCard({ teacher, selected, onToggle }: Props) 
       onClick={() => onToggle(teacher.id)}
       className={`
         cursor-pointer border rounded-xl p-4 flex flex-col items-center gap-3 transition
-        ${selected ? "border-customyellow bg-customyellow/10" : "border-customwhite/10 bg-[#222]"}
+        ${selected ? "border-customyellow bg-customyellow/10" : "border-customwhite/10 bg-customblack"}
         hover:border-customyellow
       `}
       style={{ width: "160px" }}
@@ -30,7 +30,7 @@ export default function TeacherPickCard({ teacher, selected, onToggle }: Props) 
       <div className="text-center">
         <p className="font-semibold text-customwhite">{teacher.fullName}</p>
         {teacher.position && (
-          <p className="text-xs text-gray-400">{teacher.position}</p>
+          <p className="text-xs text-customgrey">{teacher.position}</p>
         )}
       </div>
 
