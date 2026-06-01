@@ -309,7 +309,7 @@ const getChatAvatar = (c?: ChatItem) => {
   })();
 
   return (
-    <div className="min-h-screen bg-customblack text-white flex items-top justify-center pt-4 md:pt-16">
+    <div className="min-h-screen bg-customblack text-customwhite flex items-top justify-center pt-4 md:pt-16">
       <div className="relative w-full">
         <div
           className="pointer-events-none absolute inset-0 z-50"
@@ -333,7 +333,7 @@ const getChatAvatar = (c?: ChatItem) => {
 
               <div className="overflow-y-auto px-4 py-4 space-y-3 flex-1">
                 {chats.length === 0 ? (
-                  <div className="text-white/50 text-center">Чатов нет</div>
+                  <div className="text-customwhite/50 text-center">Чатов нет</div>
                 ) : (
                   chats.map((c: ChatItem) => (
                     <button
@@ -349,7 +349,7 @@ const getChatAvatar = (c?: ChatItem) => {
                       <Avatar src={getChatAvatar(c)} size={44} />
                       <div className="flex-1">
                         <div className="font-bold text-base md:text-lg">{getChatName(c)}</div>
-                        <div className="text-sm text-white/70 mt-1">
+                        <div className="text-sm text-customwhite/70 mt-1">
                           Сообщений: {c._count?.messages ?? 0}
                         </div>
                       </div>
@@ -393,11 +393,11 @@ const getChatAvatar = (c?: ChatItem) => {
                 className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-8"
               >
                 {loadingConnection ? (
-                  <div className="text-center text-white/60 mt-10">Подключение к чату…</div>
+                  <div className="text-center text-customwhite/60 mt-10">Подключение к чату…</div>
                 ) : loadingMessages ? (
-                  <div className="text-center text-white/60 mt-10">Загрузка сообщений…</div>
+                  <div className="text-center text-customwhite/60 mt-10">Загрузка сообщений…</div>
                 ) : messages.length === 0 ? (
-                  <div className="text-center text-white/60 mt-10">Нет сообщений</div>
+                  <div className="text-center text-customwhite/60 mt-10">Нет сообщений</div>
                 ) : (
                   <div className="space-y-4 md:space-y-6">
                     {messages.map((m) => {
@@ -455,7 +455,7 @@ const getChatAvatar = (c?: ChatItem) => {
                     value={newMessage}
                     onChange={(e) => onTypingChange(e.target.value)}
                     placeholder="Напишите сообщение..."
-                    className="flex-1 bg-customgrey text-white rounded-full px-4 md:px-6 py-3 md:py-4 outline-none placeholder-customwhite/40 text-sm md:text-base"
+                    className="flex-1 bg-customgrey text-customwhite rounded-full px-4 md:px-6 py-3 md:py-4 outline-none placeholder-customwhite/40 text-sm md:text-base"
                   />
                   <button type="submit" className="p-3 rounded-full bg-customyellow">
                     <Send size={20} />

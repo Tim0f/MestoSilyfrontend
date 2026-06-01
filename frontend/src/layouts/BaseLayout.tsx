@@ -5,7 +5,7 @@ import BottomNav from '../components/BottomNav'
 
 export default function Layout() {
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-customblack transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-customwhite dark:bg-customblack transition-colors duration-300">
       <Header />
 
       <main className="flex-grow pb-20"> {/* отступ снизу под BottomNav */}

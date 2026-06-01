@@ -12,7 +12,7 @@ export default function EventCard({ event, isEnrolled, onClick }: any) {
         <p className="mt-2 md:mt-4 text-sm md:text-base">{event.description}</p>
 
         <button onClick={onClick} className="mt-6 bg-customyellow text-customblack px-6 py-3"/>
-        <button onClick={onClick} className="mt-4 md:mt-6 bg-customyellow text-black px-4 py-2 md:px-6 md:py-3 text-sm md:text-base">
+        <button onClick={onClick} className="mt-4 md:mt-6 bg-customyellow text-customblack px-4 py-2 md:px-6 md:py-3 text-sm md:text-base">
           {isEnrolled ? "Отменить" : "Записаться"}
         </button>
       </div>
