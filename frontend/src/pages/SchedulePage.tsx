@@ -205,7 +205,7 @@ export default function SchedulePage() {
   /* ====================== RENDER ====================== */
 
   return (
-    <div className="min-h-screen bg-customblack text-customwhite pb-[200px]">
+    <div className="min-h-screen bg-customblack   text-customwhite pb-[200px]">
       <ScheduleHeader />
 
 <div className="flex justify-center w-full">
@@ -228,8 +228,8 @@ export default function SchedulePage() {
   />
 </div>
 
-      {loading && <div className="text-center mt-20">Загрузка…</div>}
-      {error && <div className="text-center text-red-400 mt-20">{error}</div>}
+      {loading && <div className="text-center flex justify-center mt-20">Загрузка…</div>}
+      {error && <div className="text-center flex justify-center text-red-400 mt-20">{error}</div>}
 
       <SessionsGrid
         sessions={filteredSessions}

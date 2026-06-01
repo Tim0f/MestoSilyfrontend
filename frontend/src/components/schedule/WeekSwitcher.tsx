@@ -29,7 +29,7 @@ export default function WeekSwitcher({
   if (!weekDates?.length) return null;
 
   return (
-    <div className="flex flex-col md:flex-row items-start md:items-center gap-[20px] md:gap-[40px] mt-4 md:mt-6 w-full">
+    <div className="flex justify-center flex-col md:flex-row items-start md:items-center gap-[20px] md:gap-[40px] mt-4 md:mt-6 w-full">
       {/* ===== БЕСПЛАТНЫЕ ПОСЕЩЕНИЯ ===== */}
       <div className="flex items-center gap-[10px] md:gap-[20px]">
         <span className="text-p font-p text-customwhite w-auto md:w-[243px]">

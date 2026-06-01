@@ -63,7 +63,7 @@ export default function SessionCard({
 
   return (
     <div
-      className={`relative w-full max-w-[597px] h-auto md:h-[604px] md:w-[597px] overflow-hidden ${
+      className={`relative flex justify-center w-full max-w-[597px] h-auto md:h-[604px] md:w-[597px] overflow-hidden ${
         theme.bg
       } ${!isEnrolled ? "textured-border" : ""}`}
     >
