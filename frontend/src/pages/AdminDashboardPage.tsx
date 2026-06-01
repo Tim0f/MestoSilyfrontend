@@ -164,7 +164,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <p className="text-xl font-semibold">{title}</p>
-              <p className="text-sm mt-1 text-gray-400">{description}</p>
+              <p className="text-sm mt-1 text-customgrey">{description}</p>
             </Link>
           ))}
         </section>

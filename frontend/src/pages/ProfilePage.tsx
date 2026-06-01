@@ -108,26 +108,26 @@ export default function ProfilePage() {
     <div className="text-customwhite bg-customblack min-h-screen mt-14 md:mt-12 p-4 md:p-6 space-y-4 md:space-y-6">
       {/* PROFILE / SCHEDULE / BALANCE BLOCKS */}
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
-        <div className="bg-customblack border border-[#403B36] rounded-2xl p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 md:gap-6 relative overflow-hidden w-full md:w-[629px] h-auto md:h-[448px]">
-          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl pointer-events-none" />
+        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 md:gap-6 relative overflow-hidden w-full md:w-[629px] h-auto md:h-[448px]">
+          <div className="absolute inset-0 border border-customyellow/30 rounded-2xl pointer-events-none" />
           <img src={userData.avatarUrl} className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover" />
           <div className="flex flex-col gap-1 text-sm text-center sm:text-left">
             <h1 className="text-lg md:text-xl font-h2">{userData.firstName} {userData.lastName}</h1>
-            <p className="text-primary-300">Дата рождения: {userData.dateOfBirth}</p>
-            <p className="text-primary-300">{userData.email}</p>
+            <p className="text-customgrey">Дата рождения: {userData.dateOfBirth}</p>
+            <p className="text-customgrey">{userData.email}</p>
           </div>
         </div>
 
-        <div className="bg-customblack border border-[#403B36] rounded-2xl p-4 md:p-6 relative w-full md:w-[715px] h-auto md:h-[448px]">
-          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl" />
+        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative w-full md:w-[715px] h-auto md:h-[448px]">
+          <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
           <h2 className="text-base md:text-lg font-h2 mb-3 md:mb-4">Расписание на сегодня</h2>
           <div className="w-full flex flex-col gap-4 md:gap-6 overflow-y-auto pr-2 text-sm max-h-[280px] md:max-h-none">
             {schedule.map((item) => (
-              <div key={item.id} className="relative bg-customblack rounded-2xl p-4 md:p-6 border border-[#403B36] flex flex-col sm:flex-row justify-between items-start gap-3">
-                <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl" />
+              <div key={item.id} className="relative bg-customblack rounded-2xl p-4 md:p-6 border border-customyellow/30 flex flex-col sm:flex-row justify-between items-start gap-3">
+                <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
                 <div>
                   <h3 className="font-h2 text-lg md:text-xl leading-tight mb-2 md:mb-4">{item.title}</h3>
-                  <p className="text-[#E8E1DC] font-p text-sm md:text-base leading-snug max-w-[360px]">{item.description}</p>
+                  <p className="text-customgrey font-p text-sm md:text-base leading-snug max-w-[360px]">{item.description}</p>
                 </div>
                 <div className="text-right font-h2 text-lg md:text-xl sm:text-right w-full sm:w-auto">
                   <p>{item.date}</p>
@@ -138,8 +138,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="bg-customblack border border-[#403B36] rounded-2xl p-4 md:p-6 relative flex flex-col justify-between w-full md:w-[442px] h-auto md:h-[448px]">
-          <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl" />
+        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative flex flex-col justify-between w-full md:w-[442px] h-auto md:h-[448px]">
+          <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
           <div className="flex items-center justify-center md:justify-start gap-2 md:gap-4 flex-wrap">
             <p className="text-customyellow text-[80px] md:text-[170px] font-h1 leading-none">{userData.totalGrains}</p>
             <Zerno className="w-20 h-20 md:w-40 md:h-40 text-customyellow" />
@@ -193,20 +193,20 @@ export default function ProfilePage() {
       {/* ACHIEVEMENTS LIST */}
       <div className="mt-8 md:mt-12 flex flex-col gap-4 md:gap-6 w-full max-w-4xl mx-auto">
         {filteredAchievements.map((a, i) => (
-          <div key={i} className="flex flex-col md:flex-row items-center justify-between bg-customblack border border-[#403B36] rounded-2xl px-4 md:px-6 py-4 relative gap-4">
-            <div className="absolute inset-0 border border-[#8E6F4C] rounded-2xl" />
+          <div key={i} className="flex flex-col md:flex-row items-center justify-between bg-customblack border border-customyellow/30 rounded-2xl px-4 md:px-6 py-4 relative gap-4">
+            <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
             <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
               <img src={a.iconUrl} className="w-10 h-10 md:w-12 md:h-12" />
               <div className="flex flex-col text-center md:text-left">
                 <h3 className="font-h1 text-xl md:text-2xl text-customyellow leading-none">{a.name}</h3>
-                <p className="text-sm md:text-base text-[#E8E1DC] mt-1">{a.description}</p>
+                <p className="text-sm md:text-base text-customgrey mt-1">{a.description}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-center md:justify-end">
               {a.isActive ? (
                 <button className="bg-customyellow text-customblack font-h2 px-5 py-2 rounded-xl shadow hover:brightness-90 text-sm">получить</button>
               ) : (
-                <div className="bg-[#403B36] text-[#8E857F] font-h2 px-5 py-2 rounded-xl text-sm">получено</div>
+                  <div className="bg-customgrey text-customwhite font-h2 px-5 py-2 rounded-xl text-sm">получено</div>
               )}
               <div className="flex items-center gap-1 md:gap-2">
                 <span className="text-customyellow text-lg md:text-xl font-h1">{a.rewardGrains}</span>

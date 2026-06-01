@@ -160,7 +160,7 @@ export default function AdminEnrollmentsPage() {
 
                   ? "bg-customyellow text-customblack"
 
-                  : "bg-[#3A3333]"
+                  : "bg-customgrey"
 
               }`}
 
@@ -210,9 +210,9 @@ export default function AdminEnrollmentsPage() {
 
                     selectedLesson === l.id
 
-                      ? "border-customyellow bg-[#403a24]"
+                      ? "border-customyellow bg-customgrey"
 
-                      : "border-gray-500 bg-[#2a2a2a]"
+                      : "border-customgrey bg-customgrey"
 
                   }`}
 
@@ -286,7 +286,7 @@ export default function AdminEnrollmentsPage() {
 
               <thead>
 
-                <tr className="border-b border-[#555]">
+                <tr className="border-b border-customgrey">
 
                   <th className="p-3">Имя</th>
 
@@ -302,7 +302,7 @@ export default function AdminEnrollmentsPage() {
 
                 {enrollments.map((e) => (
 
-                  <tr key={e.id} className="border-b border-[#444]">
+                  <tr key={e.id} className="border-b border-customgrey">
 
                     <td className="p-3">
 

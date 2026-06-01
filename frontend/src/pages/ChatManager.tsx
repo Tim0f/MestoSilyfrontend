@@ -131,7 +131,7 @@ export default function ChatsManager() {
 
       {/* MESSAGES VIEW */}
       {selectedChat && (
-        <div className="mt-8 p-4 bg-[#222] border border-customwhite/10 rounded">
+        <div className="mt-8 p-4 bg-customblack border border-customwhite/10 rounded">
           <h2 className="text-xl font-bold mb-2">
             Сообщения чата {selectedChat.id}
           </h2>

@@ -55,7 +55,7 @@ export default function AdminProposalsPage() {
 
         <div className="flex gap-4">
           <select
-            className="px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+            className="px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as ProposalStatus | '')}
           >
@@ -89,7 +89,7 @@ export default function AdminProposalsPage() {
               </tr>
             ) : (
               proposals.map((p) => (
-                <tr key={p.id} className="border-b border-customwhite/5 hover:bg-white/5">
+                <tr key={p.id} className="border-b border-customwhite/5 hover:bg-customwhite/5">
                   <td className="p-3">{p.title}</td>
                   <td className="p-3">
                     {p.type === 'SECTION' ? 'Секция' : 'Мероприятие'}

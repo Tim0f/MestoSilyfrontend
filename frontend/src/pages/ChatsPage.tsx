@@ -322,12 +322,12 @@ const getChatAvatar = (c?: ChatItem) => {
             <div
               className={`${
                 showChatList ? "flex" : "hidden"
-              } md:flex w-full md:w-1/3 bg-[#3A3333] flex-col`}
+              } md:flex w-full md:w-1/3 bg-customgrey flex-col`}
             >
               <div className="px-4 md:px-6 py-4 md:py-6">
                 <h2 className="text-2xl md:text-4xl font-bold">ЧАТЫ</h2>
               </div>
-              <div className="border-t border-b border-[#E0B26F]/20 mx-4" />
+              <div className="border-t border-b border-customyellow/20 mx-4" />
 
   
 
@@ -343,7 +343,7 @@ const getChatAvatar = (c?: ChatItem) => {
                         setShowChatList(false); // на мобильных скрываем список
                       }}
                       className={`w-full flex items-center gap-4 p-4 rounded-md text-left ${
-                        selectedChatId === c.id ? "bg-[#352e2e]" : "bg-transparent"
+                        selectedChatId === c.id ? "bg-customgrey" : "bg-transparent"
                       }`}
                     >
                       <Avatar src={getChatAvatar(c)} size={44} />
@@ -414,7 +414,7 @@ const getChatAvatar = (c?: ChatItem) => {
 
                           <div className={`max-w-[85%] md:max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
                             {!isMine && (
-                              <div className="text-xs text-[#E0B26F] mb-1">
+                              <div className="text-xs text-customyellow mb-1">
                                 {m.author?.firstName ?? "Пользователь"}
                               </div>
                             )}
@@ -449,7 +449,7 @@ const getChatAvatar = (c?: ChatItem) => {
                 <div ref={endRef} />
               </div>
 
-              <div className="px-4 md:px-8 py-4 md:py-6 border-t border-[#E0B26F]/20">
+              <div className="px-4 md:px-8 py-4 md:py-6 border-t border-customyellow/20">
                 <form onSubmit={sendMessage} className="flex items-center gap-3 md:gap-4">
                   <input
                     value={newMessage}

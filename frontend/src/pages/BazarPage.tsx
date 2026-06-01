@@ -184,7 +184,7 @@ export default function BazarPage() {
 
     ) : (
 
-      <div className="w-full h-full bg-gray-700/40" />
+      <div className="w-full h-full bg-customgrey/40" />
 
     )}
 
