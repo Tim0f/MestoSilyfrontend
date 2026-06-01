@@ -62,8 +62,8 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-xl text-white max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-customblack/60 flex items-center justify-center z-50 overflow-y-auto">
+      <div className="bg-customgrey border border-customwhite/10 rounded-xl p-6 w-full max-w-xl text-customwhite max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">Изменить товар</h2>
 
         <form onSubmit={save} className="space-y-4">
@@ -73,7 +73,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               type="text"
               value={form.name}
               onChange={(e) => update("name", e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -83,7 +83,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               value={form.description}
               onChange={(e) => update("description", e.target.value)}
               rows={3}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -94,7 +94,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               min={0}
               value={form.price}
               onChange={(e) => update("price", Number(e.target.value))}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -105,7 +105,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
 
             {uploading && <p className="text-yellow-400 mt-1">Загрузка...</p>}
@@ -114,7 +114,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               <img
                 src={form.imageUrl}
                 alt="preview"
-                className="mt-2 w-32 h-32 object-cover rounded border border-white/20"
+                className="mt-2 w-32 h-32 object-cover rounded border border-customwhite/20"
               />
             )}
           </div>
@@ -139,7 +139,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
             <button
               type="submit"
-              className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
+              className="px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow"
               disabled={uploading}
             >
               Сохранить

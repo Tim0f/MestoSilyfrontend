@@ -49,8 +49,8 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="bg-customgrey border border-white/10 p-6 rounded-xl w-full max-w-md text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-customblack/60">
+      <div className="bg-customgrey border border-customwhite/10 p-6 rounded-xl w-full max-w-md text-customwhite">
         <h3 className="text-xl font-bold mb-4">Списать зерна</h3>
 
         {error && <div className="text-[#FF6B4A] mb-2">{error}</div>}
@@ -63,7 +63,7 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
               min={1}
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
-              className="w-full bg-[#222] border border-white/10 px-3 py-2 rounded"
+              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
               required
             />
           </div>
@@ -73,7 +73,7 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
             <input
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              className="w-full bg-[#222] border border-white/10 px-3 py-2 rounded"
+              className="w-full bg-[#222] border border-customwhite/10 px-3 py-2 rounded"
             />
           </div>
 
@@ -81,7 +81,7 @@ export default function GrainsRemoveModal({ isOpen, onClose, userId, onUpdated }
             <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500">
               Отмена
             </button>
-            <button type="submit" disabled={loading} className="px-4 py-2 bg-[#D9534F] text-black rounded hover:bg-red-500">
+            <button type="submit" disabled={loading} className="px-4 py-2 bg-[#D9534F] text-customblack rounded hover:bg-red-500">
               Списать
             </button>
           </div>

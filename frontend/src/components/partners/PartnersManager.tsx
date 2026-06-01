@@ -34,12 +34,12 @@ export default function PartnersManager() {
   };
 
   return (
-    <div className="p-6 text-white">
+    <div className="p-6 text-customwhite">
       <h1 className="text-2xl font-bold mb-4">Партнёры</h1>
 
       <button
         onClick={() => setCreateOpen(true)}
-        className="mb-4 px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow font-semibold"
+        className="mb-4 px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow font-semibold"
       >
         Создать партнёра
       </button>
@@ -51,7 +51,7 @@ export default function PartnersManager() {
           {partners.map((p) => (
             <div
               key={p.id}
-              className="flex items-center justify-between bg-customgrey border border-white/10 p-4 rounded-xl"
+              className="flex items-center justify-between bg-customgrey border border-customwhite/10 p-4 rounded-xl"
             >
               <div className="flex items-center gap-4">
                 <img

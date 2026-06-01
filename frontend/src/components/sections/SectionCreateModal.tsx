@@ -105,7 +105,7 @@ export default function SectionCreateModal({ isOpen, onClose }: Props) {
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} title="Создать секцию">
-      <form onSubmit={create} className="space-y-4 text-white">
+      <form onSubmit={create} className="space-y-4 text-customwhite">
 
         {error && <div className="text-red-500">{error}</div>}
 
@@ -177,7 +177,7 @@ export default function SectionCreateModal({ isOpen, onClose }: Props) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-customyellow text-black rounded px-4 py-2"
+          className="w-full bg-customyellow text-customblack rounded px-4 py-2"
         >
           {loading ? 'Создание...' : 'Создать'}
         </button>

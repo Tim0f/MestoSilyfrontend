@@ -90,9 +90,9 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
   return (
 
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[999]">
+    <div className="fixed inset-0 bg-customblack/60 flex items-center justify-center z-[999]">
 
-      <div className="bg-customblack text-white w-full max-w-xl rounded-2xl p-6 shadow-xl border border-[#E0B26F]/30">
+      <div className="bg-customblack text-customwhite w-full max-w-xl rounded-2xl p-6 shadow-xl border border-[#E0B26F]/30">
 
         <div className="flex justify-between items-center mb-4">
 
@@ -102,7 +102,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
             onClick={onClose}
 
-            className="text-white text-xl hover:text-[#FF6B4A]"
+            className="text-customwhite text-xl hover:text-[#FF6B4A]"
 
           >
 
@@ -124,7 +124,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
           placeholder="Поиск ачивки..."
 
-          className="w-full bg-[#3A3333] text-white rounded-lg px-4 py-3 mb-4 outline-none placeholder-white/40"
+          className="w-full bg-[#3A3333] text-customwhite rounded-lg px-4 py-3 mb-4 outline-none placeholder-customwhite/40"
 
         />
 
@@ -136,11 +136,11 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
           {loading ? (
 
-            <div className="text-white/50 text-center py-6">Загрузка...</div>
+            <div className="text-customwhite/50 text-center py-6">Загрузка...</div>
 
           ) : filtered.length === 0 ? (
 
-            <div className="text-white/50 text-center py-6">Ничего не найдено</div>
+            <div className="text-customwhite/50 text-center py-6">Ничего не найдено</div>
 
           ) : (
 
@@ -176,11 +176,11 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
             <div className="text-lg font-semibold mb-2">{selected.name}</div>
 
-            <div className="text-sm text-white/70 mb-2">Код для получения:</div>
+            <div className="text-sm text-customwhite/70 mb-2">Код для получения:</div>
 
   
 
-            <div className="bg-black/30 rounded-lg p-3 font-mono text-[#E0B26F] text-lg tracking-wide">
+            <div className="bg-customblack/30 rounded-lg p-3 font-mono text-[#E0B26F] text-lg tracking-wide">
 
               {selected.code}
 
@@ -190,7 +190,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
             <button
 
-              className="mt-4 bg-[#E0B26F] text-black font-semibold px-4 py-2 rounded-xl hover:bg-[#d0a25f] transition"
+              className="mt-4 bg-[#E0B26F] text-customblack font-semibold px-4 py-2 rounded-xl hover:bg-[#d0a25f] transition"
 
               onClick={() => navigator.clipboard.writeText(selected.code)}
 

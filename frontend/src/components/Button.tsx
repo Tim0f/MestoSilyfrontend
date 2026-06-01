@@ -27,10 +27,10 @@ export default function Button({
   const baseStyles = 'font-h2 rounded-lg transition transform active:scale-95 flex items-center justify-center gap-2'
   
   const variants = {
-    primary: 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700',
+    primary: 'bg-gradient-to-r from-orange-500 to-orange-600 text-customwhite hover:from-orange-600 hover:to-orange-700',
     secondary: 'bg-gray-200 text-gray-800 hover:bg-customwhite',
-    success: 'bg-green-500 text-white hover:bg-[#52C57B]',
-    danger: 'bg-red-500 text-white hover:bg-[#D9534F]',
+    success: 'bg-green-500 text-customwhite hover:bg-[#52C57B]',
+    danger: 'bg-red-500 text-customwhite hover:bg-[#D9534F]',
     ghost: 'bg-transparent text-orange-600 hover:bg-orange-50',
   }
   

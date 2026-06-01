@@ -205,26 +205,28 @@ export default function SchedulePage() {
   /* ====================== RENDER ====================== */
 
   return (
-    <div className="min-h-screen bg-customblack text-white pb-[200px]">
+    <div className="min-h-screen bg-customblack text-customwhite pb-[200px]">
       <ScheduleHeader />
 
-      <WeekSwitcher
-        weekDates={weekDates}
-        selectedDate={selectedDate}
-        onSelect={setSelectedDate}
-        subscriptionCount={subscriptionCount}
-        onOpenFreeVisits={() => setIsFreeVisitsModalOpen(true)}
-        onPrevWeek={() => {
-          const d = new Date(selectedDate);
-          d.setDate(d.getDate() - 7);
-          setSelectedDate(d);
-        }}
-        onNextWeek={() => {
-          const d = new Date(selectedDate);
-          d.setDate(d.getDate() + 7);
-          setSelectedDate(d);
-        }}
-      />
+<div className="flex justify-center w-full">
+  <WeekSwitcher
+    weekDates={weekDates}
+    selectedDate={selectedDate}
+    onSelect={setSelectedDate}
+    subscriptionCount={subscriptionCount}
+    onOpenFreeVisits={() => setIsFreeVisitsModalOpen(true)}
+    onPrevWeek={() => {
+      const d = new Date(selectedDate);
+      d.setDate(d.getDate() - 7);
+      setSelectedDate(d);
+    }}
+    onNextWeek={() => {
+      const d = new Date(selectedDate);
+      d.setDate(d.getDate() + 7);
+      setSelectedDate(d);
+    }}
+  />
+</div>
 
       {loading && <div className="text-center mt-20">Загрузка…</div>}
       {error && <div className="text-center text-red-400 mt-20">{error}</div>}

@@ -51,8 +51,8 @@ export default function AdminCreateModal({ isOpen, onClose }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-customgrey border border-white/10 p-8 rounded-xl w-full max-w-xl">
+    <div className="fixed inset-0 bg-customblack/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-customgrey border border-customwhite/10 p-8 rounded-xl w-full max-w-xl">
         <h2 className="text-2xl font-bold mb-6">Создать администратора</h2>
 
         {error && <p className="text-[#FF6B4A] mb-4">{error}</p>}
@@ -62,7 +62,7 @@ export default function AdminCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Email</label>
             <input
               type="email"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
               value={form.email}
               onChange={(e) => handleChange('email', e.target.value)}
               required
@@ -73,7 +73,7 @@ export default function AdminCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Пароль</label>
             <input
               type="password"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
               value={form.password}
               onChange={(e) => handleChange('password', e.target.value)}
               required
@@ -85,7 +85,7 @@ export default function AdminCreateModal({ isOpen, onClose }: Props) {
               <label className="block mb-1 text-customwhite">Имя</label>
               <input
                 type="text"
-                className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+                className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
                 value={form.firstName}
                 onChange={(e) => handleChange('firstName', e.target.value)}
                 required
@@ -96,7 +96,7 @@ export default function AdminCreateModal({ isOpen, onClose }: Props) {
               <label className="block mb-1 text-customwhite">Фамилия</label>
               <input
                 type="text"
-                className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+                className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
                 value={form.lastName}
                 onChange={(e) => handleChange('lastName', e.target.value)}
                 required
@@ -108,7 +108,7 @@ export default function AdminCreateModal({ isOpen, onClose }: Props) {
             <label className="block mb-1 text-customwhite">Телефон</label>
             <input
               type="text"
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
               value={form.phone}
               onChange={(e) => handleChange('phone', e.target.value)}
             />
@@ -126,7 +126,7 @@ export default function AdminCreateModal({ isOpen, onClose }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow disabled:opacity-60"
+              className="px-4 py-2 bg-customyellow text-customblack rounded font-semibold hover:bg-customyellow disabled:opacity-60"
             >
               {loading ? 'Создание...' : 'Создать'}
             </button>

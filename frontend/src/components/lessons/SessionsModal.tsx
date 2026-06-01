@@ -64,20 +64,20 @@ export default function SessionsModal({ isOpen, onClose }: Props) {
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} title="Расписание уроков">
-      <div className="text-white space-y-6 max-h-[75vh] overflow-y-auto">
+      <div className="text-customwhite space-y-6 max-h-[75vh] overflow-y-auto">
         {/* DATE FILTER */}
-        <div className="p-4 border border-white/20 rounded-lg">
+        <div className="p-4 border border-customwhite/20 rounded-lg">
           <h2 className="text-xl font-bold mb-3">Фильтр по дате</h2>
           <div className="flex gap-4 items-center mb-4">
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="text-black px-3 py-2 rounded"
+              className="text-customblack px-3 py-2 rounded"
             />
             <button
               onClick={loadByDate}
-              className="px-4 py-2 bg-[#5BC0EB] hover:bg-blue-400 text-black rounded font-semibold"
+              className="px-4 py-2 bg-[#5BC0EB] hover:bg-blue-400 text-customblack rounded font-semibold"
             >
               Загрузить
             </button>
@@ -85,24 +85,24 @@ export default function SessionsModal({ isOpen, onClose }: Props) {
         </div>
 
         {/* RANGE FILTER */}
-        <div className="p-4 border border-white/20 rounded-lg">
+        <div className="p-4 border border-customwhite/20 rounded-lg">
           <h2 className="text-xl font-bold mb-3">Фильтр по диапазону дат</h2>
           <div className="flex gap-4 items-center mb-4">
             <input
               type="date"
               value={rangeStart}
               onChange={(e) => setRangeStart(e.target.value)}
-              className="text-black px-3 py-2 rounded"
+              className="text-customblack px-3 py-2 rounded"
             />
             <input
               type="date"
               value={rangeEnd}
               onChange={(e) => setRangeEnd(e.target.value)}
-              className="text-black px-3 py-2 rounded"
+              className="text-customblack px-3 py-2 rounded"
             />
             <button
               onClick={loadByRange}
-              className="px-4 py-2 bg-green-500 hover:bg-green-400 text-black rounded font-semibold"
+              className="px-4 py-2 bg-green-500 hover:bg-green-400 text-customblack rounded font-semibold"
             >
               Загрузить
             </button>
@@ -111,30 +111,30 @@ export default function SessionsModal({ isOpen, onClose }: Props) {
 
         {/* RESULTS */}
         {loading ? (
-          <p className="text-white">Загрузка…</p>
+          <p className="text-customwhite">Загрузка…</p>
         ) : lessons.length === 0 ? (
-          <p className="text-white/60">Нет уроков</p>
+          <p className="text-customwhite/60">Нет уроков</p>
         ) : (
-          <div className="overflow-x-auto border border-white/20 rounded p-4">
+          <div className="overflow-x-auto border border-customwhite/20 rounded p-4">
             <div className="min-w-max grid" style={{ gridTemplateColumns: `repeat(${sortedDates.length}, 280px)` }}>
               {sortedDates.map((d) => (
-                <div key={d} className="border border-white/10 p-3">
+                <div key={d} className="border border-customwhite/10 p-3">
                   <h3 className="font-bold text-lg mb-3">{d}</h3>
 
                   {groupByDate[d]
                     .sort((a, b) => a.startsAt.localeCompare(b.startsAt))
                     .map((l) => (
-                      <div key={l.id} className="mb-3 p-3 bg-white/5 rounded">
+                      <div key={l.id} className="mb-3 p-3 bg-customwhite/5 rounded">
                         <p>
                           <b>{l.section.name}</b>
                         </p>
                         <p>
                           {l.startsAt} — {l.endsAt}
                         </p>
-                        <p className="text-white/70 text-sm">
+                        <p className="text-customwhite/70 text-sm">
                           Учитель: {l.teacher ? `${l.teacher.firstName} ${l.teacher.lastName}` : "—"}
                         </p>
-                        <p className="text-white/70 text-sm">Место: {l.location ?? "—"}</p>
+                        <p className="text-customwhite/70 text-sm">Место: {l.location ?? "—"}</p>
                       </div>
                     ))}
                 </div>

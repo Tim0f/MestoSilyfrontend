@@ -102,8 +102,8 @@ const onFileChange = async (
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-2xl text-white">
+    <div className="fixed inset-0 bg-customblack/60 flex items-center justify-center z-50 overflow-y-auto">
+      <div className="bg-customgrey border border-customwhite/10 rounded-xl p-6 w-full max-w-2xl text-customwhite">
         <h2 className="text-2xl font-bold mb-4">Редактировать новость</h2>
 
         {error && <div className="text-[#FF6B4A] mb-3">{error}</div>}
@@ -125,7 +125,7 @@ const onFileChange = async (
           {/* КАРТИНКА */}
           <div className="space-y-2">
             {images.length > 0 ? (
-              <div className="border border-white/10 p-2 rounded w-48">
+              <div className="border border-customwhite/10 p-2 rounded w-48">
                 <img
                   src={getPublicUrl(images[0])}
                   className="h-28 w-full object-cover rounded"
@@ -166,7 +166,7 @@ const onFileChange = async (
             <button
               type="submit"
               disabled={loading}
-              className="bg-customyellow text-black px-4 py-2 rounded"
+              className="bg-customyellow text-customblack px-4 py-2 rounded"
             >
               Сохранить
             </button>

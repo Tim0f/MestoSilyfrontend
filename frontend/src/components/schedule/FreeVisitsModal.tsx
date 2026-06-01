@@ -245,7 +245,7 @@ await freeVisitsService.purchaseFreeVisits(1);
 
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-customblack/70">
 
-      <div className="relative w-[95vw] max-w-[1600px] max-h-[85vh] text-white overflow-hidden">
+      <div className="relative w-[95vw] max-w-[1600px] max-h-[85vh] text-customwhite overflow-hidden">
 
   
 
@@ -312,7 +312,7 @@ await freeVisitsService.purchaseFreeVisits(1);
 
             {/* ПРОБНОЕ */}
 
-            <div className="w-[300px] min-h-[450px] bg-customyellow text-black p-[32px] flex flex-col justify-between">
+            <div className="w-[300px] min-h-[450px] bg-customyellow text-customblack p-[32px] flex flex-col justify-between">
 
               <div>
 
@@ -348,7 +348,7 @@ await freeVisitsService.purchaseFreeVisits(1);
 
                   disabled={isLoading}
 
-                  className="bg-black text-customyellow text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
+                  className="bg-customblack text-customyellow text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
 
                   style={{
 
@@ -406,7 +406,7 @@ await freeVisitsService.purchaseFreeVisits(1);
 
                 disabled={isLoading}
 
-                className="bg-customyellow text-black text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
+                className="bg-customyellow text-customblack text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
 
                 style={{
 
@@ -460,7 +460,7 @@ await freeVisitsService.purchaseFreeVisits(1);
 
                 disabled={isLoading}
 
-                className="bg-customyellow text-black text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
+                className="bg-customyellow text-customblack text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
 
                 style={{
 
@@ -514,7 +514,7 @@ await freeVisitsService.purchaseFreeVisits(1);
 
                 disabled={isLoading}
 
-                className="bg-customyellow text-black text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
+                className="bg-customyellow text-customblack text-[18px] font-bold hover:opacity-80 transition disabled:opacity-50"
 
                 style={{
 

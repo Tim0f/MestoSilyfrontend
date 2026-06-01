@@ -75,15 +75,15 @@ export default function LessonsList({ onEdit, sectionId }: Props) {
   if (error) return <p className="text-[#FF6B4A]">{error}</p>;
 
   return (
-    <div className="bg-customgrey border border-white/10 rounded-xl divide-y divide-white/5">
+    <div className="bg-customgrey border border-customwhite/10 rounded-xl divide-y divide-customwhite/5">
       {lessons.map((lesson) => (
         <div
           key={lesson.id}
-          className="p-4 flex items-center justify-between hover:bg-white/5"
+          className="p-4 flex items-center justify-between hover:bg-customwhite/5"
         >
           <div className="space-y-1">
             {/* Секция */}
-            <p className="text-white text-medium">
+            <p className="text-customwhite text-medium">
               Секция: {lesson.section?.name ?? '—'}
             </p>
 

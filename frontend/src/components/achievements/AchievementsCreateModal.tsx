@@ -114,8 +114,8 @@ const uploadIcon = async (file: File) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-lg text-white">
+    <div className="fixed inset-0 bg-customblack/60 flex items-center justify-center z-50">
+      <div className="bg-customgrey border border-customwhite/10 rounded-xl p-6 w-full max-w-lg text-customwhite">
         <h2 className="text-xl font-bold mb-4">Создать ачивку</h2>
 
         <form onSubmit={create} className="space-y-4">
@@ -125,7 +125,7 @@ const uploadIcon = async (file: File) => {
               type="text"
               value={form.name}
               onChange={(e) => update('name', e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -134,7 +134,7 @@ const uploadIcon = async (file: File) => {
             <textarea
               value={form.description}
               onChange={(e) => update('description', e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
               rows={3}
             />
           </div>
@@ -149,7 +149,7 @@ const uploadIcon = async (file: File) => {
       const file = e.target.files?.[0];
       if (file) uploadIcon(file);
     }}
-    className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+    className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
   />
 
   {uploadingIcon && (
@@ -172,7 +172,7 @@ const uploadIcon = async (file: File) => {
               type="number"
               value={form.rewardGrains}
               onChange={(e) => update('rewardGrains', Number(e.target.value))}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -181,7 +181,7 @@ const uploadIcon = async (file: File) => {
             <select
               value={form.sectionId ?? ''}
               onChange={(e) => update('sectionId', e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             >
               <option value="">Выберите раздел</option>
               {sections.map((s) => (
@@ -210,7 +210,7 @@ const uploadIcon = async (file: File) => {
           )}
 
           {generatedCode && (
-            <div className="p-3 rounded bg-[#1b1b1b] border border-white/10">
+            <div className="p-3 rounded bg-[#1b1b1b] border border-customwhite/10">
               <p className="text-sm text-customwhite">Сгенерированный уникальный код:</p>
               <p className="font-bold text-customyellow text-lg">{generatedCode}</p>
             </div>
@@ -227,7 +227,7 @@ const uploadIcon = async (file: File) => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
+              className="px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow"
               disabled={creating || checking}
             >
               {creating ? "Создаём..." : "Создать"}

@@ -35,12 +35,12 @@ export default function ProductsManager() {
   };
 
   return (
-    <div className="p-6 text-white">
+    <div className="p-6 text-customwhite">
       <h1 className="text-2xl font-bold mb-4">Товары</h1>
 
       <button
         onClick={() => setCreateOpen(true)}
-        className="mb-4 px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow font-semibold"
+        className="mb-4 px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow font-semibold"
       >
         Создать товар
       </button>
@@ -52,7 +52,7 @@ export default function ProductsManager() {
           {products.map((p) => (
             <div
               key={p.id}
-              className="bg-customgrey border border-white/10 p-4 rounded-xl flex items-center justify-between"
+              className="bg-customgrey border border-customwhite/10 p-4 rounded-xl flex items-center justify-between"
             >
               <div className="flex items-center gap-4">
                 <img

@@ -89,7 +89,7 @@ export default function WeekSwitcher({
 
           <Border3 className="w-full h-full fill-customyellow stroke-customyellow flex justify-center items-center hover:scale-[1.03] transition">
 
-            <span className="text-[28px] font-h1 text-black leading-none">
+            <span className="text-[28px] font-h1 text-customblack leading-none">
 
               {subscriptionCount}
 
@@ -151,7 +151,7 @@ export default function WeekSwitcher({
 
                 >
 
-                  <span className="text-[26px] font-h1 text-black leading-none">
+                  <span className="text-[26px] font-h1 text-customblack leading-none">
 
                     {date.getDate()}
 

@@ -93,14 +93,14 @@ export default function EventEditModal({ id, onClose }: Props) {
 
   if (loading)
     return (
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 text-white">
+      <div className="fixed inset-0 bg-customblack/60 backdrop-blur-sm flex items-center justify-center z-50 text-customwhite">
         Загрузка...
       </div>
     );
 
   return (
-    <div className="fixed inset-0 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-customgrey border border-white/10 p-8 rounded-xl w-full max-w-xl max-h-[90vh] overflow-y-auto text-white">
+    <div className="fixed inset-0 overflow-y-auto bg-customblack/60 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-customgrey border border-customwhite/10 p-8 rounded-xl w-full max-w-xl max-h-[90vh] overflow-y-auto text-customwhite">
         <h2 className="text-2xl font-bold mb-6">Редактировать событие</h2>
 
         {error && <p className="text-[#FF6B4A] mb-4">{error}</p>}
@@ -113,7 +113,7 @@ export default function EventEditModal({ id, onClose }: Props) {
               type="text"
               value={form.name || ''}
               onChange={(e) => handleChange('name', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
             />
           </div>
 
@@ -124,7 +124,7 @@ export default function EventEditModal({ id, onClose }: Props) {
               type="text"
               value={form.title || ''}
               onChange={(e) => handleChange('title', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
             />
           </div>
 
@@ -134,7 +134,7 @@ export default function EventEditModal({ id, onClose }: Props) {
             <textarea
               value={form.description || ''}
               onChange={(e) => handleChange('description', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
               rows={3}
             />
           </div>
@@ -146,7 +146,7 @@ export default function EventEditModal({ id, onClose }: Props) {
               type="date"
               value={form.date || ''}
               onChange={(e) => handleChange('date', e.target.value)}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
             />
           </div>
 
@@ -158,7 +158,7 @@ export default function EventEditModal({ id, onClose }: Props) {
                 type="time"
                 value={form.startTime || ''}
                 onChange={(e) => handleChange('startTime', e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+                className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
               />
             </div>
 
@@ -168,7 +168,7 @@ export default function EventEditModal({ id, onClose }: Props) {
                 type="time"
                 value={form.endTime || ''}
                 onChange={(e) => handleChange('endTime', e.target.value)}
-                className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+                className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
               />
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function EventEditModal({ id, onClose }: Props) {
               type="number"
               value={form.price ?? 0}
               onChange={(e) => handleChange('price', Number(e.target.value))}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
             />
           </div>
 
@@ -191,7 +191,7 @@ export default function EventEditModal({ id, onClose }: Props) {
               type="number"
               value={form.maxParticipants ?? 0}
               onChange={(e) => handleChange('maxParticipants', Number(e.target.value))}
-              className="w-full px-3 py-2 rounded bg-[#222] border border-white/10"
+              className="w-full px-3 py-2 rounded bg-[#222] border border-customwhite/10"
             />
           </div>
 
@@ -202,7 +202,7 @@ export default function EventEditModal({ id, onClose }: Props) {
               type="color"
               value={form.textColor || '#ffffff'}
               onChange={(e) => handleChange('textColor', e.target.value)}
-              className="w-full h-10 bg-[#222] border border-white/10 rounded"
+              className="w-full h-10 bg-[#222] border border-customwhite/10 rounded"
             />
           </div>
 
@@ -213,7 +213,7 @@ export default function EventEditModal({ id, onClose }: Props) {
               <img
                 src={form.imageUrl}
                 alt="image"
-                className="w-full max-h-40 object-cover rounded border border-white/10"
+                className="w-full max-h-40 object-cover rounded border border-customwhite/10"
               />
             )}
             <input
@@ -231,7 +231,7 @@ export default function EventEditModal({ id, onClose }: Props) {
               <img
                 src={form.bannerUrl}
                 alt="banner"
-                className="w-full max-h-40 object-cover rounded border border-white/10"
+                className="w-full max-h-40 object-cover rounded border border-customwhite/10"
               />
             )}
             <input
@@ -254,7 +254,7 @@ export default function EventEditModal({ id, onClose }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow disabled:opacity-60"
+              className="px-4 py-2 bg-customyellow text-customblack rounded font-semibold hover:bg-customyellow disabled:opacity-60"
             >
               Сохранить изменения
             </button>

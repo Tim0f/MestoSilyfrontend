@@ -1,3 +1,5 @@
+import { getPublicUrl } from "../utils/publicUrl";
+
 // src/pages/ChatsPage.tsx
 
 import React, { useEffect, useRef, useState } from "react";
@@ -62,25 +64,32 @@ export default function ChatsPage(): JSX.Element {
 
   /* ================= UI HELPERS ================= */
 
-  const Avatar = ({ src, size = 44 }: { src?: string; size?: number }) => (
-    <div
-      className="flex items-center justify-center rounded-full"
-      style={{ width: size, height: size, background: "#E0B26F" }}
-    >
-      {src ? (
-        <img src={src} className="w-full h-full object-cover rounded-full" />
-      ) : (
-        <span className="text-white font-bold">?</span>
-      )}
-    </div>
-  );
+const Avatar = ({ src, size = 44 }: { src?: string; size?: number }) => (
+  <div
+    className="flex items-center justify-center rounded-full bg-customyellow/50 overflow-hidden"
+    style={{ width: size, height: size }}
+  >
+    {src ? (
+      <div className="w-full h-full flex items-center justify-center p-[10%]">
+        <img
+          src={src}
+          className="max-w-full max-h-full object-contain"
+          alt="avatar"
+        />
+      </div>
+    ) : (
+      <span className="text-customwhite font-bold">?</span>
+    )}
+  </div>
+);
 
   const getChatName = (c?: ChatItem) =>
     c?.section?.name ?? c?.event?.name ?? "Без названия";
 
-  const getChatAvatar = (c?: ChatItem) =>
-    c?.section?.imageUrl ?? c?.event?.imageUrl ?? undefined;
-
+const getChatAvatar = (c?: ChatItem) => {
+  const raw = c?.section?.imageUrl ?? c?.event?.imageUrl ?? undefined;
+  return raw ? getPublicUrl(raw) : undefined;
+};
   /* ================= SCROLL ================= */
 
   const scrollToBottomSmooth = () => {
@@ -301,7 +310,7 @@ export default function ChatsPage(): JSX.Element {
 
   return (
 
-    <div className="min-h-screen bg-customblack text-white flex items-top justify-center pt-16">
+    <div className="min-h-screen bg-customblack text-customwhite flex items-top justify-center pt-16">
 
       <div className="relative w-full ">
 
@@ -337,7 +346,7 @@ export default function ChatsPage(): JSX.Element {
 
                 {chats.length === 0 ? (
 
-                  <div className="text-white/50 text-center">Чатов нет</div>
+                  <div className="text-customwhite/50 text-center">Чатов нет</div>
 
                 ) : (
 
@@ -351,7 +360,7 @@ export default function ChatsPage(): JSX.Element {
 
                       className={`w-full flex items-center gap-4 p-4 rounded-md text-left ${
 
-                        selectedChatId === c.id ? "bg-[#352e2e]" : "bg-transparent"
+                        selectedChatId === c.id ? "bg-cutsomyellow" : "bg-transparent"
 
                       }`}
 
@@ -363,7 +372,7 @@ export default function ChatsPage(): JSX.Element {
 
                         <div className="font-bold text-lg">{getChatName(c)}</div>
 
-                        <div className="text-sm text-white/70 mt-1">
+                        <div className="text-sm text-customwhite/70 mt-1">
 
                           Сообщений: {c._count?.messages ?? 0}
 
@@ -425,15 +434,15 @@ export default function ChatsPage(): JSX.Element {
 
                 {loadingConnection ? (
 
-                  <div className="text-center text-white/60 mt-10">Подключение к чату…</div>
+                  <div className="text-center text-customwhite/60 mt-10">Подключение к чату…</div>
 
                 ) : loadingMessages ? (
 
-                  <div className="text-center text-white/60 mt-10">Загрузка сообщений…</div>
+                  <div className="text-center text-customwhite/60 mt-10">Загрузка сообщений…</div>
 
                 ) : messages.length === 0 ? (
 
-                  <div className="text-center text-white/60 mt-10">Нет сообщений</div>
+                  <div className="text-center text-customwhite/60 mt-10">Нет сообщений</div>
 
                 ) : (
 
@@ -549,7 +558,7 @@ export default function ChatsPage(): JSX.Element {
 
                     placeholder="Напишите сообщение..."
 
-                    className="flex-1 bg-customgrey text-white rounded-full px-6 py-4 outline-none placeholder-customwhite/40"
+                    className="flex-1 bg-customgrey text-customwhite rounded-full px-6 py-4 outline-none placeholder-customwhite/40"
 
                   />
 

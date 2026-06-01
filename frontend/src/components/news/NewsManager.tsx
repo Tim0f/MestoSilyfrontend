@@ -58,12 +58,12 @@ export default function NewsManager() {
   };
 
   return (
-    <div className="p-6 text-white">
+    <div className="p-6 text-customwhite">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Новости</h1>
         <button
           onClick={() => setCreateOpen(true)}
-          className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
+          className="px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow"
         >
           Создать новость
         </button>
@@ -76,7 +76,7 @@ export default function NewsManager() {
           {news.map((n) => (
             <div
               key={n.id}
-              className="bg-customgrey border border-white/10 p-4 rounded-xl flex gap-4"
+              className="bg-customgrey border border-customwhite/10 p-4 rounded-xl flex gap-4"
             >
               <div className="w-28 h-20 flex-shrink-0 overflow-hidden rounded">
                 <img

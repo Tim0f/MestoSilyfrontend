@@ -105,7 +105,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="text-white bg-customblack min-h-screen p-6 space-y-6">
+    <div className="text-customwhite bg-customblack min-h-screen p-6 space-y-6">
       {/* PROFILE / SCHEDULE / BALANCE BLOCKS */}
       <div className="flex gap-6 w-full">
         <div className="bg-customblack border border-[#403B36] rounded-2xl p-6 flex items-center gap-6 relative overflow-hidden" style={{ width: "629px", height: "448px" }}>
@@ -157,7 +157,7 @@ export default function ProfilePage() {
           {/* Новая кнопка "Получить достижение" */}
           <button
             onClick={() => setModalOpen(true)}
-            className="bg-customyellow text-black font-h2 px-6 py-2 rounded-xl hover:brightness-90"
+            className="bg-customyellow text-customblack font-h2 px-6 py-2 rounded-xl hover:brightness-90"
           >
             Получить достижение
           </button>
@@ -202,7 +202,7 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-center gap-4">
               {a.isActive ? (
-                <button className="bg-customyellow text-black font-h2 px-6 py-2 rounded-xl shadow hover:brightness-90 text-sm">получить</button>
+                <button className="bg-customyellow text-customblack font-h2 px-6 py-2 rounded-xl shadow hover:brightness-90 text-sm">получить</button>
               ) : (
                 <div className="bg-[#403B36] text-[#8E857F] font-h2 px-6 py-2 rounded-xl text-sm">получено</div>
               )}

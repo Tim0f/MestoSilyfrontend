@@ -35,7 +35,7 @@ const [news, setNews] = useState<NewsItem[]>([])
         <h1 className="text-4xl font-h1 mb-8">Новости</h1>
 
         {news.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+          <div className="bg-customwhite rounded-xl shadow-lg p-12 text-center">
             <Newspaper size={64} className="mx-auto text-gray-400 mb-4" />
             <p className="text-xl text-gray-600">Новостей пока нет</p>
           </div>
@@ -44,7 +44,7 @@ const [news, setNews] = useState<NewsItem[]>([])
             {news.map((item) => (
               <article
                 key={item.id}
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition"
+                className="bg-customwhite rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition"
               >
                 <div className="md:flex">
                   {item.imageUrl ? (

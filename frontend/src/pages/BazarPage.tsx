@@ -104,7 +104,7 @@ export default function BazarPage() {
 
     return (
 
-      <div className="w-full min-h-screen bg-customblack text-white p-6 pt-16">
+      <div className="w-full min-h-screen bg-customblack text-customwhite p-6 pt-16">
 
         {/* Заголовок */}
 
@@ -130,7 +130,7 @@ export default function BazarPage() {
 
   return (
 
-    <div className="w-full min-h-screen bg-customblack text-white p-6">
+    <div className="w-full min-h-screen bg-customblack text-customwhite p-6">
 
       {/* Заголовок */}
 
@@ -192,7 +192,7 @@ export default function BazarPage() {
 
     {/* Цена */}
 
-    <div className="absolute top-1 right-0 bg-customyellow text-black w-[108px] h-[81px] rounded-md shadow flex items-center justify-center text-h2 font-h2">
+    <div className="absolute top-1 right-0 bg-customyellow text-customblack w-[108px] h-[81px] rounded-md shadow flex items-center justify-center text-h2 font-h2">
 
       {item.price}
 
@@ -230,7 +230,7 @@ export default function BazarPage() {
 
       onClick={() => buy(item.id)}
 
-      className="mt-auto w-full bg-customyellow text-black font-p py-2 text-center hover:brightness-90 cursor-pointer"
+      className="mt-auto w-full bg-customyellow text-customblack font-p py-2 text-center hover:brightness-90 cursor-pointer"
 
     >
 

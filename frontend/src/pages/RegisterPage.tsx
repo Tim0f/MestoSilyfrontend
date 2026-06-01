@@ -82,7 +82,7 @@ export default function RegisterPage() {
                 required
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-black rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-customblack rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                 placeholder="Ваше имя"
               />
             </div>
@@ -97,7 +97,7 @@ export default function RegisterPage() {
                 required
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-black rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-customblack rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                 placeholder="Ваша фамилия"
               />
             </div>
@@ -112,7 +112,7 @@ export default function RegisterPage() {
                 required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-black rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-customblack rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                 placeholder="+79001234567"
               />
             </div>
@@ -127,7 +127,7 @@ export default function RegisterPage() {
                 required
                 value={dateOfBirth}
                 onChange={(e) => setDateOfBirth(e.target.value)}
-                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-black rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-customblack rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                 placeholder="2010-01-01"
               />
             </div>
@@ -142,7 +142,7 @@ export default function RegisterPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-black rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-customblack rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                 placeholder="example@email.com"
               />
             </div>
@@ -157,7 +157,7 @@ export default function RegisterPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-black rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-customblack rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                 placeholder="••••••••"
               />
             </div>
@@ -172,14 +172,14 @@ export default function RegisterPage() {
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-black rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 bg-dark-900 border border-primary-900/30 text-customblack rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
                 placeholder="••••••••"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-primary-500 text-white py-3 rounded-lg font-light hover:bg-primary-600 transition transform hover:scale-105"
+              className="w-full bg-primary-500 text-customwhite py-3 rounded-lg font-light hover:bg-primary-600 transition transform hover:scale-105"
             >
               Зарегистрироваться
             </button>

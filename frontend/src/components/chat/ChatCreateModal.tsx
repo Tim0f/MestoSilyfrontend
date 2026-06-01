@@ -30,8 +30,8 @@ export default function ChatCreateModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-customgrey p-6 rounded-xl border border-white/10 w-full max-w-lg text-white">
+    <div className="fixed inset-0 bg-customblack/70 flex items-center justify-center z-50">
+      <div className="bg-customgrey p-6 rounded-xl border border-customwhite/10 w-full max-w-lg text-customwhite">
         <h2 className="text-xl font-bold mb-4">Создать чат</h2>
 
         <form onSubmit={create} className="space-y-4">
@@ -40,7 +40,7 @@ export default function ChatCreateModal({
           <div>
             <label className="block mb-1">Тип чата</label>
             <select
-              className="w-full bg-[#222] px-3 py-2 rounded border border-white/10"
+              className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
               value={type}
               onChange={(e) => setType(e.target.value as any)}
             >
@@ -57,7 +57,7 @@ export default function ChatCreateModal({
               <select
                 value={sectionId}
                 onChange={(e) => setSectionId(e.target.value)}
-                className="w-full bg-[#222] px-3 py-2 rounded border border-white/10"
+                className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
               >
                 <option value="">Выберите секцию</option>
                 {sections.map((s: any) => (
@@ -74,7 +74,7 @@ export default function ChatCreateModal({
               <select
                 value={eventId}
                 onChange={(e) => setEventId(e.target.value)}
-                className="w-full bg-[#222] px-3 py-2 rounded border border-white/10"
+                className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
               >
                 <option value="">Выберите событие</option>
                 {events.map((ev: any) => (

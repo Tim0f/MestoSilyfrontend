@@ -138,7 +138,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
 
   return (
     <BaseModal isOpen={isOpen} onClose={onClose} title="Редактировать секцию">
-      <form onSubmit={save} className="space-y-4 text-white">
+      <form onSubmit={save} className="space-y-4 text-customwhite">
 
         {/* Название */}
         <div>
@@ -168,7 +168,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
           {imagePreview && (
             <img
               src={resolvePreviewSrc(imagePreview)}
-              className="w-32 h-32 rounded mb-2 object-cover border border-white/20"
+              className="w-32 h-32 rounded mb-2 object-cover border border-customwhite/20"
               alt=""
             />
           )}
@@ -189,7 +189,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
           {iconPreview && (
             <img
               src={resolvePreviewSrc(iconPreview)}
-              className="w-20 h-20 rounded mb-2 object-cover border border-white/20"
+              className="w-20 h-20 rounded mb-2 object-cover border border-customwhite/20"
               alt=""
             />
           )}
@@ -263,7 +263,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
                 className={`flex items-center gap-3 p-2 rounded border ${
                   form.teacherIds[0] === t.id
                     ? "border-customyellow bg-customyellow/20"
-                    : "border-white/10 bg-[#222]"
+                    : "border-customwhite/10 bg-[#222]"
                 }`}
               >
                 <img
@@ -281,7 +281,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
 
         <button
           type="submit"
-          className="w-full px-4 py-2 bg-customyellow text-black rounded"
+          className="w-full px-4 py-2 bg-customyellow text-customblack rounded"
         >
           Сохранить изменения
         </button>

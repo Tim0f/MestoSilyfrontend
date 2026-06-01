@@ -119,7 +119,7 @@ export default function RequestPage() {
 
             <button
               onClick={handleSubmit}
-              className="bg-customyellow text-black px-6 py-2"
+              className="bg-customyellow text-customblack px-6 py-2"
             >
               Отправить
             </button>
@@ -134,7 +134,7 @@ export default function RequestPage() {
             {requests.map((r) => (
               <div
                 key={r.id}
-                className="bg-customyellow text-black p-6"
+                className="bg-customyellow text-customblack p-6"
               >
                 <p className="font-bold">Название заявки:</p>
                 <p className="mb-2">{r.title}</p>

@@ -92,8 +92,8 @@ const handleFileUpload = async (file: File | null) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-customgrey border border-white/10 rounded-xl p-6 w-full max-w-2xl text-white max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-customblack/60 flex items-center justify-center z-50 overflow-y-auto">
+      <div className="bg-customgrey border border-customwhite/10 rounded-xl p-6 w-full max-w-2xl text-customwhite max-h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Создать новость</h2>
 
         {error && <div className="text-[#FF6B4A] mb-3">{error}</div>}
@@ -105,7 +105,7 @@ const handleFileUpload = async (file: File | null) => {
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -115,7 +115,7 @@ const handleFileUpload = async (file: File | null) => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={6}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -130,7 +130,7 @@ const handleFileUpload = async (file: File | null) => {
             <div className="flex flex-wrap gap-3 mt-4">
               {images.length > 0 && (
   <div className="w-28">
-    <div className="w-28 h-20 rounded overflow-hidden bg-[#222] border border-white/10">
+    <div className="w-28 h-20 rounded overflow-hidden bg-[#222] border border-customwhite/10">
       <img
         src={getPublicUrl(images[0])}
         className="w-full h-full object-cover"
@@ -155,7 +155,7 @@ const handleFileUpload = async (file: File | null) => {
               type="date"
               value={publishedDate}
               onChange={(e) => setPublishedDate(e.target.value)}
-              className="w-full bg-[#222] border border-white/10 rounded px-3 py-2"
+              className="w-full bg-[#222] border border-customwhite/10 rounded px-3 py-2"
             />
           </div>
 
@@ -163,7 +163,7 @@ const handleFileUpload = async (file: File | null) => {
             <button type="button" onClick={onClose} className="bg-gray-600 px-4 py-2 rounded">
               Отмена
             </button>
-            <button type="submit" disabled={loading} className="bg-customyellow text-black px-4 py-2 rounded">
+            <button type="submit" disabled={loading} className="bg-customyellow text-customblack px-4 py-2 rounded">
               Создать
             </button>
           </div>

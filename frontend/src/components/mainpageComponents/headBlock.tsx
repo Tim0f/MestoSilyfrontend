@@ -6,7 +6,7 @@ import Mask1 from '../../assets/img/Mask1.png'
 
 export default function HeadBlock() {
   return (
-    <section className="relative min-h-[100vh] flex items-center justify-center text-white overflow-hidden px-4">
+    <section className="relative min-h-[100vh] flex items-center justify-center text-customwhite overflow-hidden px-4">
 
       <div
         className="absolute inset-0 bg-customblack"

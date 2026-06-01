@@ -15,12 +15,12 @@ export default function AdminUsersPage() {
   const [editUserId, setEditUserId] = useState<string | null>(null);
 
   return (
-    <div className="p-10 text-white space-y-10">
+    <div className="p-10 text-customwhite space-y-10">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Пользователи</h1>
         <button
           onClick={() => setIsCreateAdminOpen(true)}
-          className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow"
+          className="px-4 py-2 bg-customyellow text-customblack rounded font-semibold hover:bg-customyellow"
         >
           Создать администратора
         </button>

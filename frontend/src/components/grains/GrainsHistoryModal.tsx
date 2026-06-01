@@ -41,8 +41,8 @@ export default function GrainsHistoryModal({ isOpen, onClose, userId }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-customgrey p-6 rounded-xl w-full max-w-xl max-h-[80vh] overflow-y-auto border border-white/10 text-white">
+    <div className="fixed inset-0 bg-customblack/60 flex items-center justify-center z-50">
+      <div className="bg-customgrey p-6 rounded-xl w-full max-w-xl max-h-[80vh] overflow-y-auto border border-customwhite/10 text-customwhite">
         <h2 className="text-xl font-bold mb-4">История операций</h2>
 
         <p className="mb-3 text-customwhite">Всего зерен: {total}</p>
@@ -55,7 +55,7 @@ export default function GrainsHistoryModal({ isOpen, onClose, userId }: Props) {
           {history.map((h) => (
             <div
               key={h.id}
-              className="border border-white/10 p-3 rounded bg-[#222]"
+              className="border border-customwhite/10 p-3 rounded bg-[#222]"
             >
               <div className="font-semibold">
                 {h.amount > 0 ? '+' : ''}

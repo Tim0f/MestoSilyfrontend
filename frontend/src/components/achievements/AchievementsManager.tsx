@@ -70,13 +70,13 @@ export default function AchievementsManager() {
   };
 
   return (
-    <div className="text-white p-6">
+    <div className="text-customwhite p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Ачивки</h1>
 
         <button
           onClick={() => setCreateOpen(true)}
-          className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
+          className="px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow"
         >
           Создать ачивку
         </button>
@@ -89,18 +89,18 @@ export default function AchievementsManager() {
           {achievements.map((a) => (
             <div
               key={a.id}
-              className="p-4 bg-customgrey border border-white/10 rounded-xl flex justify-between"
+              className="p-4 bg-customgrey border border-customwhite/10 rounded-xl flex justify-between"
             >
               <div>
                 <h2 className="text-xl font-semibold">{a.name}</h2>
                 <p className="text-gray-400">{a.description}</p>
 
                 <p className="text-customwhite mt-2">
-                  Раздел: <span className="text-white">{getSectionName(a.sectionId)}</span>
+                  Раздел: <span className="text-customwhite">{getSectionName(a.sectionId)}</span>
                 </p>
 
                 <p className="text-customwhite">
-                  Награда: <span className="text-white">{a.rewardGrains} зерен</span>
+                  Награда: <span className="text-customwhite">{a.rewardGrains} зерен</span>
                 </p>
 
                 <p className="text-customwhite">

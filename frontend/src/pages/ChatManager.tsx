@@ -54,7 +54,7 @@ export default function ChatsManager() {
   };
 
   return (
-    <div className="text-white p-6">
+    <div className="text-customwhite p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Чаты</h1>
 
@@ -71,7 +71,7 @@ export default function ChatsManager() {
         {chats.map((chat) => (
           <div
             key={chat.id}
-            className="p-4 bg-customgrey border border-white/10 rounded flex justify-between"
+            className="p-4 bg-customgrey border border-customwhite/10 rounded flex justify-between"
           >
             <div>
               <p><b>ID:</b> {chat.id}</p>
@@ -105,7 +105,7 @@ export default function ChatsManager() {
               </button>
 
               <button
-                className="px-3 py-1 bg-customyellow text-black rounded hover:bg-customyellow"
+                className="px-3 py-1 bg-customyellow text-customblack rounded hover:bg-customyellow"
                 onClick={() => setEditChat(chat)}
               >
                 Редактировать
@@ -131,7 +131,7 @@ export default function ChatsManager() {
 
       {/* MESSAGES VIEW */}
       {selectedChat && (
-        <div className="mt-8 p-4 bg-[#222] border border-white/10 rounded">
+        <div className="mt-8 p-4 bg-[#222] border border-customwhite/10 rounded">
           <h2 className="text-xl font-bold mb-2">
             Сообщения чата {selectedChat.id}
           </h2>

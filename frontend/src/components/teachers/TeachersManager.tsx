@@ -51,13 +51,13 @@ export default function TeachersManager() {
     `${t.lastName} ${t.firstName}${t.middleName ? ' ' + t.middleName : ''}`;
 
   return (
-    <div className="text-white p-6">
+    <div className="text-customwhite p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Преподаватели</h1>
 
         <button
           onClick={() => setCreateOpen(true)}
-          className="px-4 py-2 bg-customyellow text-black rounded hover:bg-customyellow"
+          className="px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow"
         >
           Создать преподавателя
         </button>
@@ -70,13 +70,13 @@ export default function TeachersManager() {
           {teachers.map((t) => (
             <div
               key={t.id}
-              className="p-4 bg-customgrey border border-white/10 rounded-xl flex justify-between items-center"
+              className="p-4 bg-customgrey border border-customwhite/10 rounded-xl flex justify-between items-center"
             >
               <div className="flex gap-4 items-center">
                 <img
                   src={t.photoUrl || 'https://via.placeholder.com/80'}
                   alt="photo"
-                  className="w-20 h-20 rounded object-cover border border-white/10"
+                  className="w-20 h-20 rounded object-cover border border-customwhite/10"
                 />
 
                 <div>

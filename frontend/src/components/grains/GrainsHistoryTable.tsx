@@ -13,7 +13,7 @@ interface Props {
 
 export function GrainsHistoryTable({ history }: Props) {
   return (
-    <table className="w-full border border-white/10 text-left">
+    <table className="w-full border border-customwhite/10 text-left">
       <thead>
         <tr className="bg-[#222]">
           <th className="px-3 py-2">Дата</th>
@@ -24,7 +24,7 @@ export function GrainsHistoryTable({ history }: Props) {
       </thead>
       <tbody>
         {history.map((item) => (
-          <tr key={item.id} className="border-t border-white/10">
+          <tr key={item.id} className="border-t border-customwhite/10">
             <td className="px-3 py-2">{new Date(item.createdAt).toLocaleString()}</td>
             <td className="px-3 py-2">{item.type}</td>
             <td className="px-3 py-2">{item.amount}</td>

@@ -18,7 +18,7 @@ const AchievementCodeModal: FC<AchievementCodeModalProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-customblack z-50">
       <div className="bg-customblack p-6 rounded-xl w-96 relative">
         <button
           className="absolute top-2 right-2 text-customyellow font-bold"
@@ -36,12 +36,12 @@ const AchievementCodeModal: FC<AchievementCodeModalProps> = ({
           value={code}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Введите код"
-          className="w-full p-2 rounded-lg text-black mb-4"
+          className="w-full p-2 rounded-lg text-customblack mb-4"
         />
 
         <button
           onClick={onSubmit}
-          className="bg-customyellow text-black px-6 py-2 rounded-xl hover:brightness-90"
+          className="bg-customyellow text-customblack px-6 py-2 rounded-xl hover:brightness-90"
         >
           Получить
         </button>

@@ -50,8 +50,8 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-      <div className="bg-customgrey p-5 rounded-xl w-full max-w-md text-white border border-white/10">
+    <div className="fixed inset-0 bg-customblack/60 flex items-center justify-center z-50">
+      <div className="bg-customgrey p-5 rounded-xl w-full max-w-md text-customwhite border border-customwhite/10">
         <h3 className="text-lg font-semibold mb-3">Добавить участника</h3>
 
         <form onSubmit={submit} className="space-y-3">
@@ -61,7 +61,7 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               placeholder="cmi..."
-              className="w-full bg-[#222] px-3 py-2 rounded border border-white/10"
+              className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
             />
           </div>
 
@@ -71,7 +71,7 @@ export default function ChatAddParticipantModal({ isOpen, onClose, chat, reload 
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
               placeholder="user@example.com"
-              className="w-full bg-[#222] px-3 py-2 rounded border border-white/10"
+              className="w-full bg-[#222] px-3 py-2 rounded border border-customwhite/10"
             />
           </div>
 

@@ -81,7 +81,7 @@ export default function Header() {
                 hidden md:flex
                 w-[70px] h-[32px] md:w-[78px] md:h-[34px]
                 rounded-full border border-[#464042]
-                bg-white dark:bg-[#464042]
+                bg-customwhite dark:bg-[#464042]
                 items-center px-1
               "
             >
@@ -94,9 +94,9 @@ export default function Header() {
                 `}
               >
                 {theme === "dark" ? (
-                  <Sun size={12} className="text-black" />
+                  <Sun size={12} className="text-customblack" />
                 ) : (
-                  <Moon size={12} className="text-white" />
+                  <Moon size={12} className="text-customwhite" />
                 )}
               </div>
             </button>
@@ -104,7 +104,7 @@ export default function Header() {
             {!isAuthenticated ? (
               <Link
                 to="/login"
-                className="px-3 py-1 md:px-4 md:py-2 border border-primary-900 rounded-lg hover:bg-primary-600 hover:text-white transition text-sm md:text-base"
+                className="px-3 py-1 md:px-4 md:py-2 border border-primary-900 rounded-lg hover:bg-primary-600 hover:text-customwhite transition text-sm md:text-base"
               >
                 Вход
               </Link>
@@ -197,7 +197,7 @@ export default function Header() {
               className="
                 w-[70px] h-[32px]
                 rounded-full border border-[#464042]
-                bg-white dark:bg-[#464042]
+                bg-customwhite dark:bg-[#464042]
                 flex items-center px-1 self-start
               "
             >
@@ -210,9 +210,9 @@ export default function Header() {
                 `}
               >
                 {theme === "dark" ? (
-                  <Sun size={12} className="text-black" />
+                  <Sun size={12} className="text-customblack" />
                 ) : (
-                  <Moon size={12} className="text-white" />
+                  <Moon size={12} className="text-customwhite" />
                 )}
               </div>
             </button>

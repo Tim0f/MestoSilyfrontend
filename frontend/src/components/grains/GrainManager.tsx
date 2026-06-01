@@ -76,11 +76,11 @@ export default function GrainManager() {
   };
 
   return (
-    <div className="p-6 text-white">
+    <div className="p-6 text-customwhite">
       <h1 className="text-2xl font-bold mb-4">Управление зернами</h1>
 
       <input
-        className="px-3 py-2 bg-[#222] rounded border border-white/10 w-full mb-4"
+        className="px-3 py-2 bg-[#222] rounded border border-customwhite/10 w-full mb-4"
         placeholder="Поиск пользователя..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -90,7 +90,7 @@ export default function GrainManager() {
         {filtered.map((user) => (
           <div
             key={user.id}
-            className="bg-customgrey p-4 rounded border border-white/10 flex justify-between items-center"
+            className="bg-customgrey p-4 rounded border border-customwhite/10 flex justify-between items-center"
           >
             <div>
               <div className="font-bold text-lg">
@@ -115,7 +115,7 @@ export default function GrainManager() {
               </button>
 
               <button
-                className="px-3 py-1 bg-customyellow text-black rounded"
+                className="px-3 py-1 bg-customyellow text-customblack rounded"
                 onClick={() => openTransfer(user.id)}
               >
                 Перевести

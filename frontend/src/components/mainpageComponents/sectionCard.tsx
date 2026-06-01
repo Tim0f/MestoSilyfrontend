@@ -226,10 +226,10 @@ export default function SectionCard({
                   to="/schedule"
                   className="
                     bg-customyellow hover:bg-customyellow/70
-                    text-white px-6 py-3 rounded-lg font-p transition
+                    text-customwhite px-6 py-3 rounded-lg font-p transition
 
                     max-[641px]:
-                    text-black
+                    text-customblack
                     text-[18px]
                     px-10
                     py-3

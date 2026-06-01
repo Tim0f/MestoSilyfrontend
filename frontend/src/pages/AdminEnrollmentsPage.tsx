@@ -132,7 +132,7 @@ export default function AdminEnrollmentsPage() {
 
   return (
 
-    <div className="p-10 text-white space-y-10">
+    <div className="p-10 text-customwhite space-y-10">
 
       <h1 className="text-4xl font-bold mb-6">Записи на занятия</h1>
 
@@ -158,7 +158,7 @@ export default function AdminEnrollmentsPage() {
 
                 selectedSection === s.id
 
-                  ? "bg-customyellow text-black"
+                  ? "bg-customyellow text-customblack"
 
                   : "bg-[#3A3333]"
 
@@ -192,7 +192,7 @@ export default function AdminEnrollmentsPage() {
 
           {lessons.length === 0 ? (
 
-            <p className="text-white/50">Нет уроков</p>
+            <p className="text-customwhite/50">Нет уроков</p>
 
           ) : (
 
@@ -224,7 +224,7 @@ export default function AdminEnrollmentsPage() {
 
                   </p>
 
-                  <p className="text-white/70">
+                  <p className="text-customwhite/70">
 
                     Преподаватель:{" "}
 
@@ -238,7 +238,7 @@ export default function AdminEnrollmentsPage() {
 
   
 
-                  <p className="text-white/60 text-sm mt-1">
+                  <p className="text-customwhite/60 text-sm mt-1">
 
                     Записано: {l._count?.enrollments ?? 0}
 
@@ -274,11 +274,11 @@ export default function AdminEnrollmentsPage() {
 
           {loading ? (
 
-            <p className="text-white/60">Загрузка...</p>
+            <p className="text-customwhite/60">Загрузка...</p>
 
           ) : enrollments.length === 0 ? (
 
-            <p className="text-white/50">Нет записей на этот урок</p>
+            <p className="text-customwhite/50">Нет записей на этот урок</p>
 
           ) : (
 

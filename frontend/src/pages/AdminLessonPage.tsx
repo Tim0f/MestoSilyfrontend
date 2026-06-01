@@ -15,21 +15,21 @@ export default function AdminLessonsPage() {
   const [isSessionsOpen, setIsSessionsOpen] = useState(false);
 
   return (
-    <div className="p-10 text-white space-y-10">
+    <div className="p-10 text-customwhite space-y-10">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Уроки</h1>
 
         <div className="flex gap-4">
           <button
             onClick={() => setIsCreateOpen(true)}
-            className="px-4 py-2 bg-customyellow text-black rounded font-semibold hover:bg-customyellow"
+            className="px-4 py-2 bg-customyellow text-customblack rounded font-semibold hover:bg-customyellow"
           >
             Создать урок
           </button>
 
           <button
             onClick={() => setIsSessionsOpen(true)}
-            className="px-4 py-2 bg-[#5BC0EB] text-black rounded font-semibold hover:bg-blue-400"
+            className="px-4 py-2 bg-[#5BC0EB] text-customblack rounded font-semibold hover:bg-blue-400"
           >
             Расписание
           </button>

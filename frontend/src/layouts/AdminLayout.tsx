@@ -23,7 +23,7 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="min-h-screen flex bg-[customblack] text-white">
+    <div className="min-h-screen flex bg-[customblack] text-customwhite">
       {/* ЛЕВАЯ ПАНЕЛЬ НАВИГАЦИИ */}
       <aside className="w-64 bg-customgrey  p-6 flex flex-col gap-6">
         <h1 className="text-2xl font-bold mb-4">Админ · Место Силы</h1>
@@ -35,7 +35,7 @@ export default function AdminLayout() {
               to={l.path}
               className={({ isActive }) =>
                 `px-4 py-2 rounded-lg transition font-medium ${
-                  isActive ? 'bg-customyellow text-black' : 'text-customwhite hover:bg-white/10'
+                  isActive ? 'bg-customyellow text-customblack' : 'text-customwhite hover:bg-customwhite/10'
                 }`
               }
             >

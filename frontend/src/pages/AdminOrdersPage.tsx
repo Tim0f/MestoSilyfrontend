@@ -84,13 +84,13 @@ export default function AdminOrdersPage() {
 
   return (
 
-    <div className="p-10 text-white space-y-10">
+    <div className="p-10 text-customwhite space-y-10">
 
       <h1 className="text-3xl font-bold mb-6">Заказы</h1>
 
   
 
-      {loading && <p className="text-white/60">Загрузка...</p>}
+      {loading && <p className="text-customwhite/60">Загрузка...</p>}
 
   
 
@@ -104,7 +104,7 @@ export default function AdminOrdersPage() {
 
         {pendingReceipts.length === 0 ? (
 
-          <p className="text-white/50">Нет заказов в ожидании</p>
+          <p className="text-customwhite/50">Нет заказов в ожидании</p>
 
         ) : (
 
@@ -130,7 +130,7 @@ export default function AdminOrdersPage() {
 
   
 
-                  <p className="text-white/70">
+                  <p className="text-customwhite/70">
 
                     Покупатель: {r.order.user.firstName} {r.order.user.lastName}
 
@@ -138,7 +138,7 @@ export default function AdminOrdersPage() {
 
   
 
-                  <p className="mt-2 text-white/80 font-semibold">
+                  <p className="mt-2 text-customwhite/80 font-semibold">
 
                     Состав заказа:
 
@@ -168,7 +168,7 @@ export default function AdminOrdersPage() {
 
                   onClick={() => redeemOrder(r.orderId)}
 
-                  className="px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-semibold rounded"
+                  className="px-4 py-2 bg-green-500 hover:bg-green-400 text-customblack font-semibold rounded"
 
                 >
 
@@ -198,7 +198,7 @@ export default function AdminOrdersPage() {
 
         {orders.length === 0 ? (
 
-          <p className="text-white/50">Нет заказов</p>
+          <p className="text-customwhite/50">Нет заказов</p>
 
         ) : (
 
@@ -252,7 +252,7 @@ export default function AdminOrdersPage() {
 
                       ? "text-green-400"
 
-                      : "text-white/60"
+                      : "text-customwhite/60"
 
                   }`}
 

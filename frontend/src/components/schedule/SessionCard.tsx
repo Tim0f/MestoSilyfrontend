@@ -43,9 +43,9 @@ export default function SessionCard({
   const theme = isEnrolled
     ? {
         bg: "bg-customyellow",
-        text: "text-black",
-        mutedText: "text-black/70",
-        accent: "text-black",
+        text: "text-customblack",
+        mutedText: "text-customblack/70",
+        accent: "text-customblack",
         icon: "#2D282A",
         button: "bg-customblack text-customyellow",
         showBorder: false,
@@ -56,7 +56,7 @@ export default function SessionCard({
         mutedText: "text-customyellow/80",
         accent: "text-customyellow",
         icon: "#F4C884",
-        button: "bg-customyellow text-black",
+        button: "bg-customyellow text-customblack",
         showBorder: true,
       };
 

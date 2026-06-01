@@ -53,7 +53,7 @@ const [products, setProducts] = useState<Product[]>([])
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-h1">Магазин</h1>
           {isAuthenticated && user && (
-            <div className="bg-white px-6 py-3 rounded-lg shadow-md">
+            <div className="bg-customwhite px-6 py-3 rounded-lg shadow-md">
               <span className="text-gray-600">Ваш баланс: </span>
               <span className="text-2xl font-h1 text-orange-600">🌾 {user.totalGrains}</span>
             </div>
@@ -62,7 +62,7 @@ const [products, setProducts] = useState<Product[]>([])
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
-            <div key={product.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+            <div key={product.id} className="bg-customwhite rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
               {product.imageUrl ? (
                 <img
                   src={product.imageUrl}
@@ -91,7 +91,7 @@ const [products, setProducts] = useState<Product[]>([])
                 {purchaseSuccess === product.id ? (
                   <button
                     disabled
-                    className="w-full bg-green-500 text-white py-3 rounded-lg font-h2 flex items-center justify-center gap-2"
+                    className="w-full bg-green-500 text-customwhite py-3 rounded-lg font-h2 flex items-center justify-center gap-2"
                   >
                     <Check size={20} />
                     Куплено!
@@ -103,7 +103,7 @@ const [products, setProducts] = useState<Product[]>([])
                     className={`w-full py-3 rounded-lg font-h2 transition ${
                       product.stock === 0
                         ? 'bg-customwhite text-gray-500 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700'
+                        : 'bg-gradient-to-r from-orange-500 to-orange-600 text-customwhite hover:from-orange-600 hover:to-orange-700'
                     }`}
                   >
                     {product.stock === 0 ? 'Нет в наличии' : 'Купить 1 шт'}
