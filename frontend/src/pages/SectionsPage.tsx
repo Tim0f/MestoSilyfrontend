@@ -90,36 +90,73 @@ export default function SectionsPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [direction, setDirection] = useState<1 | -1>(1);
+  const [galleryLeft, setGalleryLeft] = useState<string[]>([]);
+  const [galleryRight, setGalleryRight] = useState<string[]>([]);
 
   useEffect(() => {
     loadSections();
   }, []);
 
-const loadSections = async () => {
-  try {
-    const res = await sectionsService.findAll<Section[]>();
-    if (Array.isArray(res) && res.length > 0) {
-      setSections(
-        res.map((s) => {
-          const iconUrl = getPublicUrl(s.iconUrl) || swordImage;
-          const imageUrl = getPublicUrl(s.imageUrl) || swordImage;
-          return {
-            ...s,
-            iconUrl,
-            imageUrl,
-            teachers: s.teachers ?? [],
-          };
-        })
-      );
-    } else {
-      setSections(fallbackSections);
+  // Загрузка галереи при смене секции
+  useEffect(() => {
+    if (sections.length > 0) {
+      const current = sections[currentIndex];
+      if (current) {
+        loadGallery(current.id, current.imageUrl || swordImage);
+      }
     }
-  } catch (e) {
-    setSections(fallbackSections);
-  } finally {
-    setLoading(false);
-  }
-};
+  }, [currentIndex, sections]);
+
+  const loadSections = async () => {
+    try {
+      const res = await sectionsService.findAll<Section[]>();
+      if (Array.isArray(res) && res.length > 0) {
+        setSections(
+          res.map((s) => {
+            const iconUrl = getPublicUrl(s.iconUrl) || swordImage;
+            const imageUrl = getPublicUrl(s.imageUrl) || swordImage;
+            return {
+              ...s,
+              iconUrl,
+              imageUrl,
+              teachers: s.teachers ?? [],
+            };
+          })
+        );
+      } else {
+        setSections(fallbackSections);
+      }
+    } catch (e) {
+      setSections(fallbackSections);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadGallery = async (sectionId: string, fallbackImage: string) => {
+    try {
+      const images = await sectionsService.getImages<{ imageUrl: string }[]>(sectionId);
+      if (Array.isArray(images) && images.length > 0) {
+        const urls = images.map((img) => getPublicUrl(img.imageUrl) || fallbackImage);
+        splitUrls(urls);
+      } else {
+        setGalleryLeft([]);
+        setGalleryRight([]);
+      }
+    } catch {
+      setGalleryLeft([]);
+      setGalleryRight([]);
+    }
+  };
+
+  // Делим массив URL пополам, максимум 4 изображения на сторону
+  const splitUrls = (urls: string[]) => {
+    const half = Math.ceil(urls.length / 2);
+    const left = urls.slice(0, half).slice(0, 4);
+    const right = urls.slice(half).slice(0, 4);
+    setGalleryLeft(left);
+    setGalleryRight(right);
+  };
 
   const prevSection = () => {
     setDirection(-1);
@@ -141,7 +178,7 @@ const loadSections = async () => {
 
   const current = sections[currentIndex];
 
-  // ★ Собираем преподавателей со всех секций
+  // Преподаватели со всех секций
   const teamMembers = sections
     .flatMap((s) => s.teachers ?? [])
     .map((t) => ({
@@ -152,25 +189,59 @@ const loadSections = async () => {
       audiosrc: t.audioUrl ?? "",
     }));
 
+  // Заглушка для пустой галереи
+  const renderPlaceholder = () => (
+    <div className="flex flex-col items-center justify-center h-full text-gray-400 p-8">
+      <svg
+        className="w-16 h-16 mb-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H13L11 5H5C3.89543 5 3 5.89543 3 7Z"
+        />
+      </svg>
+      <p className="text-lg text-center">Фото будет позже</p>
+    </div>
+  );
+
+  // Рендерит masonry-сетку (2 колонки) или заглушку, если массив пуст
+  const renderGalleryOrPlaceholder = (images: string[]) => {
+    if (images.length === 0) {
+      return renderPlaceholder();
+    }
+    return (
+      <div
+        className="columns-2 gap-4 p-4 w-full"
+        style={{ columnGap: "1rem" }}
+      >
+        {images.map((url, idx) => (
+          <img
+            key={idx}
+            src={url}
+            className="w-full h-auto rounded-lg mb-4"
+            alt=""
+          />
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="relative w-full min-h-screen bg-customblack text-customyellow flex flex-col items-center py-24 overflow-hidden">
       <h1 className="text-6xl font-h1 text-customyellow mb-20 tracking-wide uppercase">
         Секции
       </h1>
 
-      <div className="relative flex items-center justify-center w-full max-w-7xl px-8">
-        {/* Левая сетка */}
-        <div className="relative w-[360px] h-[430px] mr-16 ">
-          <div className="absolute inset-0 textured-border rounded-xl " />
-          <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
-            {[1, 2, 3, 4].map((i) => (
-              <img
-                key={i}
-                src={current.imageUrl}
-                className="w-full h-full object-cover rounded-lg"
-              />
-            ))}
-          </div>
+      <div className="relative flex items-start justify-center w-full max-w-7xl px-8">
+        {/* Левая панель */}
+        <div className="relative w-[360px] min-h-[430px] h-auto mr-16">
+          <div className="absolute inset-0 textured-border rounded-xl" />
+          {renderGalleryOrPlaceholder(galleryLeft)}
         </div>
 
         {/* Центральный блок */}
@@ -212,18 +283,10 @@ const loadSections = async () => {
           </Suspense>
         </div>
 
-        {/* Правая сетка */}
-        <div className="relative w-[360px] h-[430px] ml-16">
+        {/* Правая панель */}
+        <div className="relative w-[360px] min-h-[430px] h-auto ml-16">
           <div className="absolute inset-0 border border-customyellow rounded-xl border-dashed" />
-          <div className="grid grid-cols-2 gap-4 w-full h-full p-4">
-            {[1, 2, 3, 4].map((i) => (
-              <img
-                key={i}
-                src={current.imageUrl}
-                className="w-full h-full object-cover rounded-lg"
-              />
-            ))}
-          </div>
+          {renderGalleryOrPlaceholder(galleryRight)}
         </div>
       </div>
 
