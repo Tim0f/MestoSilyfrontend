@@ -78,7 +78,7 @@ export default function AdminProposalsPage() {
 
         <div className="flex gap-4">
           <select
-            className="px-3 py-2 rounded bg-[#222] border border-customwhite/10 text-customwhite"
+            className="px-3 py-2 rounded bg-customblack border border-customwhite/10 text-customwhite"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as ProposalStatus | '')}
           >

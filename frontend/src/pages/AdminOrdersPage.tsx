@@ -226,7 +226,7 @@ export default function AdminOrdersPage() {
 
                     ? "border-customyellow/40 bg-customgrey"
 
-                    : "border-gray-500/30 bg-[#333333]"
+                    : "border-customgrey/30 bg-customgrey"
 
                 }`}
 

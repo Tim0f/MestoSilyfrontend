@@ -104,14 +104,14 @@ export default function Header() {
             {!isAuthenticated ? (
               <Link
                 to="/login"
-                className="px-3 py-1 md:px-4 md:py-2 border border-primary-900 rounded-lg hover:bg-primary-600 hover:text-customwhite transition text-sm md:text-base"
+                className="px-3 py-1 md:px-4 md:py-2 border border-customyellow rounded-lg hover:bg-customyellow hover:text-customwhite transition text-sm md:text-base"
               >
                 Вход
               </Link>
             ) : (
               <>
-                <Link to="/bazar">
-                  <span className="font-h2 text-primary-300 flex items-center gap-1 text-sm md:text-base">
+                <Link to="/shop">
+                  <span className="font-h2 text-customyellow flex items-center gap-1 text-sm md:text-base">
                     {user?.totalGrains}
                     <Zerno className="w-[16px] md:w-[20px]" />
                   </span>
@@ -191,31 +191,6 @@ export default function Header() {
               </>
             )}
 
-            {/* Переключатель темы внутри бургера */}
-            <button
-              onClick={toggleTheme}
-              className="
-                w-[70px] h-[32px]
-                rounded-full border border-[#464042]
-                bg-customwhite dark:bg-[#464042]
-                flex items-center px-1 self-start
-              "
-            >
-              <div
-                className={`
-                  w-[24px] h-[24px]
-                  rounded-full flex items-center justify-center
-                  bg-[#464042] dark:bg-[#D9D9D9]
-                  ${theme === "dark" ? "translate-x-[36px]" : "translate-x-0"}
-                `}
-              >
-                {theme === "dark" ? (
-                  <Sun size={12} className="text-customblack" />
-                ) : (
-                  <Moon size={12} className="text-customwhite" />
-                )}
-              </div>
-            </button>
           </div>
         )}
       </div>

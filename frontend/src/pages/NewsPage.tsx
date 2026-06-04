@@ -24,7 +24,7 @@ const [news, setNews] = useState<NewsItem[]>([])
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-xl text-gray-600">Загрузка новостей...</div>
+        <div className="text-xl text-customgrey">Загрузка новостей...</div>
       </div>
     )
   }
@@ -36,8 +36,8 @@ const [news, setNews] = useState<NewsItem[]>([])
 
         {news.length === 0 ? (
           <div className="bg-customwhite rounded-xl shadow-lg p-12 text-center">
-            <Newspaper size={64} className="mx-auto text-gray-400 mb-4" />
-            <p className="text-xl text-gray-600">Новостей пока нет</p>
+            <Newspaper size={64} className="mx-auto text-customgrey mb-4" />
+            <p className="text-xl text-customgrey">Новостей пока нет</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -56,13 +56,13 @@ const [news, setNews] = useState<NewsItem[]>([])
                       />
                     </div>
                   ) : (
-                    <div className="md:w-1/3 bg-gradient-to-br from-orange-200 to-orange-400 flex items-center justify-center p-8">
-                      <Newspaper size={96} className="text-orange-600" />
+                    <div className="md:w-1/3 bg-gradient-to-br from-customyellow to-customyellow flex items-center justify-center p-8">
+                      <Newspaper size={96} className="text-customyellow" />
                     </div>
                   )}
 
                   <div className="md:w-2/3 p-8">
-                    <div className="flex items-center gap-2 text-gray-500 text-sm mb-3">
+                    <div className="flex items-center gap-2 text-customgrey text-sm mb-3">
                       <Calendar size={16} />
                       <span>
                         {new Date(item.createdAt).toLocaleDateString('ru-RU', {
@@ -73,11 +73,11 @@ const [news, setNews] = useState<NewsItem[]>([])
                       </span>
                     </div>
 
-                    <h2 className="text-3xl font-h1 mb-4 text-gray-900">
+                    <h2 className="text-3xl font-h1 mb-4 text-customwhite">
                       {item.title}
                     </h2>
 
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                    <p className="text-customgrey leading-relaxed whitespace-pre-line">
                       {item.content}
                     </p>
 
