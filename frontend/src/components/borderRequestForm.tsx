@@ -12,8 +12,8 @@ export default function TexturedBorder() {
         y="7.3"
         width="906"
         height="1046"
-        fill="#464042"
-        stroke="#F5C78B"
+        fill="rgb(var(--color-customblack))"
+        stroke="rgb(var(--color-customyellow))"
         strokeWidth="2"
         filter="url(#texture)"
       />

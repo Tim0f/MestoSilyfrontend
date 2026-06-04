@@ -11,7 +11,7 @@ export default function StatusBorder() {
           y="16.8"
           width="906"
           height="365"
-          fill="#F4C884"
+          fill="rgb(var(--color-customyellow))"
           stroke="none"
           strokeWidth="2"
         />
