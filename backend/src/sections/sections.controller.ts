@@ -21,6 +21,8 @@ import {
   ApiConsumes,
   ApiBody,
 } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { SectionsService } from './sections.service';
 import { CreateSectionDto } from './dto/create-section.dto';
 import { UpdateSectionDto } from './dto/update-section.dto';
@@ -163,11 +165,20 @@ export class SectionsController {
     return this.sectionsService.getSectionImages(id);
   }
 
+  // 🔧 Исправленный метод для загрузки в галерею
   @Post(':id/images')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ROOT, UserRole.ADMIN)
   @ApiBearerAuth('JWT-auth')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + extname(file.originalname));
+      },
+    }),
+  }))
   @ApiOperation({ summary: 'Добавить изображение в галерею секции (только администраторы)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({

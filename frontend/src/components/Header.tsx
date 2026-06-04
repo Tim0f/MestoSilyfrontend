@@ -132,7 +132,7 @@ export default function Header() {
                           height: "20px",
                           backgroundColor: "rgb(var(--color-customyellow))",
                           maskImage: `url(${ProfileIcon})`,
-                          maskSize: "contain",
+                          maskSize: "100% 100%",
                           maskRepeat: "no-repeat",
                           maskPosition: "center",
                         }}

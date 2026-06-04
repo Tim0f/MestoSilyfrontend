@@ -13,7 +13,6 @@ const AdminRoutes = lazy(() => import('./AdminRoutes'))
 
 // ===== Public pages =====
 const HomePage = lazy(() => import('./pages/HomePage'))
-const ShopPage = lazy(() => import('./pages/ShopPage'))
 const SchedulePage = lazy(() => import('./pages/SchedulePage'))
 const NewsPage = lazy(() => import('./pages/NewsPage'))
 const ChatsPage = lazy(() => import('./pages/ChatsPage'))
@@ -41,7 +40,6 @@ function App() {
             {/* ===== Auth only ===== */}
             <Route element={<RequireAuth />}>
               <Route path="/" element={<Layout />}>
-                <Route path="shop" element={<ShopPage />} />
                 <Route path="schedule" element={<SchedulePage />} />
                 <Route path="news" element={<NewsPage />} />
                 <Route path="chats" element={<ChatsPage />} />
