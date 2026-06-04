@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { Client } from '../services/httpClient'
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { AuthService } from '../services/auth.service';
 
 interface User {
   id: number
@@ -14,90 +14,60 @@ interface User {
 }
 
 interface AuthContextType {
-  user: User | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  register: (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string,
-    phone: string,
-    dateOfBirth: string
-  ) => Promise<void>
-  logout: () => void
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;        // важно!
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType>(undefined!);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);  // начинаем с true
 
+  // Проверка токена при монтировании
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem('token');
     if (!token) {
-      setIsLoading(false)
-      return
+      setIsLoading(false);
+      return;
     }
-    fetchUser()
-  }, [])
 
-  const fetchUser = async () => {
-    try {
-      const data = await Client.get<User>('/auth/me')
-      setUser(data)
-    } catch {
-      localStorage.removeItem('token')
-      setUser(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    AuthService.me()
+      .then((data: any) => {
+        setUser(data);
+      })
+      .catch(() => {
+        // Токен невалиден – удаляем его
+        localStorage.removeItem('token');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
-  const login = async (email: string, password: string) => {
-    const res = await Client.post<{ token: string }>('/auth/login', { email, password }, { authenticate: false })
-    const { token } = res
+  const login = useCallback(async (email: string, password: string) => {
+    const res: any = await AuthService.login({ email, password });
+    // AuthService уже сохранил токен в localStorage
+    setUser(res.user); // предполагаем, что ответ содержит user
+  }, []);
 
-    localStorage.setItem('token', token)
-    await fetchUser()
-  }
+  const logout = useCallback(() => {
+    localStorage.removeItem('token');
+    setUser(null);
+  }, []);
 
-  const register = async (
-    email: string,
-    password: string,
-    firstName: string,
-    lastName: string,
-    phone: string,
-    dateOfBirth: string
-  ) => {
-    await Client.post('/auth/register', { email, password, firstName, lastName, phone, dateOfBirth }, { authenticate: false })
-  }
+  const value: AuthContextType = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    login,
+    logout,
+  };
 
-  const logout = () => {
-    localStorage.removeItem('token')
-    setUser(null)
-  }
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        register,
-        logout
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth must be used within an AuthProvider')
-  return context
-}
+export const useAuth = () => useContext(AuthContext);

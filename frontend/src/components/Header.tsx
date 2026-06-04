@@ -110,7 +110,7 @@ export default function Header() {
               </Link>
             ) : (
               <>
-                <Link to="/shop">
+                <Link to="/bazar">
                   <span className="font-h2 text-primary-300 flex items-center gap-1 text-sm md:text-base">
                     {user?.totalGrains}
                     <Zerno className="w-[16px] md:w-[20px]" />
@@ -132,7 +132,7 @@ export default function Header() {
                           height: "20px",
                           backgroundColor: "rgb(var(--color-customyellow))",
                           maskImage: `url(${ProfileIcon})`,
-                          maskSize: "contain",
+                          maskSize: "100% 100%",
                           maskRepeat: "no-repeat",
                           maskPosition: "center",
                         }}

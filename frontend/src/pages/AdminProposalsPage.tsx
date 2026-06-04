@@ -6,7 +6,6 @@ import {
   ProposalStatus,
 } from '../services/proposal.service';
 
-
 const ProposalReviewModal = lazy(() => import('../components/proposals/ProposalReviewModal'));
 
 const client = Client;
@@ -28,10 +27,29 @@ export default function AdminProposalsPage() {
   const [proposals, setProposals] = useState<any[]>([]);
   const [filterStatus, setFilterStatus] = useState<ProposalStatus | ''>('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
+  // Загрузка списка заявок при изменении фильтра
   useEffect(() => {
     loadProposals();
   }, [filterStatus]);
+
+  // Получение ID текущего пользователя при монтировании компонента
+  useEffect(() => {
+    fetchCurrentUserId();
+  }, []);
+
+  async function fetchCurrentUserId() {
+    try {
+      const user = await getCurrentUser();
+      if (user?.id) {
+        setCurrentUserId(user.id);
+      }
+    } catch (err) {
+      console.error('Не удалось определить текущего пользователя', err);
+      // если не удалось получить, считаем, что пользователь неавторизован
+    }
+  }
 
   async function loadProposals() {
     try {
@@ -45,8 +63,13 @@ export default function AdminProposalsPage() {
 
   function handleCloseModal() {
     setSelectedId(null);
-    loadProposals(); // обновим список после изменения статуса
+    loadProposals();
   }
+
+  // Проверка, является ли заявка собственной для текущего пользователя
+  const isOwnProposal = (proposal: any): boolean => {
+    return currentUserId !== null && proposal.user?.id === currentUserId;
+  };
 
   return (
     <div className="p-10 text-customwhite space-y-10">
@@ -88,39 +111,50 @@ export default function AdminProposalsPage() {
                 </td>
               </tr>
             ) : (
-              proposals.map((p) => (
-                <tr key={p.id} className="border-b border-customwhite/5 hover:bg-white/5">
-                  <td className="p-3">{p.title}</td>
-                  <td className="p-3">
-                    {p.type === 'SECTION' ? 'Секция' : 'Мероприятие'}
-                  </td>
-                  <td className="p-3">
-                    {p.user?.firstName} {p.user?.lastName}
-                  </td>
-                  <td className="p-3">
-                    <span className={`px-2 py-1 rounded text-xs font-semibold ${statusColors[p.status as ProposalStatus]}`}>
-                      {statusLabels[p.status as ProposalStatus]}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    {new Date(p.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="p-3">
-                    <button
-                      onClick={() => setSelectedId(p.id)}
-                      className="px-3 py-1 bg-customyellow text-customblack rounded font-semibold hover:bg-yellow-500"
-                    >
-                      Рассмотреть
-                    </button>
-                  </td>
-                </tr>
-              ))
+              proposals.map((p) => {
+                const own = isOwnProposal(p);
+                return (
+                  <tr key={p.id} className="border-b border-customwhite/5 hover:bg-white/5">
+                    <td className="p-3">{p.title}</td>
+                    <td className="p-3">
+                      {p.type === 'SECTION' ? 'Секция' : 'Мероприятие'}
+                    </td>
+                    <td className="p-3">
+                      {p.user?.firstName} {p.user?.lastName}
+                      {own && (
+                        <span className="ml-2 text-xs text-yellow-400">(вы)</span>
+                      )}
+                    </td>
+                    <td className="p-3">
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${statusColors[p.status as ProposalStatus]}`}>
+                        {statusLabels[p.status as ProposalStatus]}
+                      </span>
+                    </td>
+                    <td className="p-3">
+                      {new Date(p.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-3">
+                      {own ? (
+                        <span className="text-customwhite/40 text-xs">
+                          Нельзя рассмотреть свою заявку
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => setSelectedId(p.id)}
+                          className="px-3 py-1 bg-customyellow text-customblack rounded font-semibold hover:bg-yellow-500"
+                        >
+                          Рассмотреть
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
       </div>
 
-      {/* Модалка рассмотрения */}
       <Suspense fallback={null}>
         {selectedId && (
           <ProposalReviewModal
@@ -131,4 +165,35 @@ export default function AdminProposalsPage() {
       </Suspense>
     </div>
   );
+}
+
+// ===================== Вспомогательная функция для получения текущего пользователя =====================
+
+interface CurrentUser {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  role?: string;
+}
+
+/**
+ * Возвращает данные текущего авторизованного пользователя.
+ * Если в вашем приложении информация хранится в localStorage,
+ * можно просто прочитать её оттуда, например:
+ *
+ *   const stored = localStorage.getItem('user');
+ *   return stored ? JSON.parse(stored) : null;
+ *
+ * Здесь показан вариант с запросом к API.
+ */
+async function getCurrentUser(): Promise<CurrentUser | null> {
+  try {
+    // Замените '/auth/me' на актуальный эндпоинт вашего бэкенда
+    const response = await client.get<CurrentUser>('/auth/me');
+    return response;
+  } catch {
+    // Если запрос не удался, возвращаем null
+    return null;
+  }
 }
