@@ -110,7 +110,7 @@ export default function Header() {
               </Link>
             ) : (
               <>
-                <Link to="/shop">
+                <Link to="/bazar">
                   <span className="font-h2 text-customyellow flex items-center gap-1 text-sm md:text-base">
                     {user?.totalGrains}
                     <Zerno className="w-[16px] md:w-[20px]" />

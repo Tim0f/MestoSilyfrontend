@@ -4,6 +4,7 @@ interface Props {
   id: string;
   name: string;
   description: string;
+  price: number;
   direction: 1 | -1;
 }
 
@@ -17,6 +18,7 @@ export default function AnimatedSectionContent({
   id,
   name,
   description,
+  price,
   direction,
 }: Props) {
   return (
@@ -39,6 +41,9 @@ export default function AnimatedSectionContent({
           {description}
         </p>
 
+        <p className="text-2xl font-h2 text-customyellow mb-6">
+          {price.toLocaleString()} ₽
+        </p>
         <button className="mt-6 px-10 py-3 bg-customyellow text-customgrey rounded-lg font-h2 hover:bg-customyellow transition">
           записаться
         </button>

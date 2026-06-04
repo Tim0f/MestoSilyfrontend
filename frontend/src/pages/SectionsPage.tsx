@@ -1,5 +1,4 @@
 import { useState, useEffect, lazy, Suspense } from "react";
-
 import TeamSlider from "../components/mainpageComponents/TeamSlider";
 import { getPublicUrl } from '../utils/publicUrl';
 
@@ -13,7 +12,6 @@ const AnimatedSectionContent = lazy(
   () => import("../components/AnimatedSectionContent")
 );
 
-// сервисы
 import { Client } from "../services/httpClient";
 import { SectionsFrontendService } from "../services/sections.service";
 
@@ -37,6 +35,7 @@ interface Section {
   description: string;
   iconUrl: string;
   imageUrl?: string;
+  price: number;
   teachers: Teacher[];
 }
 
@@ -47,6 +46,7 @@ const fallbackSections: Section[] = [
     description: "Откройте для себя искусство владения клинком.",
     iconUrl: swordImage,
     imageUrl: swordImage,
+    price: 1100,
     teachers: [],
   },
   {
@@ -55,6 +55,7 @@ const fallbackSections: Section[] = [
     description: "Постигните концентрацию и меткость.",
     iconUrl: arrowImage,
     imageUrl: arrowImage,
+    price: 1100,
     teachers: [],
   },
   {
@@ -63,6 +64,7 @@ const fallbackSections: Section[] = [
     description: "Погрузитесь в мир приключений.",
     iconUrl: dragonImage,
     imageUrl: dragonImage,
+    price: 1100,
     teachers: [],
   },
   {
@@ -71,6 +73,7 @@ const fallbackSections: Section[] = [
     description: "Откройте актёрский талант.",
     iconUrl: masksImage,
     imageUrl: masksImage,
+    price: 1100,
     teachers: [],
   },
   {
@@ -79,11 +82,10 @@ const fallbackSections: Section[] = [
     description: "Развивайте тело и душу.",
     iconUrl: womenImage,
     imageUrl: womenImage,
+    price: 1100,
     teachers: [],
   },
 ];
-
-/* ============================================================ */
 
 export default function SectionsPage() {
   const [sections, setSections] = useState<Section[]>([]);
@@ -97,7 +99,6 @@ export default function SectionsPage() {
     loadSections();
   }, []);
 
-  // Загрузка галереи при смене секции
   useEffect(() => {
     if (sections.length > 0) {
       const current = sections[currentIndex];
@@ -115,12 +116,7 @@ export default function SectionsPage() {
           res.map((s) => {
             const iconUrl = getPublicUrl(s.iconUrl) || swordImage;
             const imageUrl = getPublicUrl(s.imageUrl) || swordImage;
-            return {
-              ...s,
-              iconUrl,
-              imageUrl,
-              teachers: s.teachers ?? [],
-            };
+            return { ...s, iconUrl, imageUrl, teachers: s.teachers ?? [] };
           })
         );
       } else {
@@ -149,7 +145,6 @@ export default function SectionsPage() {
     }
   };
 
-  // Делим массив URL пополам, максимум 4 изображения на сторону
   const splitUrls = (urls: string[]) => {
     const half = Math.ceil(urls.length / 2);
     const left = urls.slice(0, half).slice(0, 4);
@@ -178,7 +173,6 @@ export default function SectionsPage() {
 
   const current = sections[currentIndex];
 
-  // Преподаватели со всех секций
   const teamMembers = sections
     .flatMap((s) => s.teachers ?? [])
     .map((t) => ({
@@ -189,11 +183,11 @@ export default function SectionsPage() {
       audiosrc: t.audioUrl ?? "",
     }));
 
-  // Заглушка для пустой галереи
+  // Заглушка
   const renderPlaceholder = () => (
-    <div className="flex flex-col items-center justify-center h-full text-gray-400 p-8">
+    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 p-4">
       <svg
-        className="w-16 h-16 mb-4"
+        className="w-12 h-12 mb-3"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
@@ -205,20 +199,16 @@ export default function SectionsPage() {
           d="M3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V9C21 7.89543 20.1046 7 19 7H13L11 5H5C3.89543 5 3 5.89543 3 7Z"
         />
       </svg>
-      <p className="text-lg text-center">Фото будет позже</p>
+      <p className="text-sm text-center">Фото будет позже</p>
     </div>
   );
 
-  // Рендерит masonry-сетку (2 колонки) или заглушку, если массив пуст
-  const renderGalleryOrPlaceholder = (images: string[]) => {
-    if (images.length === 0) {
-      return renderPlaceholder();
-    }
+  // Динамический masonry: если 1 картинка – одна колонка, иначе две
+  const renderAdaptiveMasonry = (images: string[]) => {
+    if (images.length === 0) return renderPlaceholder();
+    const colCount = images.length === 1 ? "columns-1" : "columns-2";
     return (
-      <div
-        className="columns-2 gap-4 p-4 w-full"
-        style={{ columnGap: "1rem" }}
-      >
+      <div className={`${colCount} gap-4 p-4 w-full`} style={{ columnGap: "1rem" }}>
         {images.map((url, idx) => (
           <img
             key={idx}
@@ -237,11 +227,11 @@ export default function SectionsPage() {
         Секции
       </h1>
 
-      <div className="relative flex items-start justify-center w-full max-w-7xl px-8">
+      <div className="flex items-center justify-center gap-16 w-full max-w-[1600px] mx-auto px-8">
         {/* Левая панель */}
-        <div className="relative w-[360px] min-h-[430px] h-auto mr-16">
+        <div className="relative w-[420px] h-auto mr-16">
           <div className="absolute inset-0 textured-border rounded-xl" />
-          {renderGalleryOrPlaceholder(galleryLeft)}
+          {renderAdaptiveMasonry(galleryLeft)}
         </div>
 
         {/* Центральный блок */}
@@ -251,9 +241,8 @@ export default function SectionsPage() {
               onClick={prevSection}
               className="w-6 h-6 border-t-2 border-l-2 border-customyellow rotate-[-45deg] hover:opacity-80 transition"
             />
-
             <div
-              className="w-[175px] h-[522px]"
+              className="w-[120px] h-[240px]"
               style={{
                 WebkitMaskImage: `url(${current.iconUrl})`,
                 maskImage: `url(${current.iconUrl})`,
@@ -266,34 +255,32 @@ export default function SectionsPage() {
                 backgroundColor: 'rgb(var(--color-customyellow))',
               }}
             />
-
             <button
               onClick={nextSection}
               className="w-6 h-6 border-t-2 border-r-2 border-customyellow rotate-[45deg] hover:opacity-80 transition"
             />
           </div>
-
           <Suspense fallback={null}>
             <AnimatedSectionContent
               id={current.id}
               name={current.name}
               description={current.description}
+              price={current.price}
               direction={direction}
             />
           </Suspense>
         </div>
 
         {/* Правая панель */}
-        <div className="relative w-[360px] min-h-[430px] h-auto ml-16">
+        <div className="relative w-[420px] h-auto ml-16">
           <div className="absolute inset-0 border border-customyellow rounded-xl border-dashed" />
-          {renderGalleryOrPlaceholder(galleryRight)}
+          {renderAdaptiveMasonry(galleryRight)}
         </div>
       </div>
 
       <h2 className="text-6xl font-h1 mt-32 mb-10 tracking-wide uppercase">
         Преподаватели
       </h2>
-
       <TeamSlider teamMembers={teamMembers} interval={5000} />
     </div>
   );

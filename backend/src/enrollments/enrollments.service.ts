@@ -7,20 +7,16 @@ export class EnrollmentsService {
   constructor(private prisma: PrismaService) {}
 
   // Получить все записи пользователя
-  async getMyEnrollments(userId: string) {
-    return this.prisma.enrollment.findMany({
-      where: { userId },
-      include: {
-        section: true,
-        lesson: {
-          include: {
-            teacher: true,
-          },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
+async getMyEnrollments(userId: string) {
+  return this.prisma.enrollment.findMany({
+    where: { userId },
+    include: {
+      section: true,          // ← теперь вернётся section.name
+      lesson: true,           // ← теперь вернутся startsAt, endsAt, location
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
 
   // Записаться на секцию/урок
   async enroll(userId: string, sectionId: string, lessonId?: string) {

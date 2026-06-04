@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import { Client } from "../services/httpClient";
 import { useAuth } from "../context/AuthContext";
 import { freeVisitsService } from "../services/FreeVisitsFrontendService";
-import { EnrollmentsFrontendService } from "../services/enrollments.service";
+import {
+  EnrollmentsFrontendService,
+  Enrollment,
+} from "../services/enrollments.service";
 import { EventsFrontendService } from "../services/events.service";
 
 import ScheduleHeader from "../components/schedule/ScheduleHeader";
@@ -67,7 +70,8 @@ export default function SchedulePage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const [enrolledSessions, setEnrolledSessions] = useState<(string | number)[]>([]);
+  // Теперь используем string[] – без number и null
+  const [enrolledSessions, setEnrolledSessions] = useState<string[]>([]);
   const [enrolledEventIds, setEnrolledEventIds] = useState<(string | number)[]>([]);
 
   const [subscriptionCount, setSubscriptionCount] = useState(0);
@@ -118,36 +122,56 @@ export default function SchedulePage() {
   };
 
   const loadEvents = async () => {
-    const payload = await Client.get<any[]>("/events", { authenticate: true });
+    try {
+      const payload = await Client.get<any[]>("/events", { authenticate: true });
 
-    setEvents(
-      payload.map((e) => ({
-        id: e.id,
-        title: e.title,
-        description: e.description,
-        imageUrl: e.imageUrl ?? EventFallback,
-        date: e.date,
-        startTime: e.startTime,
-        endTime: e.endTime,
-        price: e.price,
-      }))
-    );
+      setEvents(
+        payload.map((e) => ({
+          id: e.id,
+          title: e.title,
+          description: e.description,
+          imageUrl: e.imageUrl ?? EventFallback,
+          date: e.date,
+          startTime: e.startTime,
+          endTime: e.endTime,
+          price: e.price,
+        }))
+      );
+    } catch {
+      console.warn("Ошибка загрузки событий");
+    }
   };
 
   const loadMyEnrollments = async () => {
     if (!isAuthenticated) return;
 
-    const arr = await enrollmentsService.getMyEnrollments<any[]>();
+    try {
+      // Новый сервис без generic: возвращает Enrollment[]
+      const arr: Enrollment[] = await enrollmentsService.getMyEnrollments();
 
-    setEnrolledSessions(arr.filter((r) => r.lessonId).map((r) => r.lessonId));
-    setEnrolledEventIds(arr.filter((r) => r.eventId).map((r) => r.eventId));
+      // Берём только те, у которых есть lessonId (запись на конкретное занятие)
+      const lessonIds: string[] = arr
+        .filter((r) => r.lessonId !== null)
+        .map((r) => r.lessonId as string);
+      setEnrolledSessions(lessonIds);
+
+      // Для событий используем отдельный эндпоинт /events/registrations/my
+      const eventRegs = await eventsService.getMyRegistrations<any[]>();
+      setEnrolledEventIds(eventRegs.map((reg) => reg.eventId));
+    } catch {
+      console.warn("Ошибка загрузки записей пользователя");
+    }
   };
 
   const loadFreeVisits = async () => {
     if (!isAuthenticated || !user?.id) return;
 
-    const res = await freeVisitsService.getUserFreeVisits(String(user.id));
-    setSubscriptionCount(res.available ?? 0);
+    try {
+      const res = await freeVisitsService.getUserFreeVisits(String(user.id));
+      setSubscriptionCount(res.available ?? 0);
+    } catch {
+      console.warn("Ошибка загрузки бесплатных посещений");
+    }
   };
 
   /* ====================== EFFECT ====================== */
@@ -164,25 +188,33 @@ export default function SchedulePage() {
   const enrollToLesson = async (session: Session) => {
     if (!isAuthenticated) return alert("Войдите в систему");
 
-    await enrollmentsService.enroll({
-      sectionId: session.section.id,
-      lessonId: session.id,
-    });
+    try {
+      await enrollmentsService.enroll({
+        sectionId: session.section.id,
+        lessonId: session.id,
+      });
 
-    await loadMyEnrollments();
-    await loadFreeVisits();
+      await loadMyEnrollments();
+      await loadFreeVisits();
+    } catch {
+      alert("Ошибка записи на занятие");
+    }
   };
 
   const registerForEvent = async (id: string | number) => {
     if (!isAuthenticated) return alert("Войдите в систему");
 
-    if (enrolledEventIds.includes(id)) {
-      await eventsService.cancelRegistration(String(id));
-    } else {
-      await eventsService.registerForEvent(String(id));
-    }
+    try {
+      if (enrolledEventIds.includes(id)) {
+        await eventsService.cancelRegistration(String(id));
+      } else {
+        await eventsService.registerForEvent(String(id));
+      }
 
-    await loadMyEnrollments();
+      await loadMyEnrollments();
+    } catch {
+      alert("Ошибка регистрации на событие");
+    }
   };
 
   /* ====================== WEEK ====================== */
@@ -205,31 +237,39 @@ export default function SchedulePage() {
   /* ====================== RENDER ====================== */
 
   return (
-    <div className="min-h-screen bg-customblack   text-customwhite pb-[200px]">
+    <div className="min-h-screen bg-customblack text-customwhite pb-[200px]">
       <ScheduleHeader />
 
-<div className="flex justify-center w-full">
-  <WeekSwitcher
-    weekDates={weekDates}
-    selectedDate={selectedDate}
-    onSelect={setSelectedDate}
-    subscriptionCount={subscriptionCount}
-    onOpenFreeVisits={() => setIsFreeVisitsModalOpen(true)}
-    onPrevWeek={() => {
-      const d = new Date(selectedDate);
-      d.setDate(d.getDate() - 7);
-      setSelectedDate(d);
-    }}
-    onNextWeek={() => {
-      const d = new Date(selectedDate);
-      d.setDate(d.getDate() + 7);
-      setSelectedDate(d);
-    }}
-  />
-</div>
+      <div className="flex justify-center w-full">
+        <WeekSwitcher
+          weekDates={weekDates}
+          selectedDate={selectedDate}
+          onSelect={setSelectedDate}
+          subscriptionCount={subscriptionCount}
+          onOpenFreeVisits={() => setIsFreeVisitsModalOpen(true)}
+          onPrevWeek={() => {
+            const d = new Date(selectedDate);
+            d.setDate(d.getDate() - 7);
+            setSelectedDate(d);
+          }}
+          onNextWeek={() => {
+            const d = new Date(selectedDate);
+            d.setDate(d.getDate() + 7);
+            setSelectedDate(d);
+          }}
+        />
+      </div>
 
-      {loading && <div className="text-center flex justify-center mt-20">Загрузка…</div>}
-      {error && <div className="text-center flex justify-center text-red-400 mt-20">{error}</div>}
+      {loading && (
+        <div className="text-center flex justify-center mt-20">
+          Загрузка…
+        </div>
+      )}
+      {error && (
+        <div className="text-center flex justify-center text-red-400 mt-20">
+          {error}
+        </div>
+      )}
 
       <SessionsGrid
         sessions={filteredSessions}

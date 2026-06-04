@@ -47,7 +47,7 @@ export default function SessionCard({
         text: "text-customblack",
         mutedText: "text-customblack/70",
         accent: "text-customblack",
-        icon: "#2D282A",
+        icon: "rgb(var(--color-customblack))",
         button: "bg-customblack text-customyellow",
         showBorder: false,
       }
@@ -56,7 +56,7 @@ export default function SessionCard({
         text: "text-customwhite",
         mutedText: "text-customyellow/80",
         accent: "text-customyellow",
-        icon: "#F4C884",
+        icon: "rgb(var(--color-customyellow))",
         button: "bg-customyellow text-customblack",
         showBorder: true,
       };

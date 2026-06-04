@@ -87,7 +87,7 @@ export default function WeekSwitcher({
                       : "fill-customyellow text-customblack"
                   } stroke-customyellow`}
                 >
-                  <span className="text-[26px] font-h1 text-customblack leading-none">
+                  <span className="text-[26px] font-h1 leading-none">
                     {date.getDate()}
                   </span>
                   <span className="text-[15px] mt-[3px] uppercase">
