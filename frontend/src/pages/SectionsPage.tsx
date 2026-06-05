@@ -8,6 +8,9 @@ import dragonImage from "../assets/svg/dragon.svg";
 import masksImage from "../assets/svg/masks.svg";
 import womenImage from "../assets/svg/women.svg";
 
+import sticker1 from "../assets/img/sticker.webp";
+import sticker2 from "../assets/img/sticker1.webp";
+
 const AnimatedSectionContent = lazy(
   () => import("../components/AnimatedSectionContent")
 );
@@ -203,20 +206,41 @@ export default function SectionsPage() {
     </div>
   );
 
-  // Динамический masonry: если 1 картинка – одна колонка, иначе две
   const renderAdaptiveMasonry = (images: string[]) => {
-    if (images.length === 0) return renderPlaceholder();
-    const colCount = images.length === 1 ? "columns-1" : "columns-2";
+    // Заглушки по умолчанию (если нет реальных изображений — все 4 стикера)
+    const fallbackStickers = [sticker1, sticker2, sticker1, sticker2];
+  
+    // Формируем итоговый массив из 4 элементов:
+    // сначала реальные изображения, потом дополняем стикерами, обрезаем до 4
+    const safe = (images || []).concat(fallbackStickers).slice(0, 4);
+  
     return (
-      <div className={`${colCount} gap-4 p-4 w-full`} style={{ columnGap: "1rem" }}>
-        {images.map((url, idx) => (
-          <img
-            key={idx}
-            src={url}
-            className="w-full h-auto rounded-lg mb-4"
-            alt=""
-          />
-        ))}
+      <div
+        className="grid w-full h-full gap-[16px]"
+        style={{
+          gridTemplateColumns: '312fr 262fr',
+          gridTemplateRows: '172fr 294fr 243fr',
+        }}
+      >
+        {/* 1 */}
+        <div className="col-start-1 row-start-1 overflow-hidden rounded-lg">
+          <img src={safe[0]} alt="" className="w-full h-full object-cover" />
+        </div>
+  
+        {/* 2 */}
+        <div className="col-start-2 row-start-1 row-span-2 overflow-hidden rounded-lg">
+          <img src={safe[1]} alt="" className="w-full h-full object-cover" />
+        </div>
+  
+        {/* 3 */}
+        <div className="col-start-1 row-start-2 overflow-hidden rounded-lg">
+          <img src={safe[2]} alt="" className="w-full h-full object-cover" />
+        </div>
+  
+        {/* 4 */}
+        <div className="col-start-1 col-span-2 row-start-3 overflow-hidden rounded-lg">
+          <img src={safe[3]} alt="" className="w-full h-full object-cover" />
+        </div>
       </div>
     );
   };
@@ -229,10 +253,14 @@ export default function SectionsPage() {
 
       <div className="flex items-center justify-center gap-16 w-full max-w-[1600px] mx-auto px-8">
         {/* Левая панель */}
-        <div className="relative w-[420px] h-auto mr-16">
-          <div className="absolute inset-0 textured-border rounded-xl" />
-          {renderAdaptiveMasonry(galleryLeft)}
-        </div>
+<div className="relative w-[420px] h-auto mr-16">
+  <div className="absolute inset-0 textured-border rounded-xl" />
+  <div className="relative z-10 p-4">
+    <div className="aspect-[590/741] w-full">
+      {renderAdaptiveMasonry(galleryLeft)}
+    </div>
+  </div>
+</div>
 
         {/* Центральный блок */}
         <div className="flex flex-col items-center text-center max-w-lg">
@@ -271,12 +299,16 @@ export default function SectionsPage() {
           </Suspense>
         </div>
 
-        {/* Правая панель */}
-        <div className="relative w-[420px] h-auto ml-16">
-          <div className="absolute inset-0 border border-customyellow rounded-xl border-dashed" />
-          {renderAdaptiveMasonry(galleryRight)}
-        </div>
-      </div>
+{/* Правая панель */}
+<div className="relative w-[420px] h-auto ml-16">
+  <div className="absolute inset-0 border border-customyellow rounded-xl border-dashed" />
+  <div className="relative z-10 p-4">
+    <div className="aspect-[590/741] w-full">
+      {renderAdaptiveMasonry(galleryRight)}
+    </div>
+  </div>
+</div>
+</div>
 
       <h2 className="text-6xl font-h1 mt-32 mb-10 tracking-wide uppercase">
         Преподаватели
