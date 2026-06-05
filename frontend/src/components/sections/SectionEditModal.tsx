@@ -87,9 +87,17 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const selectTeacher = (teacherId: string) => {
-    setForm((prev) => ({ ...prev, teacherIds: [teacherId] }));
-  };
+const toggleTeacher = (teacherId: string) => {
+  setForm((prev) => {
+    const exists = prev.teacherIds.includes(teacherId);
+    return {
+      ...prev,
+      teacherIds: exists
+        ? prev.teacherIds.filter((id) => id !== teacherId)
+        : [...prev.teacherIds, teacherId],
+    };
+  });
+};
 
   const handleIconSelect = (file: File | null) => {
     setIconFile(file);
@@ -319,29 +327,29 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
 
         <div>
           <label className="block mb-2">Учитель</label>
-          <div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
-            {teachers.map((t) => (
-              <button
-                type="button"
-                key={t.id}
-                onClick={() => selectTeacher(t.id)}
-                className={`flex items-center gap-3 p-2 rounded border ${
-                  form.teacherIds[0] === t.id
-                    ? "border-customyellow bg-customyellow/20"
-                    : "border-customwhite/10 bg-customblack"
-                }`}
-              >
-                <img
-                  src={getPublicUrl(t.photoUrl)}
-                  className="w-12 h-12 rounded object-cover"
-                  alt=""
-                />
-                <span>
-                  {t.lastName} {t.firstName}
-                </span>
-              </button>
-            ))}
-          </div>
+<div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+  {teachers.map((t) => (
+    <button
+      type="button"
+      key={t.id}
+      onClick={() => toggleTeacher(t.id)}
+      className={`flex items-center gap-3 p-2 rounded border ${
+        form.teacherIds.includes(t.id)
+          ? "border-customyellow bg-customyellow/20"
+          : "border-customwhite/10 bg-customblack"
+      }`}
+    >
+      <img
+        src={getPublicUrl(t.photoUrl)}
+        className="w-12 h-12 rounded object-cover"
+        alt=""
+      />
+      <span>
+        {t.lastName} {t.firstName}
+      </span>
+    </button>
+  ))}
+</div>
         </div>
 
         <button

@@ -174,8 +174,7 @@ export default function SectionsPage() {
 
   const current = sections[currentIndex];
 
-  const teamMembers = sections
-    .flatMap((s) => s.teachers ?? [])
+const teamMembers = (current.teachers ?? [])
     .map((t) => ({
       id: t.id,
       name: `${t.lastName} ${t.firstName}`,

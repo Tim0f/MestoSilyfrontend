@@ -54,8 +54,16 @@ export default function SectionCreateModal({ isOpen, onClose }: Props) {
   const handleChange = (k: string, v: any) =>
     setForm((p) => ({ ...p, [k]: v }));
 
-  const selectTeacher = (id: string) =>
-    setForm((p) => ({ ...p, teacherIds: [id] }));
+const toggleTeacher = (id: string) =>
+  setForm((p) => {
+    const exists = p.teacherIds.includes(id);
+    return {
+      ...p,
+      teacherIds: exists
+        ? p.teacherIds.filter((tid) => tid !== id)
+        : [...p.teacherIds, id],
+    };
+  });
 
   const handleGallerySelect = (files: FileList | null) => {
     if (!files) return;
@@ -165,29 +173,29 @@ export default function SectionCreateModal({ isOpen, onClose }: Props) {
 
         <div>
           <label className="block mb-1">Учитель</label>
-          <div className="grid grid-cols-2 gap-2">
-            {teachers.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => selectTeacher(t.id)}
-                className={`flex items-center gap-2 p-2 rounded border ${
-                  form.teacherIds[0] === t.id
-                    ? 'border-customyellow bg-customyellow/20'
-                    : 'border-customwhite/10 bg-customblack'
-                }`}
-              >
-                {t.photoUrl && (
-                  <img
-                    src={getPublicUrl(t.photoUrl)}
-                    className="w-10 h-10 rounded object-cover"
-                    alt=""
-                  />
-                )}
-                {t.lastName} {t.firstName}
-              </button>
-            ))}
-          </div>
+<div className="grid grid-cols-2 gap-2">
+  {teachers.map((t) => (
+    <button
+      key={t.id}
+      type="button"
+      onClick={() => toggleTeacher(t.id)}
+      className={`flex items-center gap-2 p-2 rounded border ${
+        form.teacherIds.includes(t.id)
+          ? 'border-customyellow bg-customyellow/20'
+          : 'border-customwhite/10 bg-customblack'
+      }`}
+    >
+      {t.photoUrl && (
+        <img
+          src={getPublicUrl(t.photoUrl)}
+          className="w-10 h-10 rounded object-cover"
+          alt=""
+        />
+      )}
+      {t.lastName} {t.firstName}
+    </button>
+  ))}
+</div>
         </div>
 
         <div>
