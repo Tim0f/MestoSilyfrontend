@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import TeamSlider from "../components/mainpageComponents/TeamSlider";
 import { getPublicUrl } from '../utils/publicUrl';
+import TexturedBorder from "../components/TexturedBorder"; // <-- добавлен импорт
 
 import swordImage from "../assets/svg/sword.svg";
 import arrowImage from "../assets/svg/arrow.svg";
@@ -296,7 +297,7 @@ export default function SectionsPage() {
       <div className="flex items-center justify-center gap-16 w-full max-w-[1600px] mx-auto px-8">
         {/* Левая панель */}
         <div className="relative w-[420px] h-auto mr-16">
-          <div className="absolute inset-0 textured-border rounded-xl" />
+          <TexturedBorder /> {/* заменён div с textured-border */}
           <div className="relative z-10 p-4">
             <div className="aspect-[590/741] w-full">
               {renderAdaptiveMasonry(galleryLeft)}
@@ -343,7 +344,7 @@ export default function SectionsPage() {
 
         {/* Правая панель */}
         <div className="relative w-[420px] h-auto ml-16">
-          <div className="absolute inset-0 border border-customyellow rounded-xl border-dashed" />
+          <TexturedBorder /> {/* заменён div с border-dashed */}
           <div className="relative z-10 p-4">
             <div className="aspect-[590/741] w-full">
               {renderAdaptiveMasonry(galleryRight)}
