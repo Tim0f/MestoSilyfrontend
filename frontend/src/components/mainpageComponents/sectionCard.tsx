@@ -2,12 +2,18 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getPublicUrl } from '../../utils/publicUrl'
 
+export type TeacherShowcase = {
+  name: string
+  photoUrl?: string
+}
+
 export type ShowcaseSection = {
   id: string
   title: string
   description: string
-  teacher: string
+  teacher?: string
   teacherPhotoUrl?: string
+  teachers?: TeacherShowcase[]
   price?: string
   iconUrl: string
   color?: string
@@ -27,28 +33,44 @@ export default function SectionCard({
   onActivate,
 }: SectionCardProps) {
   const expanded = isActive || isDefaultActive
-
   const [isMobile, setIsMobile] = useState(false)
+  const [teacherIndex, setTeacherIndex] = useState(0)
 
+  // Формируем общий список учителей:
+  // если есть teachers – берём его, иначе создаём из teacher/teacherPhotoUrl
+  const teachersList: TeacherShowcase[] =
+    tile.teachers && tile.teachers.length > 0
+      ? tile.teachers
+      : tile.teacher
+        ? [{ name: tile.teacher, photoUrl: tile.teacherPhotoUrl }]
+        : []
+
+  const hasTeachers = teachersList.length > 0
+
+  // Автопрокрутка слайдера
   useEffect(() => {
-    const checkScreen = () => {
-      setIsMobile(window.innerWidth <= 641)
-    }
+    if (!hasTeachers || teachersList.length <= 1) return
+    const interval = setInterval(() => {
+      setTeacherIndex((prev) => (prev + 1) % teachersList.length)
+    }, 3000) // 3 секунды
+    return () => clearInterval(interval)
+  }, [hasTeachers, teachersList.length])
 
+  // Отслеживание ширины экрана
+  useEffect(() => {
+    const checkScreen = () => setIsMobile(window.innerWidth <= 641)
     checkScreen()
-
     window.addEventListener('resize', checkScreen)
-
-    return () => {
-      window.removeEventListener('resize', checkScreen)
-    }
+    return () => window.removeEventListener('resize', checkScreen)
   }, [])
 
-  const teacherImageSrc = tile.teacherPhotoUrl
-    ? tile.teacherPhotoUrl.startsWith('http')
-      ? tile.teacherPhotoUrl
-      : getPublicUrl(tile.teacherPhotoUrl)
-    : null
+  const currentTeacher = hasTeachers ? teachersList[teacherIndex] : null
+
+  // Функция получения полного URL фото
+  const resolvePhoto = (url?: string) => {
+    if (!url) return null
+    return url.startsWith('http') ? url : getPublicUrl(url)
+  }
 
   return (
     <div
@@ -70,7 +92,7 @@ export default function SectionCard({
         ${expanded ? 'w-[570px]' : 'w-[287px]'}
       `}
     >
-      {/* SVG рамка только после 641px */}
+      {/* SVG рамка только на десктопе */}
       {!isMobile && (
         <div
           aria-hidden="true"
@@ -79,11 +101,9 @@ export default function SectionCard({
             height: '530px',
             width: expanded ? '550px' : '287px',
             backgroundColor: 'rgb(var(--color-customyellow))',
-
             WebkitMaskImage: 'url(/svg/texturedBorder.svg)',
             WebkitMaskSize: 'cover',
             WebkitMaskRepeat: 'no-repeat',
-
             maskImage: 'url(/svg/texturedBorder.svg)',
             maskSize: 'cover',
             maskRepeat: 'no-repeat',
@@ -103,7 +123,7 @@ export default function SectionCard({
           max-[641px]:pb-10
         "
       >
-        {/* Иконка */}
+        {/* Иконка секции */}
         <div
           className="
             w-[200px] flex-none flex items-center justify-center px-6
@@ -134,7 +154,7 @@ export default function SectionCard({
           />
         </div>
 
-        {/* Контент */}
+        {/* Контент справа (появляется при раскрытии) */}
         <div
           className="
             flex-1 p-6 flex flex-col
@@ -179,36 +199,55 @@ export default function SectionCard({
                 {tile.description}
               </p>
 
-              {/* Учитель */}
-              <div
-                className="
-                  flex items-center gap-4 mb-6
+              {/* Блок преподавателя – только если есть учителя */}
+              {hasTeachers && currentTeacher && (
+                <div
+                  className="
+                    flex items-center gap-4 mb-6
 
-                  max-[641px]:hidden
-                "
-              >
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-customyellow/30 bg-customyellow/60 flex items-center justify-center">
-                  {teacherImageSrc ? (
-                    <img
-                      src={teacherImageSrc}
-                      alt={tile.teacher}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : null}
-                </div>
-
-                <div>
-                  <div className="text-customyellow font-p">
-                    Учитель:
+                    max-[641px]:hidden
+                  "
+                >
+                  {/* Аватар */}
+                  <div className="w-12 h-12 rounded-full overflow-hidden border border-customyellow/30 bg-customyellow/60 flex items-center justify-center">
+                    {resolvePhoto(currentTeacher.photoUrl) ? (
+                      <img
+                        src={resolvePhoto(currentTeacher.photoUrl)!}
+                        alt={currentTeacher.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : null}
                   </div>
 
-                  <div className="text-customwhite font-p">
-                    {tile.teacher}
+                  {/* Имя и подпись */}
+                  <div>
+                    <div className="text-customyellow font-p">Учитель:</div>
+                    <div className="text-customwhite font-p">
+                      {currentTeacher.name}
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Низ */}
+                  {/* Точки-индикаторы (только если учителей больше одного) */}
+                  {teachersList.length > 1 && (
+                    <div className="flex gap-1.5 ml-2">
+                      {teachersList.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setTeacherIndex(idx)}
+                          className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                            idx === teacherIndex
+                              ? 'bg-customyellow'
+                              : 'bg-customwhite/30'
+                          }`}
+                          aria-label={`Преподаватель ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Цена и кнопка записи */}
               <div className="max-[641px]:flex max-[641px]:flex-col max-[641px]:items-center">
                 {tile.price && (
                   <div

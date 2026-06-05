@@ -18,6 +18,7 @@ export default function SectionSlider({
   onChangeActive,
   defaultActiveId,
 }: SectionSliderProps) {
+  const desktopRef = useRef<HTMLDivElement>(null)
   const mobileSliderRef = useRef<HTMLDivElement>(null)
 
   const infiniteSections = useMemo(() => {
@@ -26,45 +27,37 @@ export default function SectionSlider({
 
   const [currentIndex, setCurrentIndex] = useState(sections.length)
 
+  // Инициализация позиции мобильного слайдера
   useEffect(() => {
     if (!mobileSliderRef.current) return
-
     const container = mobileSliderRef.current
     const width = container.clientWidth
-
     container.scrollLeft = width * currentIndex
   }, [])
 
+  // ===== МОБИЛЬНАЯ ПРОКРУТКА =====
   const scrollToIndex = (index: number) => {
     if (!mobileSliderRef.current) return
-
     const container = mobileSliderRef.current
     const width = container.clientWidth
-
     container.scrollTo({
       left: width * index,
       behavior: 'smooth',
     })
-
     setCurrentIndex(index)
   }
 
   const nextSlide = () => {
     let next = currentIndex + 1
-
     scrollToIndex(next)
-
     if (next >= sections.length * 2) {
       setTimeout(() => {
         if (!mobileSliderRef.current) return
-
         const container = mobileSliderRef.current
         const width = container.clientWidth
-
         container.style.scrollBehavior = 'auto'
         container.scrollLeft = width * sections.length
         container.style.scrollBehavior = 'smooth'
-
         setCurrentIndex(sections.length)
       }, 400)
     }
@@ -72,23 +65,28 @@ export default function SectionSlider({
 
   const prevSlide = () => {
     let prev = currentIndex - 1
-
     scrollToIndex(prev)
-
     if (prev <= sections.length - 1) {
       setTimeout(() => {
         if (!mobileSliderRef.current) return
-
         const container = mobileSliderRef.current
         const width = container.clientWidth
-
         container.style.scrollBehavior = 'auto'
         container.scrollLeft = width * (sections.length * 2 - 1)
         container.style.scrollBehavior = 'smooth'
-
         setCurrentIndex(sections.length * 2 - 1)
       }, 400)
     }
+  }
+
+  // ===== ДЕСКТОПНАЯ ПРОКРУТКА (кнопки) =====
+  const scrollDesktop = (direction: 'left' | 'right') => {
+    if (!desktopRef.current) return
+    const scrollAmount = desktopRef.current.clientWidth * 0.8 // 80% ширины контейнера
+    desktopRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    })
   }
 
   return (
@@ -125,25 +123,56 @@ export default function SectionSlider({
         </div>
 
         {/* DESKTOP */}
-        <div
-          className="
-            flex overflow-x-auto h-[550px] scrollbar-hide
-            max-[641px]:hidden
-          "
-          onMouseLeave={() => onChangeActive(defaultActiveId)}
-        >
-          {sections.map((tile) => (
-            <SectionCard
-              key={tile.id}
-              tile={tile}
-              isActive={activeId === tile.id}
-              isDefaultActive={
-                tile.id === defaultActiveId &&
-                activeId === defaultActiveId
-              }
-              onActivate={() => onChangeActive(tile.id)}
-            />
-          ))}
+        <div className="relative max-[641px]:hidden">
+          {/* Левая кнопка прокрутки */}
+          <button
+            onClick={() => scrollDesktop('left')}
+            className="
+              absolute left-2 top-1/2 -translate-y-1/2 z-50
+              bg-customblack/60 hover:bg-customblack/80
+              text-customyellow p-2 rounded-full
+              backdrop-blur-sm transition
+            "
+            aria-label="Прокрутить влево"
+          >
+            <ArrowLeft size={28} />
+          </button>
+
+          {/* Контейнер с карточками */}
+          <div
+            ref={desktopRef}
+            className="
+              flex overflow-x-auto h-[550px] scrollbar-hide
+            "
+            onMouseLeave={() => onChangeActive(defaultActiveId)}
+          >
+            {sections.map((tile) => (
+              <SectionCard
+                key={tile.id}
+                tile={tile}
+                isActive={activeId === tile.id}
+                isDefaultActive={
+                  tile.id === defaultActiveId &&
+                  activeId === defaultActiveId
+                }
+                onActivate={() => onChangeActive(tile.id)}
+              />
+            ))}
+          </div>
+
+          {/* Правая кнопка прокрутки */}
+          <button
+            onClick={() => scrollDesktop('right')}
+            className="
+              absolute right-2 top-1/2 -translate-y-1/2 z-50
+              bg-customblack/60 hover:bg-customblack/80
+              text-customyellow p-2 rounded-full
+              backdrop-blur-sm transition
+            "
+            aria-label="Прокрутить вправо"
+          >
+            <ArrowRight size={28} />
+          </button>
         </div>
 
         {/* MOBILE */}
