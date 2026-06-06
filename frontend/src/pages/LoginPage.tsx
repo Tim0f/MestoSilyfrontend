@@ -29,7 +29,7 @@ export default function LoginPage() {
             <div className="inline-block p-3 bg-customwhite/30 rounded-full mb-4">
               <LogIn className="text-customyellow" size={32} />
             </div>
-            <h1 className="text-3xl font-light text-customyellow">Вход</h1>
+            <h1 className="text-h2 font-light text-customyellow">Вход</h1>
             <p className="text-customgrey mt-2 font-light">Войдите в свой аккаунт</p>
           </div>
 

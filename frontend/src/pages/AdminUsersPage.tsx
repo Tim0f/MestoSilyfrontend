@@ -17,7 +17,7 @@ export default function AdminUsersPage() {
   return (
     <div className="p-10 text-customwhite space-y-10">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Пользователи</h1>
+        <h1 className="text-h2 font-bold">Пользователи</h1>
         <button
           onClick={() => setIsCreateAdminOpen(true)}
           className="px-4 py-2 bg-customyellow text-customblack rounded font-semibold hover:bg-customyellow"

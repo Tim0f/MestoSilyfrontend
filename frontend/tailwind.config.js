@@ -53,7 +53,29 @@ export default {
       },
     },
   },
+
  plugins: [
+  plugin(({ addUtilities, theme }) => {
+  addUtilities({
+    '.text-h1': {
+      fontSize: '3rem', // 48px по умолчанию
+      '@media (min-width: 768px)': {
+        fontSize: '4rem', // 64px начиная с md
+      },
+    },
+  });
+}),
+// внутри массива plugins, например, после существующего плагина с textured-border
+plugin(({ addUtilities }) => {
+  addUtilities({
+    '.text-h2': {
+      fontSize: '24px', // 24px по умолчанию (мобильные)
+      '@media (min-width: 768px)': {
+        fontSize: '32px', // 32px на экранах md и выше
+      },
+    },
+  });
+}),
   plugin(({ addComponents }) => {
   addComponents({
 '.textured-border': {
@@ -73,6 +95,7 @@ export default {
     
   })
 }),
+// в tailwind.config.js, внутри плагина
 
 plugin(({ addUtilities }) => {
   addUtilities({

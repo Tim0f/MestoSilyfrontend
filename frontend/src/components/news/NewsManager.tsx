@@ -60,7 +60,7 @@ export default function NewsManager() {
   return (
     <div className="p-6 text-customwhite">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Новости</h1>
+        <h1 className="text-h2 font-bold">Новости</h1>
         <button
           onClick={() => setCreateOpen(true)}
           className="px-4 py-2 bg-customyellow text-customblack rounded hover:bg-customyellow"

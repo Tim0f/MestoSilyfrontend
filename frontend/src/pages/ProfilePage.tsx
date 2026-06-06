@@ -251,7 +251,7 @@ export default function ProfilePage() {
 
       {/* Достижения */}
       <div className="flex items-center justify-center flex-col">
-        <h2 className="text-3xl md:text-[52px] font-h1 text-customyellow mt-6 md:mt-8 tracking-wide text-center">ДОСТИЖЕНИЯ</h2>
+        <h2 className="text-h2 md:text-[52px] font-h1 text-customyellow mt-6 md:mt-8 tracking-wide text-center">ДОСТИЖЕНИЯ</h2>
         <div className="flex flex-col md:flex-row gap-4 mt-4 md:mt-6 relative items-center">
           <button onClick={() => setModalOpen(true)} className="bg-customyellow text-customblack font-h2 px-6 py-2 rounded-xl hover:brightness-90 w-full md:w-auto">Получить достижение</button>
           <div className="flex flex-row gap-2 md:gap-4 items-center">

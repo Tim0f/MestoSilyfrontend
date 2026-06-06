@@ -29,7 +29,7 @@ export default function AdminDashboardPage() {
       <div className="min-h-[70vh] bg-customblack text-customwhite flex items-center justify-center px-6">
         <div className="max-w-lg text-center space-y-4">
           <ShieldCheck className="mx-auto text-customyellow" size={48} />
-          <h1 className="text-3xl font-h2">Доступ ограничен</h1>
+          <h1 className="text-h2 font-h2">Доступ ограничен</h1>
           <p className="text-base text-customwhite">
             Эта страница доступна только администраторам.
           </p>

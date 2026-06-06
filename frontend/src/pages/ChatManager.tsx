@@ -56,7 +56,7 @@ export default function ChatsManager() {
   return (
     <div className="text-customwhite p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Чаты</h1>
+        <h1 className="text-h2 font-bold">Чаты</h1>
 
         <button
           className="px-4 py-2 bg-[#52C57B] rounded hover:bg-green-500"

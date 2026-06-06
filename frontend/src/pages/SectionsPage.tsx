@@ -289,7 +289,7 @@ const teamMembers = (current.teachers ?? [])
 
   return (
     <div className="relative w-full min-h-screen bg-customblack text-customyellow flex flex-col items-center py-24 overflow-hidden">
-      <h1 className="text-6xl font-h1 text-customyellow mb-20 tracking-wide uppercase">
+      <h1 className="text-h1 font-h1 text-customyellow mb-20 tracking-wide uppercase">
         Секции
       </h1>
 
@@ -352,7 +352,7 @@ const teamMembers = (current.teachers ?? [])
         </div>
       </div>
 
-      <h2 className="text-6xl font-h1 mt-32 mb-10 tracking-wide uppercase">
+      <h2 className="text-h1 font-h1 mt-32 mb-10 tracking-wide uppercase">
         Преподаватели
       </h2>
       <TeamSlider teamMembers={teamMembers} interval={5000} />

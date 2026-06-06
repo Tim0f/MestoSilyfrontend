@@ -61,7 +61,7 @@ export default function RegisterPage() {
             <div className="inline-block p-3 bg-customyellow/30 rounded-full mb-4">
               <UserPlus className="text-customyellow" size={32} />
             </div>
-            <h1 className="text-3xl font-light text-customyellow">Регистрация</h1>
+            <h1 className="text-h2 font-light text-customyellow">Регистрация</h1>
             <p className="text-customgrey mt-2 font-light">Создайте новый аккаунт</p>
           </div>
 

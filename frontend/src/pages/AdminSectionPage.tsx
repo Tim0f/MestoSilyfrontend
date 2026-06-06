@@ -13,7 +13,7 @@ export default function AdminSectionsPage() {
   return (
     <div className="p-10 text-customwhite space-y-10">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Секции</h1>
+        <h1 className="text-h2 font-bold">Секции</h1>
         <button
           onClick={() => setIsCreateOpen(true)}
           className="px-4 py-2 bg-customyellow text-customblack rounded font-semibold"

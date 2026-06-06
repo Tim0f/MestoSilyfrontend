@@ -53,7 +53,7 @@ export default function TeachersManager() {
   return (
     <div className="text-customwhite p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Преподаватели</h1>
+        <h1 className="text-h2 font-bold">Преподаватели</h1>
 
         <button
           onClick={() => setCreateOpen(true)}

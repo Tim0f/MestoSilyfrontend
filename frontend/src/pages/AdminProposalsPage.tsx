@@ -74,7 +74,7 @@ export default function AdminProposalsPage() {
   return (
     <div className="p-10 text-customwhite space-y-10">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Заявки на секции / мероприятия</h1>
+        <h1 className="text-h2 font-bold">Заявки на секции / мероприятия</h1>
 
         <div className="flex gap-4">
           <select

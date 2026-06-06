@@ -86,7 +86,7 @@ export default function AdminOrdersPage() {
 
     <div className="p-10 text-customwhite space-y-10">
 
-      <h1 className="text-3xl font-bold mb-6">Заказы</h1>
+      <h1 className="text-h2 font-bold mb-6">Заказы</h1>
 
   
 

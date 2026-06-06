@@ -110,7 +110,7 @@ export default function BazarPage() {
 
         <div className="text-center mb-10 mt-10">
 
-          <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">БАЗАР</h1>
+          <h1 className="text-h1 font-h1 mb-2 text-customyellow tracking-wider">БАЗАР</h1>
 
           <p className="text-primary-300 text-lg max-w-xl mx-auto opacity-80">
 
@@ -136,7 +136,7 @@ export default function BazarPage() {
 
       <div className="text-center mb-10 mt-10">
 
-        <h1 className="text-5xl font-h1 mb-2 text-customyellow tracking-wider">
+        <h1 className="text-h1 font-h1 mb-2 text-customyellow tracking-wider">
 
           БАЗАР
 

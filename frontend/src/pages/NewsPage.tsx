@@ -73,7 +73,7 @@ const [news, setNews] = useState<NewsItem[]>([])
                       </span>
                     </div>
 
-                    <h2 className="text-3xl font-h1 mb-4 text-customwhite">
+                    <h2 className="text-h2 font-h1 mb-4 text-customwhite">
                       {item.title}
                     </h2>
 

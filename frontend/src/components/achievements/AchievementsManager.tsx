@@ -72,7 +72,7 @@ export default function AchievementsManager() {
   return (
     <div className="text-customwhite p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Ачивки</h1>
+        <h1 className="text-h2 font-bold">Ачивки</h1>
 
         <button
           onClick={() => setCreateOpen(true)}

@@ -96,7 +96,7 @@ export default function AdminAchievementsModal({ isOpen, onClose }: Props) {
 
         <div className="flex justify-between items-center mb-4">
 
-          <h2 className="text-3xl font-bold">🏆 Ачивки</h2>
+          <h2 className="text-h2 font-bold">🏆 Ачивки</h2>
 
           <button
 
