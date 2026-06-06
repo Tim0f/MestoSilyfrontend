@@ -7,10 +7,12 @@ import { Client } from "../services/httpClient";
 import { UsersFrontendService } from "../services/users.service";
 import { AchievementsFrontendService } from "../services/achievements.service";
 import { SectionsFrontendService } from "../services/sections.service";
+import { getAvatarUrl } from "../utils/avatars";
 import {
   EnrollmentsFrontendService,
   Enrollment,
 } from "../services/enrollments.service";
+import { useAuth } from "../context/AuthContext";
 
 const AchievementCodeModal = lazy(() => import("../components/achievements/AchievementCodeModal"));
 const ProfileEditModal = lazy(() => import("../components/profile/ProfileEditModal"));
@@ -28,9 +30,10 @@ interface User {
   id: string;
   firstName: string;
   lastName: string;
+  avatarID: number;
   email: string;
   dateOfBirth: string;
-  avatarUrl: string;
+  phone?: string;
   totalGrains: number;
 }
 
@@ -45,6 +48,7 @@ const combineDateTime = (dateIso: string, time: string): string => {
 };
 
 export default function ProfilePage() {
+  const { refreshUser } = useAuth();
   const [userData, setUserData] = useState<User | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
@@ -74,10 +78,13 @@ export default function ProfilePage() {
           id: data.id,
           firstName: data.firstName,
           lastName: data.lastName,
+          avatarID: data.avatarID ?? 1,
           email: data.email,
-          avatarUrl: data.avatarUrl ?? "/no-avatar.png",
+          phone: data.phone ?? "",
           totalGrains: data.totalGrains ?? 0,
-          dateOfBirth: new Date(data.dateOfBirth).toISOString().slice(0, 10),
+          dateOfBirth: data.dateOfBirth
+            ? new Date(data.dateOfBirth).toISOString().slice(0, 10)
+            : "",
         });
       })
       .catch(() => console.warn("Ошибка загрузки профиля"));
@@ -142,27 +149,37 @@ export default function ProfilePage() {
     setModalOpen(false);
   };
 
-  const handleProfileSave = async (formData: { firstName: string; lastName: string; dateOfBirth: string; phone: string }) => {
+  const handleProfileSave = async (formData: {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    phone: string;
+    avatarID: number;
+  }) => {
     if (!userId) return;
     try {
-      const updated = await usersService.update<any>(userId, {
+      await usersService.update<any>(userId, {
         firstName: formData.firstName,
         lastName: formData.lastName,
         dateOfBirth: formData.dateOfBirth,
         phone: formData.phone,
+        avatarID: formData.avatarID,
       });
+      // Обновляем локальное состояние страницы (на всякий случай)
       setUserData((prev) =>
         prev
           ? {
               ...prev,
-              firstName: updated.firstName ?? prev.firstName,
-              lastName: updated.lastName ?? prev.lastName,
-              dateOfBirth: updated.dateOfBirth
-                ? new Date(updated.dateOfBirth).toISOString().slice(0, 10)
-                : prev.dateOfBirth,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+              dateOfBirth: formData.dateOfBirth,
+              phone: formData.phone,
+              avatarID: formData.avatarID,
             }
           : null
       );
+      // Обновляем глобальный контекст (хедер и другие компоненты)
+      await refreshUser();
       setEditModalOpen(false);
     } catch {
       alert("Ошибка при сохранении");
@@ -175,13 +192,13 @@ export default function ProfilePage() {
         {/* Левый блок с профилем */}
         <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 md:gap-6 relative overflow-hidden w-full md:w-[629px] h-auto md:h-[448px]">
           <div className="absolute inset-0 border border-customyellow/30 rounded-2xl pointer-events-none" />
-          <img src={userData.avatarUrl} className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover" />
+          <img src={getAvatarUrl(userData.avatarID)} className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover" />
           <div className="flex flex-col gap-1 text-sm text-center sm:text-left flex-1">
-            <h1 className="text-lg md:text-xl font-h2">
+            <h1 className="text-lg md:text-xl font-h2 text-customyellow">
               {userData.firstName} {userData.lastName}
             </h1>
-            <p className="text-customgrey">Дата рождения: {userData.dateOfBirth}</p>
-            <p className="text-customgrey">{userData.email}</p>
+            <p className="text-customwhite">Дата рождения: {userData.dateOfBirth}</p>
+            <p className="text-customwhite">{userData.email}</p>
             <button
               onClick={() => setEditModalOpen(true)}
               className="mt-2 bg-customyellow text-customblack font-h2 px-3 py-1 rounded-lg text-sm self-start hover:brightness-90"
@@ -300,6 +317,8 @@ export default function ProfilePage() {
             firstName: userData.firstName || "",
             lastName: userData.lastName || "",
             dateOfBirth: userData.dateOfBirth || "",
+            phone: userData.phone || "",
+            avatarID: userData.avatarID,
           }}
         />
       </Suspense>

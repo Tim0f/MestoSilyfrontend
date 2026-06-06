@@ -109,6 +109,7 @@ export class AuthService {
         email: true,
         firstName: true,
         lastName: true,
+        avatarID: true,
         phone: true,
         dateOfBirth: true,
         role: true,

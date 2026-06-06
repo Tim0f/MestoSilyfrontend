@@ -3,6 +3,7 @@ import { HttpClient } from './httpClient';
 export interface UpdateUserDto {
   firstName?: string;
   lastName?: string;
+  avatarID?: number, 
   phone?: string;
   dateOfBirth?: string;
   isActive?: boolean;

@@ -2,61 +2,92 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { AuthService } from '../services/auth.service';
 
 interface User {
-  id: number
-  email: string
-  firstName: string
-  lastName: string
-  phone?: string
-  dateOfBirth?: string
-  role: string
-  avatarUrl?: string
-  totalGrains: number
+  id: number;
+  email: string;
+  avatarID: number;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  dateOfBirth?: string;
+  role: string;
+  totalGrains: number;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;        // важно!
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    phone: string,
+    dateOfBirth: string
+  ) => Promise<void>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>(undefined!);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);  // начинаем с true
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Проверка токена при монтировании
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       setIsLoading(false);
       return;
     }
-
     AuthService.me()
-      .then((data: any) => {
-        setUser(data);
-      })
-      .catch(() => {
-        // Токен невалиден – удаляем его
-        localStorage.removeItem('token');
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      .then((data: any) => setUser(data))
+      .catch(() => localStorage.removeItem('token'))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const res: any = await AuthService.login({ email, password });
-    // AuthService уже сохранил токен в localStorage
-    setUser(res.user); // предполагаем, что ответ содержит user
+    const res: { user: User; token: string } = await AuthService.login({ email, password });
+    setUser(res.user);
   }, []);
+
+  const register = useCallback(
+    async (
+      email: string,
+      password: string,
+      firstName: string,
+      lastName: string,
+      phone: string,
+      dateOfBirth: string
+    ) => {
+      const res: { user: User; token: string } = await AuthService.register({
+        email,
+        password,
+        firstName,
+        lastName,
+        phone,
+        dateOfBirth,
+      });
+      setUser(res.user);
+    },
+    []
+  );
 
   const logout = useCallback(() => {
     localStorage.removeItem('token');
     setUser(null);
+  }, []);
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const data = (await AuthService.me()) as User;
+      setUser(data);
+    } catch {
+      localStorage.removeItem('token');
+      setUser(null);
+    }
   }, []);
 
   const value: AuthContextType = {
@@ -64,7 +95,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAuthenticated: !!user,
     isLoading,
     login,
+    register,
     logout,
+    refreshUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

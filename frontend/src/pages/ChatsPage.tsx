@@ -1,7 +1,5 @@
 import { getPublicUrl } from "../utils/publicUrl";
-
-// src/pages/ChatsPage.tsx
-
+import { getAvatarUrl } from "../utils/avatars";
 import React, { useEffect, useRef, useState } from "react";
 import { Send, MoreVertical, ArrowLeft } from "lucide-react";
 import axios from "axios";
@@ -18,7 +16,7 @@ import {
 type ChatItem = {
   id: string;
   type: string;
-  section?: { name: string; imageUrl?: string } | null;
+  section?: { name: string; iconUrl?: string } | null;
   event?: { name: string; imageUrl?: string } | null;
   _count?: { messages: number } | null;
 };
@@ -48,9 +46,8 @@ export default function ChatsPage(): JSX.Element {
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [participantsMap, setParticipantsMap] = useState<Record<string, string>>(
-    {}
-  );
+  const [participantsMap, setParticipantsMap] = useState<Record<string, string>>({});
+  const [participantsAvatarMap, setParticipantsAvatarMap] = useState<Record<string, number | string>>({});
   const [typingUsers, setTypingUsers] = useState<Record<string, boolean>>({});
   const [newMessage, setNewMessage] = useState("");
   const [autoScroll, setAutoScroll] = useState(true);
@@ -58,7 +55,6 @@ export default function ChatsPage(): JSX.Element {
   const [loadingConnection, setLoadingConnection] = useState(true);
   const [firstUnreadId, setFirstUnreadId] = useState<string | null>(null);
 
-  // адаптив: показывать ли список чатов на мобильных
   const [showChatList, setShowChatList] = useState(true);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -67,32 +63,44 @@ export default function ChatsPage(): JSX.Element {
 
   /* ================= UI HELPERS ================= */
 
-const Avatar = ({ src, size = 44 }: { src?: string; size?: number }) => (
-  <div
-    className="flex items-center justify-center rounded-full bg-customyellow/50 overflow-hidden"
-    style={{ width: size, height: size }}
-  >
-    {src ? (
-      <div className="w-full h-full flex items-center justify-center p-[10%]">
-        <img
-          src={src}
-          className="max-w-full max-h-full object-contain"
-          alt="avatar"
-        />
+  const Avatar = ({
+    src,
+    avatarId,
+    size = 44,
+  }: {
+    src?: string;
+    avatarId?: number | string;
+    size?: number;
+  }) => {
+    const finalAvatarId = avatarId ?? 1;
+    const imgSrc = src || getAvatarUrl(finalAvatarId);
+
+    return (
+      <div
+        className="flex items-center justify-center rounded-full bg-customyellow/50 overflow-hidden"
+        style={{ width: size, height: size }}
+      >
+        {imgSrc ? (
+          <img
+            src={imgSrc}
+            className="max-w-full max-h-full object-contain"
+            alt="avatar"
+          />
+        ) : (
+          <span className="text-customwhite font-bold">?</span>
+        )}
       </div>
-    ) : (
-      <span className="text-customwhite font-bold">?</span>
-    )}
-  </div>
-);
+    );
+  };
 
   const getChatName = (c?: ChatItem) =>
     c?.section?.name ?? c?.event?.name ?? "Без названия";
 
-const getChatAvatar = (c?: ChatItem) => {
-  const raw = c?.section?.imageUrl ?? c?.event?.imageUrl ?? undefined;
-  return raw ? getPublicUrl(raw) : undefined;
-};
+  const getChatAvatar = (c?: ChatItem) => {
+    const raw = c?.section?.iconUrl ?? c?.event?.imageUrl ?? undefined;
+    return raw ? getPublicUrl(raw) : undefined;
+  };
+
   /* ================= SCROLL ================= */
 
   const scrollToBottomSmooth = () => {
@@ -136,14 +144,35 @@ const getChatAvatar = (c?: ChatItem) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      console.log("Participants raw data:", res.data.participants);
+
       const map: Record<string, string> = {};
+      const avatarMap: Record<string, number | string> = {};
+
       (res.data.participants ?? []).forEach((p: any) => {
         if (p.user) {
-          map[p.user.id] =
-            `${p.user.firstName ?? ""} ${p.user.lastName ?? ""}`.trim();
+          // Приводим ID к строке для надёжности
+          const uid = String(p.user.id);
+          map[uid] = `${p.user.firstName ?? ""} ${p.user.lastName ?? ""}`.trim();
+
+          // Ищем аватарку в любом возможном поле
+          const avId =
+            p.user.avatarID ??
+            p.user.avatarId ??
+            p.user.avatarid ??
+            p.user.avatar ??
+            p.user.profile?.avatarID ??
+            p.user.avatarUrl;
+          if (avId !== undefined && avId !== null) {
+            avatarMap[uid] = avId;
+          }
         }
       });
+
+      console.log("Built avatarMap:", avatarMap);
+
       setParticipantsMap(map);
+      setParticipantsAvatarMap(avatarMap);
     } catch (e) {
       console.warn("loadParticipants error:", e);
     }
@@ -255,7 +284,7 @@ const getChatAvatar = (c?: ChatItem) => {
       const ack = await socketRef.current?.sendMessage(selectedChatId, text);
       const msg = ack?.message;
 
-      if (!msg) return; // ✅ КРИТИЧНО
+      if (!msg) return;
 
       setMessages((prev) =>
         prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]
@@ -329,8 +358,6 @@ const getChatAvatar = (c?: ChatItem) => {
               </div>
               <div className="border-t border-b border-customyellow/20 mx-4" />
 
-  
-
               <div className="overflow-y-auto px-4 py-4 space-y-3 flex-1">
                 {chats.length === 0 ? (
                   <div className="text-customwhite/50 text-center">Чатов нет</div>
@@ -340,7 +367,7 @@ const getChatAvatar = (c?: ChatItem) => {
                       key={c.id}
                       onClick={() => {
                         setSelectedChatId(String(c.id));
-                        setShowChatList(false); // на мобильных скрываем список
+                        setShowChatList(false);
                       }}
                       className={`w-full flex items-center gap-4 p-4 rounded-md text-left ${
                         selectedChatId === c.id ? "bg-customgrey" : "bg-transparent"
@@ -367,7 +394,6 @@ const getChatAvatar = (c?: ChatItem) => {
             >
               <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-customyellow/20">
                 <div className="flex items-center gap-3 md:gap-4">
-                  {/* Кнопка назад (только мобильные) */}
                   <button
                     onClick={() => setShowChatList(true)}
                     className="md:hidden p-1 -ml-2"
@@ -384,8 +410,6 @@ const getChatAvatar = (c?: ChatItem) => {
                 </div>
                 <MoreVertical size={20} />
               </div>
-
-  
 
               <div
                 ref={containerRef}
@@ -404,21 +428,36 @@ const getChatAvatar = (c?: ChatItem) => {
                       const isMine = m.author?.id === userId;
                       const isFirstUnread = m.id === firstUnreadId;
 
+                      // Поиск аватарки: сначала в авторе сообщения, затем в мапе
+                      const authorIdStr = m.author?.id ? String(m.author.id) : null;
+                      const avatarId =
+                        m.author?.avatarID ??
+                        (authorIdStr ? participantsAvatarMap[authorIdStr] : undefined) ??
+                        1;
+
+                      // Отладочный вывод
+                      if (!isMine) {
+                        console.log(
+                          `Msg ${m.id}: authorId=${authorIdStr}, authorAvatarID=${m.author?.avatarID}, mapAvatar=${authorIdStr ? participantsAvatarMap[authorIdStr] : 'N/A'}, final=${avatarId}`
+                        );
+                      }
+
                       return (
                         <div
                           key={m.id}
                           ref={isFirstUnread ? firstUnreadRef : null}
                           className={`flex items-end gap-2 md:gap-4 ${isMine ? "justify-end" : "justify-start"}`}
                         >
-                          {!isMine && <Avatar size={36} />}
-
-                          <div className={`max-w-[85%] md:max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
-                            {!isMine && (
-                              <div className="text-xs text-customyellow mb-1">
+                          {!isMine && (
+                            <div className="flex flex-col items-center">
+                              <Avatar size={36} avatarId={avatarId} />
+                              <div className="text-xs text-customyellow mt-1">
                                 {m.author?.firstName ?? "Пользователь"}
                               </div>
-                            )}
+                            </div>
+                          )}
 
+                          <div className={`max-w-[85%] md:max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
                             <div
                               className={`p-3 md:p-4 max-w-full md:max-w-[640px] rounded-2xl break-words ${
                                 isMine

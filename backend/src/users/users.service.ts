@@ -19,6 +19,7 @@ export class UsersService {
       select: {
         id: true,
         email: true,
+        avatarID: true, 
         firstName: true,
         lastName: true,
         phone: true,
@@ -37,6 +38,7 @@ export class UsersService {
       select: {
         id: true,
         email: true,
+        avatarID: true, 
         firstName: true,
         lastName: true,
         phone: true,

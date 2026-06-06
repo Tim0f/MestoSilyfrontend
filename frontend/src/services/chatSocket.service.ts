@@ -10,6 +10,7 @@ export interface ChatMessage {
     id: string;
     firstName?: string;
     lastName?: string;
+    avatarID: number;
   } | null;
   createdAt: string;
 }

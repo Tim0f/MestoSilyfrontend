@@ -1,8 +1,10 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { LogOut, Sun, Moon, Menu } from "lucide-react";
+import { getAvatarUrl } from "../utils/avatars"; // <-- импорт утилиты
 
 import Zerno from "../assets/svg/Zerno.svg?react";
 import ProfileUp from "../assets/svg/profile_up.svg";
@@ -112,7 +114,7 @@ export default function Header() {
               <>
                 <Link to="/bazar">
                   <span className="font-h2 text-customyellow flex items-center gap-1 text-sm md:text-base">
-                    {user?.totalGrains}
+                   {user?.totalGrains ?? 0}
                     <Zerno className="w-[16px] md:w-[20px]" />
                   </span>
                 </Link>
@@ -123,8 +125,13 @@ export default function Header() {
                     onClick={() => setIsProfileMenuOpen((p) => !p)}
                     className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden"
                   >
-                    {user?.avatarUrl ? (
-                      <img src={user.avatarUrl} className="w-full h-full object-cover" />
+                    {/* Замена: вместо avatarUrl используем avatarId и утилиту */}
+                    {user?.avatarID ? (
+                      <img
+                        src={getAvatarUrl(user.avatarID)}
+                        alt="avatar"
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <div
                         style={{

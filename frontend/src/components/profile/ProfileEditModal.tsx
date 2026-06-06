@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getAvatarUrl } from "../../utils/avatars"; // путь к вашей утилите
 
 interface Props {
   open: boolean;
@@ -8,12 +9,14 @@ interface Props {
     lastName: string;
     dateOfBirth: string;
     phone: string;
+    avatarID: number;          // <-- добавлено
   }) => void;
   initial: {
     firstName: string;
     lastName: string;
     dateOfBirth: string;
     phone?: string;
+    avatarID?: number;         // <-- добавлено
   };
 }
 
@@ -25,11 +28,15 @@ export default function ProfileEditModal({ open, onClose, onSave, initial }: Pro
     phone: initial.phone || "",
   });
 
+  const [selectedAvatarId, setSelectedAvatarId] = useState<number>(
+    initial.avatarID || 1
+  );
+
   if (!open) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(form);
+    onSave({ ...form, avatarID: selectedAvatarId });
   };
 
   return (
@@ -37,6 +44,7 @@ export default function ProfileEditModal({ open, onClose, onSave, initial }: Pro
       <div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 w-full max-w-md">
         <h2 className="text-xl font-h2 text-customyellow mb-4">Редактировать профиль</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Поля формы */}
           <input
             type="text"
             placeholder="Имя"
@@ -67,7 +75,33 @@ export default function ProfileEditModal({ open, onClose, onSave, initial }: Pro
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             className="bg-customblack border border-customyellow/30 rounded-xl px-4 py-2 text-customwhite"
           />
-          <div className="flex justify-end gap-3">
+
+          {/* Блок выбора аватарки */}
+          <div>
+            <label className="block text-customyellow text-sm mb-2">Аватарка</label>
+            <div className="grid grid-cols-4 gap-3">
+              {[1, 2, 3, 4, 5, 6, 7].map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setSelectedAvatarId(id)}
+                  className={`w-16 h-16 rounded-full overflow-hidden border-2 transition hover:scale-105 ${
+                    selectedAvatarId === id
+                      ? "border-customyellow"
+                      : "border-transparent"
+                  }`}
+                >
+                  <img
+                    src={getAvatarUrl(id)}
+                    alt={`Аватар ${id}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 mt-2">
             <button
               type="button"
               onClick={onClose}

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsDateString, IsBoolean, IsEnum } from 'class-validator';
+import { IsString, IsOptional, IsDateString, IsBoolean, IsEnum, IsInt, Min, Max } from 'class-validator';
 import { UserRole } from '@prisma/client';
 
 export class UpdateUserDto {
@@ -32,4 +32,12 @@ export class UpdateUserDto {
   @IsOptional()
   @IsEnum(UserRole)
   role?: UserRole;
+
+  // Новое поле
+  @ApiProperty({ example: 3, description: 'ID аватарки (1-7)', required: false })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(7)
+  avatarID?: number;
 }
