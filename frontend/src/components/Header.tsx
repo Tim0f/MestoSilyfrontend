@@ -176,29 +176,64 @@ export default function Header() {
         </div>
 
         {/* Мобильное меню (бургер) */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden flex flex-col gap-4 py-4">
-            {!isAuthenticated ? (
-              <>
-                <Link to="/#home" onClick={closeMobileMenu}>Главная</Link>
-                <Link to="/#about" onClick={closeMobileMenu}>О нас</Link>
-                <Link to="/#sections" onClick={closeMobileMenu}>Секции</Link>
-                <Link to="/#news" onClick={closeMobileMenu}>Новости</Link>
-                <Link to="/#team" onClick={closeMobileMenu}>Команда</Link>
-                <Link to="/#partners" onClick={closeMobileMenu}>Партнеры</Link>
-              </>
-            ) : (
-              <>
-                <Link to="/" onClick={closeMobileMenu}>Главная</Link>
-                <Link to="/sections" onClick={closeMobileMenu}>Секции</Link>
-                <Link to="/schedule" onClick={closeMobileMenu}>Расписание</Link>
-                <Link to="/bazar" onClick={closeMobileMenu}>Базар</Link>
-                <Link to="/chats" onClick={closeMobileMenu}>Чаты</Link>
-                <Link to="/requests" onClick={closeMobileMenu}>Заявки</Link>
-              </>
-            )}
+{isMobileMenuOpen && (
+  <div className="md:hidden flex flex-col gap-4 py-4 border-t border-customyellow mt-2">
+    {!isAuthenticated ? (
+      <>
+        <Link to="/#home" onClick={closeMobileMenu}>
+          Главная
+        </Link>
+        <Link to="/#about" onClick={closeMobileMenu}>
+          О нас
+        </Link>
+        <Link to="/#sections" onClick={closeMobileMenu}>
+          Секции
+        </Link>
+        <Link to="/#news" onClick={closeMobileMenu}>
+          Новости
+        </Link>
+        <Link to="/#team" onClick={closeMobileMenu}>
+          Команда
+        </Link>
+        <Link to="/#partners" onClick={closeMobileMenu}>
+          Партнеры
+        </Link>
+      </>
+    ) : (
+      <>
+        <Link to="/" onClick={closeMobileMenu}>
+          Главная
+        </Link>
+        <Link to="/sections" onClick={closeMobileMenu}>
+          Секции
+        </Link>
+        <Link to="/schedule" onClick={closeMobileMenu}>
+          Расписание
+        </Link>
+        <Link to="/bazar" onClick={closeMobileMenu}>
+          Базар
+        </Link>
+        <Link to="/chats" onClick={closeMobileMenu}>
+          Чаты
+        </Link>
+        <Link to="/requests" onClick={closeMobileMenu}>
+          Заявки
+        </Link>
+      </>
+    )}
 
-          </div>
+    {/* Переключатель темы */}
+    <button
+  onClick={toggleTheme}
+  className="flex items-center justify-center self-start mt-2"
+>
+  {theme === "dark" ? (
+    <Sun size={22} className="text-customyellow" />
+  ) : (
+    <Moon size={22} className="text-customyellow" />
+  )}
+</button>
+       </div>
         )}
       </div>
     </header>

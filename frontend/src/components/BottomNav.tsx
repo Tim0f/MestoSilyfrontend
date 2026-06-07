@@ -36,11 +36,17 @@ export default function BottomNav() {
         </NavLink>
 
         <NavLink to="/">
-          <img
-            src={zernoIcon}
-            alt="Home"
-            className="h-11 w-11"
-          />
+        <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          backgroundColor: "rgb(var(--color-customyellow))",
+                          maskImage: `url(${zernoIcon})`,
+                          maskSize: "100% 100%",
+                          maskRepeat: "no-repeat",
+                          maskPosition: "center",
+                        }}
+                      />
         </NavLink>
 
         <NavLink to="/sections">
