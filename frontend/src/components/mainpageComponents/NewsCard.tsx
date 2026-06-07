@@ -17,7 +17,7 @@ export default function NewsCard({
 }: NewsCardProps) {
   return (
 <div
-  className={`w-full md:w-[597px] h-[529px] textured-border bg-customblack rounded-2xl p-8 transition-all duration-700 ${
+  className={`w-full md:w-[597px] md:h-[529px] textured-border bg-customblack rounded-2xl p-8 transition-all duration-700 ${
     isRevealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
   }`}
 >
@@ -32,7 +32,7 @@ export default function NewsCard({
   <img
     src={getPublicUrl(imageSrc)}
     alt={getPublicUrl(imageAlt)}
-    className="w-[549px] h-[263px] object-cover mt-auto rounded-lg"
+    className="w-[549px] max-h-[263px] object-cover mt-auto rounded-lg"
   />
 </div>
 
