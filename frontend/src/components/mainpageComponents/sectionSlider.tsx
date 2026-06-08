@@ -113,7 +113,7 @@ export default function SectionSlider({
           <Link
             to="/sections"
             className="
-              text-primary-400 hover:text-primary-300
+              text-customyellow hover:text-primary-300
               font-p flex items-center gap-2
               max-[641px]:hidden
             "
