@@ -67,27 +67,60 @@ export default function ChatsPage(): JSX.Element {
     src,
     avatarId,
     size = 44,
+    fallbackText,
+    bgColor = "bg-customyellow/50",
+    isChatAvatar = false, // 👈 новый пропс
   }: {
     src?: string;
     avatarId?: number | string;
     size?: number;
+    fallbackText?: string;
+    bgColor?: string;
+    isChatAvatar?: boolean;
   }) => {
     const finalAvatarId = avatarId ?? 1;
-    const imgSrc = src || getAvatarUrl(finalAvatarId);
+    const imgSrc = src || (!fallbackText ? getAvatarUrl(finalAvatarId) : undefined);
 
+    // Если это аватарка чата И есть src – рендерим маску
+    if (isChatAvatar && src) {
+      return (
+        <div
+          className="rounded-full overflow-hidden"
+          style={{
+            width: size,
+            height: size,
+            backgroundColor: "rgb(var(--color-customyellow))", // --customyellow
+            WebkitMaskImage: `url(${src})`,
+            WebkitMaskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskImage: `url(${src})`,
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+      );
+    }
+
+    // Обычная логика (пользовательские аватарки / fallback)
     return (
       <div
-        className="flex items-center justify-center rounded-full bg-customyellow/50 overflow-hidden"
+        className={`flex items-center justify-center rounded-full overflow-hidden ${
+          imgSrc ? "border-2 border-customyellow" : bgColor
+        }`}
         style={{ width: size, height: size }}
       >
         {imgSrc ? (
           <img
             src={imgSrc}
-            className="max-w-full max-h-full object-contain"
+            className="max-w-full max-h-full object-cover"
             alt="avatar"
           />
         ) : (
-          <span className="text-customwhite font-bold">?</span>
+          <span className="text-customwhite font-bold text-lg">
+            {fallbackText || "?"}
+          </span>
         )}
       </div>
     );
@@ -99,6 +132,11 @@ export default function ChatsPage(): JSX.Element {
   const getChatAvatar = (c?: ChatItem) => {
     const raw = c?.section?.iconUrl ?? c?.event?.imageUrl ?? undefined;
     return raw ? getPublicUrl(raw) : undefined;
+  };
+
+  const getChatFallback = (c?: ChatItem) => {
+    const name = getChatName(c);
+    return name ? name[0].toUpperCase() : "?";
   };
 
   /* ================= SCROLL ================= */
@@ -144,18 +182,14 @@ export default function ChatsPage(): JSX.Element {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Participants raw data:", res.data.participants);
-
       const map: Record<string, string> = {};
       const avatarMap: Record<string, number | string> = {};
 
       (res.data.participants ?? []).forEach((p: any) => {
         if (p.user) {
-          // Приводим ID к строке для надёжности
           const uid = String(p.user.id);
           map[uid] = `${p.user.firstName ?? ""} ${p.user.lastName ?? ""}`.trim();
 
-          // Ищем аватарку в любом возможном поле
           const avId =
             p.user.avatarID ??
             p.user.avatarId ??
@@ -168,8 +202,6 @@ export default function ChatsPage(): JSX.Element {
           }
         }
       });
-
-      console.log("Built avatarMap:", avatarMap);
 
       setParticipantsMap(map);
       setParticipantsAvatarMap(avatarMap);
@@ -373,7 +405,14 @@ export default function ChatsPage(): JSX.Element {
                         selectedChatId === c.id ? "bg-customgrey" : "bg-transparent"
                       }`}
                     >
-                      <Avatar src={getChatAvatar(c)} size={44} />
+                      {/* ✅ Аватарка чата с customyellow */}
+                      <Avatar
+                        src={getChatAvatar(c)}
+                        fallbackText={getChatFallback(c)}
+                        bgColor="bg-customyellow"
+                        size={44}
+                        isChatAvatar={true}
+                      />
                       <div className="flex-1">
                         <div className="font-bold text-base md:text-lg">{getChatName(c)}</div>
                         <div className="text-sm text-customwhite/70 mt-1">
@@ -400,9 +439,13 @@ export default function ChatsPage(): JSX.Element {
                   >
                     <ArrowLeft size={24} />
                   </button>
+                  {/* ✅ Аватарка чата в шапке */}
                   <Avatar
                     size={44}
                     src={getChatAvatar(chats.find((c) => c.id === selectedChatId) ?? undefined)}
+                    fallbackText={getChatFallback(chats.find((c) => c.id === selectedChatId) ?? undefined)}
+                    bgColor="bg-customyellow"
+                    isChatAvatar={true}
                   />
                   <div className="text-lg md:text-2xl font-bold">
                     {getChatName(chats.find((c) => c.id === selectedChatId) ?? undefined)}
@@ -428,19 +471,11 @@ export default function ChatsPage(): JSX.Element {
                       const isMine = m.author?.id === userId;
                       const isFirstUnread = m.id === firstUnreadId;
 
-                      // Поиск аватарки: сначала в авторе сообщения, затем в мапе
                       const authorIdStr = m.author?.id ? String(m.author.id) : null;
                       const avatarId =
                         m.author?.avatarID ??
                         (authorIdStr ? participantsAvatarMap[authorIdStr] : undefined) ??
                         1;
-
-                      // Отладочный вывод
-                      if (!isMine) {
-                        console.log(
-                          `Msg ${m.id}: authorId=${authorIdStr}, authorAvatarID=${m.author?.avatarID}, mapAvatar=${authorIdStr ? participantsAvatarMap[authorIdStr] : 'N/A'}, final=${avatarId}`
-                        );
-                      }
 
                       return (
                         <div
@@ -450,6 +485,7 @@ export default function ChatsPage(): JSX.Element {
                         >
                           {!isMine && (
                             <div className="flex flex-col items-center">
+                              {/* Пользовательские аватарки — без изменений */}
                               <Avatar size={36} avatarId={avatarId} />
                               <div className="text-xs text-customyellow mt-1">
                                 {m.author?.firstName ?? "Пользователь"}
