@@ -292,20 +292,22 @@ const teamMembers = (current.teachers ?? [])
       <h1 className="text-h1 font-h1 text-customyellow mb-20 tracking-wide uppercase">
         Секции
       </h1>
-
-      <div className="flex items-center justify-center gap-16 w-full max-w-[1600px] mx-auto px-8">
-        {/* Левая панель */}
-        <div className="relative w-[420px] h-auto mr-16">
-          <TexturedBorder /> {/* заменён div с textured-border */}
+  
+      {/* Основной контейнер: строка на xl, колонка на меньших */}
+      <div className="flex flex-col xl:flex-row items-center justify-center gap-16 w-full max-w-[1600px] mx-auto px-8">
+        
+        {/* Левая панель – видна только на xl */}
+        <div className="relative w-full max-w-[420px] hidden xl:block">
+          <TexturedBorder />
           <div className="relative z-10 p-4">
             <div className="aspect-[590/741] w-full">
               {renderAdaptiveMasonry(galleryLeft)}
             </div>
           </div>
         </div>
-
-        {/* Центральный блок */}
-        <div className="flex flex-col items-center text-center max-w-lg">
+  
+        {/* Центральный блок – всегда первый в потоке */}
+        <div className="flex flex-col items-center text-center max-w-lg order-first xl:order-none">
           <div className="flex items-center justify-center gap-10 mb-10">
             <button
               onClick={prevSection}
@@ -340,18 +342,19 @@ const teamMembers = (current.teachers ?? [])
             />
           </Suspense>
         </div>
-
-        {/* Правая панель */}
-        <div className="relative w-[420px] h-auto ml-16">
-          <TexturedBorder /> {/* заменён div с border-dashed */}
+  
+        {/* Правая панель – всегда видна, не выходит за края */}
+        <div className="relative w-full max-w-[420px] mx-auto xl:mx-0 mt-8 xl:mt-0">
+          <TexturedBorder />
           <div className="relative z-10 p-4">
             <div className="aspect-[590/741] w-full">
               {renderAdaptiveMasonry(galleryRight)}
             </div>
           </div>
         </div>
+  
       </div>
-
+  
       <h2 className="text-h1 font-h1 mt-32 mb-10 tracking-wide uppercase">
         Преподаватели
       </h2>
