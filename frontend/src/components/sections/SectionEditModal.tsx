@@ -38,6 +38,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
     ageMin: 5,
     ageMax: 5,
     maxParticipants: 1,
+    price: 0, // <-- добавлено поле цены
     isActive: true,
     teacherIds: [] as string[],
   });
@@ -69,6 +70,7 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
       ageMin: data.ageMin,
       ageMax: data.ageMax,
       maxParticipants: data.maxParticipants,
+      price: data.price ?? 0, // <-- подгрузка цены
       isActive: data.isActive,
       teacherIds: data.teachers?.map((t: any) => t.id) ?? [],
     });
@@ -87,17 +89,17 @@ export default function SectionEditModal({ id, isOpen, onClose }: Props) {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-const toggleTeacher = (teacherId: string) => {
-  setForm((prev) => {
-    const exists = prev.teacherIds.includes(teacherId);
-    return {
-      ...prev,
-      teacherIds: exists
-        ? prev.teacherIds.filter((id) => id !== teacherId)
-        : [...prev.teacherIds, teacherId],
-    };
-  });
-};
+  const toggleTeacher = (teacherId: string) => {
+    setForm((prev) => {
+      const exists = prev.teacherIds.includes(teacherId);
+      return {
+        ...prev,
+        teacherIds: exists
+          ? prev.teacherIds.filter((id) => id !== teacherId)
+          : [...prev.teacherIds, teacherId],
+      };
+    });
+  };
 
   const handleIconSelect = (file: File | null) => {
     setIconFile(file);
@@ -131,14 +133,12 @@ const toggleTeacher = (teacherId: string) => {
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Если меняли иконку, загружаем её через uploadService, потом применим в update
     let newIconUrl: string | null | undefined;
     if (iconFile) {
       const uploaded = await uploadService.image(iconFile);
       newIconUrl = uploaded.filename;
     }
 
-    // 1. Добавляем новые файлы в галерею через addImageFromFile
     if (newGalleryFiles.length > 0) {
       const maxPosition = existingImages.reduce(
         (max, img) => Math.max(max, img.position),
@@ -151,17 +151,14 @@ const toggleTeacher = (teacherId: string) => {
       );
     }
 
-    // 2. Получаем обновлённый список изображений
     const updatedImages: GalleryImage[] = await sectionsService.getImages(id);
 
-    // 3. Основное фото – первое из галереи (только имя файла)
     let mainImageUrl: string | null = null;
     if (updatedImages.length > 0) {
       const fullUrl = updatedImages[0].imageUrl;
       mainImageUrl = fullUrl.split('/').pop() ?? fullUrl;
     }
 
-    // 4. Обновляем секцию
     await sectionsService.update(id, {
       name: form.name,
       description: form.description,
@@ -169,6 +166,7 @@ const toggleTeacher = (teacherId: string) => {
       ageMin: form.ageMin,
       ageMax: form.ageMax,
       maxParticipants: form.maxParticipants,
+      price: form.price, // <-- передача цены при сохранении
       isActive: form.isActive,
       teacherIds: form.teacherIds.length ? form.teacherIds : undefined,
       imageUrl: mainImageUrl,
@@ -316,6 +314,17 @@ const toggleTeacher = (teacherId: string) => {
           </div>
         </div>
 
+        {/* Новый блок: Цена */}
+        <div>
+          <label className="block mb-1">Цена (₽)</label>
+          <input
+            type="number"
+            className="w-full bg-customblack rounded px-3 py-2"
+            value={form.price}
+            onChange={(e) => handleChange("price", Number(e.target.value))}
+          />
+        </div>
+
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
@@ -327,29 +336,29 @@ const toggleTeacher = (teacherId: string) => {
 
         <div>
           <label className="block mb-2">Учитель</label>
-<div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
-  {teachers.map((t) => (
-    <button
-      type="button"
-      key={t.id}
-      onClick={() => toggleTeacher(t.id)}
-      className={`flex items-center gap-3 p-2 rounded border ${
-        form.teacherIds.includes(t.id)
-          ? "border-customyellow bg-customyellow/20"
-          : "border-customwhite/10 bg-customblack"
-      }`}
-    >
-      <img
-        src={getPublicUrl(t.photoUrl)}
-        className="w-12 h-12 rounded object-cover"
-        alt=""
-      />
-      <span>
-        {t.lastName} {t.firstName}
-      </span>
-    </button>
-  ))}
-</div>
+          <div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+            {teachers.map((t) => (
+              <button
+                type="button"
+                key={t.id}
+                onClick={() => toggleTeacher(t.id)}
+                className={`flex items-center gap-3 p-2 rounded border ${
+                  form.teacherIds.includes(t.id)
+                    ? "border-customyellow bg-customyellow/20"
+                    : "border-customwhite/10 bg-customblack"
+                }`}
+              >
+                <img
+                  src={getPublicUrl(t.photoUrl)}
+                  className="w-12 h-12 rounded object-cover"
+                  alt=""
+                />
+                <span>
+                  {t.lastName} {t.firstName}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <button
