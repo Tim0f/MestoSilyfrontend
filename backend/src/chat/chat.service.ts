@@ -25,6 +25,7 @@ export class ChatService {
                 id: true,
                 firstName: true,
                 lastName: true,
+                avatarID: true, 
               },
             },
           },
@@ -33,7 +34,6 @@ export class ChatService {
       },
     });
   }
- 
  
   async findUserChats(userId: string) {
     return this.prisma.chat.findMany({
@@ -60,6 +60,7 @@ export class ChatService {
                 id: true,
                 firstName: true,
                 lastName: true,
+                avatarID: true, 
               },
             },
           },
@@ -74,7 +75,12 @@ export class ChatService {
       where: { chatId },
       include: {
         author: {
-          select: { id: true, firstName: true, lastName: true },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatarID: true, 
+          },
         },
       },
       orderBy: { createdAt: 'desc' },
@@ -98,6 +104,7 @@ export class ChatService {
             id: true,
             firstName: true,
             lastName: true,
+            avatarID: true, 
           },
         },
       },
@@ -131,6 +138,7 @@ export class ChatService {
             id: true,
             firstName: true,
             lastName: true,
+            avatarID: true, 
           },
         },
       },
@@ -178,6 +186,7 @@ export class ChatService {
                 id: true,
                 firstName: true,
                 lastName: true,
+                avatarID: true, 
               },
             },
           },
@@ -245,6 +254,7 @@ export class ChatService {
                 id: true,
                 firstName: true,
                 lastName: true,
+                avatarID: true, 
               },
             },
           },
