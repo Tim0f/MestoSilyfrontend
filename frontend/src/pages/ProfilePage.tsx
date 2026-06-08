@@ -2,6 +2,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import Zerno from "../assets/svg/Zerno.svg?react";
 import LogoSvg from "../assets/svg/button.svg?react";
+import LucideEdit from "../assets/svg/lucide_edit.svg?react";
 
 import { Client } from "../services/httpClient";
 import { UsersFrontendService } from "../services/users.service";
@@ -190,24 +191,35 @@ export default function ProfilePage() {
     <div className="text-customwhite bg-customblack min-h-screen mt-14 md:mt-12 p-4 md:p-6 space-y-4 md:space-y-6">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
         {/* Левый блок с профилем */}
-        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 flex flex-col sm:flex-row items-center gap-4 md:gap-6 relative overflow-hidden w-full md:w-[629px] h-auto md:h-[448px]">
-          <div className="absolute inset-0 border border-customyellow/30 rounded-2xl pointer-events-none" />
-          <img src={getAvatarUrl(userData.avatarID)} className="w-20 h-20 md:w-24 md:h-24 rounded-xl object-cover" />
-          <div className="flex flex-col gap-1 text-sm text-center sm:text-left flex-1">
-            <h1 className="text-lg md:text-xl font-h2 text-customyellow">
-              {userData.firstName} {userData.lastName}
-            </h1>
-            <p className="text-customwhite">Дата рождения: {userData.dateOfBirth}</p>
-            <p className="text-customwhite">{userData.email}</p>
-            <button
-              onClick={() => setEditModalOpen(true)}
-              className="mt-2 bg-customyellow text-customblack font-h2 px-3 py-1 rounded-lg text-sm self-start hover:brightness-90"
-            >
-              Редактировать
-            </button>
-          </div>
-        </div>
+<div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 relative overflow-hidden w-full md:w-[629px] h-auto md:h-[448px]">
+  <div className="absolute inset-0 border border-customyellow/30 rounded-2xl pointer-events-none" />
 
+  <button
+  onClick={() => setEditModalOpen(true)}
+  className="absolute top-6 right-6 rounded-lg p-2 hover:opacity-80 transition-all"
+>
+  <LucideEdit className="w-10 h-10 text-customyellow z-10" />
+</button>
+
+  <div className="flex flex-col md:flex-row items-center md:items-center gap-8 h-full">
+    <img
+      src={getAvatarUrl(userData.avatarID)}
+      className="w-[180px] h-[180px] rounded-full object-cover border border-customyellow"
+    />
+
+    <div className="flex flex-col text-center md:text-left">
+      <h1 className="text-4xl font-h1 text-customyellow">
+        {userData.firstName} {userData.lastName}
+      </h1>
+
+      <p className="mt-4 text-customwhite">
+        дата рождения: {formatDate(userData.dateOfBirth)}
+      </p>
+
+      <p className="text-customwhite">{userData.email}</p>
+    </div>
+  </div>
+</div>
         {/* Средний блок - Записи */}
         <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative w-full md:w-[715px] h-auto md:h-[448px]">
           <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
@@ -240,14 +252,65 @@ export default function ProfilePage() {
         </div>
 
         {/* Правый блок - баланс */}
-        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative flex flex-col justify-between w-full md:w-[442px] h-auto md:h-[448px]">
-          <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
-          <div className="flex items-center justify-center md:justify-start gap-2 md:gap-4 flex-wrap">
-            <p className="text-customyellow text-[80px] md:text-[170px] font-h1 leading-none">{userData.totalGrains}</p>
-            <Zerno className="w-20 h-20 md:w-40 md:h-40 text-customyellow" />
-          </div>
-        </div>
-      </div>
+<div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 relative flex flex-col justify-between w-full md:w-[442px] h-auto md:h-[448px]">
+  <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
+
+  <div className="flex items-center justify-center gap-4 mt-8">
+    <p className="text-customyellow text-[170px] font-h1 leading-none">
+      {userData.totalGrains}
+    </p>
+
+    <Zerno className="w-[110px] h-[110px] text-customyellow" />
+  </div>
+
+  <div className="flex justify-center mb-8">
+  <div className="flex justify-center mb-8">
+  <button className="relative hover:brightness-90 transition-all">
+    <LogoSvg
+      width={240}
+      height={80}
+      className="fill-customyellow z-10"
+    />
+
+    <span className="absolute inset-0 flex items-center justify-center gap-3 z-20 text-customblack font-h2 text-xl">
+    <span className="flex flex-col gap-[2px]">
+  <svg
+    width="26"
+    height="10"
+    viewBox="0 0 26 10"
+    fill="none"
+  >
+    <path
+      d="M1 5H24M24 5L20 1M24 5L20 9"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+
+  <svg
+    width="26"
+    height="10"
+    viewBox="0 0 26 10"
+    fill="none"
+  >
+    <path
+      d="M25 5H2M2 5L6 1M2 5L6 9"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+</span>
+      перевести
+    </span>
+  </button>
+</div>
+  </div>
+</div>
+</div>
 
       {/* Достижения */}
       <div className="flex items-center justify-center flex-col">
