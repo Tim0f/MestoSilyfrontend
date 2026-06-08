@@ -9,7 +9,7 @@ export default function PartnerCard({ name, image, url }: PartnerCardProps) {
   return (
     <Wrapper
       {...(url ? { href: url, target: '_blank', rel: 'noopener noreferrer' } : {})}
-      className="flex flex-col items-center"
+      className="flex flex-col items-center self-start"
     >
       <div
         className="w-64 h-64 textured-round"
@@ -24,7 +24,7 @@ export default function PartnerCard({ name, image, url }: PartnerCardProps) {
         </div>
       </div>
 
-      <h3 className="mt-6 text-h2 font-h2 text-customwhite">
+      <h3 className="mt-6 text-h2 font-h2 text-customwhite max-w-[16rem] break-words text-center">
         {name}
       </h3>
     </Wrapper>
