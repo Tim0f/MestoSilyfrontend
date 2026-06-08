@@ -163,8 +163,8 @@ export default function Header() {
                           onClick={handleLogout}
                           className="absolute inset-0 flex items-center justify-between px-4"
                         >
-                          <span className="text-[18px] md:text-[22px]">Выйти</span>
-                          <LogOut className="w-6 h-6 md:w-7 md:h-7" />
+                          <span className="text-customblack text-[18px] md:text-[22px]">Выйти</span>
+                          <LogOut className="text-customblack w-6 h-6 md:w-7 md:h-7" />
                         </button>
                       </div>
                     </div>
