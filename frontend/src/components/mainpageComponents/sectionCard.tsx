@@ -111,37 +111,47 @@ export default function SectionCard({
         />
       )}
 
-      <div
-        className="
-          relative z-30 h-full w-full flex
+<div
+  className={`
+    relative z-30 h-full flex
 
-          max-[641px]:flex-col
-          max-[641px]:items-center
-          max-[641px]:justify-center
-          max-[641px]:px-5
-          max-[641px]:pt-8
-          max-[641px]:pb-10
-        "
-      >
+    ${expanded ? "w-full" : "w-full justify-center"}
+
+    max-[641px]:flex-col
+    max-[641px]:items-center
+    max-[641px]:justify-center
+    max-[641px]:px-5
+    max-[641px]:pt-8
+    max-[641px]:pb-10
+  `}
+>
         {/* Иконка секции */}
         <div
-          className="
-            w-[200px] flex-none flex items-center justify-center px-6
+  className={`
+    flex items-center justify-center flex-none
+    transition-all duration-500
 
-            max-[641px]:w-full
-            max-[641px]:px-0
-            max-[641px]:mb-6
-          "
-        >
+    ${expanded ? "w-[200px] px-6" : "w-full px-0"}
+
+    max-[641px]:w-full
+    max-[641px]:px-0
+    max-[641px]:mb-6
+  `}
+>
           <div
             aria-hidden="true"
-            className="
-              w-[180px] h-[500px]
-              select-none pointer-events-none
-
+            className={`
+              select-none pointer-events-none transition-all duration-500
+            
+              ${
+                expanded
+                  ? "w-[180px] h-[500px]"
+                  : "w-[220px] h-[500px]"
+              }
+            
               max-[641px]:w-[90px]
               max-[641px]:h-[200px]
-            "
+            `}
             style={{
               WebkitMaskImage: `url(${getPublicUrl(tile.iconUrl)})`,
               maskImage: `url(${getPublicUrl(tile.iconUrl)})`,
@@ -268,7 +278,6 @@ export default function SectionCard({
                     text-customblack px-6 py-3 rounded-lg font-p transition
 
                     max-[641px]:
-                    text-customblack
                     text-[18px]
                     px-10
                     py-3
