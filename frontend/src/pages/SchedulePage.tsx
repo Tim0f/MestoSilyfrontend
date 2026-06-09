@@ -142,37 +142,41 @@ export default function SchedulePage() {
     }
   };
 
-  const loadMyEnrollments = async () => {
-    if (!isAuthenticated) return;
+const loadMyEnrollments = async () => {
+  if (!isAuthenticated) return;
 
-    try {
-      // Новый сервис без generic: возвращает Enrollment[]
-      const arr: Enrollment[] = await enrollmentsService.getMyEnrollments();
+  try {
+    const arr: Enrollment[] = await enrollmentsService.getMyEnrollments();
+    console.log('Enrollments (lessons):', arr);
 
-      // Берём только те, у которых есть lessonId (запись на конкретное занятие)
-      const lessonIds: string[] = arr
-        .filter((r) => r.lessonId !== null)
-        .map((r) => r.lessonId as string);
-      setEnrolledSessions(lessonIds);
+    const lessonIds = arr.filter(r => r.lessonId !== null).map(r => r.lessonId as string);
+    setEnrolledSessions(lessonIds);
 
-      // Для событий используем отдельный эндпоинт /events/registrations/my
-      const eventRegs = await eventsService.getMyRegistrations<any[]>();
-      setEnrolledEventIds(eventRegs.map((reg) => reg.eventId));
-    } catch {
-      console.warn("Ошибка загрузки записей пользователя");
-    }
-  };
+    const eventRegs = await eventsService.getMyRegistrations<any[]>();
+    console.log('Event registrations raw:', eventRegs);
 
-  const loadFreeVisits = async () => {
-    if (!isAuthenticated || !user?.id) return;
+    // Берём только активные (не отменённые) регистрации
+    const eventIds = eventRegs
+      .filter(reg => reg.status === 'APPROVED')
+      .map(reg => String(reg.eventId));
+    console.log('Extracted eventIds (only APPROVED):', eventIds);
+    setEnrolledEventIds(eventIds);
+  } catch (err) {
+    console.error("Ошибка загрузки записей пользователя", err);
+  }
+};
 
-    try {
-      const res = await freeVisitsService.getUserFreeVisits(String(user.id));
-      setSubscriptionCount(res.available ?? 0);
-    } catch {
-      console.warn("Ошибка загрузки бесплатных посещений");
-    }
-  };
+// loadFreeVisits – закомментируйте вызов или оберните в try/catch с игнорированием 404
+const loadFreeVisits = async () => {
+  if (!isAuthenticated || !user?.id) return;
+  try {
+    const res = await freeVisitsService.getUserFreeVisits(); // без аргумента
+    setSubscriptionCount(res.available ?? 0);
+  } catch (err: any) {
+    // Игнорируем 404, если сервис ещё не реализован
+    if (err.status !== 404) console.warn(err);
+  }
+};
 
   /* ====================== EFFECT ====================== */
 
@@ -201,21 +205,30 @@ export default function SchedulePage() {
     }
   };
 
-  const registerForEvent = async (id: string | number) => {
-    if (!isAuthenticated) return alert("Войдите в систему");
+const registerForEvent = async (id: string | number) => {
+  if (!isAuthenticated) return alert("Войдите в систему");
 
-    try {
-      if (enrolledEventIds.includes(id)) {
-        await eventsService.cancelRegistration(String(id));
-      } else {
-        await eventsService.registerForEvent(String(id));
-      }
+  try {
+    const idStr = String(id);
+    console.log("registerForEvent called with idStr:", idStr);
+    console.log("enrolledEventIds:", enrolledEventIds);
+    console.log("enrolledEventIds includes idStr?", enrolledEventIds.includes(idStr));
 
-      await loadMyEnrollments();
-    } catch {
-      alert("Ошибка регистрации на событие");
+    if (enrolledEventIds.includes(idStr)) {
+      console.log("Отмена регистрации для", idStr);
+      await eventsService.cancelRegistration(idStr);
+    } else {
+      console.log("Запись на событие для", idStr);
+      await eventsService.registerForEvent(idStr);
     }
-  };
+
+    console.log("Успешно, перезагружаем регистрации");
+    await loadMyEnrollments();
+  } catch (err: any) {
+    console.error("Ошибка при регистрации/отмене:", err);
+    alert(`Ошибка: ${err.message || "неизвестная ошибка"}`);
+  }
+};
 
   /* ====================== WEEK ====================== */
 

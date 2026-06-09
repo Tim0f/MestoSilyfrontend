@@ -65,42 +65,46 @@ export class EventsService {
   }
 
   // Регистрация на мероприятие
-  async registerForEvent(userId: string, eventId: string) {
-    // Проверяем существование мероприятия
-    const event = await this.findOne(eventId);
+async registerForEvent(userId: string, eventId: string) {
+  // Проверяем существование мероприятия
+  const event = await this.findOne(eventId);
 
-    // Проверяем, не зарегистрирован ли уже пользователь
-    const existing = await this.prisma.eventRegistration.findUnique({
+  // Ищем регистрацию пользователя на это событие
+  const existingRegistration = await this.prisma.eventRegistration.findUnique({
+    where: {
+      userId_eventId: {
+        userId,
+        eventId,
+      },
+    },
+  });
+
+  // Если активная регистрация уже есть – ошибка
+  if (existingRegistration && existingRegistration.status === 'APPROVED') {
+    throw new Error('Вы уже зарегистрированы на это мероприятие');
+  }
+
+  // Проверяем лимит участников (только для активных, не считая отменённых)
+  if (event.maxParticipants) {
+    const activeRegistrationsCount = await this.prisma.eventRegistration.count({
       where: {
-        userId_eventId: {
-          userId,
-          eventId,
-        },
+        eventId,
+        status: 'APPROVED',
       },
     });
 
-    if (existing) {
-      throw new Error('Вы уже зарегистрированы на это мероприятие');
+    if (activeRegistrationsCount >= event.maxParticipants) {
+      throw new Error('Достигнут лимит участников');
     }
+  }
 
-    // Проверяем лимит участников
-    if (event.maxParticipants) {
-      const registrationsCount = await this.prisma.eventRegistration.count({
-        where: {
-          eventId,
-          status: 'APPROVED',
-        },
-      });
-
-      if (registrationsCount >= event.maxParticipants) {
-        throw new Error('Достигнут лимит участников');
-      }
-    }
-
-    return this.prisma.eventRegistration.create({
+  // Если есть отменённая регистрация – обновляем её
+  if (existingRegistration && existingRegistration.status === 'CANCELLED') {
+    return this.prisma.eventRegistration.update({
+      where: {
+        id: existingRegistration.id,
+      },
       data: {
-        userId,
-        eventId,
         status: 'APPROVED',
         registeredAt: new Date(),
       },
@@ -109,6 +113,20 @@ export class EventsService {
       },
     });
   }
+
+  // Создаём новую регистрацию
+  return this.prisma.eventRegistration.create({
+    data: {
+      userId,
+      eventId,
+      status: 'APPROVED',
+      registeredAt: new Date(),
+    },
+    include: {
+      event: true,
+    },
+  });
+}
 
   // Отменить регистрацию на мероприятие
   async cancelRegistration(userId: string, eventId: string) {

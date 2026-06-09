@@ -19,16 +19,17 @@ export class UploadFrontendService {
     return value.split('/').pop()!;
   }
 
-  async image(file: UploadInput): Promise<{ filename: string }> {
-    const res = await this.http.post<UploadResponse>(
-      '/upload/image',
-      ensureFormData(file),
-    );
+async image(file: UploadInput): Promise<{ filename: string; url: string }> {
+  const res = await this.http.post<UploadResponse>(
+    '/upload/image',
+    ensureFormData(file),
+  );
 
-    return {
-      filename: this.extractFilename(res),
-    };
-  }
+  return {
+    filename: this.extractFilename(res),
+    url: res.url!, // сохраняем URL из ответа
+  };
+}
 
   async audio(file: UploadInput): Promise<{ filename: string }> {
     const res = await this.http.post<UploadResponse>(

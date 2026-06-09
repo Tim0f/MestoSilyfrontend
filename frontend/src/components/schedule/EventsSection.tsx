@@ -10,7 +10,7 @@ export default function EventsSection({ events, enrolledEventIds, onRegister }: 
         <EventCard
           key={e.id}
           event={e}
-          isEnrolled={enrolledEventIds.includes(e.id)}
+          isEnrolled={enrolledEventIds.includes(String(e.id))}
           onClick={() => onRegister(e.id)}
         />
       ))}

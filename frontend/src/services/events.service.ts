@@ -104,11 +104,13 @@ export class EventsFrontendService {
     return this.http.post<T>(`/events/${eventId}/register`, {});
   }
 
-  cancelRegistration<T = unknown>(eventId: string) {
-    return this.http.post<T>(`/events/${eventId}/cancel`, {});
-  }
+cancelRegistration<T = unknown>(eventId: string) {
+  // Было: return this.http.post<T>(`/events/${eventId}/cancel`, {});
+  return this.http.delete<T>(`/events/${eventId}/register`);
+}
 
-  getMyRegistrations<T = unknown>() {
-    return this.http.get<T>('/events/registrations/my');
-  }
+getMyRegistrations<T = unknown>() {
+  // Было: '/events/registrations/my'
+  return this.http.get<T>('/events/my/registrations');
+}
 }

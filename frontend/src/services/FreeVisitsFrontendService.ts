@@ -10,11 +10,12 @@ export interface FreeVisitsResponse {
 /* ====================== SERVICE ====================== */
 
 export class FreeVisitsFrontendService {
-  async getUserFreeVisits(userId: string): Promise<FreeVisitsResponse> {
-    return Client.get<FreeVisitsResponse>(`/free-visits/${userId}`, {
-      authenticate: true,
-    });
-  }
+  
+async getUserFreeVisits(): Promise<FreeVisitsResponse> {
+  return Client.get<FreeVisitsResponse>('/free-visits/my', {
+    authenticate: true,
+  });
+}
 
   purchaseFreeVisits(amount: 1 | 5 | 10) {
     return Client.post(

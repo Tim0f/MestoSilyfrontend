@@ -70,15 +70,15 @@ export default function EventsList({ onEdit }: Props) {
           key={ev.id}
           className="flex justify-between items-center bg-customgrey border border-customwhite/10 px-5 py-4 rounded-xl hover:bg-customwhite/5"
         >
-          <div className="space-y-1">
+          <div className="space-y-1 text-customwhite text-sm">
             <p className="text-lg font-semibold">{ev.title}</p>
-            <p className="text-customgrey text-sm">{ev.description}</p>
-            <p className="text-customgrey text-sm">Дата: {ev.date}</p>
-            <p className="text-customgrey text-sm">
+            <p >{ev.description}</p>
+            <p >Дата: {ev.date}</p>
+            <p >
               Время: {ev.startTime} — {ev.endTime}
             </p>
-            <p className="text-customgrey text-sm">Цена: {ev.price}зерен</p>
-            <p className="text-customgrey text-sm">Максимум участников: {ev.maxParticipants}</p>
+            <p >Цена: {ev.price}зерен</p>
+            <p >Максимум участников: {ev.maxParticipants}</p>
           </div>
 
           <div className="flex gap-3">

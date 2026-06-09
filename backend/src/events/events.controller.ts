@@ -22,6 +22,8 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UserRole } from '@prisma/client';
 import { UploadService } from '../upload/upload.service';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @ApiTags('Events')
 @Controller('events')
@@ -94,18 +96,45 @@ export class EventsController {
       },
     },
   })
-  async uploadImage(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('Файл не загружен');
-    }
 
-    if (!this.uploadService.validateImage(file)) {
-      throw new BadRequestException('Допустимые форматы: JPEG, PNG, GIF, WEBP');
-    }
-
-    const imageUrl = this.uploadService.getFileUrl(file.filename);
-    return this.eventsService.update(id, { imageUrl });
+@Patch(':id/image')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ROOT, UserRole.ADMIN)
+@ApiBearerAuth('JWT-auth')
+@UseInterceptors(FileInterceptor('file', {
+  storage: diskStorage({
+    destination: './uploads',
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + extname(file.originalname));
+    },
+  }),
+}))
+@ApiOperation({ summary: 'Загрузить изображение для события (только администраторы)' })
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+  schema: {
+    type: 'object',
+    properties: {
+      file: {
+        type: 'string',
+        format: 'binary',
+      },
+    },
+  },
+})
+async uploadImage(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+  if (!file) {
+    throw new BadRequestException('Файл не загружен');
   }
+
+  if (!this.uploadService.validateImage(file)) {
+    throw new BadRequestException('Допустимые форматы: JPEG, PNG, GIF, WEBP');
+  }
+
+  const imageUrl = this.uploadService.getFileUrl(file.filename);
+  return this.eventsService.update(id, { imageUrl });
+}
 
   @Patch(':id/banner')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -125,18 +154,46 @@ export class EventsController {
       },
     },
   })
-  async uploadBanner(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('Файл не загружен');
-    }
 
-    if (!this.uploadService.validateImage(file)) {
-      throw new BadRequestException('Допустимые форматы: JPEG, PNG, GIF, WEBP');
-    }
-
-    const bannerUrl = this.uploadService.getFileUrl(file.filename);
-    return this.eventsService.update(id, { bannerUrl });
+  
+@Patch(':id/banner')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ROOT, UserRole.ADMIN)
+@ApiBearerAuth('JWT-auth')
+@UseInterceptors(FileInterceptor('file', {
+  storage: diskStorage({
+    destination: './uploads',
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + extname(file.originalname));
+    },
+  }),
+}))
+@ApiOperation({ summary: 'Загрузить баннер для события (только администраторы)' })
+@ApiConsumes('multipart/form-data')
+@ApiBody({
+  schema: {
+    type: 'object',
+    properties: {
+      file: {
+        type: 'string',
+        format: 'binary',
+      },
+    },
+  },
+})
+async uploadBanner(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+  if (!file) {
+    throw new BadRequestException('Файл не загружен');
   }
+
+  if (!this.uploadService.validateImage(file)) {
+    throw new BadRequestException('Допустимые форматы: JPEG, PNG, GIF, WEBP');
+  }
+
+  const bannerUrl = this.uploadService.getFileUrl(file.filename);
+  return this.eventsService.update(id, { bannerUrl });
+}
 
   @Post(':id/register')
   @UseGuards(JwtAuthGuard)

@@ -7,6 +7,7 @@ import {
   EventsFrontendService,
   type UpdateEventDto,
 } from '../../services/events.service';
+import { UploadFrontendService } from '../../services/upload.service';
 
 interface Props {
   id: string;
@@ -21,6 +22,7 @@ export default function EventEditModal({ id, onClose }: Props) {
   const [form, setForm] = useState<UpdateEventDto>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const uploadService = new UploadFrontendService(client);
 
   useEffect(() => {
     load();
@@ -71,25 +73,31 @@ export default function EventEditModal({ id, onClose }: Props) {
     }
   };
 
-  const handleImageUpload = async (file: File | null) => {
-    if (!file) return;
-    try {
-      await eventsService.uploadImage(id, file);
-      load();
-    } catch {
-      alert('Ошибка загрузки изображения');
-    }
-  };
+const handleImageUpload = async (file: File | null) => {
+  if (!file) return;
+  try {
+    // 1. Загружаем изображение через /upload/image
+const uploaded = await uploadService.image(file);
+await eventsService.update(id, { imageUrl: uploaded.url });
+    // 3. Перезагружаем данные события
+    await load();
+  } catch (err) {
+    console.error(err);
+    alert('Ошибка загрузки изображения');
+  }
+};
 
-  const handleBannerUpload = async (file: File | null) => {
-    if (!file) return;
-    try {
-      await eventsService.uploadBanner(id, file);
-      load();
-    } catch {
-      alert('Ошибка загрузки баннера');
-    }
-  };
+const handleBannerUpload = async (file: File | null) => {
+  if (!file) return;
+  try {
+const uploaded = await uploadService.image(file);
+await eventsService.update(id, { bannerUrl: uploaded.url });
+    await load();
+  } catch (err) {
+    console.error(err);
+    alert('Ошибка загрузки баннера');
+  }
+};
 
   if (loading)
     return (
