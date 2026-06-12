@@ -4,7 +4,9 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 type EventType = {
   id: string | number;
   title: string;
-  date: string;
+  date: string;          // ISO date
+  startTime?: string;    // "HH:MM"
+  endTime?: string;      // "HH:MM"
   description: string;
   fullDescription?: string;
   price?: number;
@@ -26,7 +28,34 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
   const event = events[currentEvent];
   const enrolled = isEnrolled.includes(event.id);
 
+  // Форматирование даты (как в ProfilePage)
+  const formatDate = (isoDate: string): string => {
+    const d = new Date(isoDate);
+    if (isNaN(d.getTime())) return isoDate;
+    return d.toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
 
+  // Форматирование времени (как в ProfilePage)
+  const formatTime = (time: string): string => {
+    if (!/^\d{2}:\d{2}$/.test(time)) return time;
+    const [hours, minutes] = time.split(':');
+    const d = new Date();
+    d.setHours(Number(hours), Number(minutes), 0, 0);
+    return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  // Строка даты + времени
+  const renderDateTime = () => {
+    const dateStr = formatDate(event.date);
+    if (event.startTime && event.endTime) {
+      return `${dateStr} ${formatTime(event.startTime)} – ${formatTime(event.endTime)}`;
+    }
+    return dateStr;
+  };
 
   return (
     <div className="relative w-full overflow-hidden rounded-xl">
@@ -41,7 +70,6 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
             alt={event.title}
             className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* Полупрозрачное затемнение для читаемости текста */}
           <div className="absolute inset-0 bg-customblack/50" />
 
           <div className="relative z-10 flex flex-col items-center w-full px-4">
@@ -49,107 +77,61 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
               {event.title}
             </h3>
             <p className="font-h1 text-customyellow text-4xl md:text-6xl leading-none mt-2 drop-shadow-lg">
-              {event.date}
+              {renderDateTime()}
             </p>
             <ChevronDown size={40} className="text-customyellow mt-2 animate-bounce" />
           </div>
         </div>
       ) : (
-        
-<div className="relative w-full min-h-[520px] md:min-h-[550px] flex">
+        <div className="relative w-full min-h-[520px] md:min-h-[550px] flex">
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-customblack/60" />
 
+          <div className="relative z-10 w-full flex flex-col px-6 md:px-12 py-8">
+            {/* верх */}
+            <div className="flex flex-col items-center">
+              <h2 className="font-h2 text-customyellow text-3xl md:text-5xl drop-shadow-lg">
+                {event.title}
+              </h2>
+              <p className="font-h1 text-customyellow text-4xl md:text-6xl mt-2 drop-shadow-lg">
+                {renderDateTime()}
+              </p>
+            </div>
 
-<img
-  src={event.imageUrl}
-  alt={event.title}
-  className="absolute inset-0 w-full h-full object-cover"
-/>
+            {/* центр */}
+            <div className="flex-1 flex items-center justify-end">
+              <div className="w-full md:w-1/2 text-center md:text-left pr-0 md:pr-16">
+                <p className="text-customwhite text-base md:text-lg leading-relaxed mb-6">
+                  {event.fullDescription || event.description}
+                </p>
 
+                {event.price && (
+                  <div className="text-customyellow text-3xl md:text-5xl mb-6">
+                    Стоимость: {event.price}₽
+                  </div>
+                )}
 
-{/* затемнение */}
-<div className="absolute inset-0 bg-customblack/60" />
+                <button
+                  onClick={() => onClick(event.id)}
+                  className="bg-customyellow text-customblack px-10 py-3 text-lg font-semibold hover:brightness-90 transition"
+                >
+                  {enrolled ? 'Отменить' : 'Записаться'}
+                </button>
+              </div>
+            </div>
 
-
-<div className="relative z-10 w-full flex flex-col px-6 md:px-12 py-8">
-
-
-  {/* верх */}
-  <div className="flex flex-col items-center">
-
-    <h2 className="font-h2 text-customyellow text-3xl md:text-5xl drop-shadow-lg">
-      {event.title}
-    </h2>
-
-
-    <p className="font-h1 text-customyellow text-4xl md:text-6xl mt-2 drop-shadow-lg">
-      {event.date}
-    </p>
-
-  </div>
-
-
-
-  {/* центр - смещаем вправо */}
-  <div className="flex-1 flex items-center justify-end">
-
-    <div className="w-full md:w-1/2 text-center md:text-left pr-0 md:pr-16">
-
-
-      <p className="text-customwhite text-base md:text-lg leading-relaxed mb-6">
-        {event.fullDescription || event.description}
-      </p>
-
-
-      {event.price && (
-        <div className="text-customyellow text-3xl md:text-5xl mb-6">
-          Стоимость: {event.price}₽
+            {/* низ */}
+            <div className="flex justify-center">
+              <button onClick={() => setOpened(false)} className="animate-bounce">
+                <ChevronUp size={42} className="text-customyellow" />
+              </button>
+            </div>
+          </div>
         </div>
-      )}
-
-
-      <button
-        onClick={() => onClick(event.id)}
-        className="
-          bg-customyellow
-          text-customblack
-          px-10
-          py-3
-          text-lg
-          font-semibold
-          hover:brightness-90
-          transition
-        "
-      >
-        {enrolled ? 'Отменить' : 'Записаться'}
-      </button>
-
-
-    </div>
-
-  </div>
-
-
-
-  {/* низ */}
-  <div className="flex justify-center">
-
-    <button
-      onClick={() => setOpened(false)}
-      className="animate-bounce"
-    >
-      <ChevronUp 
-        size={42}
-        className="text-customyellow"
-      />
-    </button>
-
-  </div>
-
-
-</div>
-
-</div>
-
       )}
 
       {/* Слайдер (точки) */}
@@ -171,7 +153,6 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
               />
             ))}
           </div>
-
         </div>
       )}
     </div>
