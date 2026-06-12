@@ -48,10 +48,10 @@ export class FreeVisitsService {
       );
     }
 
-    // Списываем зерна
+    // Списываем зерна – используем connect для связи с пользователем
     await this.prisma.userGrain.create({
       data: {
-        userId,
+        user: { connect: { id: userId } },
         amount: -requiredGrains,
         reason: `Покупка ${amount} бесплатных посещений`,
         type: GrainType.SPENT,
@@ -102,14 +102,12 @@ export class FreeVisitsService {
       orderBy: { createdAt: 'asc' },
     });
 
-    // Находим первую запись с доступными посещениями
     let availableVisit = freeVisits.find((fv) => fv.amount > fv.used);
 
     if (!availableVisit) {
       throw new BadRequestException('Нет доступных бесплатных посещений');
     }
 
-    // Используем одно посещение
     availableVisit = await this.prisma.freeVisit.update({
       where: { id: availableVisit.id },
       data: {

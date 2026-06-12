@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards, Request, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request, Body, Param, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { FreeVisitsService } from './free-visits.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -19,14 +19,18 @@ export class FreeVisitsController {
   @ApiOperation({ summary: 'Получить мои бесплатные посещения' })
   @ApiResponse({ status: 200, description: 'Информация о бесплатных посещениях' })
   getMyFreeVisits(@Request() req) {
-    return this.freeVisitsService.getUserFreeVisits(req.user.id);
+    const userId = req.user?.id || req.user?.userId || req.user?.sub;
+    if (!userId) throw new BadRequestException('Пользователь не определён');
+    return this.freeVisitsService.getUserFreeVisits(userId);
   }
 
   @Post('purchase')
   @ApiOperation({ summary: 'Купить бесплатные посещения за зерна' })
   @ApiResponse({ status: 201, description: 'Бесплатные посещения куплены' })
   purchaseFreeVisits(@Request() req, @Body() dto: PurchaseFreeVisitsDto) {
-    return this.freeVisitsService.purchaseFreeVisits(req.user.id, dto.amount);
+    const userId = req.user?.id || req.user?.userId || req.user?.sub;
+    if (!userId) throw new BadRequestException('Пользователь не определён');
+    return this.freeVisitsService.purchaseFreeVisits(userId, dto.amount);
   }
 
   @Post()
