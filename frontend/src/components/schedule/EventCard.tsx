@@ -39,7 +39,7 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
             alt={event.title}
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-customblack" />
           <div className="relative z-10 flex flex-col items-center w-full px-4">
             <h3 className="font-h2 text-customyellow text-2xl md:text-4xl text-center">
               {event.title}
@@ -52,7 +52,7 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
         </div>
       ) : (
         /* раскрытое состояние */
-        <div className="w-full min-h-[650px] flex flex-col md:flex-row bg-[#220707]">
+        <div className="w-full min-h-[650px] flex flex-col md:flex-row bg-customblack">
           <div className="w-full md:w-[45%] h-64 md:h-auto">
             <img
               src={event.imageUrl}
@@ -68,7 +68,7 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
               {event.title}
             </h2>
             <div className="text-lg text-customyellow/80 mb-4">{event.date}</div>
-            <p className="text-white text-base leading-relaxed mb-8">
+            <p className="text-customwhite text-base leading-relaxed mb-8">
               {event.fullDescription || event.description}
             </p>
             {event.price && (
