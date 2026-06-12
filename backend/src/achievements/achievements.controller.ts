@@ -131,11 +131,15 @@ export class AchievementsController {
   }
 
   @Post('redeem/code')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('JWT-auth')
-  redeemByCode(@Request() req, @Body() body: { code: string }) {
-    return this.achievementsService.redeemByCode(req.user.id, body.code);
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('JWT-auth')
+async redeemByCode(@Request() req, @Body() body: { code: string }) {
+  const userId = req.user?.id || req.user?.userId || req.user?.sub;
+  if (!userId) {
+    throw new BadRequestException('Не удалось определить пользователя');
   }
+  return this.achievementsService.redeemByCode(userId, body.code);
+}
 
   @Post('redeem/qr')
   @UseGuards(JwtAuthGuard)
@@ -143,4 +147,14 @@ export class AchievementsController {
   redeemByQr(@Request() req, @Body() body: { qrCode: string }) {
     return this.achievementsService.redeemByQr(req.user.id, body.qrCode);
   }
+
+  @Post(':id/generate-code')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN, UserRole.ROOT)
+@ApiBearerAuth('JWT-auth')
+@ApiOperation({ summary: 'Сгенерировать новый код для выдачи достижения' })
+async generateCode(@Param('id') id: string) {
+  return this.achievementsService.generateCode(id);
 }
+}
+

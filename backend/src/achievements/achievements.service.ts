@@ -189,4 +189,30 @@ export class AchievementsService {
 
     return this.grantAchievement(achievement.id, userId, 'system');
   }
+
+
+  async generateCode(achievementId: string): Promise<{ code: string }> {
+  // Убеждаемся, что достижение существует
+  const achievement = await this.prisma.achievement.findUnique({
+    where: { id: achievementId },
+  });
+  if (!achievement) {
+    throw new NotFoundException('Достижение не найдено');
+  }
+
+  // Генерируем уникальный код (до 10 попыток)
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+    const existing = await this.prisma.achievement.findUnique({ where: { code } });
+    if (!existing) {
+      // Свободен — обновляем достижение
+      await this.prisma.achievement.update({
+        where: { id: achievementId },
+        data: { code },
+      });
+      return { code };
+    }
+  }
+  throw new BadRequestException('Не удалось сгенерировать уникальный код, попробуйте ещё раз');
+}
 }

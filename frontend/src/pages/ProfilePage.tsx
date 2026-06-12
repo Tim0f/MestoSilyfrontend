@@ -14,6 +14,7 @@ import {
   Enrollment,
 } from "../services/enrollments.service";
 import { useAuth } from "../context/AuthContext";
+import { getPublicUrl } from "../utils/publicUrl";
 
 const AchievementCodeModal = lazy(() => import("../components/achievements/AchievementCodeModal"));
 const ProfileEditModal = lazy(() => import("../components/profile/ProfileEditModal"));
@@ -63,6 +64,8 @@ export default function ProfilePage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [achievementCode, setAchievementCode] = useState("");
+  const [redeemError, setRedeemError] = useState<string | null>(null);
+  const [redeemSuccess, setRedeemSuccess] = useState(false);
 
   const client = Client;
   const usersService = new UsersFrontendService(client);
@@ -144,10 +147,24 @@ export default function ProfilePage() {
     return d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
   };
 
-  const handleSubmitCode = () => {
-    console.log("Получить достижение с кодом:", achievementCode);
-    setAchievementCode("");
-    setModalOpen(false);
+  const handleSubmitCode = async () => {
+    if (!achievementCode.trim()) return;
+    try {
+      await achievementsService.redeemByCode({ code: achievementCode });
+      setRedeemSuccess(true);
+      setRedeemError(null);
+      const data = await achievementsService.findAll<Achievement[]>();
+      setAchievements(Array.isArray(data) ? data : []);
+      setTimeout(() => {
+        setModalOpen(false);
+        setRedeemSuccess(false);
+        setAchievementCode("");
+      }, 1500);
+    } catch (err: any) {
+      console.error(err);
+      setRedeemError(err?.message || "Ошибка активации кода");
+      setRedeemSuccess(false);
+    }
   };
 
   const handleProfileSave = async (formData: {
@@ -166,7 +183,6 @@ export default function ProfilePage() {
         phone: formData.phone,
         avatarID: formData.avatarID,
       });
-      // Обновляем локальное состояние страницы (на всякий случай)
       setUserData((prev) =>
         prev
           ? {
@@ -179,7 +195,6 @@ export default function ProfilePage() {
             }
           : null
       );
-      // Обновляем глобальный контекст (хедер и другие компоненты)
       await refreshUser();
       setEditModalOpen(false);
     } catch {
@@ -191,35 +206,36 @@ export default function ProfilePage() {
     <div className="text-customwhite bg-customblack min-h-screen mt-14 md:mt-12 p-4 md:p-6 space-y-4 md:space-y-6">
       <div className="flex flex-col md:flex-row gap-4 md:gap-6 w-full">
         {/* Левый блок с профилем */}
-<div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 relative overflow-hidden w-full md:w-[629px] h-auto md:h-[448px]">
-  <div className="absolute inset-0 border border-customyellow/30 rounded-2xl pointer-events-none" />
+        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 relative overflow-hidden w-full md:w-[629px] h-auto md:h-[448px]">
+          <div className="absolute inset-0 border border-customyellow/30 rounded-2xl pointer-events-none" />
 
-  <button
-  onClick={() => setEditModalOpen(true)}
-  className="absolute top-6 right-6 rounded-lg p-2 hover:opacity-80 transition-all"
->
-  <LucideEdit className="w-10 h-10 text-customyellow z-10" />
-</button>
+          <button
+            onClick={() => setEditModalOpen(true)}
+            className="absolute top-6 right-6 rounded-lg p-2 hover:opacity-80 transition-all"
+          >
+            <LucideEdit className="w-10 h-10 text-customyellow z-10" />
+          </button>
 
-  <div className="flex flex-col md:flex-row items-center md:items-center gap-8 h-full">
-    <img
-      src={getAvatarUrl(userData.avatarID)}
-      className="w-[180px] h-[180px] rounded-full object-cover border border-customyellow"
-    />
+          <div className="flex flex-col md:flex-row items-center md:items-center gap-8 h-full">
+            <img
+              src={getAvatarUrl(userData.avatarID)}
+              className="w-[180px] h-[180px] rounded-full object-cover border border-customyellow"
+            />
 
-    <div className="flex flex-col text-center md:text-left">
-      <h1 className="text-4xl font-h1 text-customyellow">
-        {userData.firstName} {userData.lastName}
-      </h1>
+            <div className="flex flex-col text-center md:text-left">
+              <h1 className="text-4xl font-h1 text-customyellow">
+                {userData.firstName} {userData.lastName}
+              </h1>
 
-      <p className="mt-4 text-customwhite">
-        дата рождения: {formatDate(userData.dateOfBirth)}
-      </p>
+              <p className="mt-4 text-customwhite">
+                дата рождения: {formatDate(userData.dateOfBirth)}
+              </p>
 
-      <p className="text-customwhite">{userData.email}</p>
-    </div>
-  </div>
-</div>
+              <p className="text-customwhite">{userData.email}</p>
+            </div>
+          </div>
+        </div>
+
         {/* Средний блок - Записи */}
         <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative w-full md:w-[715px] h-auto md:h-[448px]">
           <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
@@ -252,65 +268,65 @@ export default function ProfilePage() {
         </div>
 
         {/* Правый блок - баланс */}
-<div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 relative flex flex-col justify-between w-full md:w-[442px] h-auto md:h-[448px]">
-  <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
+        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 relative flex flex-col justify-between w-full md:w-[442px] h-auto md:h-[448px]">
+          <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
 
-  <div className="flex items-center justify-center gap-4 mt-8">
-    <p className="text-customyellow text-[170px] font-h1 leading-none">
-      {userData.totalGrains}
-    </p>
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <p className="text-customyellow text-[170px] font-h1 leading-none">
+              {userData.totalGrains}
+            </p>
 
-    <Zerno className="w-[110px] h-[110px] text-customyellow" />
-  </div>
+            <Zerno className="w-[110px] h-[110px] text-customyellow" />
+          </div>
 
-  <div className="flex justify-center mb-8">
-  <div className="flex justify-center mb-8">
-  <button className="relative hover:brightness-90 transition-all">
-    <LogoSvg
-      width={240}
-      height={80}
-      className="fill-customyellow z-10"
-    />
+          <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-8">
+              <button className="relative hover:brightness-90 transition-all">
+                <LogoSvg
+                  width={240}
+                  height={80}
+                  className="fill-customyellow z-10"
+                />
 
-    <span className="absolute inset-0 flex items-center justify-center gap-3 z-20 text-customblack font-h2 text-xl">
-    <span className="flex flex-col gap-[2px]">
-  <svg
-    width="26"
-    height="10"
-    viewBox="0 0 26 10"
-    fill="none"
-  >
-    <path
-      d="M1 5H24M24 5L20 1M24 5L20 9"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
+                <span className="absolute inset-0 flex items-center justify-center gap-3 z-20 text-customblack font-h2 text-xl">
+                  <span className="flex flex-col gap-[2px]">
+                    <svg
+                      width="26"
+                      height="10"
+                      viewBox="0 0 26 10"
+                      fill="none"
+                    >
+                      <path
+                        d="M1 5H24M24 5L20 1M24 5L20 9"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
 
-  <svg
-    width="26"
-    height="10"
-    viewBox="0 0 26 10"
-    fill="none"
-  >
-    <path
-      d="M25 5H2M2 5L6 1M2 5L6 9"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</span>
-      перевести
-    </span>
-  </button>
-</div>
-  </div>
-</div>
-</div>
+                    <svg
+                      width="26"
+                      height="10"
+                      viewBox="0 0 26 10"
+                      fill="none"
+                    >
+                      <path
+                        d="M25 5H2M2 5L6 1M2 5L6 9"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  перевести
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Достижения */}
       <div className="flex items-center justify-center flex-col">
@@ -349,10 +365,10 @@ export default function ProfilePage() {
           <div key={i} className="flex flex-col md:flex-row items-center justify-between bg-customblack border border-customyellow/30 rounded-2xl px-4 md:px-6 py-4 relative gap-4">
             <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
             <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
-              <img src={a.iconUrl} className="w-10 h-10 md:w-12 md:h-12" />
+              <img src={getPublicUrl(a.iconUrl)} className="w-10 h-10 md:w-12 md:h-12" />
               <div className="flex flex-col text-center md:text-left">
-                <h3 className="font-h1 text-xl md:text-2xl text-customyellow leading-none">{a.name}</h3>
-                <p className="text-sm md:text-base text-customgrey mt-1">{a.description}</p>
+                <h3 className="font-h1 text-xl md:text-2xl text-customwhite leading-none">{a.name}</h3>
+                <p className="text-sm md:text-base text-customwhite mt-1">{a.description}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-center md:justify-end">
@@ -371,7 +387,22 @@ export default function ProfilePage() {
       </div>
 
       <Suspense fallback={null}>
-        <AchievementCodeModal open={modalOpen} code={achievementCode} onChange={setAchievementCode} onClose={() => setModalOpen(false)} onSubmit={handleSubmitCode} />
+        <AchievementCodeModal
+          open={modalOpen}
+          code={achievementCode}
+          onChange={(value) => {
+            setAchievementCode(value);
+            setRedeemError(null);
+          }}
+          onClose={() => {
+            setModalOpen(false);
+            setRedeemError(null);
+            setAchievementCode("");
+          }}
+          onSubmit={handleSubmitCode}
+          error={redeemError}
+          success={redeemSuccess}
+        />
         <ProfileEditModal
           open={editModalOpen}
           onClose={() => setEditModalOpen(false)}

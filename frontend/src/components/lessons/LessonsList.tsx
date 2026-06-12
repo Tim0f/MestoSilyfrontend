@@ -81,14 +81,14 @@ export default function LessonsList({ onEdit, sectionId }: Props) {
           key={lesson.id}
           className="p-4 flex items-center justify-between hover:bg-customwhite/5"
         >
-          <div className="space-y-1">
+          <div className="space-y-1 text-customwhite">
             {/* Секция */}
             <p className="text-customwhite text-medium">
               Секция: {lesson.section?.name ?? '—'}
             </p>
 
             {/* Учитель */}
-            <p className="text-customgrey text-sm">
+            <p className="text-sm">
               Учитель:{' '}
               {lesson.teacher
                 ? `${lesson.teacher.lastName} ${lesson.teacher.firstName}`
@@ -97,33 +97,33 @@ export default function LessonsList({ onEdit, sectionId }: Props) {
 
             {/* Дата */}
             {lesson.date && (
-              <p className="text-customgrey text-sm">Дата: {lesson.date}</p>
+              <p className="text-sm">Дата: {lesson.date}</p>
             )}
 
             {/* Время */}
             {(lesson.startsAt || lesson.endsAt) && (
-              <p className="text-customgrey text-sm">
+              <p className="text-sm">
                 {lesson.startsAt ?? '—'} — {lesson.endsAt ?? '—'}
               </p>
             )}
 
             {/* Локация */}
             {lesson.location && (
-              <p className="text-customgrey text-sm">
+              <p className="text-sm">
                 Локация: {lesson.location}
               </p>
             )}
 
             {/* Вместимость */}
             {lesson.capacity !== undefined && (
-              <p className="text-customgrey text-sm">
+              <p className="text-sm">
                 Вместимость: {lesson.capacity}
               </p>
             )}
 
             {/* Описание */}
             {lesson.description && (
-              <p className="text-customgrey text-sm whitespace-pre-line">
+              <p className="text-sm whitespace-pre-line">
                 Описание: {lesson.description}
               </p>
             )}

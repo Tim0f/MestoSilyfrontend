@@ -37,6 +37,7 @@ export class AchievementsFrontendService {
   update<T = unknown>(id: string, payload: UpdateAchievementDto) { return this.http.patch<T>(`/achievements/${id}`, payload); }
   remove<T = unknown>(id: string) { return this.http.delete<T>(`/achievements/${id}`); }
   grant<T = unknown>(payload: GrantAchievementPayload) { return this.http.post<T>('/achievements/grant', payload); }
+  generateCode<T = unknown>(id: string) { return this.http.post<T>(`/achievements/${id}/generate-code`); }
   redeemByCode<T = unknown>(payload: { code: string }) { return this.http.post<T>('/achievements/redeem/code', payload); }
   redeemByQr<T = unknown>(payload: { qrCode: string }) { return this.http.post<T>('/achievements/redeem/qr', payload); }
 }

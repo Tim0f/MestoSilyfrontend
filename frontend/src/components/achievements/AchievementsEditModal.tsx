@@ -5,6 +5,7 @@ import {
   type UpdateAchievementDto,
 } from '../../services/achievements.service';
 import { UploadFrontendService } from '../../services/upload.service';
+import { getPublicUrl } from '../../utils/publicUrl'; // <-- импорт
 
 interface Props {
   isOpen: boolean;
@@ -18,12 +19,11 @@ interface Props {
     sectionId: string;
     isActive: boolean;
   };
-  sections: { id: string; name: string }[];
+  sections: { id: string; name: string; iconUrl?: string }[]; // добавлено iconUrl для использования иконки секции
 }
 
 const client = Client;
 const uploadService = new UploadFrontendService(client);
-
 const achievementsService = new AchievementsFrontendService(client);
 
 export default function AchievementEditModal({
@@ -40,32 +40,50 @@ export default function AchievementEditModal({
     sectionId: achievement.sectionId,
     isActive: achievement.isActive,
   });
-const [uploadingIcon, setUploadingIcon] = useState(false);
+  const [uploadingIcon, setUploadingIcon] = useState(false);
 
   const update = (k: keyof UpdateAchievementDto, v: any) =>
     setForm((prev) => ({ ...prev, [k]: v }));
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
-
     await achievementsService.update(achievement.id, form);
     onClose();
   };
 
-const uploadIcon = async (file: File) => {
-  setUploadingIcon(true);
-  try {
-    const filename = await uploadService.image(file);
-    update('iconUrl', filename);
-  } catch (e) {
-    console.error('Ошибка загрузки иконки', e);
-    alert('Не удалось загрузить иконку');
-  } finally {
-    setUploadingIcon(false);
-  }
-};
+  const uploadIcon = async (file: File) => {
+    setUploadingIcon(true);
+    try {
+      const filename = await uploadService.image(file);
+      update('iconUrl', filename);
+    } catch (e) {
+      console.error('Ошибка загрузки иконки', e);
+      alert('Не удалось загрузить иконку');
+    } finally {
+      setUploadingIcon(false);
+    }
+  };
 
+  // 🔥 кнопка "Использовать иконку секции" (как в создании)
+  const handleUseSectionIcon = () => {
+    const selectedSectionId = form.sectionId;
+    if (!selectedSectionId) {
+      alert('Сначала выберите секцию');
+      return;
+    }
 
+    if (selectedSectionId === 'general') {
+      update('iconUrl', '/icons/baseIcon.svg');
+      return;
+    }
+
+    const section = sections.find((s) => s.id === selectedSectionId);
+    if (section?.iconUrl) {
+      update('iconUrl', section.iconUrl);
+    } else {
+      alert('У выбранной секции нет иконки');
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -96,46 +114,56 @@ const uploadIcon = async (file: File) => {
           </div>
 
           <div>
-  <label className="block mb-1 text-customwhite">Иконка</label>
+            <label className="block mb-1 text-customwhite">Иконка</label>
 
-  {/* Предпросмотр текущей иконки */}
-  {form.iconUrl && (
-    <div className="mb-2">
-      <img
-        src={form.iconUrl}
-        alt="icon preview"
-        className="w-16 h-16 object-contain rounded bg-customblack"
-      />
-    </div>
-  )}
+            {/* Предпросмотр текущей иконки */}
+            {form.iconUrl && (
+              <div className="mb-2">
+                <img
+                  src={getPublicUrl(form.iconUrl)} // <-- исправлено
+                  alt="icon preview"
+                  className="w-16 h-16 object-contain rounded bg-customblack"
+                />
+              </div>
+            )}
 
-  {/* Загрузка новой */}
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => {
-      const file = e.target.files?.[0];
-      if (file) uploadIcon(file);
-    }}
-    className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
-  />
+            <div className="flex flex-col gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) uploadIcon(file);
+                }}
+                className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
+              />
 
-  {uploadingIcon && (
-    <p className="text-sm text-customyellow mt-1">
-      Загружаем новую иконку...
-    </p>
-  )}
+              <button
+                type="button"
+                onClick={handleUseSectionIcon}
+                className="px-3 py-1.5 bg-customblack border border-customwhite/10 rounded text-sm hover:bg-customwhite/10 transition"
+              >
+                Использовать иконку секции
+              </button>
+            </div>
 
-  {form.iconUrl && !uploadingIcon && (
-    <p className="text-xs text-customgrey mt-1">
-      Выберите файл, чтобы заменить текущую иконку
-    </p>
-  )}
-</div>
+            {uploadingIcon && (
+              <p className="text-sm text-customyellow mt-1">
+                Загружаем новую иконку...
+              </p>
+            )}
 
+            {form.iconUrl && !uploadingIcon && (
+              <p className="text-xs text-customgrey mt-1">
+                Выберите файл, чтобы заменить текущую иконку
+              </p>
+            )}
+          </div>
 
           <div>
-            <label className="block mb-1 text-customwhite">Награда (зерна)</label>
+            <label className="block mb-1 text-customwhite">
+              Награда (зерна)
+            </label>
             <input
               type="number"
               value={form.rewardGrains}
@@ -145,12 +173,14 @@ const uploadIcon = async (file: File) => {
           </div>
 
           <div>
-            <label className="block mb-1 text-customwhite">Раздел</label>
-<select
-  value={form.sectionId ?? ""}
-  onChange={(e) => update('sectionId', e.target.value)}
-  className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
->
+            <label className="block mb-1 text-customwhite">Секция</label>
+            <select
+              value={form.sectionId ?? ''}
+              onChange={(e) => update('sectionId', e.target.value)}
+              className="w-full bg-customblack border border-customwhite/10 rounded px-3 py-2"
+            >
+              <option value="">Выберите секцию</option>
+              <option value="general">Общая ачивка</option>
               {sections.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
