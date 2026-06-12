@@ -1,4 +1,3 @@
-// EventsSection.tsx
 import EventCard from "./EventCard";
 
 export default function EventsSection({ events, enrolledEventIds, onRegister }: any) {
@@ -6,14 +5,11 @@ export default function EventsSection({ events, enrolledEventIds, onRegister }: 
 
   return (
     <div className="flex justify-center mt-[60px] md:mt-[120px]">
-      {events.map((e: any) => (
-        <EventCard
-          key={e.id}
-          event={e}
-          isEnrolled={enrolledEventIds.includes(String(e.id))}
-          onClick={() => onRegister(e.id)}
-        />
-      ))}
+      <EventCard
+        events={events}
+        isEnrolled={enrolledEventIds}
+        onClick={onRegister}
+      />
     </div>
   );
 }
