@@ -134,6 +134,26 @@ plugin(({ addUtilities }) => {
       overflow: 'hidden',
     },
 
+    /* Multi-line truncation utilities (line-clamp) */
+    '.line-clamp-2': {
+      overflow: 'hidden',
+      display: '-webkit-box',
+      WebkitBoxOrient: 'vertical',
+      WebkitLineClamp: '2',
+    },
+    '.line-clamp-3': {
+      overflow: 'hidden',
+      display: '-webkit-box',
+      WebkitBoxOrient: 'vertical',
+      WebkitLineClamp: '3',
+    },
+    '.line-clamp-4': {
+      overflow: 'hidden',
+      display: '-webkit-box',
+      WebkitBoxOrient: 'vertical',
+      WebkitLineClamp: '4',
+    },
+
 
 //    '.team': {
 //   position: 'relative',

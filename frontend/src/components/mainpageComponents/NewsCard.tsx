@@ -25,7 +25,7 @@ export default function NewsCard({
   {title}
 </h3>
 
-<p className="text-customwhite font-p text-p whitespace-pre-line">
+<p className="text-customwhite font-p text-p line-clamp-4">
   {content}
 </p>
 

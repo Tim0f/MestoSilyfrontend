@@ -13,7 +13,7 @@ export default function TeamCard({ Image, name, position }: CardProps) {
       <div className="relative w-full aspect-square md:w-[590px] md:h-[590px] mb-6">
         {/* Фото */}
         <div className="absolute inset-0 z-10 flex items-center justify-center">
-          <div className="w-[85%] aspect-square md:w-[537px] md:h-[537px] rounded-full overflow-hidden">
+          <div className="w-[75%] sm:w-[80%] aspect-square md:w-[537px] md:h-[537px] rounded-full overflow-hidden">
             <img
               src={Image}
               alt={name}

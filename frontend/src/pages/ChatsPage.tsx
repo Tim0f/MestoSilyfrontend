@@ -377,7 +377,7 @@ export default function ChatsPage(): JSX.Element {
           style={{ ["--tw-url" as any]: `url(${texturedBorder})` }}
         />
 
-        <div className="bg-transparent rounded-xl overflow-hidden shadow-lg h-screen md:h-[78vh]">
+        <div className="bg-transparent rounded-xl overflow-hidden shadow-lg h-auto md:h-[78vh]">
           <div className="flex h-full">
             {/* LEFT PANEL — список чатов */}
             <div
@@ -428,8 +428,8 @@ export default function ChatsPage(): JSX.Element {
             {/* RIGHT PANEL — переписка */}
             <div
               className={`${
-                !showChatList ? "flex" : "hidden"
-              } md:flex flex-1 flex-col bg-customblack`}
+                !showChatList ? "flex pt-12 md:flex md:pt-0" : "hidden md:flex"
+              } flex-1 flex-col bg-customblack`}
             >
               <div className="px-4 md:px-6 py-3 md:py-4 flex items-center justify-between border-b border-customyellow/20">
                 <div className="flex items-center gap-3 md:gap-4">
@@ -493,7 +493,7 @@ export default function ChatsPage(): JSX.Element {
                             </div>
                           )}
 
-                          <div className={`max-w-[85%] md:max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
+                          <div className={`max-w-[90%] md:max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
                             <div
                               className={`p-3 md:p-4 max-w-full md:max-w-[640px] rounded-2xl break-words ${
                                 isMine

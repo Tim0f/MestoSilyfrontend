@@ -137,11 +137,11 @@ const result = await achievementsService.generateCode<{ code: string }>(achievem
           {filteredAchievements.map((a) => (
             <div
               key={a.id}
-              className="p-4 bg-customgrey border border-customwhite/10 rounded-xl flex justify-between"
+              className="p-4 bg-customgrey border border-customwhite/10 rounded-xl flex flex-col md:flex-row md:justify-between gap-4 md:gap-0"
             >
-              <div>
+              <div className="flex-1">
                 <h2 className="text-xl font-semibold">{a.name}</h2>
-                <p className="text-customgrey">{a.description}</p>
+                <p className="text-customgrey line-clamp-3">{a.description}</p>
 
                 <p className="text-customwhite mt-2">
                   Секция: <span className="text-customwhite">{getSectionName(a.sectionId)}</span>
@@ -156,23 +156,23 @@ const result = await achievementsService.generateCode<{ code: string }>(achievem
                 </p>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-row md:flex-col gap-2 md:items-end">
                 <button
-                  className="px-3 py-1 bg-[#5BC0EB] rounded hover:bg-blue-400"
+                  className="w-full md:w-auto px-3 py-1 bg-[#5BC0EB] rounded hover:bg-blue-400"
                   onClick={() => setEditAchievement(a)}
                 >
                   Изменить
                 </button>
 
                 <button
-                  className="px-3 py-1 bg-green-500 rounded hover:bg-green-400"
+                  className="w-full md:w-auto px-3 py-1 bg-green-500 rounded hover:bg-green-400"
                   onClick={() => handleIssue(a)}
                 >
                   Выдать
                 </button>
 
                 <button
-                  className="px-3 py-1 bg-red-500 rounded hover:bg-[#FF6B4A]"
+                  className="w-full md:w-auto px-3 py-1 bg-red-500 rounded hover:bg-[#FF6B4A]"
                   onClick={() => deleteAchievement(a.id)}
                 >
                   Удалить
