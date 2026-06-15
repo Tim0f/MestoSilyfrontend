@@ -365,7 +365,18 @@ export default function ProfilePage() {
           <div key={i} className="flex flex-col md:flex-row items-center justify-between bg-customblack border border-customyellow/30 rounded-2xl px-4 md:px-6 py-4 relative gap-4">
             <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
             <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
-              <img src={getPublicUrl(a.iconUrl)} className="w-10 h-10 md:w-12 md:h-12" />
+              <div
+  className="w-10 h-10 md:w-12 md:h-12"
+  style={{
+    WebkitMaskImage: `url(${getPublicUrl(a.iconUrl)})`,
+    maskImage: `url(${getPublicUrl(a.iconUrl)})`,
+    WebkitMaskSize: 'contain',
+    maskSize: 'contain',
+    WebkitMaskRepeat: 'no-repeat',
+    maskRepeat: 'no-repeat',
+    backgroundColor: 'rgb(var(--color-customyellow))',
+  }}
+/>
               <div className="flex flex-col text-center md:text-left">
                 <h3 className="font-h1 text-xl md:text-2xl text-customwhite leading-none">{a.name}</h3>
                 <p className="text-sm md:text-base text-customwhite mt-1">{a.description}</p>
