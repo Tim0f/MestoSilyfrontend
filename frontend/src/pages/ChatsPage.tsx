@@ -1,6 +1,7 @@
+// src/pages/ChatsPage.tsx
 import { getPublicUrl } from "../utils/publicUrl";
 import { getAvatarUrl } from "../utils/avatars";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, memo } from "react";
 import { Send, MoreVertical, ArrowLeft } from "lucide-react";
 import axios from "axios";
 
@@ -23,7 +24,119 @@ type ChatItem = {
 
 type ChatMessage = SocketChatMessage;
 
-/* ================= COMPONENT ================= */
+/* ================= AVATAR COMPONENT ================= */
+
+const Avatar = memo(
+  ({
+    src,
+    avatarId,
+    size = 44,
+    fallbackText,
+    bgColor = "bg-customyellow/50",
+    isChatAvatar = false,
+  }: {
+    src?: string;
+    avatarId?: number | string;
+    size?: number;
+    fallbackText?: string;
+    bgColor?: string;
+    isChatAvatar?: boolean;
+  }) => {
+    const finalAvatarId = avatarId ?? 1;
+    const imgSrc = src || (!fallbackText ? getAvatarUrl(finalAvatarId) : undefined);
+
+    // Маска для иконок чатов
+    if (isChatAvatar && src) {
+      return (
+        <div
+          className="rounded-full overflow-hidden"
+          style={{
+            width: size,
+            height: size,
+            backgroundColor: "rgb(var(--color-customyellow))",
+            WebkitMaskImage: `url(${src})`,
+            WebkitMaskSize: "contain",
+            WebkitMaskRepeat: "no-repeat",
+            WebkitMaskPosition: "center",
+            maskImage: `url(${src})`,
+            maskSize: "contain",
+            maskRepeat: "no-repeat",
+            maskPosition: "center",
+          }}
+        />
+      );
+    }
+
+    // Обычная аватарка или заглушка
+    return (
+      <div
+        className={`flex items-center justify-center rounded-full overflow-hidden ${
+          imgSrc ? "border-2 border-customyellow" : bgColor
+        }`}
+        style={{ width: size, height: size }}
+      >
+        {imgSrc ? (
+          <img src={imgSrc} className="max-w-full max-h-full object-cover" alt="avatar" />
+        ) : (
+          <span className="text-customwhite font-bold text-lg">{fallbackText || "?"}</span>
+        )}
+      </div>
+    );
+  }
+);
+
+/* ================= MESSAGE ITEM ================= */
+
+const MessageItem = memo(
+  ({
+    message,
+    isMine,
+    avatarId,
+    firstUnreadRef,
+  }: {
+    message: ChatMessage;
+    isMine: boolean;
+    avatarId: number | string;
+    firstUnreadRef: React.Ref<HTMLDivElement> | undefined
+  }) => {
+    return (
+      <div
+        ref={firstUnreadRef}
+        className={`flex items-end gap-2 md:gap-4 ${isMine ? "justify-end" : "justify-start"}`}
+      >
+        {!isMine && (
+          <div className="flex flex-col items-center">
+            <Avatar size={36} avatarId={avatarId} />
+            <div className="text-xs text-customyellow mt-1">
+              {message.author?.firstName ?? "Пользователь"}
+            </div>
+          </div>
+        )}
+
+        <div className={`max-w-[90%] md:max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
+          <div
+            className={`p-3 md:p-4 max-w-full md:max-w-[640px] rounded-2xl break-words ${
+              isMine
+                ? "bg-customyellow text-customblack ml-auto"
+                : "bg-customyellow/70 text-customwhite"
+            }`}
+          >
+            {message.content}
+
+            <div className="text-right text-xs text-customwhite/60 mt-2">
+              {new Date(message.createdAt).toLocaleTimeString("ru-RU", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+);
+
+/* ================= MAIN PAGE ================= */
 
 export default function ChatsPage(): JSX.Element {
   const token = localStorage.getItem("token") || "";
@@ -62,69 +175,6 @@ export default function ChatsPage(): JSX.Element {
   const firstUnreadRef = useRef<HTMLDivElement | null>(null);
 
   /* ================= UI HELPERS ================= */
-
-  const Avatar = ({
-    src,
-    avatarId,
-    size = 44,
-    fallbackText,
-    bgColor = "bg-customyellow/50",
-    isChatAvatar = false, // 👈 новый пропс
-  }: {
-    src?: string;
-    avatarId?: number | string;
-    size?: number;
-    fallbackText?: string;
-    bgColor?: string;
-    isChatAvatar?: boolean;
-  }) => {
-    const finalAvatarId = avatarId ?? 1;
-    const imgSrc = src || (!fallbackText ? getAvatarUrl(finalAvatarId) : undefined);
-
-    // Если это аватарка чата И есть src – рендерим маску
-    if (isChatAvatar && src) {
-      return (
-        <div
-          className="rounded-full overflow-hidden"
-          style={{
-            width: size,
-            height: size,
-            backgroundColor: "rgb(var(--color-customyellow))", // --customyellow
-            WebkitMaskImage: `url(${src})`,
-            WebkitMaskSize: "contain",
-            WebkitMaskRepeat: "no-repeat",
-            WebkitMaskPosition: "center",
-            maskImage: `url(${src})`,
-            maskSize: "contain",
-            maskRepeat: "no-repeat",
-            maskPosition: "center",
-          }}
-        />
-      );
-    }
-
-    // Обычная логика (пользовательские аватарки / fallback)
-    return (
-      <div
-        className={`flex items-center justify-center rounded-full overflow-hidden ${
-          imgSrc ? "border-2 border-customyellow" : bgColor
-        }`}
-        style={{ width: size, height: size }}
-      >
-        {imgSrc ? (
-          <img
-            src={imgSrc}
-            className="max-w-full max-h-full object-cover"
-            alt="avatar"
-          />
-        ) : (
-          <span className="text-customwhite font-bold text-lg">
-            {fallbackText || "?"}
-          </span>
-        )}
-      </div>
-    );
-  };
 
   const getChatName = (c?: ChatItem) =>
     c?.section?.name ?? c?.event?.name ?? "Без названия";
@@ -364,9 +414,7 @@ export default function ChatsPage(): JSX.Element {
     if (activeUsers.length === 2)
       return `${activeUsers[0]} и ${activeUsers[1]} печатают…`;
 
-    return `${activeUsers[0]} и ещё ${
-      activeUsers.length - 1
-    } печатают…`;
+    return `${activeUsers[0]} и ещё ${activeUsers.length - 1} печатают…`;
   })();
 
   return (
@@ -405,7 +453,6 @@ export default function ChatsPage(): JSX.Element {
                         selectedChatId === c.id ? "bg-customgrey" : "bg-transparent"
                       }`}
                     >
-                      {/* ✅ Аватарка чата с customyellow */}
                       <Avatar
                         src={getChatAvatar(c)}
                         fallbackText={getChatFallback(c)}
@@ -439,7 +486,6 @@ export default function ChatsPage(): JSX.Element {
                   >
                     <ArrowLeft size={24} />
                   </button>
-                  {/* ✅ Аватарка чата в шапке */}
                   <Avatar
                     size={44}
                     src={getChatAvatar(chats.find((c) => c.id === selectedChatId) ?? undefined)}
@@ -470,7 +516,6 @@ export default function ChatsPage(): JSX.Element {
                     {messages.map((m) => {
                       const isMine = m.author?.id === userId;
                       const isFirstUnread = m.id === firstUnreadId;
-
                       const authorIdStr = m.author?.id ? String(m.author.id) : null;
                       const avatarId =
                         m.author?.avatarID ??
@@ -478,40 +523,13 @@ export default function ChatsPage(): JSX.Element {
                         1;
 
                       return (
-                        <div
+                        <MessageItem
                           key={m.id}
-                          ref={isFirstUnread ? firstUnreadRef : null}
-                          className={`flex items-end gap-2 md:gap-4 ${isMine ? "justify-end" : "justify-start"}`}
-                        >
-                          {!isMine && (
-                            <div className="flex flex-col items-center">
-                              {/* Пользовательские аватарки — без изменений */}
-                              <Avatar size={36} avatarId={avatarId} />
-                              <div className="text-xs text-customyellow mt-1">
-                                {m.author?.firstName ?? "Пользователь"}
-                              </div>
-                            </div>
-                          )}
-
-                          <div className={`max-w-[90%] md:max-w-[70%] ${isMine ? "text-right" : "text-left"}`}>
-                            <div
-                              className={`p-3 md:p-4 max-w-full md:max-w-[640px] rounded-2xl break-words ${
-                                isMine
-                                  ? "bg-customyellow text-customblack ml-auto"
-                                  : "bg-customyellow/70 text-customwhite"
-                              }`}
-                            >
-                              {m.content}
-
-                              <div className="text-right text-xs text-customwhite/60 mt-2">
-                                {new Date(m.createdAt).toLocaleTimeString("ru-RU", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                })}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                          message={m}
+                          isMine={isMine}
+                          avatarId={avatarId}
+                          firstUnreadRef={isFirstUnread ? (node) => { firstUnreadRef.current = node; } : undefined}
+                        />
                       );
                     })}
                   </div>
