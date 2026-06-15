@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-
+import { getAvatarUrl } from "../utils/avatars";
 import chatIcon from '../assets/svg/chat.svg'
 import scheduleIcon from '../assets/svg/shedule.svg'
 import zernoIcon from '../assets/svg/Zerno.svg'
@@ -11,8 +11,9 @@ import { useAuth } from '../context/AuthContext'
 export default function BottomNav() {
   const { user } = useAuth()
 
-  const profileImage =
-    sticker1
+  const profileImage = user?.avatarID
+    ? getAvatarUrl(user.avatarID)
+    : sticker1
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
