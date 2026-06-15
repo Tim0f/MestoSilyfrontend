@@ -62,7 +62,7 @@ export default function RegisterPage() {
               <UserPlus className="text-customyellow" size={32} />
             </div>
             <h1 className="text-h2 font-light text-customyellow">Регистрация</h1>
-            <p className="text-customgrey mt-2 font-light">Создайте новый аккаунт</p>
+            <p className="text-white mt-2 font-light">Создайте новый аккаунт</p>
           </div>
 
           {error && (
@@ -186,7 +186,7 @@ export default function RegisterPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-customyellow font-light">
+            <p className="text-white font-light">
               Уже есть аккаунт?{' '}
               <Link to="/login" className="text-customyellow font-light hover:text-customyellow">
                 Войти
