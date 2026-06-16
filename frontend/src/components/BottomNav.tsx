@@ -5,6 +5,7 @@ import scheduleIcon from '../assets/svg/shedule.svg'
 import zernoIcon from '../assets/svg/Zerno.svg'
 import vectorIcon from '../assets/svg/Vector_7.svg'
 import sticker1 from '../assets/img/sticker1.webp'
+import profileIcon from '../assets/svg/ProfileIcon.svg'
 
 import { useAuth } from '../context/AuthContext'
 
@@ -21,19 +22,31 @@ export default function BottomNav() {
 
       <div className="flex h-[82px] items-center justify-around bg-customgrey px-4">
         <NavLink to="/chats">
-          <img
-            src={chatIcon}
-            alt="Chats"
-            className="h-8 w-8"
-          />
+          <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          backgroundColor: "rgb(var(--color-customyellow))",
+                          maskImage: `url(${chatIcon})`,
+                          maskSize: "100% 100%",
+                          maskRepeat: "no-repeat",
+                          maskPosition: "center",
+                        }}
+                      />
         </NavLink>
 
         <NavLink to="/schedule">
-          <img
-            src={scheduleIcon}
-            alt="Schedule"
-            className="h-8 w-8"
-          />
+          <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          backgroundColor: "rgb(var(--color-customyellow))",
+                          maskImage: `url(${scheduleIcon})`,
+                          maskSize: "100% 100%",
+                          maskRepeat: "no-repeat",
+                          maskPosition: "center",
+                        }}
+                      />
         </NavLink>
 
         <NavLink to="/">
@@ -51,20 +64,45 @@ export default function BottomNav() {
         </NavLink>
 
         <NavLink to="/sections">
-          <img
-            src={vectorIcon}
-            alt="Sections"
-            className="h-8 w-8"
-          />
+          <div
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          backgroundColor: "rgb(var(--color-customyellow))",
+                          maskImage: `url(${vectorIcon})`,
+                          maskSize: "100% 100%",
+                          maskRepeat: "no-repeat",
+                          maskPosition: "center",
+                        }}
+                      />
         </NavLink>
 
         <NavLink to={user ? '/profile' : '/login'}>
-          <img
-            src={profileImage}
-            alt="Profile"
-            className="h-14 w-14 rounded-full border-2 border-customyellow object-cover"
-          />
-        </NavLink>
+  {user?.avatarID ? (
+    <img
+      src={getAvatarUrl(user.avatarID)} // или getPublicUrl(user.avatarUrl), если нужно
+      alt="Аватар"
+      style={{
+        width: "40px",
+        height: "40px",
+        borderRadius: "50%",
+        objectFit: "cover",
+      }}
+    />
+  ) : (
+    <div
+      style={{
+        width: "40px",
+        height: "40px",
+        backgroundColor: "rgb(var(--color-customyellow))",
+        maskImage: `url(${profileIcon})`,
+        maskSize: "100% 100%",
+        maskRepeat: "no-repeat",
+        maskPosition: "center",
+      }}
+    />
+  )}
+</NavLink>
       </div>
     </div>
   )

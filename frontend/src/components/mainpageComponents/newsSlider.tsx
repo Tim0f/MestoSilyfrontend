@@ -1,4 +1,5 @@
-import NewsCard from './NewsCard'
+import { useState, useEffect } from 'react';
+import NewsCard from './NewsCard';
 
 export type NewsSliderProps = {
   news: any[]
@@ -17,29 +18,36 @@ export default function NewsSlider({
   onToggleReveal,
   isRevealed,
 }: NewsSliderProps) {
-  const pageSize = 3
-  const pages = Math.ceil(news.length / pageSize)
+  const [pageSize, setPageSize] = useState(3);
 
+  useEffect(() => {
+    const updatePageSize = () => {
+      setPageSize(window.innerWidth < 767 ? 1 : 3);
+    };
+    updatePageSize();
+    window.addEventListener('resize', updatePageSize);
+    return () => window.removeEventListener('resize', updatePageSize);
+  }, []);
+
+  const pages = Math.ceil(news.length / pageSize);
   const groups = Array.from({ length: pages }, (_, i) =>
     news.slice(i * pageSize, (i + 1) * pageSize)
-  )
+  );
 
   const handlePaginationClick = (index: number) => {
-    if (index === currentPage) return
-    onToggleReveal(false)
+    if (index === currentPage) return;
+    onToggleReveal(false);
     setTimeout(() => {
-      onPageChange(index)
-      setTimeout(() => onToggleReveal(true), 50)
-    }, 350)
-  }
+      onPageChange(index);
+      setTimeout(() => onToggleReveal(true), 50);
+    }, 350);
+  };
 
   return (
     <section className="py-20 bg-customblack">
       <div className="px-5">
         <div className="text-center mb-12">
-          <h2 className="text-h1 font-h1 text-customyellow mb-8">
-            НОВОСТИ
-          </h2>
+          <h2 className="text-h1 font-h1 text-customyellow mb-8">НОВОСТИ</h2>
         </div>
 
         <div className="relative">
@@ -57,16 +65,14 @@ export default function NewsSlider({
             ))}
 
             {groups.length === 0 && (
-              <>
-                <NewsCard
-                  title="Новостей пока нет"
-                  content="Скоро тут появятся свежие новости!"
-                  imageSrc={fallbackImage}
-                  imageAlt="placeholder"
-                  transitionDelay={0}
-                  isRevealed={true}
-                />
-              </>
+              <NewsCard
+                title="Новостей пока нет"
+                content="Скоро тут появятся свежие новости!"
+                imageSrc={fallbackImage}
+                imageAlt="placeholder"
+                transitionDelay={0}
+                isRevealed={true}
+              />
             )}
           </div>
         </div>
@@ -88,5 +94,5 @@ export default function NewsSlider({
         )}
       </div>
     </section>
-  )
+  );
 }

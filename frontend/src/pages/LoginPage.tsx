@@ -30,7 +30,7 @@ export default function LoginPage() {
               <LogIn className="text-customyellow" size={32} />
             </div>
             <h1 className="text-h2 font-light text-customyellow">Вход</h1>
-            <p className="text-customgrey mt-2 font-light">Войдите в свой аккаунт</p>
+            <p className="text-white mt-2 font-light">Войдите в свой аккаунт</p>
           </div>
 
           {error && (
@@ -79,7 +79,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-customyellow font-light">
+            <p className="text-white font-light">
               Нет аккаунта?{' '}
               <Link to="/register" className="text-customyellow font-light hover:text-customyellow">
                 Зарегистрироваться
