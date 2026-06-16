@@ -12,16 +12,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const root = document.documentElement
 
-    // очистка
     root.classList.remove('light', 'dark')
+    root.style.colorScheme = theme === 'dark' ? 'dark' : 'light'
 
     if (theme === 'dark') {
       root.classList.add('dark')
     }
 
     localStorage.setItem('theme', theme)
-
-    console.log('THEME:', theme, root.className)
   }, [theme])
 
   const toggleTheme = () => {

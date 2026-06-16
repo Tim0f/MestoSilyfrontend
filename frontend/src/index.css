@@ -26,6 +26,7 @@
 
       /* Светлая тема (по умолчанию) */
 :root {
+  color-scheme: light;
   --color-customyellow: 245 199 139;   /* #F5C78B */
   --color-customgrey:   70 64 66;
   --color-customwhite:  254 250 243;
@@ -42,6 +43,7 @@ html.dark {
   */
 
 html.dark {
+  color-scheme: dark;
   --color-customyellow: 94 84 85;
   --color-customgrey:    254 250 243;
   --color-customwhite:  70 64 66;
