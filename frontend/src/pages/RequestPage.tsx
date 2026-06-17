@@ -135,7 +135,7 @@ export default function RequestPage() {
 
   return (
     <div className="bg-customblack min-h-screen text-customyellow p-6 md:p-10 pt-16">
-      <div className="flex flex-col-reverse md:grid md:grid-cols-2 md:gap-10">
+      <div className="flex flex-col md:grid md:grid-cols-2 md:gap-10">
 
         {/* ФОРМА */}
         <div>
