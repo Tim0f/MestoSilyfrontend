@@ -148,7 +148,7 @@ export default function RequestPage() {
 
             <div className="relative z-10 p-6 md:p-8 space-y-4">
 
-              <p className="text-sm opacity-70">
+              <p className="text-sm text-customwhite opacity-70">
                 Форма подачи заявки
               </p>
 
