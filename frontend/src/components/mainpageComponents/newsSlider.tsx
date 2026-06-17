@@ -78,7 +78,7 @@ export default function NewsSlider({
   }
 
   return (
-    <section className="py-20 bg-customblack">
+    <section className="py-5 md:py-20 bg-customblack">
       <div className="px-5">
 
         <h2 className="text-h1 font-h1 text-customyellow text-center mb-10">

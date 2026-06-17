@@ -242,7 +242,7 @@ async function loadSections() {
         />
       </section>
 
-      <section id="team" className="py-20 bg-customblack">
+      <section id="team" className="py-5 md:py-20 bg-customblack">
         <div className="container mx-auto px-4">
           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
             КОМАНДА
@@ -251,7 +251,7 @@ async function loadSections() {
         </div>
       </section>
 
-      <section id="partners" className="py-20 bg-customblack">
+      <section id="partners" className="py-5 md:py-20 bg-customblack">
         <div className="container mx-auto px-4">
           <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
             ПАРТНЕРЫ
