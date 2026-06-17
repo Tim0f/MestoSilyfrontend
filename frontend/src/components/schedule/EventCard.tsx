@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import ButtonSvg from '../../assets/svg/button.svg?react'
 
 type EventType = {
   id: string | number;
   title: string;
-  date: string;          // ISO date
-  startTime?: string;    // "HH:MM"
-  endTime?: string;      // "HH:MM"
+  date: string;
+  startTime?: string;
+  endTime?: string;
   description: string;
   fullDescription?: string;
   price?: number;
@@ -28,7 +30,7 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
   const event = events[currentEvent];
   const enrolled = isEnrolled.includes(event.id);
 
-  // Форматирование даты (как в ProfilePage)
+  // Форматирование даты и времени (без изменений)
   const formatDate = (isoDate: string): string => {
     const d = new Date(isoDate);
     if (isNaN(d.getTime())) return isoDate;
@@ -39,7 +41,6 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
     });
   };
 
-  // Форматирование времени (как в ProfilePage)
   const formatTime = (time: string): string => {
     if (!/^\d{2}:\d{2}$/.test(time)) return time;
     const [hours, minutes] = time.split(':');
@@ -48,7 +49,6 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
     return d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
   };
 
-  // Строка даты + времени
   const renderDateTime = () => {
     const dateStr = formatDate(event.date);
     if (event.startTime && event.endTime) {
@@ -59,82 +59,96 @@ export default function EventCard({ events, isEnrolled, onClick }: EventCardProp
 
   return (
     <div className="relative w-full overflow-hidden rounded-xl">
-      {/* Свёрнутое состояние */}
-      {!opened ? (
+      {/* Анимируемый контейнер с изменяемой высотой */}
+      <motion.div
+        className="relative w-full"
+        animate={{ height: opened ? 'auto' : '250px' }}
+        transition={{ duration: 0.5, ease: 'easeInOut' }}
+        style={{ overflow: 'hidden' }}
+      >
+        {/* Фоновое изображение и затемнение – общее для всей карточки */}
+        <img
+          src={event.imageUrl}
+          alt={event.title}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-customblack/50" />
+
+        {/* ===== ВЕРХНЯЯ ЧАСТЬ (всегда видна) ===== */}
         <div
-          onClick={() => setOpened(true)}
-          className="relative w-full h-[250px] md:h-[300px] cursor-pointer flex items-center"
+          className="relative z-10 flex flex-col items-center justify-center w-full h-[250px] px-4 cursor-pointer"
+          onClick={() => !opened && setOpened(true)}
         >
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-customblack/50" />
-
-          <div className="relative z-10 flex flex-col items-center w-full px-4">
-            <h3 className="font-h1 text-customyellow text-2xl md:text-4xl text-center drop-shadow-lg">
-              {event.title}
-            </h3>
-            <p className="font-h1 text-customyellow text-4xl md:text-6xl leading-none mt-2 drop-shadow-lg">
-              {renderDateTime()}
-            </p>
-            <ChevronDown size={40} className="text-customyellow mt-2 animate-bounce" />
-          </div>
+          <h3 className="font-h1 text-customyellow text-2xl md:text-4xl text-center drop-shadow-lg">
+            {event.title}
+          </h3>
+          <p className="font-h1 text-customyellow text-4xl md:text-6xl leading-none mt-2 drop-shadow-lg">
+            {renderDateTime()}
+          </p>
+          {!opened && (
+            <ChevronDown
+              size={40}
+              className="text-customyellow mt-2 animate-bounce"
+            />
+          )}
         </div>
-      ) : (
-        <div className="relative w-full min-h-[520px] md:min-h-[550px] flex">
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-customblack/60" />
 
-          <div className="relative z-10 w-full flex flex-col px-6 md:px-12 py-8">
-            {/* верх */}
-            <div className="flex flex-col items-center">
-              <h2 className="font-h2 text-customyellow text-3xl md:text-5xl drop-shadow-lg">
-                {event.title}
-              </h2>
-              <p className="font-h1 text-customyellow text-4xl md:text-6xl mt-2 drop-shadow-lg">
-                {renderDateTime()}
-              </p>
-            </div>
+        {/* ===== НИЖНЯЯ ЧАСТЬ (выезжает снизу) ===== */}
+        <AnimatePresence>
+          {opened && (
+            <motion.div
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              transition={{ duration: 0.5, ease: 'easeInOut' }}
+              className="relative z-10 w-full flex flex-col px-6 md:px-12 py-8"
+              onClick={(e) => e.stopPropagation()} // чтобы клик по контенту не закрывал
+            >
+              {/* Основной контент – описание, цена, кнопка (выравнивание справа, как в оригинале) */}
+              <div className="flex-1 flex items-center justify-end">
+                <div className="w-full md:w-1/2 text-center md:text-left pr-0 md:pr-16">
+                  <p className="text-customwhite text-base md:text-lg leading-relaxed mb-6">
+                    {event.fullDescription || event.description}
+                  </p>
+                  {event.price && (
+                    <div className="text-customwhite text-3xl md:text-5xl mb-6">
+                      Стоимость: {event.price}₽
+                    </div>
+                  )}
+                  <button
+  type="button"
+  className="relative inline-block"
+  onClick={(e) => {
+    e.stopPropagation();
+    onClick(event.id);
+  }}
+>
+  <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
+  <span className="absolute inset-0 flex items-center justify-center z-20 text-customblack font-p text-p">
+    {enrolled ? 'Отменить' : 'Записаться'}
+  </span>
+</button>
+          </div>
+              </div>
 
-            {/* центр */}
-            <div className="flex-1 flex items-center justify-end">
-              <div className="w-full md:w-1/2 text-center md:text-left pr-0 md:pr-16">
-                <p className="text-customwhite text-base md:text-lg leading-relaxed mb-6">
-                  {event.fullDescription || event.description}
-                </p>
-
-                {event.price && (
-                  <div className="text-customyellow text-3xl md:text-5xl mb-6">
-                    Стоимость: {event.price}₽
-                  </div>
-                )}
-
+              {/* Стрелка "свернуть" – по центру внизу */}
+              <div className="flex justify-center mt-4">
                 <button
-                  onClick={() => onClick(event.id)}
-                  className="bg-customyellow text-customblack px-10 py-3 text-lg font-semibold hover:brightness-90 transition"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpened(false);
+                  }}
+                  className="animate-bounce"
                 >
-                  {enrolled ? 'Отменить' : 'Записаться'}
+                  <ChevronUp size={42} className="text-customyellow" />
                 </button>
               </div>
-            </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
 
-            {/* низ */}
-            <div className="flex justify-center">
-              <button onClick={() => setOpened(false)} className="animate-bounce">
-                <ChevronUp size={42} className="text-customyellow" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Слайдер (точки) */}
+      {/* Слайдер (точки) – без изменений */}
       {events.length > 1 && (
         <div className="absolute bottom-4 left-0 right-0 flex flex-col items-center gap-2 z-20">
           <div className="flex gap-2">

@@ -236,36 +236,56 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Средний блок - Записи */}
-        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative w-full md:w-[715px] h-auto md:h-[448px]">
+{/* Средний блок - Записи */}
+<div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative w-full md:w-[715px] h-auto md:h-[448px]">
+  <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
+
+  <h2 className="text-base md:text-lg text-customyellow font-h2 mb-3 md:mb-4">
+    Мои ближайшие записи
+  </h2>
+
+  <div className=" w-full flex flex-col gap-4 md:gap-6
+    overflow-y-auto pr-2 text-sm
+    max-h-[280px] md:max-h-[340px]
+
+    scrollbar scrollbar-w-1
+    scrollbar-track-transparent
+    scrollbar-thumb-[#8c6b42]
+    hover:scrollbar-thumb-[#a9834f]">
+    {enrollments.length === 0 ? (
+      <p className="text-customgrey">Нет предстоящих записей</p>
+    ) : (
+      enrollments.map((enr) => (
+        <div
+          key={enr.id}
+          className="relative bg-customblack rounded-2xl p-4 md:p-6 border border-customyellow/30 flex flex-col sm:flex-row justify-between items-start gap-3"
+        >
           <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
-          <h2 className="text-base md:text-lg font-h2 mb-3 md:mb-4">Мои ближайшие записи</h2>
-          <div className="w-full flex flex-col gap-4 md:gap-6 overflow-y-auto pr-2 text-sm max-h-[280px] md:max-h-none">
-            {enrollments.length === 0 ? (
-              <p className="text-customgrey">Нет предстоящих записей</p>
-            ) : (
-              enrollments.map((enr) => (
-                <div key={enr.id} className="relative bg-customblack rounded-2xl p-4 md:p-6 border border-customyellow/30 flex flex-col sm:flex-row justify-between items-start gap-3">
-                  <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
-                  <div>
-                    <h3 className="font-h2 text-lg md:text-xl leading-tight mb-2 md:mb-4">
-                      {enr.section?.name || "Секция"}
-                    </h3>
-                    {enr.lesson?.location && (
-                      <p className="text-customgrey text-xs mt-1">{enr.lesson.location}</p>
-                    )}
-                  </div>
-                  <div className="text-right font-h2 text-lg md:text-xl sm:text-right w-full sm:w-auto">
-                    <p>{formatDate(enr.lesson!.date)}</p>
-                    <p className="text-lg md:text-xl mt-1 md:mt-2">
-                      {formatTime(enr.lesson!.startsAt)} – {formatTime(enr.lesson!.endsAt)}
-                    </p>
-                  </div>
-                </div>
-              ))
+
+          <div>
+            <h3 className="font-h2 text-lg md:text-xl leading-tight mb-2 md:mb-4">
+              {enr.section?.name || "Секция"}
+            </h3>
+
+            {enr.lesson?.location && (
+              <p className="text-customwhite text-xs mt-1">
+                {enr.lesson.location}
+              </p>
             )}
           </div>
+
+          <div className="text-right font-h2 text-lg md:text-xl w-full sm:w-auto">
+            <p>{formatDate(enr.lesson!.date)}</p>
+            <p className="mt-1 md:mt-2">
+              {formatTime(enr.lesson!.startsAt)} –{" "}
+              {formatTime(enr.lesson!.endsAt)}
+            </p>
+          </div>
         </div>
+      ))
+    )}
+  </div>
+</div>
 
         {/* Правый блок - баланс */}
         <div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 relative flex flex-col justify-between w-full md:w-[442px] h-auto md:h-[448px]">

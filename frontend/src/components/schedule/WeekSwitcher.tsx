@@ -104,7 +104,7 @@ export default function WeekSwitcher({
           <button onClick={onPrevWeek} className="text-[24px] md:text-[30px]">
             &lt;
           </button>
-          <span className="text-[16px] md:text-[20px]">
+          <span className="text-[16px] text-customwhite md:text-[20px]">
             {formatDate(weekDates[0])} – {formatDate(weekDates[6])}
           </span>
           <button onClick={onNextWeek} className="text-[24px] md:text-[30px]">

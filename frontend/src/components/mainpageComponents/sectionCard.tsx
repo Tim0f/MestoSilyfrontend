@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getPublicUrl } from '../../utils/publicUrl'
+import ButtonSvg from '../../assets/svg/button.svg?react'
 
 export type TeacherShowcase = {
   name: string
@@ -191,7 +192,7 @@ export default function SectionCard({
             >
               <h3
                 className="
-                  text-h2 font-h2 text-customyellow
+                  text-h2 font-h2 text-customwhite
                   drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]
 
                   max-[641px]:text-[34px]
@@ -235,7 +236,7 @@ export default function SectionCard({
 
                   {/* Имя и подпись */}
                   <div>
-                    <div className="text-customyellow font-p">Учитель:</div>
+                    <div className="text-customwhite font-p">Учитель:</div>
                     <div className="text-customwhite font-p">
                       {currentTeacher.name}
                     </div>
@@ -275,21 +276,12 @@ export default function SectionCard({
                   </div>
                 )}
 
-                <Link
-                  to="/schedule"
-                  className="
-                    bg-customyellow hover:bg-customyellow/70
-                    text-customblack px-6 py-3 rounded-lg font-p transition
-
-                    max-[641px]:
-                    text-[18px]
-                    px-10
-                    py-3
-                    rounded-none
-                  "
-                >
-                  записаться
-                </Link>
+<Link to="/schedule" className="relative inline-block">
+          <ButtonSvg width={233} height={81} className="fill-customyellow z-10" />
+          <span className="absolute inset-0 flex items-center justify-center z-20 text-customblack font-p text-p">
+            записаться
+          </span>
+        </Link>
               </div>
             </div>
           )}

@@ -28,7 +28,7 @@ export default function HeadBlock() {
       />
       <div className="relative z-10 container mx-auto px-4 text-center pt-16 flex flex-col items-center justify-center">
         <Logo className="text-primary-1 w-400" />
-        <p className="text-p mb-8 text-customwhite font-p max-w-2xl mx-auto">
+        <p className="text-p mb-8 text-customyellow font-p max-w-2xl mx-auto">
           Место комфорта и развития
           <br />
           Секции и мероприятия для всех

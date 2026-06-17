@@ -11,7 +11,7 @@ const stats = [
 export default function AboutBlock() {
   return (
     <section className="py-20 flex justify-center items-center bg-customblack">
-      <div className="pl-10">
+      <div className="pl-5 pr-5">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="mb-8 text-h1 font-h1 text-customyellow">О НАС</h2>

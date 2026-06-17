@@ -179,7 +179,7 @@ export default function RequestPage() {
                 name="description"
                 placeholder="Описание заявки"
                 rows={5}
-                className="w-full bg-customblack  border border-customyellow p-3 resize-none"
+                className="w-full bg-customblack border border-customyellow p-3 resize-none"
                 value={form.description}
                 onChange={handleChange}
               />
