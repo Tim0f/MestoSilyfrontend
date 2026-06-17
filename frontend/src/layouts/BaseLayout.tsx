@@ -8,7 +8,7 @@ export default function Layout() {
     <div className="min-h-screen flex flex-col bg-customwhite dark:bg-customblack transition-colors duration-300">
       <Header />
 
-      <main className="flex-grow pb-20"> {/* отступ снизу под BottomNav */}
+      <main className="flex-grow pb-20 bg-customblack"> {/* отступ снизу под BottomNav */}
         <Outlet />
       </main>
 
