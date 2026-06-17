@@ -5,6 +5,16 @@
     <link rel="icon" type="image/svg+xml" href="src/assets/svg/Zerno2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Место Силы</title>
+    <style>
+      /* Обрезаем всё, что выходит за пределы корневого элемента */
+      #root {
+        overflow: hidden;
+      }
+      /* На всякий случай запрещаем горизонтальную прокрутку всей страницы */
+      body {
+        overflow-x: hidden;
+      }
+    </style>
     <script>
       (function () {
         if (localStorage.getItem('theme') === 'dark') {
