@@ -1,14 +1,24 @@
-import { useState, useEffect } from 'react';
-import NewsCard from './NewsCard';
+import { useEffect, useState, useMemo, useRef } from 'react'
+import NewsCard from './NewsCard'
 
-export type NewsSliderProps = {
-  news: any[]
+type NewsItem = {
+  id: number
+  title: string
+  content: string
+  images?: string[]
+}
+
+type Props = {
+  news: NewsItem[]
   fallbackImage: string
   currentPage: number
   onPageChange: (index: number) => void
   onToggleReveal: (value: boolean) => void
   isRevealed: boolean
 }
+
+const CARD_WIDTH = 597
+const GAP = 32
 
 export default function NewsSlider({
   news,
@@ -17,82 +27,115 @@ export default function NewsSlider({
   onPageChange,
   onToggleReveal,
   isRevealed,
-}: NewsSliderProps) {
-  const [pageSize, setPageSize] = useState(3);
+}: Props) {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const [pageSize, setPageSize] = useState(3)
 
   useEffect(() => {
-    const updatePageSize = () => {
-      setPageSize(window.innerWidth < 767 ? 1 : 3);
-    };
-    updatePageSize();
-    window.addEventListener('resize', updatePageSize);
-    return () => window.removeEventListener('resize', updatePageSize);
-  }, []);
+    const update = () => {
+      if (!containerRef.current) return
 
-  const pages = Math.ceil(news.length / pageSize);
-  const groups = Array.from({ length: pages }, (_, i) =>
-    news.slice(i * pageSize, (i + 1) * pageSize)
-  );
+      const containerWidth = containerRef.current.offsetWidth
 
-  const handlePaginationClick = (index: number) => {
-    if (index === currentPage) return;
-    onToggleReveal(false);
+      const cardTotal = CARD_WIDTH + GAP
+
+      const fit = Math.max(
+        1,
+        Math.floor(containerWidth / cardTotal)
+      )
+
+      setPageSize(fit)
+    }
+
+    update()
+    window.addEventListener('resize', update)
+
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  const pages: NewsItem[][] = useMemo(() => {
+    const result: NewsItem[][] = []
+
+    for (let i = 0; i < news.length; i += pageSize) {
+      result.push(news.slice(i, i + pageSize))
+    }
+
+    return result
+  }, [news, pageSize])
+
+  const totalPages = pages.length
+
+  const handlePage = (index: number) => {
+    if (index === currentPage) return
+
+    onToggleReveal(false)
+
     setTimeout(() => {
-      onPageChange(index);
-      setTimeout(() => onToggleReveal(true), 50);
-    }, 350);
-  };
+      onPageChange(index)
+      setTimeout(() => onToggleReveal(true), 80)
+    }, 200)
+  }
 
   return (
     <section className="py-20 bg-customblack">
       <div className="px-5">
-        <div className="text-center mb-12">
-          <h2 className="text-h1 font-h1 text-customyellow mb-8">НОВОСТИ</h2>
-        </div>
 
-        <div className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {groups[currentPage]?.map((item: any, index: number) => (
-              <NewsCard
-                key={item.id}
-                title={item.title}
-                content={item.content}
-                imageSrc={item.images?.[0] ?? fallbackImage}
-                imageAlt={item.title}
-                transitionDelay={index * 100}
-                isRevealed={isRevealed}
-              />
+        <h2 className="text-h1 font-h1 text-customyellow text-center mb-10">
+          НОВОСТИ
+        </h2>
+
+        {/* VIEWPORT */}
+        <div ref={containerRef} className="overflow-hidden w-full">
+
+          {/* TRACK */}
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{
+              transform: `translateX(-${currentPage * 100}%)`,
+            }}
+          >
+
+            {pages.map((page, pageIndex) => (
+              <div
+                key={pageIndex}
+                className="w-full flex justify-center gap-8 shrink-0 px-10"
+              >
+                
+              {page.map((item) => (
+                <NewsCard
+                  key={item.id}
+                  title={item.title}
+                  content={item.content}
+                  imageSrc={item.images?.[0] ?? fallbackImage}
+                  imageAlt={item.title}
+                  isRevealed={isRevealed}
+                />
+              ))}
+              </div>
             ))}
 
-            {groups.length === 0 && (
-              <NewsCard
-                title="Новостей пока нет"
-                content="Скоро тут появятся свежие новости!"
-                imageSrc={fallbackImage}
-                imageAlt="placeholder"
-                transitionDelay={0}
-                isRevealed={true}
-              />
-            )}
           </div>
         </div>
 
-        {groups.length > 1 && (
-          <div className="flex justify-center mt-12 gap-3">
-            {groups.map((_, index) => (
+        {/* DOTS */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-10 gap-3">
+            {pages.map((_, i) => (
               <button
-                key={index}
-                onClick={() => handlePaginationClick(index)}
-                className={`transition-all duration-300 ${
-                  index === currentPage
-                    ? 'w-3 h-3 bg-primary-500 rounded-full scale-110'
-                    : 'w-3 h-3 border border-primary-500/50 rounded-full hover:border-primary-500/80 hover:scale-110'
+                key={i}
+                onClick={() => handlePage(i)}
+                className={`w-3 h-3 rounded-full transition ${
+                  i === currentPage
+                    ? 'bg-customyellow scale-110'
+                    : 'border border-customyellow/50'
                 }`}
               />
             ))}
           </div>
         )}
+
       </div>
     </section>
-  );
+  )
 }
