@@ -65,7 +65,7 @@ export default function WeekSwitcher({
       </div>
 
       {/* ===== ДЕСКТОПНАЯ ВЕРСИЯ (7 дней + навигация по неделям) ===== */}
-      <div className="hidden md:flex items-center gap-[16px] md:gap-[28px] flex-wrap">
+      <div className="hidden lg:flex items-center gap-[16px] md:gap-[28px] flex-wrap">
         <div className="flex gap-[8px] md:gap-[18px] flex-wrap">
           {weekDates.map((date, i) => {
             const isActive =
@@ -114,7 +114,7 @@ export default function WeekSwitcher({
       </div>
 
       {/* ===== МОБИЛЬНАЯ ВЕРСИЯ (только стрелки + текстовая дата, по центру) ===== */}
-      <div className="flex md:hidden items-center justify-center gap-4 text-customyellow w-full">
+      <div className="flex lg:hidden items-center justify-center gap-4 text-customyellow w-full">
         <button onClick={goPrevDay} className="text-[24px]">
           &lt;
         </button>
