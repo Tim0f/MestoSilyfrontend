@@ -1,5 +1,5 @@
 // FreeVisitsModal.tsx
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import bg from "../../assets/svg/bg_mogal.svg";
 import Zerno from "../../assets/svg/Zerno.svg";
@@ -14,7 +14,6 @@ interface Props {
 
 export default function FreeVisitsModal({ onClose }: Props) {
   /* ================= JWT ================= */
-
   const token = localStorage.getItem("token");
 
   const userId = (() => {
@@ -24,7 +23,6 @@ export default function FreeVisitsModal({ onClose }: Props) {
       const payloadBase64 = token.split(".")[1];
       const payloadJson = atob(payloadBase64);
       const payload = JSON.parse(payloadJson);
-
       return payload.sub as string;
     } catch (e) {
       console.error("Ошибка декодирования JWT", e);
@@ -39,13 +37,49 @@ export default function FreeVisitsModal({ onClose }: Props) {
   }
 
   /* ================= STATE ================= */
-
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  /* ================= HANDLERS ================= */
+  /* ================= ADAPTIVE FRAME ================= */
+  const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1490);
 
-  // покупка 1 занятия за зёрна
+  useEffect(() => {
+    const handleResize = () => {
+      setIsLargeScreen(window.innerWidth >= 1490);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  /* ================= SCROLL LOCK ================= */
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  const handleOverlayWheel = (e: React.WheelEvent) => {
+    if (
+      scrollContainerRef.current &&
+      !scrollContainerRef.current.contains(e.target as Node)
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  const handleOverlayTouchMove = (e: React.TouchEvent) => {
+    if (
+      scrollContainerRef.current &&
+      !scrollContainerRef.current.contains(e.target as Node)
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  /* ================= HANDLERS ================= */
   const handleBuyWithGrains = async () => {
     setErrorMessage(null);
     setIsLoading(true);
@@ -56,19 +90,12 @@ export default function FreeVisitsModal({ onClose }: Props) {
         amount: 12,
         reason: "Покупка бесплатного занятия",
       });
-
       await freeVisitsService.purchaseFreeVisits(1);
-
       alert("Занятие добавлено");
       onClose();
     } catch (e: any) {
       console.error(e);
-
-      const backendMessage =
-        e?.details?.message || // ← ВАЖНО
-        e?.message ||
-        "";
-
+      const backendMessage = e?.details?.message || e?.message || "";
       if (backendMessage.includes("Недостаточно зерен")) {
         setErrorMessage("Недостаточно зёрен для оплаты");
       } else if (e?.status === 401) {
@@ -81,30 +108,25 @@ export default function FreeVisitsModal({ onClose }: Props) {
     }
   };
 
-  // покупка занятий за деньги
   const handleBuyPaid = async (amount: 1 | 5 | 10) => {
     setErrorMessage(null);
     setIsLoading(true);
 
     try {
-      // 🧪 ЗАГЛУШКА: покупка за деньги = начисление зёрен
       const grainsMap: Record<1 | 5 | 10, number> = {
         1: 12,
         5: 60,
         10: 120,
       };
-
       await grainsFrontendService.add({
         userId,
         amount: grainsMap[amount],
         reason: "Покупка за деньги (заглушка)",
       });
-
       alert(`Начислено зёрен: ${grainsMap[amount]}`);
       onClose();
     } catch (e: any) {
       console.error(e);
-
       if (e?.status === 401) {
         setErrorMessage("Необходимо войти в систему");
       } else {
@@ -116,19 +138,21 @@ export default function FreeVisitsModal({ onClose }: Props) {
   };
 
   /* ================= UI ================= */
-
-  
-
   return (
-    <div className="flex justify-center fixed inset-0 z-[100] flex items-center justify-center bg-customblack/70">
-      <div className="relative w-[95vw] max-w-[1600px] max-h-[85vh] text-customwhite overflow-hidden">
-
-        {/* рамка */}
-        <img
-          src={bg}
-          alt=""
-          className="absolute inset-0 w-full h-full pointer-events-none"
-        />
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-customblack/70"
+      onWheel={handleOverlayWheel}
+      onTouchMove={handleOverlayTouchMove}
+    >
+      <div className="relative w-[95vw] max-w-[1600px] max-h-[85vh] text-customwhite overflow-hidden flex flex-col">
+        {/* рамка — показываем только на больших экранах */}
+        {isLargeScreen && (
+          <img
+            src={bg}
+            alt=""
+            className="absolute inset-0 w-full h-full pointer-events-none"
+          />
+        )}
 
         {/* закрыть */}
         <button
@@ -139,10 +163,11 @@ export default function FreeVisitsModal({ onClose }: Props) {
           ×
         </button>
 
-        {/* контент */}
-        <div className="relative z-10 h-full px-[24px] py-[24px] md:px-[48px] md:py-[48px] overflow-y-auto">
-
-          {/* ОБЩАЯ ОШИБКА */}
+        {/* контент с прокруткой */}
+        <div
+          ref={scrollContainerRef}
+          className="relative z-10 flex-1 min-h-0 overflow-y-auto overscroll-contain px-[24px] py-[24px] md:px-[48px] md:py-[48px]"
+        >
           {errorMessage && (
             <div className="mb-[32px] flex justify-center">
               <div className="px-[32px] py-[16px] bg-red-900/80 text-red-200 text-[16px] font-semibold rounded-md">
@@ -152,10 +177,6 @@ export default function FreeVisitsModal({ onClose }: Props) {
           )}
 
           <div className="flex flex-wrap justify-center gap-[32px]">
-
-  
-  
-
             {/* ПРОБНОЕ */}
             <div className="w-full sm:w-[300px] min-h-[450px] bg-customyellow text-customblack p-[24px] md:p-[32px] flex flex-col justify-between">
               <div>
@@ -165,14 +186,10 @@ export default function FreeVisitsModal({ onClose }: Props) {
                   От базовых стоек до изящных атак.
                 </p>
               </div>
-
               <div className="flex items-center gap-[12px]">
                 <span className="text-[48px] md:text-[64px] font-h1 leading-none">12</span>
                 <img src={Zerno} alt="" className="w-[32px] h-[32px] md:w-[40px] md:h-[40px]" />
               </div>
-
-  
-
               <div>
                 <button
                   onClick={handleBuyWithGrains}
@@ -199,9 +216,7 @@ export default function FreeVisitsModal({ onClose }: Props) {
                   От базовых стоек до изящных атак.
                 </p>
               </div>
-
               <div className="text-[44px] md:text-[56px] font-h1 text-customyellow">1100₽</div>
-
               <button
                 onClick={() => handleBuyPaid(1)}
                 disabled={isLoading}
@@ -226,9 +241,7 @@ export default function FreeVisitsModal({ onClose }: Props) {
                   От базовых стоек до изящных атак.
                 </p>
               </div>
-
               <div className="text-[44px] md:text-[56px] font-h1 text-customyellow">4950₽</div>
-
               <button
                 onClick={() => handleBuyPaid(5)}
                 disabled={isLoading}
@@ -253,9 +266,7 @@ export default function FreeVisitsModal({ onClose }: Props) {
                   От базовых стоек до изящных атак.
                 </p>
               </div>
-
               <div className="text-[44px] md:text-[56px] font-h1 text-customyellow">9900₽</div>
-
               <button
                 onClick={() => handleBuyPaid(10)}
                 disabled={isLoading}
@@ -270,7 +281,6 @@ export default function FreeVisitsModal({ onClose }: Props) {
                 Оплатить
               </button>
             </div>
-
           </div>
         </div>
       </div>

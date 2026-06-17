@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState, memo } from "react";
 import { Send, MoreVertical, ArrowLeft } from "lucide-react";
 import axios from "axios";
 
-import texturedBorder from "../assets/svg/texturedBorder.svg";
+//import texturedBorder from "../assets/svg/texturedBorder.svg";
 
 import {
   ChatSocketService,
