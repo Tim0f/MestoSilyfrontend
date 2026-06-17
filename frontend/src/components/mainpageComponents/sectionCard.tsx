@@ -95,83 +95,64 @@ export default function SectionCard({
       {/* SVG рамка только на десктопе */}
       {!isMobile && (
         <div
-        aria-hidden="true"
-        className="
-          absolute
-          inset-0
-          z-20
-          pointer-events-none
-        "
-        style={{
-          height: '530px',
-          width: '550px',
-      
-          backgroundColor:
-            'rgb(var(--color-customyellow))',
-      
-          WebkitMaskImage:
-            'url(/svg/texturedBorder.svg)',
-      
-          WebkitMaskSize:
-            '100% 100%',
-      
-          WebkitMaskRepeat:
-            'no-repeat',
-      
-          maskImage:
-            'url(/svg/texturedBorder.svg)',
-      
-          maskSize:
-            '100% 100%',
-      
-          maskRepeat:
-            'no-repeat',
-        }}
-      />
+          aria-hidden="true"
+          className="
+            absolute
+            inset-0
+            z-20
+            pointer-events-none
+          "
+          style={{
+            height: '530px',
+            width: '550px',
+
+            backgroundColor: 'rgb(var(--color-customyellow))',
+
+            WebkitMaskImage: 'url(/svg/texturedBorder.svg)',
+            WebkitMaskSize: '100% 100%',
+            WebkitMaskRepeat: 'no-repeat',
+
+            maskImage: 'url(/svg/texturedBorder.svg)',
+            maskSize: '100% 100%',
+            maskRepeat: 'no-repeat',
+          }}
+        />
       )}
 
-<div
-  className={`
-    relative
- z-30
- h-full
- flex
- flex-none
+      <div
+        className={`
+          relative
+          z-30
+          h-full
+          flex
+          flex-none
 
-    ${expanded ? "w-full" : "w-full justify-center"}
+          ${expanded ? 'w-full' : 'w-full justify-center'}
 
-    max-[641px]:flex-col
-    max-[641px]:items-center
-    max-[641px]:justify-center
-    max-[641px]:px-5
-    max-[641px]:pt-8
-    max-[641px]:pb-10
-  `}
->
-        {/* Иконка секции */}
+          max-[641px]:flex-col
+          max-[641px]:items-center
+          max-[641px]:justify-center
+          max-[641px]:px-5
+          max-[641px]:pt-8
+          max-[641px]:pb-10
+        `}
+      >
+        {/* Иконка секции — фиксированные размеры, не зависит от expanded */}
         <div
-  className={`
-    flex items-center justify-center flex-none
-    transition-all duration-500
-
-    ${expanded ? "w-[200px] px-0" : "w-full px-0"}
-
-    max-[641px]:w-full
-    max-[641px]:px-0
-    max-[641px]:mb-6
-  `}
->
+          className={`
+            flex items-center justify-center flex-none
+            transition-all duration-500
+            w-[220px] px-0
+            max-[641px]:w-full
+            max-[641px]:px-0
+            max-[641px]:mb-6
+          `}
+        >
           <div
             aria-hidden="true"
             className={`
               select-none pointer-events-none transition-all duration-500
-            
-              ${
-                expanded
-                  ? "w-[180px] h-[500px]"
-                  : "w-[220px] h-[500px]"
-              }
-            
+              w-[220px] h-[500px]
               max-[641px]:w-[90px]
               max-[641px]:h-[200px]
             `}
