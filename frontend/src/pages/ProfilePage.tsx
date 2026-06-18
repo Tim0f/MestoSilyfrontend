@@ -20,6 +20,7 @@ const AchievementCodeModal = lazy(() => import("../components/achievements/Achie
 const ProfileEditModal = lazy(() => import("../components/profile/ProfileEditModal"));
 
 interface Achievement {
+  id: string; // обязательно для проверки получения
   name: string;
   description: string;
   iconUrl: string;
@@ -53,6 +54,7 @@ export default function ProfilePage() {
   const { refreshUser } = useAuth();
   const [userData, setUserData] = useState<User | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [myAchievementIds, setMyAchievementIds] = useState<Set<string>>(new Set());
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
@@ -93,10 +95,31 @@ export default function ProfilePage() {
       })
       .catch(() => console.warn("Ошибка загрузки профиля"));
 
+    // Загружаем все активные достижения
     achievementsService
       .findAll<Achievement[]>()
-      .then((data) => setAchievements(Array.isArray(data) ? data : []))
+      .then((data) => {
+        const list = Array.isArray(data) ? data : [];
+        console.log("🔍 [Achievements] Всего достижений:", list.length, list);
+        setAchievements(list);
+      })
       .catch(() => console.warn("Ошибка загрузки ачивок"));
+
+    // Загружаем только полученные пользователем достижения
+    achievementsService
+      .getMyAchievements<Achievement[]>()
+      .then((data) => {
+        const received = Array.isArray(data) ? data : [];
+        console.log("🔍 [Achievements] Получено пользователем:", received);
+        const ids = new Set(received.map((a) => a.id));
+        console.log("🔍 [Achievements] ID полученных:", ids);
+        setMyAchievementIds(ids);
+      })
+      .catch((err) => {
+        console.warn("Ошибка загрузки полученных достижений", err);
+        // На случай ошибки оставляем пустой Set – все достижения будут "не получены"
+        setMyAchievementIds(new Set());
+      });
 
     enrollmentsService
       .getMyEnrollments()
@@ -153,8 +176,15 @@ export default function ProfilePage() {
       await achievementsService.redeemByCode({ code: achievementCode });
       setRedeemSuccess(true);
       setRedeemError(null);
-      const data = await achievementsService.findAll<Achievement[]>();
-      setAchievements(Array.isArray(data) ? data : []);
+      // Обновить список достижений и отметки о получении
+      const [allData, myData] = await Promise.all([
+        achievementsService.findAll<Achievement[]>(),
+        achievementsService.getMyAchievements<Achievement[]>(),
+      ]);
+      setAchievements(Array.isArray(allData) ? allData : []);
+      if (Array.isArray(myData)) {
+        setMyAchievementIds(new Set(myData.map((a) => a.id)));
+      }
       setTimeout(() => {
         setModalOpen(false);
         setRedeemSuccess(false);
@@ -236,56 +266,56 @@ export default function ProfilePage() {
           </div>
         </div>
 
-{/* Средний блок - Записи */}
-<div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative w-full md:w-[715px] h-auto md:h-[448px]">
-  <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
-
-  <h2 className="text-base md:text-lg text-customyellow font-h2 mb-3 md:mb-4">
-    Мои ближайшие записи
-  </h2>
-
-  <div className=" w-full flex flex-col gap-4 md:gap-6
-    overflow-y-auto pr-2 text-sm
-    max-h-[280px] md:max-h-[340px]
-
-    scrollbar scrollbar-w-1
-    scrollbar-track-transparent
-    scrollbar-thumb-[#8c6b42]
-    hover:scrollbar-thumb-[#a9834f]">
-    {enrollments.length === 0 ? (
-      <p className="text-customgrey">Нет предстоящих записей</p>
-    ) : (
-      enrollments.map((enr) => (
-        <div
-          key={enr.id}
-          className="relative bg-customblack rounded-2xl p-4 md:p-6 border border-customyellow/30 flex flex-col sm:flex-row justify-between items-start gap-3"
-        >
+        {/* Средний блок - Записи */}
+        <div className="bg-customblack border border-customyellow/30 rounded-2xl p-4 md:p-6 relative w-full md:w-[715px] h-auto md:h-[448px]">
           <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
 
-          <div>
-            <h3 className="font-h2 text-lg md:text-xl leading-tight mb-2 md:mb-4">
-              {enr.section?.name || "Секция"}
-            </h3>
+          <h2 className="text-base md:text-lg text-customyellow font-h2 mb-3 md:mb-4">
+            Мои ближайшие записи
+          </h2>
 
-            {enr.lesson?.location && (
-              <p className="text-customwhite text-xs mt-1">
-                {enr.lesson.location}
-              </p>
+          <div className=" w-full flex flex-col gap-4 md:gap-6
+            overflow-y-auto pr-2 text-sm
+            max-h-[280px] md:max-h-[340px]
+
+            scrollbar scrollbar-w-1
+            scrollbar-track-transparent
+            scrollbar-thumb-[#8c6b42]
+            hover:scrollbar-thumb-[#a9834f]">
+            {enrollments.length === 0 ? (
+              <p className="text-customgrey">Нет предстоящих записей</p>
+            ) : (
+              enrollments.map((enr) => (
+                <div
+                  key={enr.id}
+                  className="relative bg-customblack rounded-2xl p-4 md:p-6 border border-customyellow/30 flex flex-col sm:flex-row justify-between items-start gap-3"
+                >
+                  <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
+
+                  <div>
+                    <h3 className="font-h2 text-lg md:text-xl leading-tight mb-2 md:mb-4">
+                      {enr.section?.name || "Секция"}
+                    </h3>
+
+                    {enr.lesson?.location && (
+                      <p className="text-customwhite text-xs mt-1">
+                        {enr.lesson.location}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-right font-h2 text-lg md:text-xl w-full sm:w-auto">
+                    <p>{formatDate(enr.lesson!.date)}</p>
+                    <p className="mt-1 md:mt-2">
+                      {formatTime(enr.lesson!.startsAt)} –{" "}
+                      {formatTime(enr.lesson!.endsAt)}
+                    </p>
+                  </div>
+                </div>
+              ))
             )}
           </div>
-
-          <div className="text-right font-h2 text-lg md:text-xl w-full sm:w-auto">
-            <p>{formatDate(enr.lesson!.date)}</p>
-            <p className="mt-1 md:mt-2">
-              {formatTime(enr.lesson!.startsAt)} –{" "}
-              {formatTime(enr.lesson!.endsAt)}
-            </p>
-          </div>
         </div>
-      ))
-    )}
-  </div>
-</div>
 
         {/* Правый блок - баланс */}
         <div className="bg-customblack border border-customyellow/30 rounded-2xl p-6 relative flex flex-col justify-between w-full md:w-[442px] h-auto md:h-[448px]">
@@ -381,40 +411,58 @@ export default function ProfilePage() {
 
       {/* Список достижений */}
       <div className="mt-8 md:mt-12 flex flex-col gap-4 md:gap-6 w-full max-w-4xl mx-auto">
-        {filteredAchievements.map((a, i) => (
-          <div key={i} className="flex flex-col md:flex-row items-center justify-between bg-customblack border border-customyellow/30 rounded-2xl px-4 md:px-6 py-4 relative gap-4">
-            <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
-            <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
-              <div
-  className="w-10 h-10 md:w-12 md:h-12"
-  style={{
-    WebkitMaskImage: `url(${getPublicUrl(a.iconUrl)})`,
-    maskImage: `url(${getPublicUrl(a.iconUrl)})`,
-    WebkitMaskSize: 'contain',
-    maskSize: 'contain',
-    WebkitMaskRepeat: 'no-repeat',
-    maskRepeat: 'no-repeat',
-    backgroundColor: 'rgb(var(--color-customyellow))',
+        {filteredAchievements.map((a) => {
+          const obtained = myAchievementIds.has(a.id);
+          const canObtain = a.isActive && !obtained; // активное и ещё не получено
+          return (
+            <div key={a.id} className="flex flex-col md:flex-row items-center justify-between bg-customblack border border-customyellow/30 rounded-2xl px-4 md:px-6 py-4 relative gap-4">
+              <div className="absolute inset-0 border border-customyellow/30 rounded-2xl" />
+              <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
+                <div
+                  className="w-10 h-10 md:w-12 md:h-12"
+                  style={{
+                    WebkitMaskImage: `url(${getPublicUrl(a.iconUrl)})`,
+                    maskImage: `url(${getPublicUrl(a.iconUrl)})`,
+                    WebkitMaskSize: 'contain',
+                    maskSize: 'contain',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskRepeat: 'no-repeat',
+                    backgroundColor: 'rgb(var(--color-customyellow))',
+                  }}
+                />
+                <div className="flex flex-col text-center md:text-left">
+                  <h3 className="font-h1 text-xl md:text-2xl text-customwhite leading-none">{a.name}</h3>
+                  <p className="text-sm md:text-base text-customwhite mt-1">{a.description}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-center md:justify-end">
+                {obtained ? (
+                  <div className="bg-customgrey text-customwhite font-h2 px-5 py-2 rounded-xl text-sm">получено</div>
+                ) : canObtain ? (
+                  <button
+  type="button"
+  onClick={() => {
+    console.log('Клик по кнопке "получить"');
+    setModalOpen(true);
   }}
-/>
-              <div className="flex flex-col text-center md:text-left">
-                <h3 className="font-h1 text-xl md:text-2xl text-customwhite leading-none">{a.name}</h3>
-                <p className="text-sm md:text-base text-customwhite mt-1">{a.description}</p>
+  style={{ pointerEvents: 'auto' }}
+  className="relative z-20 bg-customyellow text-customblack font-h2 px-5 py-2 rounded-xl shadow hover:brightness-90 text-sm"
+>
+  получить
+</button>
+                ) : (
+                  <div className="bg-customgrey text-customwhite font-h2 px-5 py-2 rounded-xl text-sm opacity-60">
+                    недоступно
+                  </div>
+                )}
+                <div className="flex items-center gap-1 md:gap-2">
+                  <span className="text-customyellow text-lg md:text-xl font-h1">{a.rewardGrains}</span>
+                  <Zerno className="w-4 h-4 md:w-5 md:h-5 text-customyellow" />
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-center md:justify-end">
-              {a.isActive ? (
-                <button className="bg-customyellow text-customblack font-h2 px-5 py-2 rounded-xl shadow hover:brightness-90 text-sm">получить</button>
-              ) : (
-                <div className="bg-customgrey text-customwhite font-h2 px-5 py-2 rounded-xl text-sm">получено</div>
-              )}
-              <div className="flex items-center gap-1 md:gap-2">
-                <span className="text-customyellow text-lg md:text-xl font-h1">{a.rewardGrains}</span>
-                <Zerno className="w-4 h-4 md:w-5 md:h-5 text-customyellow" />
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <Suspense fallback={null}>

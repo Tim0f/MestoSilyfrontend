@@ -40,6 +40,8 @@ export class AchievementsFrontendService {
   generateCode<T = unknown>(id: string) { return this.http.post<T>(`/achievements/${id}/generate-code`); }
   redeemByCode<T = unknown>(payload: { code: string }) { return this.http.post<T>('/achievements/redeem/code', payload); }
   redeemByQr<T = unknown>(payload: { qrCode: string }) { return this.http.post<T>('/achievements/redeem/qr', payload); }
+getMyAchievements<T = unknown[]>() { return this.http.get<T>('/achievements/my');
+}
 }
 
 export const AchievementsService = new AchievementsFrontendService(Client);

@@ -56,6 +56,20 @@ export class AchievementsController {
     return this.achievementsService.findAll(sectionId);
   }
 
+  
+@Get('my')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth('JWT-auth')
+@ApiOperation({ summary: 'Получить достижения текущего пользователя' })
+async getMyAchievements(@Request() req) {
+  // req.user должен содержать id (обычно req.user.id или req.user.userId)
+  const userId = req.user?.id || req.user?.userId || req.user?.sub;
+  if (!userId) {
+    throw new BadRequestException('Не удалось определить пользователя');
+  }
+  return this.achievementsService.getUserAchievements(userId);
+}
+
   @Get(':id')
   @ApiOperation({ summary: 'Получить достижение по ID' })
   findOne(@Param('id') id: string) {
@@ -156,5 +170,6 @@ async redeemByCode(@Request() req, @Body() body: { code: string }) {
 async generateCode(@Param('id') id: string) {
   return this.achievementsService.generateCode(id);
 }
+
 }
 

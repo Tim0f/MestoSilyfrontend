@@ -212,4 +212,16 @@ export class AchievementsService {
 
     return this.grantAchievement(achievement.id, userId, 'system');
   }
+
+
+  async getUserAchievements(userId: string) {
+  const userAchievements = await this.prisma.userAchievement.findMany({
+    where: { userId },
+    include: {
+      achievement: true,   // вся информация о достижении
+    },
+  });
+
+  return userAchievements.map(ua => ua.achievement);
+}
 }
