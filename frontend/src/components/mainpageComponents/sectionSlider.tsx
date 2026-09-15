@@ -90,7 +90,7 @@ export default function SectionSlider({
     })
   }
 
-    if (!section.length) {
+    if (!sections.length) {
     return <div className="text-customwhite text-center mt-10">Нет данных</div>
   }
 
