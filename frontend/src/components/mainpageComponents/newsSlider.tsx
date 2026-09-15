@@ -77,13 +77,16 @@ export default function NewsSlider({
     }, 200)
   }
 
+
+  if (!pages.length) {
+    return <div className="text-customwhite text-center mt-10">Нет данных</div>
+  }
+
   return (
     <section className="py-5 md:py-20 bg-customblack">
       <div className="px-5">
 
-        <h2 className="text-h1 font-h1 text-customyellow text-center mb-10">
-          НОВОСТИ
-        </h2>
+ 
 
         {/* VIEWPORT */}
         <div ref={containerRef} className="overflow-hidden w-full">

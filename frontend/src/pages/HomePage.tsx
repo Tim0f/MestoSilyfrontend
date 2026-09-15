@@ -1,13 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import swordIcon from '../assets/svg/sword.svg'
-import arrowIcon from '../assets/svg/arrow.svg'
-import dragonIcon from '../assets/svg/dragon.svg'
-import masksIcon from '../assets/svg/masks.svg'
-import womenIcon from '../assets/svg/women.svg'
-
-import newsFallbackImg from '../assets/img/Mask_group2.png'
+import newsFallbackImg from '../assets/img/Mask_group2.png'   // 👈 это формат-фоллбэк, оставляем
 import Stick from '../assets/img/sticker.webp'
 
 import HeadBlock from '../components/mainpageComponents/headBlock'
@@ -15,7 +9,7 @@ import AboutBlock from '../components/mainpageComponents/aboutBlock'
 import SectionSlider, { ShowcaseSection } from '../components/mainpageComponents/sectionSlider'
 import NewsSlider from '../components/mainpageComponents/newsSlider'
 import TeamSlider from '../components/mainpageComponents/TeamSlider'
-import PartnerSlider from '../components/mainpageComponents/PartnerSlider'
+import PartnerSlider, { Partner } from '../components/mainpageComponents/PartnerSlider'
 
 import { Client } from '../services/httpClient'
 import { SectionsFrontendService } from '../services/sections.service'
@@ -23,15 +17,7 @@ import { PartnersFrontendService } from '../services/partners.service'
 import { TeachersFrontendService } from '../services/teachers.service'
 import { NewsFrontendService } from '../services/news.service'
 
-type Partner = {
-  id: string
-  name: string
-  image: string
-  url: string
-}
-
 const client = Client
-
 const sectionsService = new SectionsFrontendService(client)
 const partnersService = new PartnersFrontendService(client)
 const teachersService = new TeachersFrontendService(client)
@@ -40,73 +26,15 @@ const newsService = new NewsFrontendService(client)
 export default function HomePage() {
   const location = useLocation()
 
-  const [activeTileId, setActiveTileId] = useState<string>('fencing')
+  const [activeTileId, setActiveTileId] = useState<string>('')
   const [newsRevealed, setNewsRevealed] = useState(false)
   const [currentNewsPage, setCurrentNewsPage] = useState(0)
 
-  const [sectionsDynamic, setSectionsDynamic] = useState<ShowcaseSection[] | null>(null)
-  const [partnersDynamic, setPartnersDynamic] = useState<Partner[] | null>(null)
-  const [teachersDynamic, setTeachersDynamic] = useState<any[] | null>(null)
-
+  // 🔥 стейты — сразу пустые массивы, никаких null
+  const [sections, setSections] = useState<ShowcaseSection[]>([])
+  const [partners, setPartners] = useState<Partner[]>([])
+  const [teachers, setTeachers] = useState<any[]>([])
   const [news, setNews] = useState<any[]>([])
-
-  const sectionsFallback: ShowcaseSection[] = useMemo(
-    () => [
-      {
-        id: 'fencing',
-        title: 'Актерское фехтование',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: swordIcon,
-      },
-      {
-        id: 'archery',
-        title: 'Лучная стрельба',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: arrowIcon,
-      },
-      {
-        id: 'dragon',
-        title: 'Фэнтези клуб',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: dragonIcon,
-      },
-      {
-        id: 'theatre',
-        title: 'Театр',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: masksIcon,
-      },
-      {
-        id: 'dance',
-        title: 'Пластика и танец',
-        description: 'Откройте для себя искусство владения клинком.',
-        teacher: 'Иван Иванович Иванов',
-        price: '1000₽/час',
-        iconUrl: womenIcon,
-      },
-    ],
-    []
-  )
-
-  const partnersFallback: Partner[] = useMemo(
-    () => [
-      { id: '1', name: 'Школа Летово', image: Stick, url: 'Saga' },
-      { id: '2', name: 'Школа Осеннево', image: Stick, url: 'Saga' },
-      { id: '3', name: 'Школа Зимнево', image: Stick, url: 'Saga' },
-      { id: '4', name: 'Школа Весеннего', image: Stick, url: 'Saga' },
-      { id: '5', name: 'Школа Межсезонного', image: Stick, url: 'Saga' },
-      { id: '6', name: 'Школа Внесезонного', image: Stick, url: 'Saga' },
-    ],
-    []
-  )
 
   useEffect(() => {
     loadSections()
@@ -118,120 +46,106 @@ export default function HomePage() {
     return () => window.clearTimeout(id)
   }, [])
 
-  // 🔥 ПЛАВНЫЙ СКРОЛЛ ПО HASH
+  // плавный скролл по hash
   useEffect(() => {
     if (!location.hash) return
-
     const targetId = location.hash.replace('#', '')
     const element = document.getElementById(targetId)
     if (!element) return
 
     const timeout = setTimeout(() => {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      })
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 100)
-
     return () => clearTimeout(timeout)
   }, [location.hash])
 
-async function loadSections() {
-  try {
-    const api = await sectionsService.findAll<any[]>()
-
-    setSectionsDynamic(
-      api.length
-        ? api.map((s) => ({
-            id: String(s.id),
-            title: s.name,
-            description: s.description,
-            teacher: s.teachers?.[0]
-              ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
-              : 'Тренер не указан',
-
-            // 🔥 ВОТ ЭТОГО НЕ ХВАТАЛО
-            teacherPhotoUrl: s.teachers?.[0]?.photoUrl,
-
-            price: s.price ? `${s.price}₽` : '',
-            iconUrl: s.iconUrl ?? swordIcon,
-          }))
-        : sectionsFallback
-    )
-  } catch {
-    setSectionsDynamic(sectionsFallback)
+  async function loadSections() {
+    try {
+      const api = await sectionsService.findAll<any[]>()
+      const mapped: ShowcaseSection[] = api.map((s) => ({
+        id: String(s.id),
+        title: s.name,
+        description: s.description,
+        teacher: s.teachers?.[0]
+          ? `${s.teachers[0].lastName} ${s.teachers[0].firstName}`
+          : 'Тренер не указан',
+        teacherPhotoUrl: s.teachers?.[0]?.photoUrl,
+        price: s.price ? `${s.price}₽` : '',
+        iconUrl: s.iconUrl ?? '',
+      }))
+      setSections(mapped)
+      if (mapped[0]) setActiveTileId(mapped[0].id)
+    } catch {
+      setSections([])
+    }
   }
-}
-
 
   async function loadPartners() {
     try {
       const api = await partnersService.findAll<any[]>()
-      setPartnersDynamic(
-        api.length
-          ? api.map((p) => ({
-              id: p.id,
-              name: p.name,
-              url: p.link ?? '#',
-              image: p.imageUrl ?? Stick,
-            }))
-          : partnersFallback
+      setPartners(
+        api.map((p) => ({
+          id: String(p.id),
+          name: p.name,
+          url: p.link ?? '#',
+          image: p.imageUrl ?? Stick,   // 👈 тут Stick — это «формат» картинки-заглушки
+        }))
       )
     } catch {
-      setPartnersDynamic(partnersFallback)
+      setPartners([])
     }
   }
 
   async function loadTeachers() {
     try {
       const api = await teachersService.findAll<any[]>()
-      setTeachersDynamic(api.length ? api : null)
+      setTeachers(api ?? [])
     } catch {
-      setTeachersDynamic(null)
+      setTeachers([])
     }
   }
 
   async function loadNews() {
     try {
-      const api: any[] = await newsService.findRecent<any[]>(6)
-      setNews(api.length ? api : [])
+      const api = await newsService.findRecent<any[]>(6)
+      setNews(api ?? [])
     } catch {
       setNews([])
     }
   }
 
   const teamMembers = useMemo(() => {
-    if (!teachersDynamic) return []
-    return teachersDynamic.map((t) => ({
+    return teachers.map((t) => ({
       id: t.id,
       name: `${t.lastName} ${t.firstName}`,
       position: t.role ?? 'Преподаватель',
       Image: t.photoUrl ?? '',
       audiosrc: t.audioUrl ?? '',
     }))
-  }, [teachersDynamic])
+  }, [teachers])
 
   return (
     <div className="bg-customblack min-h-screen">
-
-      <section id="home">
+      <section id="home" className="py-5 md:py-20 bg-customblack">
         <HeadBlock />
       </section>
 
-      <section id="about">
+      <section id="about" className="py-5 md:py-20 bg-customblack">
         <AboutBlock />
       </section>
 
-      <section id="sections">
+      <section id="sections" className="py-5 md:py-20 bg-customblack">
+        <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">СЕКЦИИ</h2>
         <SectionSlider
-          sections={sectionsDynamic ?? sectionsFallback}
+          sections={sections}
           activeId={activeTileId}
           onChangeActive={setActiveTileId}
-          defaultActiveId={(sectionsDynamic ?? sectionsFallback)[0]?.id}
+          defaultActiveId={sections[0]?.id}
         />
       </section>
 
-      <section id="news">
+      <section id="news" className="py-5 md:py-20 bg-customblack">
+        <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">НОВОСТИ</h2>
         <NewsSlider
           news={news}
           fallbackImage={newsFallbackImg}
@@ -244,22 +158,17 @@ async function loadSections() {
 
       <section id="team" className="py-5 md:py-20 bg-customblack">
         <div className="container mx-auto px-4">
-          <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
-            КОМАНДА
-          </h2>
+          <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">КОМАНДА</h2>
           <TeamSlider teamMembers={teamMembers} interval={5000} />
         </div>
       </section>
 
       <section id="partners" className="py-5 md:py-20 bg-customblack">
         <div className="container mx-auto px-4">
-          <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">
-            ПАРТНЕРЫ
-          </h2>
-          <PartnerSlider partners={partnersDynamic ?? partnersFallback} />
+          <h2 className="text-h1 font-h1 text-customyellow text-center mb-16">ПАРТНЕРЫ</h2>
+          <PartnerSlider partners={partners} />
         </div>
       </section>
-
     </div>
   )
 }

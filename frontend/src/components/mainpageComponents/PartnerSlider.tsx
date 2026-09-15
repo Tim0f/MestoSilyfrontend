@@ -17,6 +17,11 @@ export default function PartnerSlider({
   partners,
   className = '',
 }: PartnerSliderProps) {
+
+
+  if (!partners.length) {
+    return <div className="text-customwhite text-center mt-10">Нет данных</div>
+  }
   return (
     <div
       className={`flex flex-col md:flex-row md:flex-wrap justify-center items-center md:items-start gap-6 md:gap-10 ${className}`}

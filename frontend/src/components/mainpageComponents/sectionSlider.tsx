@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import SectionCard, { ShowcaseSection } from './sectionCard'
+import { section } from 'framer-motion/client'
 
 export type { ShowcaseSection } from './sectionCard'
 
@@ -89,6 +90,10 @@ export default function SectionSlider({
     })
   }
 
+    if (!section.length) {
+    return <div className="text-customwhite text-center mt-10">Нет данных</div>
+  }
+
   return (
     <section className="py-20 bg-customblack max-[641px]:py-10">
       <div className="px-10 max-[641px]:px-0">
@@ -100,15 +105,6 @@ export default function SectionSlider({
             max-[641px]:mb-6
           "
         >
-          <h2
-            className="
-              text-h1 font-h1 text-customyellow
-              max-[641px]:text-[56px]
-              max-[641px]:leading-none
-            "
-          >
-            Секции
-          </h2>
 
           <Link
             to="/sections"
