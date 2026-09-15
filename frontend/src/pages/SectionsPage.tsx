@@ -1,13 +1,9 @@
 import { useState, useEffect, lazy, Suspense } from "react";
 import TeamSlider from "../components/mainpageComponents/TeamSlider";
 import { getPublicUrl } from '../utils/publicUrl';
-import TexturedBorder from "../components/TexturedBorder"; // <-- добавлен импорт
+import TexturedBorder from "../components/TexturedBorder";
 
 import swordImage from "../assets/svg/sword.svg";
-import arrowImage from "../assets/svg/arrow.svg";
-import dragonImage from "../assets/svg/dragon.svg";
-import masksImage from "../assets/svg/masks.svg";
-import womenImage from "../assets/svg/women.svg";
 
 const AnimatedSectionContent = lazy(
   () => import("../components/AnimatedSectionContent")
@@ -40,54 +36,6 @@ interface Section {
   teachers: Teacher[];
 }
 
-const fallbackSections: Section[] = [
-  {
-    id: "fencing",
-    name: "Фехтование",
-    description: "Откройте для себя искусство владения клинком.",
-    iconUrl: swordImage,
-    imageUrl: swordImage,
-    price: 1100,
-    teachers: [],
-  },
-  {
-    id: "archery",
-    name: "Лучная стрельба",
-    description: "Постигните концентрацию и меткость.",
-    iconUrl: arrowImage,
-    imageUrl: arrowImage,
-    price: 1100,
-    teachers: [],
-  },
-  {
-    id: "dragon",
-    name: "Фэнтези клуб",
-    description: "Погрузитесь в мир приключений.",
-    iconUrl: dragonImage,
-    imageUrl: dragonImage,
-    price: 1100,
-    teachers: [],
-  },
-  {
-    id: "theatre",
-    name: "Театр",
-    description: "Откройте актёрский талант.",
-    iconUrl: masksImage,
-    imageUrl: masksImage,
-    price: 1100,
-    teachers: [],
-  },
-  {
-    id: "dance",
-    name: "Пластика и танец",
-    description: "Развивайте тело и душу.",
-    iconUrl: womenImage,
-    imageUrl: womenImage,
-    price: 1100,
-    teachers: [],
-  },
-];
-
 export default function SectionsPage() {
   const [sections, setSections] = useState<Section[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -112,19 +60,18 @@ export default function SectionsPage() {
   const loadSections = async () => {
     try {
       const res = await sectionsService.findAll<Section[]>();
-      if (Array.isArray(res) && res.length > 0) {
-        setSections(
-          res.map((s) => {
-            const iconUrl = getPublicUrl(s.iconUrl) || swordImage;
-            const imageUrl = getPublicUrl(s.imageUrl) || swordImage;
-            return { ...s, iconUrl, imageUrl, teachers: s.teachers ?? [] };
-          })
-        );
-      } else {
-        setSections(fallbackSections);
-      }
-    } catch (e) {
-      setSections(fallbackSections);
+      const mapped = Array.isArray(res)
+        ? res.map((s) => ({
+            ...s,
+            iconUrl: getPublicUrl(s.iconUrl) || swordImage, // формат-фоллбэк для иконки
+            imageUrl: getPublicUrl(s.imageUrl) || swordImage,
+            teachers: s.teachers ?? [],
+          }))
+        : [];
+      setSections(mapped);
+      setCurrentIndex(0);
+    } catch {
+      setSections([]); // 👈 пусто, а не выдуманные данные
     } finally {
       setLoading(false);
     }
@@ -155,11 +102,13 @@ export default function SectionsPage() {
   };
 
   const prevSection = () => {
+    if (sections.length === 0) return;
     setDirection(-1);
     setCurrentIndex((i) => (i === 0 ? sections.length - 1 : i - 1));
   };
 
   const nextSection = () => {
+    if (sections.length === 0) return;
     setDirection(1);
     setCurrentIndex((i) => (i + 1) % sections.length);
   };
@@ -172,18 +121,28 @@ export default function SectionsPage() {
     );
   }
 
+  // 👇 Заглушка "нет данных" в стиле NewsSlider / PartnerSlider
+  if (sections.length === 0) {
+    return (
+      <div className="relative w-full min-h-screen bg-customblack text-customyellow flex flex-col items-center justify-start py-24">
+        <h1 className="text-h1 font-h1 text-customyellow mb-10 tracking-wide uppercase">
+          Секции
+        </h1>
+        <div className="text-customwhite text-center mt-10">Нет данных</div>
+      </div>
+    );
+  }
+
   const current = sections[currentIndex];
 
-const teamMembers = (current.teachers ?? [])
-    .map((t) => ({
-      id: t.id,
-      name: `${t.lastName} ${t.firstName}`,
-      position: t.role ?? "Преподаватель",
-      Image: t.photoUrl ?? "",
-      audiosrc: t.audioUrl ?? "",
-    }));
+  const teamMembers = (current.teachers ?? []).map((t) => ({
+    id: t.id,
+    name: `${t.lastName} ${t.firstName}`,
+    position: t.role ?? "Преподаватель",
+    Image: t.photoUrl ?? "",
+    audiosrc: t.audioUrl ?? "",
+  }));
 
-  // Заглушка
   const renderPlaceholder = () => (
     <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 p-4">
       <svg
@@ -204,45 +163,30 @@ const teamMembers = (current.teachers ?? [])
   );
 
   const renderAdaptiveMasonry = (images: string[]) => {
-    // Если изображений нет совсем — показываем заглушку
     if (!images || images.length === 0) {
       return renderPlaceholder();
     }
 
     const count = images.length;
-
-    // Динамический grid в зависимости от количества фото
     let gridStyle: React.CSSProperties = {};
     let elements: JSX.Element[] = [];
 
     if (count === 1) {
-      // Одно фото на весь блок
-      gridStyle = {
-        gridTemplateColumns: '1fr',
-        gridTemplateRows: '1fr',
-      };
+      gridStyle = { gridTemplateColumns: '1fr', gridTemplateRows: '1fr' };
       elements = [
         <div key={0} className="overflow-hidden rounded-lg">
           <img src={images[0]} alt="" className="w-full h-full object-cover" />
         </div>
       ];
     } else if (count === 2) {
-      // Две строки 1:1
-      gridStyle = {
-        gridTemplateColumns: '1fr',
-        gridTemplateRows: '1fr 1fr',
-      };
+      gridStyle = { gridTemplateColumns: '1fr', gridTemplateRows: '1fr 1fr' };
       elements = images.map((src, i) => (
         <div key={i} className="overflow-hidden rounded-lg">
           <img src={src} alt="" className="w-full h-full object-cover" />
         </div>
       ));
     } else if (count === 3) {
-      // Одна широкая сверху (60%), две снизу в ряд (40%)
-      gridStyle = {
-        gridTemplateColumns: '1fr 1fr',
-        gridTemplateRows: '3fr 2fr',
-      };
+      gridStyle = { gridTemplateColumns: '1fr 1fr', gridTemplateRows: '3fr 2fr' };
       elements = [
         <div key="0" className="col-span-2 overflow-hidden rounded-lg">
           <img src={images[0]} alt="" className="w-full h-full object-cover" />
@@ -255,7 +199,6 @@ const teamMembers = (current.teachers ?? [])
         </div>,
       ];
     } else {
-      // 4 и более — используем сложную сетку, обрезаем до 4
       const four = images.slice(0, 4);
       gridStyle = {
         gridTemplateColumns: '312fr 262fr',
@@ -278,10 +221,7 @@ const teamMembers = (current.teachers ?? [])
     }
 
     return (
-      <div
-        className="grid w-full h-full gap-[16px]"
-        style={gridStyle}
-      >
+      <div className="grid w-full h-full gap-[16px]" style={gridStyle}>
         {elements}
       </div>
     );
@@ -292,11 +232,8 @@ const teamMembers = (current.teachers ?? [])
       <h1 className="text-h1 font-h1 text-customyellow mb-20 tracking-wide uppercase">
         Секции
       </h1>
-  
-      {/* Основной контейнер: строка на xl, колонка на меньших */}
+
       <div className="flex flex-col xl:flex-row items-center justify-center gap-16 w-full max-w-[1600px] mx-auto px-8">
-        
-        {/* Левая панель – видна только на xl */}
         <div className="relative w-full max-w-[420px] hidden xl:block">
           <TexturedBorder />
           <div className="relative z-10 p-4">
@@ -305,8 +242,7 @@ const teamMembers = (current.teachers ?? [])
             </div>
           </div>
         </div>
-  
-        {/* Центральный блок – всегда первый в потоке */}
+
         <div className="flex flex-col items-center text-center max-w-lg order-first xl:order-none">
           <div className="flex items-center justify-center gap-10 mb-10">
             <button
@@ -342,8 +278,7 @@ const teamMembers = (current.teachers ?? [])
             />
           </Suspense>
         </div>
-  
-        {/* Правая панель – всегда видна, не выходит за края */}
+
         <div className="relative w-full max-w-[420px] mx-auto xl:mx-0 mt-8 xl:mt-0">
           <TexturedBorder />
           <div className="relative z-10 p-4">
@@ -352,9 +287,8 @@ const teamMembers = (current.teachers ?? [])
             </div>
           </div>
         </div>
-  
       </div>
-  
+
       <h2 className="text-h1 font-h1 mt-32 mb-10 tracking-wide uppercase">
         Преподаватели
       </h2>
